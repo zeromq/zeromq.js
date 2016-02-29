@@ -12,7 +12,7 @@ We rely on [`prebuild`](https://github.com/mafintosh/prebuild). Prepare to be am
 
 * [X] OS X/Darwin 64-bit
 * [X] Linux 64-bit
-* [ ] Windows (we'll get this one up soon!)
+* [ ] Windows (we'll get this one up soon, we're so close.)
 
 ## Usage
 
