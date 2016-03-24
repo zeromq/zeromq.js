@@ -78,3 +78,28 @@ sock.on('message', function(topic, message) {
   console.log('received a message related to:', topic, 'containing message:', message);
 });
 ```
+
+## Release
+
+After an `npm` release, go through the following to create the actual prebuilds:
+
+### Shipping Linux binaries
+
+```
+docker build -t zmqprebuilt .
+docker run -it zmqprebuilt prebuild --all -u $GITHUB_TOKEN
+```
+
+### Shipping OS X binaries
+
+From a Mac:
+
+```
+npm install
+npm install -g prebuild
+prebuild --all -u $GITHUB_TOKEN
+```
+
+### Shipping Windows binaries
+
+TODO
