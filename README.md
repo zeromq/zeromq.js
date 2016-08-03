@@ -8,6 +8,28 @@
 
 We rely on [`prebuild`](https://github.com/mafintosh/prebuild). Prepare to be amazed at the wonders of binaries.
 
+## Developer Installation
+
+To set up `zmq-prebuilt` for development, clone and fork this repository. If you are running on Linux
+or OS X, you will need to have `automake`, `autoconf`, and `libtools`. These can be installed using `brew`.
+
+```
+$ ./build_libzmq.sh
+$ npm install
+```
+
+You can run then run the test suite.
+
+```
+$ npm test
+```
+
+Or run some of the example applications.
+
+```
+$ node examples/subber.js
+```
+
 ### Supported operating systems
 
 * [X] OS X/Darwin 64-bit
