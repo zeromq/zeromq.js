@@ -41,6 +41,7 @@
           'xcode_settings': {
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
           },
+          'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
         }],
         ['OS=="openbsd" or OS=="freebsd"', {
         }],
