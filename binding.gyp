@@ -39,8 +39,10 @@
         }],
         ['OS=="mac" or OS=="solaris"', {
           'xcode_settings': {
-            'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
+            'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
+            'MACOSX_DEPLOYMENT_TARGET': '10.6',
           },
+          'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
         }],
         ['OS=="openbsd" or OS=="freebsd"', {
         }],

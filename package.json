@@ -3,6 +3,7 @@
   "version": "0.0.3",
   "description": "Prebuilt bindings for node.js to ZeroMQ",
   "main": "index",
+  "gypfile": true,
   "repository": {
     "type": "git",
     "url": "http://github.com/nteract/zmq-prebuilt.git"
@@ -21,6 +22,7 @@
     "node": ">=0.8"
   },
   "scripts": {
+    "preinstall": "node build.js",
     "install": "prebuild --install",
     "test": "mocha --expose-gc --slow 2000 --timeout 600000"
   },
