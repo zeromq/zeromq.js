@@ -22,7 +22,7 @@
     "node": ">=0.8"
   },
   "scripts": {
-    "preinstall": "./build_libzmq.sh",
+    "preinstall": "node build.js",
     "install": "prebuild --install",
     "test": "mocha --expose-gc --slow 2000 --timeout 600000"
   },
