@@ -1,6 +1,6 @@
 {
   "name": "zmq-prebuilt",
-  "version": "0.0.3",
+  "version": "1.0.0",
   "description": "Prebuilt bindings for node.js to ZeroMQ",
   "main": "index",
   "gypfile": true,
