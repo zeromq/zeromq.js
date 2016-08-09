@@ -22,8 +22,7 @@
     "node": ">=0.8"
   },
   "scripts": {
-    "preinstall": "node build.js",
-    "install": "prebuild --install",
+    "install": "node build.js && prebuild --install",
     "test": "mocha --expose-gc --slow 2000 --timeout 600000"
   },
   "keywords": [
