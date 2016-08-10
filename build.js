@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const exec = require('child_process').exec;
 
 if (process.platform === 'linux' || process.platform === 'darwin') {
