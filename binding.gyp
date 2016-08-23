@@ -17,18 +17,18 @@
             'conditions': [
               ['target_arch=="ia32"', {
                 'libraries': [
-                  '<(PRODUCT_DIR)/../../windows/lib/x86/libzmq.lib',
+                  '<(PRODUCT_DIR)/../../windows/lib/x86/libzmq-v100-mt-4_0_4.lib',
                 ]
               },{
                 'libraries': [
-                  '<(PRODUCT_DIR)/../../windows/lib/x64/libzmq.lib',
+                  '<(PRODUCT_DIR)/../../windows/lib/x64/libzmq-v100-mt-4_0_4.lib',
                 ]
               }]
             ],
           },
           'msvs_settings': {
             'VCLinkerTool': {
-              'DelayLoadDLLs': ['libzmq.dll']
+              'DelayLoadDLLs': ['libzmq-v100-mt-4_0_4.dll']
             }
           },
         }, {
