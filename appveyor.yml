@@ -5,7 +5,7 @@ environment:
 
 platform:
   - x64
-  # - x86 # x86 builds aren't working for now
+  - x86
 
 configuration:
   - release
