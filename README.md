@@ -117,6 +117,7 @@ docker run -it zmqprebuilt prebuild --all -u $GITHUB_TOKEN
 From a Mac:
 
 ```
+./build_libzmq.sh
 npm install
 npm install -g prebuild
 prebuild --all -u $GITHUB_TOKEN
