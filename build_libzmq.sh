@@ -22,6 +22,6 @@ test -d $ZMQ_SRC_DIR || tar xzf zeromq-$ZMQ.tar.gz
 cd $ZMQ_SRC_DIR
 
 test -f configure || ./autogen.sh
-./configure --prefix=$ZMQ_PREFIX --with-tweetnacl --with-relaxed --enable-static --disable-shared
+./configure --prefix=$ZMQ_PREFIX --with-relaxed --enable-static --disable-shared
 V=1 make -j
 make install
