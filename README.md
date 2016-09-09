@@ -11,7 +11,7 @@ We rely on [`prebuild`](https://github.com/mafintosh/prebuild). Prepare to be am
 ## Developer Installation
 
 To set up `zmq-prebuilt` for development, clone and fork this repository. If you are running on Linux
-or OS X, you will need to have `automake`, `autoconf`, and `libtools`. These can be installed using `brew`.
+or OS X, you will need to have `automake`, `autoconf`, `git-lfs` and `libtool`. These can be installed using `brew` on OS X.
 
 ```
 $ ./build_libzmq.sh
