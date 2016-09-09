@@ -1,3 +1,30 @@
+2.15.3 / 2016-6-3
+=================
+
+  * 2.15.0 introduced a bug where request sockets could no longer batch up requests.
+    This release should fix that [ronkorving, jaleigh]
+
+2.15.2 / 2016-5-22
+==================
+
+  * 2.15.0 introduced a bug where some messages would not be received. This release
+    should fix that [ronkorving]
+
+2.15.1 / 2016-5-8
+=================
+
+  * Node.js 6 compatibility (NAN 2.3) [kkoopa]
+
+2.15.0 / 2016-4-27
+==================
+
+  * Dropped support for Node 0.8 [reqshark]
+  * Added unref/ref APIs to detach/attach sockets from/to the event loop [Joongi Kim]
+  * Improved message throughput 3-fold on ZMQ 4 [ronkorving]
+  * When bind or unbind failed, you could never try again (fixed) [ronkorving]
+  * Various travis configuration improvements [reqshark]
+  * Bumped NAN to 2.2.x [JanStevens]
+
 2.14.0 / 2015-11-20
 ===================
 

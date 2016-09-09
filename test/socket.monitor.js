@@ -19,7 +19,7 @@ describe('socket.monitor', function() {
       rep.send('world');
     });
 
-    var testedEvents = ['listen', 'accept', 'disconnect', 'close'];
+    var testedEvents = ['listen', 'accept', 'disconnect'];
     testedEvents.forEach(function(e) {
       rep.on(e, function(event_value, event_endpoint_addr) {
         // Test the endpoint addr arg
@@ -41,7 +41,9 @@ describe('socket.monitor', function() {
     // enable monitoring for this socket
     rep.monitor();
 
-    rep.bind('tcp://127.0.0.1:5423');
+    rep.bind('tcp://127.0.0.1:5423', function (error) {
+      if (error) throw error;
+    });
 
     rep.on('bind', function(){
       req.connect('tcp://127.0.0.1:5423');

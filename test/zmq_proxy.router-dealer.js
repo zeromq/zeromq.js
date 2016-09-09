@@ -68,7 +68,6 @@ describe('proxy.router-dealer', function() {
     var countdown = testutil.done_countdown(done, 2);
 
     req.on('message',function (msg) {
-      console.log(msg.toString());
       countdown();
     });
 
