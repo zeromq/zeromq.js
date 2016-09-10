@@ -12,7 +12,7 @@ var testutil = require('./util');
 
 describe('proxy.xpub-xsub', function() {
   afterEach(testutil.cleanup);
-  
+
   it('should proxy pub-sub connected to xpub-xsub', function (done) {
     if (!version) {
       done();
@@ -34,8 +34,10 @@ describe('proxy.xpub-xsub', function() {
       done();
     });
 
-    frontend.bind(frontendAddr,function() {
-      backend.bind(backendAddr,function() {
+    frontend.bind(frontendAddr, function (error) {
+      if (error) throw error;
+      backend.bind(backendAddr, function (error) {
+        if (error) throw error;
 
         sub.connect(frontendAddr);
         pub.connect(backendAddr);
@@ -48,7 +50,7 @@ describe('proxy.xpub-xsub', function() {
           throw Error("Timeout");
         }, 10000);
 
-        zmq.proxy(frontend,backend);
+        zmq.proxy(frontend, backend);
 
       });
     });
@@ -76,8 +78,6 @@ describe('proxy.xpub-xsub', function() {
     sub.on('message', function (msg) {
       msg.should.be.an.instanceof(Buffer);
       msg.toString().should.equal('foo');
-
-      console.log(msg.toString());
       countdown();
     });
 
@@ -88,9 +88,12 @@ describe('proxy.xpub-xsub', function() {
       countdown();
     });
 
-    capture.bind(captureAddr,function() {
-      frontend.bind(frontendAddr,function() {
-        backend.bind(backendAddr,function() {
+    capture.bind(captureAddr, function (error) {
+      if (error) throw error;
+      frontend.bind(frontendAddr, function (error) {
+        if (error) throw error;
+        backend.bind(backendAddr, function (error) {
+          if (error) throw error;
 
           pub.connect(backendAddr);
           sub.connect(frontendAddr);

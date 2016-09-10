@@ -11,7 +11,7 @@ var testutil = require('./util');
 
 describe('proxy.push-pull', function() {
   afterEach(testutil.cleanup);
-  
+
   it('should proxy push-pull connected to pull-push',function (done) {
 
     var frontend = zmq.socket('pull');
@@ -52,7 +52,7 @@ describe('proxy.push-pull', function() {
     var pull = zmq.socket('pull');
     var push = zmq.socket('push');
     testutil.push_sockets(frontend, backend, push, pull, capture, capSub);
-    
+
     frontend.bindSync(frontendAddr);
     backend.bindSync(backendAddr);
     capture.bindSync(captureAddr);
@@ -60,13 +60,12 @@ describe('proxy.push-pull', function() {
     pull.connect(frontendAddr);
     push.connect(backendAddr);
     capSub.connect(captureAddr);
-    
+
     var countdown = testutil.done_countdown(done, 2);
 
     pull.on('message',function (msg) {
       msg.should.be.an.instanceof(Buffer);
       msg.toString().should.equal('foo');
-      console.log(msg.toString());
       countdown();
     });
 
