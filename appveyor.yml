@@ -1,4 +1,6 @@
 environment:
+  gh_token:
+    secure: C/XQkMO7/rNmgXlxoJ/Nt3jIkzrVM6UszyeMD1Xx9PvKCHrepmvcwrDpoTgwp1rs
   matrix:
     - nodejs_version: "4"
     - nodejs_version: "5"
@@ -25,3 +27,6 @@ test_script:
   - node --version
   - npm --version
   - npm test
+
+deploy_script:
+  - IF "%nodejs_version%;%appveyor_repo_tag%"=="4;true" (npm install prebuild -g & prebuild --all -u %gh_token%)
