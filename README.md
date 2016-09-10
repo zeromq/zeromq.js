@@ -104,7 +104,3 @@ sock.on('message', function(topic, message) {
 ## Release
 
 After an `npm` release, push the tag to github and travis will create the prebuilds.
-
-### Shipping Windows binaries
-
-TODO
