@@ -103,25 +103,7 @@ sock.on('message', function(topic, message) {
 
 ## Release
 
-After an `npm` release, go through the following to create the actual prebuilds:
-
-### Shipping Linux binaries
-
-```
-docker build -t zmqprebuilt .
-docker run -it zmqprebuilt prebuild --all -u $GITHUB_TOKEN
-```
-
-### Shipping OS X binaries
-
-From a Mac:
-
-```
-./build_libzmq.sh
-npm install
-npm install -g prebuild
-prebuild --all -u $GITHUB_TOKEN
-```
+After an `npm` release, push the tag to github and travis will create the prebuilds.
 
 ### Shipping Windows binaries
 
