@@ -26,7 +26,7 @@ install:
 test_script:
   - node --version
   - npm --version
-  - npm test
+  - appveyor-retry call npm test
 
 deploy_script:
   - IF "%nodejs_version%;%appveyor_repo_tag%"=="4;true" (npm install prebuild -g & prebuild --all -u %gh_token%)
