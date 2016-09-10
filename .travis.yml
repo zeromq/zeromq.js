@@ -17,9 +17,8 @@ os:
 osx_image: xcode7.2
 
 env:
- # libzmq-4.1.5 prerelease for tweetnacl build fixes
- - ZMQ="b539733cee0f47f9bf1a70dc7cb7ff20410d3380" NODE_VERSION="5"
- - ZMQ="b539733cee0f47f9bf1a70dc7cb7ff20410d3380" NODE_VERSION="4"
+ - NODE_VERSION="5"
+ - NODE_VERSION="4"
 
 before_install:
  - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.30.2/install.sh | bash
