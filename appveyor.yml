@@ -3,7 +3,6 @@ environment:
     secure: 8CQgwBRBHNwfTcYdno2yTyyHOhRoSyElm2TzWOCpVh4jPA71l8bXQTxjyoSTJQaf
   matrix:
     - nodejs_version: "4"
-    - nodejs_version: "5"
 
 platform:
   - x64
@@ -28,4 +27,4 @@ test_script:
   - appveyor-retry call npm test
 
 deploy_script:
-  - IF "%nodejs_version%;%appveyor_repo_tag%"=="4;true" (npm install prebuild -g & prebuild --all -u $($env:GITHUB_TOKEN))
+  - IF "%nodejs_version%;%appveyor_repo_tag%"=="4;true" (npm install prebuild -g & prebuild --all -u %GITHUB_TOKEN%)
