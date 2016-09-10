@@ -17,9 +17,12 @@ os:
 osx_image: xcode7.2
 
 env:
- # libzmq-4.1.5 prerelease for tweetnacl build fixes
- - ZMQ="b539733cee0f47f9bf1a70dc7cb7ff20410d3380" NODE_VERSION="5"
- - ZMQ="b539733cee0f47f9bf1a70dc7cb7ff20410d3380" NODE_VERSION="4"
+  matrix:
+    # libzmq-4.1.5 prerelease for tweetnacl build fixes
+    - ZMQ="b539733cee0f47f9bf1a70dc7cb7ff20410d3380" NODE_VERSION="5"
+    - ZMQ="b539733cee0f47f9bf1a70dc7cb7ff20410d3380" NODE_VERSION="4"
+  global:
+    secure: QoswkvCYu7yeGxRVl44tAwIZj4TC7er7BPLb9v1QqsOhKr512V16nsB2rtLKx7rauN9OS+nsuyznpDFBnpmhLeT1Vers530CzbOL4hE/1cMFF8K7PypHdS2IXW5IhGLrE49WIzMQCYYB2cFlXGtx7Qa2lUNpRKx5WR3vxKZtjevx1vyCC+o+s5bvFPyRySmW/cYQLtTBFGBkhGpGbT4ArO6sNtwdqjt4jpzeExP4WYkopem1s9DkWtlDIhnlxJ9sT0r58GbZ4YYI8Ti80gmsTq0fEXbU6vZwm8cSdcu90ZudKPo3wkWkxzCV2IapWP1mgGi5OgAL2AC8nzOGOgD9+n21AHzXEezkpeMWjVdGg+TLEUV2F4345FXn/y53rk7L8nxCiKx6ZahNWGQsGz64qKx8RvJ0VALOG6MJCaJVpLRe4GPquyEfbe7MZ8zJKnlCiUvbsxZylLGdJnAtRGs8XFPPtie8kamWk7YbTO03E3JQAuYjWwddcqH1H8inDTj04o8B+DhhQugmbMHKInftpsmG1jrIWZFyBORHhdv2nXTogE5+tWYRbcJ1H70bA1X4Tr8tIGydNCfr47bsxdgPW1iRJpXTNgc+GzNd1KVAxTK0eWGwgY5yfpMs90yRjxtbomuEt6LgSmHskAAQip8C5DSdfLawQX9PdcO9jQFCvoA=
 
 before_install:
  - curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.30.2/install.sh | bash
@@ -35,3 +38,11 @@ before_install:
 install: env PKG_CONFIG_PATH=$ZMQ_PREFIX/lib/pkgconfig npm install
 
 script: travis_retry npm test
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: npm run deploy
+  on:
+    condition: "$NODE_VERSION = 4"
+    tags: true
