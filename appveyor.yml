@@ -1,6 +1,6 @@
 environment:
-  gh_token:
-    secure: C/XQkMO7/rNmgXlxoJ/Nt3jIkzrVM6UszyeMD1Xx9PvKCHrepmvcwrDpoTgwp1rs
+  GITHUB_TOKEN:
+    secure: 8CQgwBRBHNwfTcYdno2yTyyHOhRoSyElm2TzWOCpVh4jPA71l8bXQTxjyoSTJQaf
   matrix:
     - nodejs_version: "4"
     - nodejs_version: "5"
@@ -8,7 +8,6 @@ environment:
 platform:
   - x64
   - Win32
-  # - x86 # x86 builds aren't working for now
 
 configuration:
   - release
@@ -29,4 +28,4 @@ test_script:
   - appveyor-retry call npm test
 
 deploy_script:
-  - IF "%nodejs_version%;%appveyor_repo_tag%"=="4;true" (npm install prebuild -g & prebuild --all -u %gh_token%)
+  - IF "%nodejs_version%;%appveyor_repo_tag%"=="4;true" (npm install prebuild -g & prebuild --all -u $($env:GITHUB_TOKEN))
