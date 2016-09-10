@@ -12,7 +12,7 @@
     "bindings": "~1.2.1",
     "in-publish": "^2.0.0",
     "nan": "~2.4.0",
-    "prebuild": "^2.9.0"
+    "prebuild": "^4.2.2"
   },
   "devDependencies": {
     "mocha": "~1.13.0",
