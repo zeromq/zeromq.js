@@ -32,22 +32,43 @@
             }
           },
         }, {
-          'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
-          'include_dirs': [ '<(PRODUCT_DIR)/../../zmq/include' ],
+          'libraries': ['-lzmq'],
           'cflags!': ['-fno-exceptions'],
           'cflags_cc!': ['-fno-exceptions'],
         }],
         ['OS=="mac" or OS=="solaris"', {
           'xcode_settings': {
-            'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
-            'MACOSX_DEPLOYMENT_TARGET': '10.6',
+            'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
           },
-          'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
+          # add macports include & lib dirs, homebrew include & lib dirs
+          'include_dirs': [
+            '<!@(pkg-config libzmq --cflags-only-I | sed s/-I//g)',
+            '/opt/local/include',
+            '/usr/local/include',
+          ],
+          'libraries': [
+            '<!@(pkg-config libzmq --libs)',
+            '-L/opt/local/lib',
+            '-L/usr/local/lib',
+          ]
         }],
         ['OS=="openbsd" or OS=="freebsd"', {
+          'include_dirs': [
+            '<!@(pkg-config libzmq --cflags-only-I | sed s/-I//g)',
+            '/usr/local/include',
+          ],
+          'libraries': [
+            '<!@(pkg-config libzmq --libs)',
+            '-L/usr/local/lib',
+          ]
         }],
         ['OS=="linux"', {
-          'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
+          'cflags': [
+            '<!(pkg-config libzmq --cflags 2>/dev/null || echo "")',
+          ],
+          'libraries': [
+            '<!(pkg-config libzmq --libs 2>/dev/null || echo "")',
+          ],
         }],
       ]
     }
