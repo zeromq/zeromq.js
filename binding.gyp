@@ -32,8 +32,7 @@
             }
           },
         }, {
-          'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
-          'include_dirs': [ '<(PRODUCT_DIR)/../../zmq/include' ],
+          'libraries': ['-lzmq'],
           'cflags!': ['-fno-exceptions'],
           'cflags_cc!': ['-fno-exceptions'],
         }],
