@@ -32,6 +32,7 @@
             }
           },
         }, {
+          'libraries': ['-lzmq'],
           'cflags!': ['-fno-exceptions'],
           'cflags_cc!': ['-fno-exceptions'],
         }],
