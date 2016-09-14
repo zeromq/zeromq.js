@@ -14,8 +14,7 @@ To set up `zmq-prebuilt` for development, clone and fork this repository. If you
 or OS X, you will need to have `automake`, `autoconf`, `git-lfs`, `wget` and `libtool`. These can be installed using `brew` on OS X.
 
 ```
-$ ./build_libzmq.sh
-$ npm install
+$ npm run install:dev
 ```
 
 You can run then run the test suite.

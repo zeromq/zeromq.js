@@ -25,6 +25,9 @@
   "scripts": {
     "prepublish": "in-publish && node build.js || echo 'Not in npm prepublish.'",
     "install": "prebuild --install",
+    "install:dev": "./scripts/install_dev.sh",
+    "prebuild": "cd zmq-prebuilt && prebuild --all",
+    "deploy": "cd zmq-prebuilt && prebuild --all -u $GH_TOKEN",
     "test": "mocha --expose-gc --slow 2000 --timeout 600000"
   },
   "keywords": [
