@@ -25,7 +25,6 @@
   "scripts": {
     "prepublish": "in-publish && node build.js || echo 'Not in npm prepublish.'",
     "install": "prebuild --install",
-    "postinstall": "mv node_modules ../node_modules && mv build ../build",
     "test": "mocha --expose-gc --slow 2000 --timeout 600000"
   },
   "keywords": [
