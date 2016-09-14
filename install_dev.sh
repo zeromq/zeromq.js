@@ -1,10 +1,10 @@
 #!/bin/sh
 
-mv build zmq-prebuilt/build
-mv node_modules zmq-prebuilt/node_modules
 cd zmq-prebuilt
+ln -s ../package.json package.json
 ./build_libzmq.sh
 npm install
-mv build ../build
-mv node_modules ../node_modules
 cd ..
+ln -s zmq-prebuilt/build build
+ln -s zmq-prebuilt/node_modules node_modules
+# If necessary the zmq folder could be symlinked as well.
