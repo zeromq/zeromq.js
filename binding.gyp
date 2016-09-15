@@ -3,39 +3,27 @@
     {
       'target_name': 'zmq',
       'sources': [ 'binding.cc' ],
-      'include_dirs' : [
-        "<!(node -e \"require('nan')\")"
-      ],
+      'include_dirs' : ["<!(node -e \"require('nan')\")"],
+      'cflags!': ['-fno-exceptions'],
+      'cflags_cc!': ['-fno-exceptions'],
       'conditions': [
         ['OS=="win"', {
-          'win_delay_load_hook': 'true',
+          'msbuild_toolset': 'v120',
+          'defines': ['ZMQ_STATIC'],
           'include_dirs': ['windows/include'],
-          'link_settings': {
-            'libraries': [
-              'Delayimp.lib',
-            ],
-            'conditions': [
-              ['target_arch=="ia32"', {
-                'libraries': [
-                  '<(PRODUCT_DIR)/../../windows/lib/x86/libzmq-v100-mt-4_0_4.lib',
-                ]
-              },{
-                'libraries': [
-                  '<(PRODUCT_DIR)/../../windows/lib/x64/libzmq-v100-mt-4_0_4.lib',
-                ]
-              }]
-            ],
-          },
-          'msvs_settings': {
-            'VCLinkerTool': {
-              'DelayLoadDLLs': ['libzmq-v100-mt-4_0_4.dll']
-            }
-          },
-        }, {
-          'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
-          'include_dirs': [ '<(PRODUCT_DIR)/../../zmq/include' ],
-          'cflags!': ['-fno-exceptions'],
-          'cflags_cc!': ['-fno-exceptions'],
+          'conditions': [
+            ['target_arch=="ia32"', {
+              'libraries': [
+                '<(PRODUCT_DIR)/../../windows/lib/Win32/libzmq',
+                'ws2_32.lib',
+              ]
+            },{
+              'libraries': [
+                '<(PRODUCT_DIR)/../../windows/lib/x64/libzmq',
+                'ws2_32.lib',
+              ]
+            }]
+          ],
         }],
         ['OS=="mac" or OS=="solaris"', {
           'xcode_settings': {
@@ -43,11 +31,13 @@
             'MACOSX_DEPLOYMENT_TARGET': '10.6',
           },
           'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
+          'include_dirs': [ '<(PRODUCT_DIR)/../../zmq/include' ],
         }],
         ['OS=="openbsd" or OS=="freebsd"', {
         }],
         ['OS=="linux"', {
           'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
+          'include_dirs': [ '<(PRODUCT_DIR)/../../zmq/include' ],
         }],
       ]
     }

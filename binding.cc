@@ -38,21 +38,7 @@
 #include "nan.h"
 
 #ifdef _WIN32
-# include <delayimp.h>
 # define snprintf _snprintf_s
-  typedef BOOL (WINAPI* SetDllDirectoryFunc)(wchar_t *lpPathName);
-  class SetDllDirectoryCaller {
-   public:
-    explicit SetDllDirectoryCaller() : func_(NULL) { }
-    ~SetDllDirectoryCaller() {
-      if (func_)
-        func_(NULL);
-    }
-    // Sets the SetDllDirectory function pointer to activates this object.
-    void set_func(SetDllDirectoryFunc func) { func_ = func; }
-   private:
-    SetDllDirectoryFunc func_;
-  };
 #endif
 
 #define ZMQ_CAN_DISCONNECT (ZMQ_VERSION_MAJOR == 3 && ZMQ_VERSION_MINOR >= 2) || ZMQ_VERSION_MAJOR > 3
@@ -1586,36 +1572,6 @@ namespace zmq {
 // module
 
 extern "C" NAN_MODULE_INIT(init) {
-#ifdef _MSC_VER
-  // On Windows, inject the windows/lib folder into the DLL search path so that
-  // it will pick up our bundled DLL in case we do not have zmq installed on
-  // this system.
-  HMODULE kernel32_dll = GetModuleHandleW(L"kernel32.dll");
-  SetDllDirectoryCaller caller;
-  SetDllDirectoryFunc set_dll_directory;
-  wchar_t path[MAX_PATH] = L"";
-  wchar_t pathDir[MAX_PATH] = L"";
-  if (kernel32_dll != NULL) {
-    set_dll_directory =
-          reinterpret_cast<SetDllDirectoryFunc>(GetProcAddress(kernel32_dll, "SetDllDirectoryW"));
-    if (set_dll_directory) {
-      GetModuleFileNameW(GetModuleHandleW(L"zmq.node"), path, MAX_PATH - 1);
-      wcsncpy(pathDir, path, wcsrchr(path, '\\') - path);
-      path[0] = '\0';
-      pathDir[wcslen(pathDir)] = '\0';
-# ifdef _WIN64
-      wcscat(pathDir, L"\\..\\..\\windows\\lib\\x64");
-# else
-      wcscat(pathDir, L"\\..\\..\\windows\\lib\\x86");
-# endif
-      _wfullpath(path, pathDir, MAX_PATH);
-      set_dll_directory(path);
-      caller.set_func(set_dll_directory);
-      assert (!FAILED(__HrLoadAllImportsForDll("libzmq-v100-mt-4_0_4.dll")) &&
-          "delayload error");
-    }
-  }
-#endif
   zmq::Initialize(target);
 }
 
