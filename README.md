@@ -1,4 +1,4 @@
-# zmq-prebuilt &nbsp;&nbsp;[![Build Status](https://travis-ci.org/nteract/zmq-prebuilt.png)](https://travis-ci.org/nteract/zmq-prebuilt) &nbsp;[![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt)
+# zmq-prebuilt &nbsp;&nbsp;[![Build Status](https://travis-ci.org/nteract/zmq-prebuilt.svg?branch=master)](https://travis-ci.org/nteract/zmq-prebuilt) &nbsp;[![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt) &nbsp;&nbsp;&nbsp;:package: stable: [![Build Status](https://travis-ci.org/nteract/zmq-prebuilt-testing.svg?branch=master)](https://travis-ci.org/nteract/zmq-prebuilt-testing) [![Build status](https://ci.appveyor.com/api/projects/status/ox85p208tsxw6vt1?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt-testing)
 
 [ØMQ](http://www.zeromq.org/) bindings for node.js.
 
