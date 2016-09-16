@@ -1,4 +1,4 @@
-# zmq-prebuilt &nbsp;&nbsp;[![Build Status](https://travis-ci.org/nteract/zmq-prebuilt.png)](https://travis-ci.org/nteract/zmq-prebuilt) &nbsp;[![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/rgbkrk/zmq-prebuilt)
+# zmq-prebuilt &nbsp;&nbsp;[![Build Status](https://travis-ci.org/nteract/zmq-prebuilt.png)](https://travis-ci.org/nteract/zmq-prebuilt) &nbsp;[![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt)
 
 [ØMQ](http://www.zeromq.org/) bindings for node.js.
 
@@ -10,15 +10,26 @@ We rely on [`prebuild`](https://github.com/mafintosh/prebuild). Prepare to be am
 
 ## Developer Installation
 
-To set up `zmq-prebuilt` for development, clone and fork this repository. If you are running on Linux
-or OS X, you will need to have `automake`, `autoconf`, `git-lfs`, `wget` and `libtool`. These can be installed using `brew` on OS X.
+To set up `zmq-prebuilt` for development, clone and fork this repository and make sure you have `git-lfs` installed.
+
+### Linux and OS X
+If you are running on Linux or OS X, you will need to have `automake`, `autoconf`, `wget` and `libtool`. These can be installed using `brew` on OS X.
 
 ```
 $ ./build_libzmq.sh
 $ npm install
 ```
 
+### Windows
+On Winodws you'll need a C++ compiler, preferably [Visual Studio 2013](https://www.visualstudio.com/downloads/download-visual-studio-vs).
+
+```
+$ npm install
+```
+
+### Testing
 You can run then run the test suite.
+
 
 ```
 $ npm test
@@ -34,7 +45,7 @@ $ node examples/subber.js
 
 * [X] OS X/Darwin 64-bit
 * [X] Linux 64-bit
-* [ ] Windows (we'll get this one up soon, we're so close.)
+* [x] Windows (64-bit and 32-bit)
 
 ## Usage
 
@@ -103,4 +114,14 @@ sock.on('message', function(topic, message) {
 
 ## Release
 
-After an `npm` release, push the tag to github and travis will create the prebuilds.
+When making a release we'll want to do:
+
+```
+npm version minor && git push && git push --tags
+```
+
+Followed by waiting for the prebuilds to get uploaded for each OS, then finally running:
+
+```
+npm publish
+```
