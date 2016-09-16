@@ -25,7 +25,7 @@
   "scripts": {
     "prepublish": "in-publish && node build.js || echo 'Not in npm prepublish.'",
     "install": "prebuild --install",
-    "test": "mocha --expose-gc --slow 2000 --timeout 600000"
+    "test": "mocha --expose-gc --slow 300 --timeout 4000"
   },
   "keywords": [
     "zeromq",
