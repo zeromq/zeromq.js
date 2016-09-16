@@ -125,3 +125,5 @@ Followed by waiting for the prebuilds to get uploaded for each OS, then finally 
 ```
 npm publish
 ```
+
+After that you can push a commit to [`nteract/zmq-prebuilt-testing`](https://github.com/nteract/zmq-prebuilt-testing) to check if the binaries are packaged correctly.
