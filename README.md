@@ -12,15 +12,8 @@ We rely on [`prebuild`](https://github.com/mafintosh/prebuild). Prepare to be am
 
 To set up `zmq-prebuilt` for development, clone and fork this repository and make sure you have `git-lfs` installed.
 
-### Linux and OS X
-If you are running on Linux or OS X, you will need to have `automake`, `autoconf`, `wget` and `libtool`. These can be installed using `brew` on OS X.
+If you are running on Linux or OS X, you will need to have `automake`, `autoconf` and `libtool`. These can be installed using `brew` on OS X.
 
-```
-$ ./build_libzmq.sh
-$ npm install
-```
-
-### Windows
 On Winodws you'll need a C++ compiler, preferably [Visual Studio 2013](https://www.visualstudio.com/downloads/download-visual-studio-vs).
 
 ```
