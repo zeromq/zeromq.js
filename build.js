@@ -10,7 +10,7 @@ if (process.platform === 'linux' || process.platform === 'darwin') {
     }
   });
 } else if (process.platform === 'win32') {
-  console.log('No prepuild step required for windows');
+  console.log('No prebuild step required for windows');
 } else {
   throw Error('Builds for ' + process.platform + ' are not yet supported.');
 }
