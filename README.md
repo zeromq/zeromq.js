@@ -9,14 +9,14 @@
 
 [**Users**](#installation--users) | [**Contributors and Development**](#installation---contributors-and-development) | [**Maintainers**](#for-maintainers-creating-a-release)
 
-**zmq-prebuilt** Prebuilt, ready to use [ØMQ](http://www.zeromq.org/)
-bindings for node.js.
+**zmq-prebuilt**: Your prebuilt, ready to use [ØMQ](http://www.zeromq.org/)
+bindings for [Node.js](https://nodejs.org/en/.
 
 0MQ provides handy functionality when working with sockets. Yet,
 installing dependencies on your operating system or building 0MQ from
 source can lead to developer frustration.
 
-**zmq-prebuilt** simplifies creating communications for a node.js
+**zmq-prebuilt** simplifies creating communications for a Node.js
 application by providing well-tested, ready to use 0MQ bindings.
 zmq-prebuilt supports all major operating systems, including:
 
@@ -85,7 +85,7 @@ Install a development version of `zmq-prebuilt` with the following:
 npm install
 ```
 
-### Testing
+## Testing
 
 Run the test suite using:
 
@@ -93,7 +93,7 @@ Run the test suite using:
 npm test
 ```
 
-### Running an example application
+## Running an example application
 
 Several example applications are found in the `examples` directory. Use
 `node` to run an example. To run the 'subber' application, enter the
@@ -104,9 +104,9 @@ node examples/subber.js
 ```
 
 
-### Examples using zmq-prebuilt
+## Examples using zmq-prebuilt
 
-#### Push/Pull
+### Push/Pull
 
 This example demonstrates how a producer pushes information onto a
 socket and how a worker pulls information from the socket.
@@ -142,7 +142,7 @@ sock.on('message', function(msg){
 });
 ```
 
-#### Pub/Sub
+### Pub/Sub
 
 This example demonstrates using `zmq-prebuilt` in a classic Pub/Sub,
 Publisher/Subscriber, application.
