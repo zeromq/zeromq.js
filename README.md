@@ -1,59 +1,117 @@
-# zmq-prebuilt &nbsp;&nbsp;[![Build Status](https://travis-ci.org/nteract/zmq-prebuilt.svg?branch=master)](https://travis-ci.org/nteract/zmq-prebuilt) &nbsp;[![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt) &nbsp;&nbsp;&nbsp;:package: stable: [![Build Status](https://travis-ci.org/nteract/zmq-prebuilt-testing.svg?branch=master)](https://travis-ci.org/nteract/zmq-prebuilt-testing) [![Build status](https://ci.appveyor.com/api/projects/status/ox85p208tsxw6vt1?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt-testing)
+# zmq-prebuilt
 
-[ØMQ](http://www.zeromq.org/) bindings for node.js.
+[![](https://img.shields.io/badge/version-latest-blue.svg)](https://github.com/nteract/zmq-prebuilt)
+[![Build Status](https://travis-ci.org/nteract/zmq-prebuilt.svg?branch=master)](https://travis-ci.org/nteract/zmq-prebuilt)
+[![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt)
+[![](https://img.shields.io/badge/version-stable-blue.svg)](https://github.com/nteract/zmq-prebuilt/releases/tag/v1.4.0)
+[![Build Status](https://travis-ci.org/nteract/zmq-prebuilt-testing.svg?branch=master)](https://travis-ci.org/nteract/zmq-prebuilt-testing)
+[![Build status](https://ci.appveyor.com/api/projects/status/ox85p208tsxw6vt1?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt-testing)
 
-## Installation
+[**Users**](#installation--users) | [**Contributors and Development**](#installation---contributors-and-development) | [**Maintainers**](#for-maintainers-creating-a-release)
 
-    $ npm install zmq-prebuilt
+**zmq-prebuilt**: Your ready to use, prebuilt [ØMQ](http://www.zeromq.org/)
+bindings for [Node.js](https://nodejs.org/en/).
 
-We rely on [`prebuild`](https://github.com/mafintosh/prebuild). Prepare to be amazed at the wonders of binaries.
+0MQ provides handy functionality when working with sockets. Yet,
+installing dependencies on your operating system or building 0MQ from
+source can lead to developer frustration.
 
-## Developer Installation
+**zmq-prebuilt** simplifies creating communications for a Node.js
+application by providing well-tested, ready to use 0MQ bindings.
+zmq-prebuilt supports all major operating systems, including:
 
-To set up `zmq-prebuilt` for development, clone and fork this repository and make sure you have `git-lfs` installed.
+* OS X/Darwin 64-bit
+* Linux 64-bit
+* Windows (64-bit and 32-bit)
 
-### Linux and OS X
-If you are running on Linux or OS X, you will need to have `automake`, `autoconf`, `wget` and `libtool`. These can be installed using `brew` on OS X.
+Use **zmq-prebuilt** and take advantage of the *elegant simplicity of binaries*.
 
+
+----
+
+## Installation - Users
+
+*Prerequisites*
+
+We rely on [`prebuild`](https://github.com/mafintosh/prebuild).
+
+Install `zmq-prebuilt` with the following:
+
+```bash
+npm install zmq-prebuilt
 ```
-$ ./build_libzmq.sh
-$ npm install
-```
 
-### Windows
-On Winodws you'll need a C++ compiler, preferably [Visual Studio 2013](https://www.visualstudio.com/downloads/download-visual-studio-vs).
-
-```
-$ npm install
-```
-
-### Testing
-You can run then run the test suite.
-
-
-```
-$ npm test
-```
-
-Or run some of the example applications.
-
-```
-$ node examples/subber.js
-```
-
-### Supported operating systems
-
-* [X] OS X/Darwin 64-bit
-* [X] Linux 64-bit
-* [x] Windows (64-bit and 32-bit)
+Now, prepare to be amazed by the wonders of binaries.
 
 ## Usage
 
-Everywhere you used `require(zmq)` in your code base before, replace it with `zmq-prebuilt`.
+Replace `require(zmq)` in your code base with `zmq-prebuilt`. That's it.
+The wonder of binaries begins.
 
-## Examples
+----
+
+## Installation - Contributors and Development
+
+To set up `zmq-prebuilt` for development, fork this repository and
+clone your fork to your system. Be sure you have `git-lfs` installed.
+
+### Linux and OS X
+
+*Prerequisites*
+
+If you are running on Linux or OS X, you will need to have `automake`,
+`autoconf`, `wget` and `libtool` installed. For Linux, use your distribution's
+package manager to install. On OS X, these can be installed using
+[Homebrew](http://brew.sh) and using the Homebrew command `brew install`
+command. For example, install `wget` with `brew install wget`.
+
+Install a development version of `zmq-prebuilt` with the following:
+
+```bash
+./build_libzmq.sh
+npm install
+```
+
+### Windows
+
+*Prerequisites*
+
+On Windows you'll need a C++ compiler, preferably
+[Visual Studio 2013](https://www.visualstudio.com/downloads/download-visual-studio-vs).
+
+Install a development version of `zmq-prebuilt` with the following:
+
+```bash
+npm install
+```
+
+## Testing
+
+Run the test suite using:
+
+```bash
+npm test
+```
+
+## Running an example application
+
+Several example applications are found in the `examples` directory. Use
+`node` to run an example. To run the 'subber' application, enter the
+following:
+
+```bash
+node examples/subber.js
+```
+
+
+## Examples using zmq-prebuilt
 
 ### Push/Pull
+
+This example demonstrates how a producer pushes information onto a
+socket and how a worker pulls information from the socket.
+
+**producer.js**
 
 ```js
 // producer.js
@@ -68,6 +126,8 @@ setInterval(function(){
   sock.send('some work');
 }, 500);
 ```
+
+**worker.js**
 
 ```js
 // worker.js
@@ -84,6 +144,11 @@ sock.on('message', function(msg){
 
 ### Pub/Sub
 
+This example demonstrates using `zmq-prebuilt` in a classic Pub/Sub,
+Publisher/Subscriber, application.
+
+**Publisher: pubber.js**
+
 ```js
 // pubber.js
 var zmq = require('zmq-prebuilt')
@@ -97,6 +162,8 @@ setInterval(function(){
   sock.send(['kitty cats', 'meow!']);
 }, 500);
 ```
+
+**Subscriber: subber.js**
 
 ```js
 // subber.js
@@ -112,18 +179,32 @@ sock.on('message', function(topic, message) {
 });
 ```
 
-## Release
+----
 
-When making a release we'll want to do:
+## For maintainers: Creating a release
 
-```
+When making a release, do the following:
+
+```bash
 npm version minor && git push && git push --tags
 ```
 
-Followed by waiting for the prebuilds to get uploaded for each OS, then finally running:
+Then, wait for the prebuilds to get uploaded for each OS. After the
+prebuilds are uploaded, run the following to publish the release:
 
-```
+```bash
 npm publish
 ```
 
-After that you can push a commit to [`nteract/zmq-prebuilt-testing`](https://github.com/nteract/zmq-prebuilt-testing) to check if the binaries are packaged correctly.
+To check if the binaries are packaged correctly, you can push a commit to
+[`nteract/zmq-prebuilt-testing`](https://github.com/nteract/zmq-prebuilt-testing).
+
+## Learn more about nteract
+
+- Visit our website http://nteract.io/.
+- See our organization on GitHub https://github.com/nteract
+- Join us on [Slack](http://slack.nteract.in/) if you need help or have
+  questions. If you have trouble creating an account, either
+  email rgbkrk@gmail.com or post an issue on GitHub.
+
+<img src="https://cloud.githubusercontent.com/assets/836375/15271096/98e4c102-19fe-11e6-999a-a74ffe6e2000.gif" alt="nteract animated logo" height="80px" />
