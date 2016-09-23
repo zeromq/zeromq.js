@@ -9,8 +9,8 @@
 
 [**Users**](#installation--users) | [**Contributors and Development**](#installation---contributors-and-development) | [**Maintainers**](#for-maintainers-creating-a-release)
 
-**zmq-prebuilt**: Your prebuilt, ready to use [ØMQ](http://www.zeromq.org/)
-bindings for [Node.js](https://nodejs.org/en/.
+**zmq-prebuilt**: Your ready to use, prebuilt [ØMQ](http://www.zeromq.org/)
+bindings for [Node.js](https://nodejs.org/en/).
 
 0MQ provides handy functionality when working with sockets. Yet,
 installing dependencies on your operating system or building 0MQ from
