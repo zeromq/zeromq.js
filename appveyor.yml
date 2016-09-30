@@ -6,19 +6,12 @@ environment:
 
 platform:
   - x64
-  - Win32
+  - x86
 
-configuration:
-  - release
+build: off
 
 install:
-  - ps: >-
-        if($env:platform -eq "Win32") {
-          Install-Product node $env:nodejs_version
-        }
-        else {
-          Install-Product node $env:nodejs_version $env:platform
-        }
+  - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install
 
 test_script:

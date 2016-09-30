@@ -14,7 +14,7 @@
           'conditions': [
             ['target_arch=="ia32"', {
               'libraries': [
-                '<(PRODUCT_DIR)/../../windows/lib/Win32/libzmq',
+                '<(PRODUCT_DIR)/../../windows/lib/x86/libzmq',
                 'ws2_32.lib',
               ]
             },{
