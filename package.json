@@ -10,13 +10,13 @@
   },
   "dependencies": {
     "bindings": "~1.2.1",
-    "nan": "~2.4.0",
+    "nan": "^2.4.0",
     "prebuild": "^4.2.2"
   },
   "devDependencies": {
-    "mocha": "~1.13.0",
-    "semver": "~4.1.1",
-    "should": "2.1.x"
+    "mocha": "^3.1.0",
+    "semver": "^5.3.0",
+    "should": "^11.1.0"
   },
   "engines": {
     "node": ">=0.8"
