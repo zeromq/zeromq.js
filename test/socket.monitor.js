@@ -10,8 +10,7 @@ describe('socket.monitor', function() {
 
   it('should be able to monitor the socket', function(done) {
     var rep = zmq.socket('rep')
-      , req = zmq.socket('req')
-      , events = [];
+      , req = zmq.socket('req');
 
     rep.on('message', function(msg){
       msg.should.be.an.instanceof(Buffer);
@@ -25,14 +24,10 @@ describe('socket.monitor', function() {
         // Test the endpoint addr arg
         event_endpoint_addr.toString().should.equal('tcp://127.0.0.1:5423');
 
-        // If this is a disconnect event we can now close the rep socket
-        if (e === 'disconnect') {
-          rep.close();
-        }
-
         testedEvents.pop();
         if (testedEvents.length === 0) {
           rep.unmonitor();
+          rep.close();
           done();
         }
       });
@@ -62,7 +57,7 @@ describe('socket.monitor', function() {
 
     // We will try to connect to a non-existing server, zmq will issue events: "connect_retry", "close", "connect_retry"
     // The connect_retry will be issued immediately after the close event, so we will measure the time between the close
-    // event and connect_retry event, those should >= 10 (this will tell us that we are reading 1 event at a time from
+    // event and connect_retry event, those should >= 9 (this will tell us that we are reading 1 event at a time from
     // the monitor socket).
 
     var closeTime;
@@ -74,7 +69,7 @@ describe('socket.monitor', function() {
       var diff = Date.now() - closeTime;
       req.unmonitor();
       req.close();
-      diff.should.be.within(10, 20);
+      diff.should.be.within(9, 20);
       done();
     });
 
