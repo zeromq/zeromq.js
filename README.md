@@ -53,19 +53,28 @@ The wonder of binaries begins.
 ## Installation - Contributors and Development
 
 To set up `zmq-prebuilt` for development, fork this repository and
-clone your fork to your system. Be sure you have Python 2 and `git-lfs` installed.
+clone your fork to your system. Be sure you have [`git-lfs`](https://git-lfs.github.com/) installed.
 
 **Prerequisites for Linux and OS X**
 
 If you are running on Linux or OS X, you will need to have `automake`,
-`autoconf`, `pkg-config`, `wget` and `libtool` installed. For Linux, use your distribution's
+`autoconf`, `pkg-config`, `wget`, `libtool` and Python 2.7 (`v3.x.x` is not supported) installed. For Linux, use your distribution's
 package manager to install. On OS X, these can be installed using
 [Homebrew](http://brew.sh) and using the Homebrew command `brew install`
 command. For example, install `wget` with `brew install wget`.
 
 **Prerequisites for Windows**
 
-On Windows you'll need [Visual Studio 2013](https://www.microsoft.com/en-US/download/details.aspx?id=44914).
+- **Option 1:** Install all the required tools and configurations using Microsoft's [windows-build-tools](https://github.com/felixrieseberg/windows-build-tools) by running `npm install -g windows-build-tools` from an elevated PowerShell (run as Administrator).
+- **Option 2:** Install dependencies and configuration manually
+   1. Visual C++ Build Environment:
+     * **Option 1:** Install [Visual C++ Build Tools](http://go.microsoft.com/fwlink/?LinkId=691126) using the *Default Install* option.
+     * **Option 2:** Install [Visual Studio 2015](https://www.visualstudio.com/products/visual-studio-community-vs) (or modify an existing installation) and select *Common Tools for Visual C++* during setup.  
+
+  > :bulb: [Windows Vista / 7 only] requires [.NET Framework 4.5.1](http://www.microsoft.com/en-us/download/details.aspx?id=40773)
+
+  2. Install [Python 2.7](https://www.python.org/downloads/) or [Miniconda 2.7](http://conda.pydata.org/miniconda.html) (`v3.x.x` is not supported), and run `npm config set python python2.7`
+  3. Launch cmd, `npm config set msvs_version 2015`
 
 
 **Installation**
