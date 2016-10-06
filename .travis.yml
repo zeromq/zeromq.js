@@ -15,8 +15,6 @@ os:
   - linux
   - osx
 
-osx_image: xcode7.2
-
 env:
   matrix:
     - NODE_VERSION="6"
