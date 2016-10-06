@@ -16,3 +16,4 @@ zmq
 
 npm-debug.log
 prebuilds
+zmq-build.log

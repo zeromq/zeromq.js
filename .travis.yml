@@ -18,7 +18,6 @@ os:
 osx_image: xcode7.2
 
 env:
-
   matrix:
     - NODE_VERSION="6"
   global:
@@ -33,9 +32,8 @@ before_install:
  - npm --version
  - test "$(uname)" = "Darwin"  || export CXX=g++-4.9 CC=gcc-4.9
  - gcc --version
- - sh build_libzmq.sh
 
-install: env PKG_CONFIG_PATH=$ZMQ_PREFIX/lib/pkgconfig npm install
+install: npm install
 
 script: travis_retry npm test
 

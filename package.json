@@ -10,7 +10,6 @@
   },
   "dependencies": {
     "bindings": "~1.2.1",
-    "in-publish": "^2.0.0",
     "nan": "~2.4.0",
     "prebuild": "^4.2.2"
   },
@@ -23,7 +22,6 @@
     "node": ">=0.8"
   },
   "scripts": {
-    "prepublish": "in-publish && node build.js || echo 'Not in npm prepublish.'",
     "install": "prebuild --install",
     "test": "mocha --expose-gc --slow 300 --timeout 4000"
   },
