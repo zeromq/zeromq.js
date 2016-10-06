@@ -12,12 +12,12 @@
 **zmq-prebuilt**: Your ready to use, prebuilt [ØMQ](http://www.zeromq.org/)
 bindings for [Node.js](https://nodejs.org/en/).
 
-0MQ provides handy functionality when working with sockets. Yet,
-installing dependencies on your operating system or building 0MQ from
+ØMQ provides handy functionality when working with sockets. Yet,
+installing dependencies on your operating system or building ØMQ from
 source can lead to developer frustration.
 
 **zmq-prebuilt** simplifies creating communications for a Node.js
-application by providing well-tested, ready to use 0MQ bindings.
+application by providing well-tested, ready to use ØMQ bindings.
 zmq-prebuilt supports all major operating systems, including:
 
 * OS X/Darwin 64-bit
@@ -45,7 +45,7 @@ Now, prepare to be amazed by the wonders of binaries.
 
 ## Usage
 
-Replace `require(zmq)` in your code base with `zmq-prebuilt`. That's it.
+Replace `require(zmq)` in your code base with `require(zmq-prebuilt)`. That's it.
 The wonder of binaries begins.
 
 ----
@@ -53,31 +53,22 @@ The wonder of binaries begins.
 ## Installation - Contributors and Development
 
 To set up `zmq-prebuilt` for development, fork this repository and
-clone your fork to your system. Be sure you have `git-lfs` installed.
+clone your fork to your system. Be sure you have Python 2 and `git-lfs` installed.
 
-### Linux and OS X
-
-*Prerequisites*
+**Prerequisites for Linux and OS X**
 
 If you are running on Linux or OS X, you will need to have `automake`,
-`autoconf`, `wget` and `libtool` installed. For Linux, use your distribution's
+`autoconf`, `pkg-config`, `wget` and `libtool` installed. For Linux, use your distribution's
 package manager to install. On OS X, these can be installed using
 [Homebrew](http://brew.sh) and using the Homebrew command `brew install`
 command. For example, install `wget` with `brew install wget`.
 
-Install a development version of `zmq-prebuilt` with the following:
+**Prerequisites for Windows**
 
-```bash
-./build_libzmq.sh
-npm install
-```
+On Windows you'll need [Visual Studio 2013](https://www.microsoft.com/en-US/download/details.aspx?id=44914).
 
-### Windows
 
-*Prerequisites*
-
-On Windows you'll need a C++ compiler, preferably
-[Visual Studio 2013](https://www.visualstudio.com/downloads/download-visual-studio-vs).
+**Installation**
 
 Install a development version of `zmq-prebuilt` with the following:
 
