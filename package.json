@@ -14,6 +14,7 @@
     "prebuild": "^4.2.2"
   },
   "devDependencies": {
+    "electron-mocha": "^3.1.1",
     "mocha": "^3.1.0",
     "semver": "^5.3.0",
     "should": "^11.1.0"
@@ -23,7 +24,8 @@
   },
   "scripts": {
     "install": "prebuild --install",
-    "test": "mocha --expose-gc --slow 300 --timeout 4000"
+    "test": "mocha --expose-gc --slow 300 --timeout 4000",
+    "test:electron": "electron-mocha --slow 300 --timeout 4000"
   },
   "keywords": [
     "zeromq",
