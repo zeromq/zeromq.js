@@ -6,13 +6,10 @@ environment:
       deploy: "true"
     - nodejs_version: "5"
       electron: "0.37.8"
-      rebuild: "false"
     - nodejs_version: "6"
       electron: "1.1.3"
-      rebuild: "false"
     - nodejs_version: "6"
       electron: "1.4.3"
-      rebuild: "true"
 
 platform:
   - x64
@@ -24,12 +21,13 @@ install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install
   - IF DEFINED ELECTRON (npm install electron-prebuilt@%ELECTRON%)
-  - IF "%REBUILD%"=="true" (npm install -g node-gyp)
-  - IF "%REBUILD%"=="true" (node-gyp rebuild --runtime=electron --target=%ELECTRON% --disturl=https://atom.io/download/atom-shell --build-from-source)
+  - IF DEFINED ELECTRON (npm install -g node-gyp)
+  # We always need to rebuild for electron even for electron <= 1.1.3
+  - IF DEFINED ELECTRON (node-gyp rebuild --runtime=electron --target=%ELECTRON% --disturl=https://atom.io/download/atom-shell --build-from-source)
 
 
 test_script:
-  - IF "%ELECTRON%"=="" (appveyor-retry call npm test) ELSE (appveyor-retry call npm run test:electron)
+  - IF DEFINED ELECTRON (appveyor-retry call npm run test:electron) ELSE (appveyor-retry call npm test)
 
 deploy_script:
   - IF "%deploy%;%appveyor_repo_tag%"=="true;true" (npm install prebuild -g & prebuild --all -u %GITHUB_TOKEN%)
