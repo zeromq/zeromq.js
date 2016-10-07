@@ -30,11 +30,12 @@ before_install:
   - nvm install $NODE_VERSION
   - nvm use $NODE_VERSION
   - test "$(uname)" = "Darwin"  || export CXX=g++-4.9 CC=gcc-4.9
+
+install:
+  - npm install
   - '[ -z "$ELECTRON" ] || npm install electron-prebuilt@${ELECTRON}'
   - '[ -z "$REBUILD" ] || npm install -g node-gyp'
   - '[ -z "$REBUILD" ] || node-gyp rebuild --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/atom-shell --build-from-source'
-
-install: npm install
 
 script: if [[ -z "$ELECTRON" ]]; then travis_retry npm test; else travis_retry npm run test:electron; fi
 
