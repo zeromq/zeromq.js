@@ -4,6 +4,15 @@ environment:
   matrix:
     - nodejs_version: "4"
       deploy: "true"
+    - nodejs_version: "5"
+      electron: "0.37.8"
+      rebuild: "false"
+    - nodejs_version: "6"
+      electron: "1.1.3"
+      rebuild: "false"
+    - nodejs_version: "6"
+      electron: "1.4.3"
+      rebuild: "true"
 
 platform:
   - x64
@@ -14,11 +23,12 @@ build: off
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install
+  - IF DEFINED ELECTRON (npm install electron-prebuilt@%ELECTRON%)
+  - IF "%REBUILD%"=="true" (npm rebuild zmq-prebuilt --runtime=electron --target=%ELECTRON% --disturl=https://atom.io/download/atom-shell --build-from-source)
+
 
 test_script:
-  - node --version
-  - npm --version
-  - appveyor-retry call npm test
+  - IF "%ELECTRON%"=="" (appveyor-retry call npm test) ELSE (appveyor-retry call npm run test:electron)
 
 deploy_script:
   - IF "%deploy%;%appveyor_repo_tag%"=="true;true" (npm install prebuild -g & prebuild --all -u %GITHUB_TOKEN%)
