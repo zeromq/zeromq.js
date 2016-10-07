@@ -24,7 +24,8 @@ install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install
   - IF DEFINED ELECTRON (npm install electron-prebuilt@%ELECTRON%)
-  - IF "%REBUILD%"=="true" (npm rebuild zmq-prebuilt --runtime=electron --target=%ELECTRON% --disturl=https://atom.io/download/atom-shell --build-from-source)
+  - IF "%REBUILD%"=="true" (npm install -g node-gyp)
+  - IF "%REBUILD%"=="true" (node-gyp rebuild --runtime=electron --target=%ELECTRON% --disturl=https://atom.io/download/atom-shell --build-from-source)
 
 
 test_script:

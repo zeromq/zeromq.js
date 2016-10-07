@@ -18,8 +18,8 @@ os:
 env:
   matrix:
     - NODE_VERSION="6" DEPLOY="true"
-    - NODE_VERSION="5" ELECTRON="0.37.8" REBUILD="false"
-    - NODE_VERSION="6" ELECTRON="1.1.3" REBUILD="false"
+    - NODE_VERSION="5" ELECTRON="0.37.8"
+    - NODE_VERSION="6" ELECTRON="1.1.3"
     - NODE_VERSION="6" ELECTRON="1.4.3" REBUILD="true"
   global:
     secure: AMY9chDNyNawxPhxAksCREhbQoOmphQKo2hDuYIPXBCUNF6Zik969QlB07TVjo+Bo0KVEbG4ANTdI0FkFIhg4MuJIWUkW30ZDyCSovUx8zyWB/7IN23A4Cx4p4ZnKjezTHUQpZ9InRIZzy9kOR+215IIBP6GfxbUY89eDA6ARElcv1rwDjZqSnLAxfie6v80vIbhWxNK4kQjiEyIez5eWBjRg4//dmb63TvJjc78GFTaqmh6lRIApAyA0uKka14XR/PJw5IpDR+0Q2omHl4t4zbu9MdVNYMSD+c6iNxOq3fqZJwnyJ1ELErbtR8oeKgZX1SOew5QTCUZWQsa+ySYTCzUnhWjhCgN6W0ciVtT2PslS/ZcvnrGGIxJAOmTZwINw8sAp8yYdY9QCJOGdB5ah2oUBLGKElcFGqSblohXUEM1tXeRchmpXiiAxnPNtxc6lkZzz6NxDl2OFXSmjMS4Cr8cA//Bn6gM04xRJyETy86/8KDoL+ENc7gkeiuYUOFqkAn5X8PrqPdsPmF7yA61IF1ru/OgtiuCh+eqnzZKBPImJo2KfUIqVuRi/6eUaDfWLT7d/J84Vbe3p2nPxoFd2pSw60f/lIkzFSRZx3vBjQiW2MVUN7ZTdawMOzE4TpIV7rDOkKe7qJJobquJEjd2X9Z+8JiTYXK2pPN2GceiqAM=
@@ -31,7 +31,8 @@ before_install:
   - nvm use $NODE_VERSION
   - test "$(uname)" = "Darwin"  || export CXX=g++-4.9 CC=gcc-4.9
   - '[ -z "$ELECTRON" ] || npm install electron-prebuilt@${ELECTRON}'
-  - '[ -z "$REBUILD" ] || npm rebuild zmq-prebuilt --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/atom-shell --build-from-source'
+  - '[ -z "$REBUILD" ] || npm install -g node-gyp'
+  - '[ -z "$REBUILD" ] || node-gyp rebuild --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/atom-shell --build-from-source'
 
 install: npm install
 
