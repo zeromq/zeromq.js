@@ -6,11 +6,8 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - xvfb
     - gcc-4.9
     - g++-4.9
-    - uuid-dev
-    - libssl-dev
 
 os:
   - linux
