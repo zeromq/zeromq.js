@@ -17,7 +17,7 @@ export CFLAGS=-fPIC
 export CXXFLAGS=-fPIC
 export PKG_CONFIG_PATH=$ZMQ_PREFIX/lib/pkgconfig
 
-test -f zeromq-$ZMQ.tar.gz || wget https://github.com/$ZMQ_REPO/releases/download/v$ZMQ/zeromq-$ZMQ.tar.gz -O zeromq-$ZMQ.tar.gz
+test -f zeromq-$ZMQ.tar.gz || ZMQ=$ZMQ ZMQ_REPO=$ZMQ_REPO node "$(dirname $(realpath $0))/download-zmq.js"
 test -d $ZMQ_SRC_DIR || tar xzf zeromq-$ZMQ.tar.gz
 cd $ZMQ_SRC_DIR
 
