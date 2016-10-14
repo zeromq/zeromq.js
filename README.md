@@ -58,7 +58,6 @@ clone your fork to your system. Be sure you have [`git-lfs`](https://git-lfs.git
 **Prerequisites for Linux**
 - `python` (`v2.7` recommended, `v3.x.x` is not supported)
 - `make`
-- `wget`
 - A proper C/C++ compiler toolchain, like [GCC](https://gcc.gnu.org/)
 
 Use your distribution's package manager to install.
@@ -67,7 +66,6 @@ Use your distribution's package manager to install.
 
 - `python` (`v2.7` recommended, `v3.x.x` is not supported): already installed on Mac OS X
 - `Xcode Command Line Tools`: Can be installed with `xcode-select --install`
-- `wget`: Can be installed via [Homebrew](http://brew.sh) with `brew install wget`
 
 **Prerequisites for Windows**
 
