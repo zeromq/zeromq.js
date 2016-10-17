@@ -5,10 +5,6 @@ var zmq = require('..')
 describe('socket.unbind', function(){
 
   it('should be able to unbind', function(done){
-    if (!zmq.ZMQ_CAN_UNBIND) {
-      done();
-      return;
-    }
     var a = zmq.socket('dealer')
       , b = zmq.socket('dealer')
       , c = zmq.socket('dealer');

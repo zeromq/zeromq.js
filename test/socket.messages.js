@@ -99,13 +99,8 @@ describe('socket.messages', function(){
       }
     });
 
-    if (semver.satisfies(zmq.version, '>=3.x')) {
-      push.setsockopt(zmq.ZMQ_SNDHWM, 1);
-      pull.setsockopt(zmq.ZMQ_RCVHWM, 1);
-    } else if (semver.satisfies(zmq.version, '2.x')) {
-      push.setsockopt(zmq.ZMQ_HWM, 1);
-      pull.setsockopt(zmq.ZMQ_HWM, 1);
-    }
+    push.setsockopt(zmq.ZMQ_SNDHWM, 1);
+    pull.setsockopt(zmq.ZMQ_RCVHWM, 1);
 
     push.bind('tcp://127.0.0.1:12345', function (error) {
       if (error) throw error;

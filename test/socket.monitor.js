@@ -3,11 +3,6 @@ var zmq = require('..')
   , semver = require('semver');
 
 describe('socket.monitor', function() {
-  if (!zmq.ZMQ_CAN_MONITOR) {
-    console.log("monitoring not enabled skipping test");
-    return;
-  }
-
   it('should be able to monitor the socket', function(done) {
     var rep = zmq.socket('rep')
       , req = zmq.socket('req');

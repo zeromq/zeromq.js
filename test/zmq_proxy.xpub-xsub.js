@@ -7,18 +7,12 @@ var addr = 'tcp://127.0.0.1'
   , backendAddr = addr+':5508'
   , captureAddr = addr+':5509';
 
-var version = semver.gte(zmq.version, '3.1.0');
 var testutil = require('./util');
 
 describe('proxy.xpub-xsub', function() {
   afterEach(testutil.cleanup);
 
   it('should proxy pub-sub connected to xpub-xsub', function (done) {
-    if (!version) {
-      done();
-      return console.warn('Test requires libzmq >= 3.1.0');
-    }
-
     var frontend = zmq.socket('xpub');
     var backend = zmq.socket('xsub');
 
@@ -57,10 +51,6 @@ describe('proxy.xpub-xsub', function() {
   });
 
   it('should proxy connections with capture', function (done) {
-    if (!version) {
-      done();
-      return console.warn('Test requires libzmq >= 3.1.0');
-    }
 
     var frontend = zmq.socket('xpub');
     var backend = zmq.socket('xsub');
@@ -114,10 +104,6 @@ describe('proxy.xpub-xsub', function() {
   });
 
   it('should throw an error if the order is wrong', function (done) {
-    if (!version) {
-      done();
-      return console.warn('Test requires libzmq >= 3.1.0');
-    }
 
     var frontend = zmq.socket('xpub');
     var backend = zmq.socket('xsub');
