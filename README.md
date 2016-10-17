@@ -1,5 +1,6 @@
 # zmq-prebuilt
 
+[![codecov](https://codecov.io/gh/nteract/zmq-prebuilt/branch/master/graph/badge.svg)](https://codecov.io/gh/nteract/zmq-prebuilt)
 [![](https://img.shields.io/badge/version-latest-blue.svg)](https://github.com/nteract/zmq-prebuilt)
 [![Build Status](https://travis-ci.org/nteract/zmq-prebuilt.svg?branch=master)](https://travis-ci.org/nteract/zmq-prebuilt)
 [![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt)
