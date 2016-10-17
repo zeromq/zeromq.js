@@ -14,9 +14,11 @@
     "prebuild": "^4.2.2"
   },
   "devDependencies": {
+    "codecov": "^1.0.1",
     "electron-mocha": "^3.1.1",
     "jsdoc": "^3.4.2",
     "mocha": "^3.1.0",
+    "nyc": "^8.3.1",
     "semver": "^5.3.0",
     "should": "^11.1.0"
   },
@@ -27,7 +29,9 @@
     "install": "prebuild --install",
     "build:docs": "jsdoc -R README.md -d docs lib/*.js",
     "test": "mocha --expose-gc --slow 300 --timeout 4000",
-    "test:electron": "electron-mocha --slow 300 --timeout 4000"
+    "test:electron": "electron-mocha --slow 300 --timeout 4000",
+    "precoverage": "nyc npm run test",
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov && codecov"
   },
   "keywords": [
     "zeromq",
