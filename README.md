@@ -53,7 +53,7 @@ The wonder of binaries begins.
 ## Installation - Contributors and Development
 
 To set up `zmq-prebuilt` for development, fork this repository and
-clone your fork to your system. Be sure you have [`git-lfs`](https://git-lfs.github.com/) installed.
+clone your fork to your system.
 
 **Prerequisites for Linux**
 - `python` (`v2.7` recommended, `v3.x.x` is not supported)

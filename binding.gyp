@@ -8,21 +8,13 @@
       'cflags_cc!': ['-fno-exceptions'],
       'conditions': [
         ['OS=="win"', {
+          'download_lib': '<!(node scripts/download-win-lib 2>&1 > zmq-build.log)',
           'msbuild_toolset': 'v140',
           'defines': ['ZMQ_STATIC'],
           'include_dirs': ['windows/include'],
-          'conditions': [
-            ['target_arch=="ia32"', {
-              'libraries': [
-                '<(PRODUCT_DIR)/../../windows/lib/Win32/libzmq',
-                'ws2_32.lib',
-              ]
-            },{
-              'libraries': [
-                '<(PRODUCT_DIR)/../../windows/lib/x64/libzmq',
-                'ws2_32.lib',
-              ]
-            }]
+          'libraries': [
+            '<(PRODUCT_DIR)/../../windows/lib/libzmq',
+            'ws2_32.lib',
           ],
         }],
         ['OS=="mac" or OS=="solaris"', {
