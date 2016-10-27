@@ -77,5 +77,14 @@
     "Alejandro (https://github.com/Minjung)",
     "Eli Skeggs <skeggse@gmail.com> (https://github.com/skeggse)",
     "Bent Cardan <bent@nothingsatisfies.com> (https://github.com/reqshark)"
+  ],
+  "files": [
+    "HISTORY.md",
+    "LICENSE",
+    "README.md",
+    "index.js",
+    "package.js",
+    "lib/",
+    "build/Release/zmq.node"
   ]
 }
