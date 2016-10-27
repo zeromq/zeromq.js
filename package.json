@@ -9,7 +9,6 @@
     "url": "http://github.com/nteract/zmq-prebuilt.git"
   },
   "dependencies": {
-    "bindings": "~1.2.1",
     "nan": "^2.4.0",
     "prebuild": "^4.2.2"
   },
