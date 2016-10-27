@@ -43,13 +43,15 @@ script: if [[ -z "$ELECTRON" ]]; then travis_retry npm run coverage; else travis
 after_success:
   - 'if [[ $DEPLOY == true && $TRAVIS_OS_NAME == linux]]; then bash <(curl -s https://codecov.io/bash); fi'
 
+after_sucess:
+  - bash ./scripts/publish_docs.sh
+
 deploy:
   provider: script
   skip_cleanup: true
   # Linking to prebuild directly since it doesn't work inside a npm script.
   script:
     - node_modules/prebuild/bin.js --all -u $GH_TOKEN
-    - bash ./travis_publish_docs.sh
   on:
     condition: "$DEPLOY = true"
     tags: true
