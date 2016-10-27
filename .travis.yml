@@ -38,7 +38,10 @@ install:
   - '[ -z "$REBUILD" ] || npm install -g node-gyp'
   - '[ -z "$REBUILD" ] || node-gyp rebuild --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/atom-shell --build-from-source'
 
-script: if [[ -z "$ELECTRON" ]]; then travis_retry npm test; else travis_retry npm run test:electron; fi
+script: if [[ -z "$ELECTRON" ]]; then travis_retry npm run coverage; else travis_retry npm run test:electron; fi
+
+after_success:
+  - 'if [[ $DEPLOY == true && $TRAVIS_OS_NAME == linux]]; then bash <(curl -s https://codecov.io/bash); fi'
 
 deploy:
   provider: script
