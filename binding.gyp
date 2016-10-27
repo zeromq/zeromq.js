@@ -21,7 +21,7 @@
           'install_zmq': '<!(./build_libzmq.sh 2>&1 > zmq-build.log)',
           'xcode_settings': {
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
-            'MACOSX_DEPLOYMENT_TARGET': '10.6',
+            'MACOSX_DEPLOYMENT_TARGET': '10.7',
           },
           'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
           'include_dirs': [ '<(PRODUCT_DIR)/../../zmq/include' ],
