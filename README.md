@@ -45,7 +45,7 @@ Now, prepare to be amazed by the wonders of binaries.
 
 ## Usage
 
-Replace `require(zmq)` in your code base with `require(zmq-prebuilt)`. That's it.
+Replace `require('zmq')` in your code base with `require('zmq-prebuilt')`. That's it.
 The wonder of binaries begins.
 
 ----
