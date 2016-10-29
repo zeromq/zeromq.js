@@ -1,59 +1,49 @@
-# zmq-prebuilt
+# zeromq
 
-[![codecov](https://codecov.io/gh/nteract/zmq-prebuilt/branch/master/graph/badge.svg)](https://codecov.io/gh/nteract/zmq-prebuilt)
+[![codecov](https://codecov.io/gh/zeromq/zeromq.js/branch/master/graph/badge.svg)](https://codecov.io/gh/zeromq/zeromq.js)
 [![](https://img.shields.io/badge/version-latest-blue.svg)](https://github.com/nteract/zmq-prebuilt)
-[![Build Status](https://travis-ci.org/nteract/zmq-prebuilt.svg?branch=master)](https://travis-ci.org/nteract/zmq-prebuilt)
-[![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt)
+[![Build Status](https://travis-ci.org/zeromq/zeromq.js.svg?branch=master)](https://travis-ci.org/zeromq/zeromq.js)
+[![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/zeromq/zeromq.js)
 [![](https://img.shields.io/badge/version-stable-blue.svg)](https://github.com/nteract/zmq-prebuilt/releases/tag/v1.4.0)
 [![Build Status](https://travis-ci.org/nteract/zmq-prebuilt-testing.svg?branch=master)](https://travis-ci.org/nteract/zmq-prebuilt-testing)
 [![Build status](https://ci.appveyor.com/api/projects/status/ox85p208tsxw6vt1?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt-testing)
 
 [**Users**](#installation--users) | [**Contributors and Development**](#installation---contributors-and-development) | [**Maintainers**](#for-maintainers-creating-a-release)
 
-**zmq-prebuilt**: Your ready to use, prebuilt [ØMQ](http://www.zeromq.org/)
+**zeromq**: Your ready to use, prebuilt [ØMQ](http://www.zeromq.org/)
 bindings for [Node.js](https://nodejs.org/en/).
 
 ØMQ provides handy functionality when working with sockets. Yet,
 installing dependencies on your operating system or building ØMQ from
 source can lead to developer frustration.
 
-**zmq-prebuilt** simplifies creating communications for a Node.js
+**zeromq** simplifies creating communications for a Node.js
 application by providing well-tested, ready to use ØMQ bindings.
-zmq-prebuilt supports all major operating systems, including:
+zeromq supports all major operating systems, including:
 
 * OS X/Darwin 64-bit
 * Linux 64-bit
 * Windows (64-bit and 32-bit)
 
-Use **zmq-prebuilt** and take advantage of the *elegant simplicity of binaries*.
+Use **zeromq** and take advantage of the *elegant simplicity of binaries*.
 
-
-----
 
 ## Installation - Users
 
-*Prerequisites*
-
 We rely on [`prebuild`](https://github.com/mafintosh/prebuild).
 
-Install `zmq-prebuilt` with the following:
+Install `zeromq` with the following:
 
 ```bash
-npm install zmq-prebuilt
+npm install zeromq
 ```
 
 Now, prepare to be amazed by the wonders of binaries.
 
-## Usage
-
-Replace `require('zmq')` in your code base with `require('zmq-prebuilt')`. That's it.
-The wonder of binaries begins.
-
-----
 
 ## Installation - Contributors and Development
 
-To set up `zmq-prebuilt` for development, fork this repository and
+To set up `zeromq` for development, fork this repository and
 clone your fork to your system.
 
 **Prerequisites for Linux**
@@ -84,7 +74,7 @@ Use your distribution's package manager to install.
 
 **Installation**
 
-Install a development version of `zmq-prebuilt` with the following:
+Install a development version of `zeromq` with the following:
 
 ```bash
 npm install
@@ -109,7 +99,7 @@ node examples/subber.js
 ```
 
 
-## Examples using zmq-prebuilt
+## Examples using zeromq
 
 ### Push/Pull
 
@@ -120,7 +110,7 @@ socket and how a worker pulls information from the socket.
 
 ```js
 // producer.js
-var zmq = require('zmq-prebuilt')
+var zmq = require('zeromq')
   , sock = zmq.socket('push');
 
 sock.bindSync('tcp://127.0.0.1:3000');
@@ -136,7 +126,7 @@ setInterval(function(){
 
 ```js
 // worker.js
-var zmq = require('zmq-prebuilt')
+var zmq = require('zeromq')
   , sock = zmq.socket('pull');
 
 sock.connect('tcp://127.0.0.1:3000');
@@ -149,14 +139,14 @@ sock.on('message', function(msg){
 
 ### Pub/Sub
 
-This example demonstrates using `zmq-prebuilt` in a classic Pub/Sub,
+This example demonstrates using `zeromq` in a classic Pub/Sub,
 Publisher/Subscriber, application.
 
 **Publisher: pubber.js**
 
 ```js
 // pubber.js
-var zmq = require('zmq-prebuilt')
+var zmq = require('zeromq')
   , sock = zmq.socket('pub');
 
 sock.bindSync('tcp://127.0.0.1:3000');
@@ -172,7 +162,7 @@ setInterval(function(){
 
 ```js
 // subber.js
-var zmq = require('zmq-prebuilt')
+var zmq = require('zeromq')
   , sock = zmq.socket('sub');
 
 sock.connect('tcp://127.0.0.1:3000');
@@ -184,7 +174,6 @@ sock.on('message', function(topic, message) {
 });
 ```
 
-----
 
 ## For maintainers: Creating a release
 
@@ -203,13 +192,3 @@ npm publish
 
 To check if the binaries are packaged correctly, you can push a commit to
 [`nteract/zmq-prebuilt-testing`](https://github.com/nteract/zmq-prebuilt-testing).
-
-## Learn more about nteract
-
-- Visit our website http://nteract.io/.
-- See our organization on GitHub https://github.com/nteract
-- Join us on [Slack](http://slack.nteract.in/) if you need help or have
-  questions. If you have trouble creating an account, either
-  email rgbkrk@gmail.com or post an issue on GitHub.
-
-<img src="https://cloud.githubusercontent.com/assets/836375/15271096/98e4c102-19fe-11e6-999a-a74ffe6e2000.gif" alt="nteract animated logo" height="80px" />
