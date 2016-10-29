@@ -53,3 +53,7 @@ deploy:
   on:
     condition: "$DEPLOY = true"
     tags: true
+
+notifications:
+  slack:
+    secure: nklWvK1Mvoj5zly8PO0WmgQdakaSa5Ixwbxw4+1yyIKgyEUbyHzu0oySMAuyMPPV3nLaTaB/bwFxvrsUP6lxoO1CvQMUTrucLm3H5FXDDuTBBw5/tREFyuUy6XPeVsTPdL9ltrvCn8mTBYNZOM/3BWq6mV0XDHpxAIgE3FA2AUTrNoAxLqXC/V7ZmTnDYuH2T/cdeyP+Ri0UDuszUn/dzTM/fOSVpJ/J74JylJ5FH7x5z9lnD6T/916t8//i4tzoEaFkS4V7QgAj0Bta8BEMP0BN40Wap9UgXfrzafCnHDjcbKRoyVEs09kWMbrdY572EGiow2B+QOlYELLYCcD00VH71zDCpw1Ji6di3v+CxCzxFcNyZz8i/Hb8PIfYTyHV2C43X/doVzC3MVllw+d3IVTR0smn2jwjhr+szm9MDQcnUxq5zuOCiAMzE51hbhLQATUNQIiqsD0X+NK3o5urb/Fjb6I6q3MO7GJkuvsda1ni5OEPeFAlYKjvgBiwUZnc32uBHfd3iGzbdwzihSKreuIdVTCtmlnhVmM0ztg5E+BQ8SxWJPxLw5c+9ZaEja5bVCkZF4L3P/EcsdBQ1YmorsROgf/p+PsrnqKAy9zU/NynQQYODx28IPcuQgJbhzeTUEINnFej513BRnkREgjLY5bjXY6iLjKdlRo8kPVqrj8=
