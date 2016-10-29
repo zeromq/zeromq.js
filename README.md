@@ -1,6 +1,6 @@
 # zeromq
 
-[![codecov](https://codecov.io/gh/nteract/zmq-prebuilt/branch/master/graph/badge.svg)](https://codecov.io/gh/nteract/zmq-prebuilt)
+[![codecov](https://codecov.io/gh/zeromq/zeromq.js/branch/master/graph/badge.svg)](https://codecov.io/gh/zeromq/zeromq.js)
 [![](https://img.shields.io/badge/version-latest-blue.svg)](https://github.com/nteract/zmq-prebuilt)
 [![Build Status](https://travis-ci.org/zeromq/zeromq.js.svg?branch=master)](https://travis-ci.org/zeromq/zeromq.js)
 [![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/zeromq/zeromq.js)
