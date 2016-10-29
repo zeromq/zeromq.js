@@ -1,12 +1,12 @@
 {
-  "name": "zmq-prebuilt",
+  "name": "zeromq",
   "version": "2.1.0",
   "description": "Prebuilt bindings for node.js to ZeroMQ",
   "main": "index",
   "gypfile": true,
   "repository": {
     "type": "git",
-    "url": "http://github.com/nteract/zmq-prebuilt.git"
+    "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
     "nan": "^2.4.0",
@@ -21,7 +21,7 @@
     "should": "^11.1.0"
   },
   "engines": {
-    "node": ">=0.8"
+    "node": ">=0.10"
   },
   "scripts": {
     "install": "prebuild --install",
@@ -42,38 +42,5 @@
     "addon"
   ],
   "license": "MIT",
-  "author": "Justin Tulloss <justin.tulloss@gmail.com> (http://justin.harmonize.fm)",
-  "contributors": [
-    "Justin Tulloss <justin.tulloss@gmail.com> (http://justin.harmonize.fm)",
-    "Stéphan Kochen <stephan@kochen.nl> (http://stephan.kochen.nl/)",
-    "Mike Castleman <m@mlcastle.net> (http://mlcastle.net/)",
-    "Matt Crocker",
-    "Jeremy Barnes <jeremy@barneso.com> (http://www.barneso.com/)",
-    "Rick <technoweenie@gmail.com> (http://techno-weenie.net/)",
-    "Corey Jewett (http://syntheticplayground.com/)",
-    "Micheil Smith <micheil@brandedcode.com> (http://brandedcode.com/)",
-    "TJ Holowaychuk <tj@vision-media.ca> (http://tjholowaychuk.com/)",
-    "Ron Korving (https://github.com/ronkorving)",
-    "Mark Everitt (http://qubyte.dyndns.org/)",
-    "Aldis Andrejevs (https://github.com/aaudis)",
-    "Iskren Ivov Chernev <iskren.chernev@gmail.com>",
-    "Seth Fitzsimmons",
-    "Patrick Lucas",
-    "Alexander Simmerl (https://github.com/xla)",
-    "Ian Babrou",
-    "Niall O'Higgins",
-    "Brian White (https://github.com/mscdex)",
-    "Mathieu D'Amours (https://github.com/matehat)",
-    "Joshua Gourneau",
-    "Yaroslav Shirokov",
-    "Marc Harter (https://github.com/wavded)",
-    "John Sun (https://github.com/freehaha)",
-    "Alexey Kupershtokh <alexey.kupershtokh@gmail.com>",
-    "Jon Gretar Borgthorsson (https://github.com/JonGretar)",
-    "Brian Lalor (https://github.com/blalor)",
-    "Benjamin Byholm (https://github.com/kkoopa)",
-    "Alejandro (https://github.com/Minjung)",
-    "Eli Skeggs <skeggse@gmail.com> (https://github.com/skeggse)",
-    "Bent Cardan <bent@nothingsatisfies.com> (https://github.com/reqshark)"
-  ]
+  "author": "Justin Tulloss <justin.tulloss@gmail.com> (http://justin.harmonize.fm)"
 }
