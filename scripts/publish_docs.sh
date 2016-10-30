@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_BRANCH == "master" && $DEPLOY == "true" ]]
+if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_BRANCH == "master" && $DEPLOY == "true" && $TRAVIS_OS_NAME == "linux" ]]
 then
     npm run build:docs
 
