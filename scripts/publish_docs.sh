@@ -1,5 +1,5 @@
 #!/bin/bash
-if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_BRANCH == "master" && $DEPLOY == "true" && $TRAVIS_OS_NAME == "linux" ]]
+if [[ $TRAVIS_PULL_REQUEST == false && $TRAVIS_REPO_SLUG == 'zeromq/zeromq.js' && $TRAVIS_BRANCH == "master" && $DEPLOY == "true" && $TRAVIS_OS_NAME == "linux" ]]
 then
     npm run build:docs
 

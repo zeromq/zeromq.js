@@ -17,16 +17,15 @@ install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install
   - IF DEFINED ELECTRON (npm install electron-prebuilt@%ELECTRON%)
-  - IF DEFINED ELECTRON (npm install -g node-gyp)
   # We always need to rebuild for electron even for electron <= 1.1.3
-  - IF DEFINED ELECTRON (node-gyp rebuild --runtime=electron --target=%ELECTRON% --disturl=https://atom.io/download/atom-shell --build-from-source)
+  - IF DEFINED ELECTRON (node_modules\.bin\node-gyp rebuild --runtime=electron --target=%ELECTRON% --disturl=https://atom.io/download/atom-shell --build-from-source)
 
 
 test_script:
   - IF DEFINED ELECTRON (appveyor-retry call npm run test:electron) ELSE (appveyor-retry call npm test)
 
 deploy_script:
-  - IF "%deploy%;%appveyor_repo_tag%"=="true;true" (npm install prebuild -g & prebuild --all -u %GITHUB_TOKEN%)
+  - IF "%deploy%;%appveyor_repo_tag%"=="true;true" (node_modules\.bin\prebuild --all -u %GITHUB_TOKEN%)
 
 notifications:
   - provider: Slack
