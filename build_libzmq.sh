@@ -25,3 +25,6 @@ test -f configure || ./autogen.sh
 ./configure --prefix=$ZMQ_PREFIX --with-relaxed --enable-static --disable-shared
 make -j 2
 make install
+
+cd $ZMQ_PREFIX
+rm -rf $ZMQ_SRC_DIR
