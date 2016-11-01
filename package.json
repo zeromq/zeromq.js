@@ -24,7 +24,8 @@
     "node": ">=0.10"
   },
   "scripts": {
-    "install": "prebuild --install",
+    "build:libzmq": "node scripts/download-win-lib.js && ./build_libzmq.sh",
+    "install": "prebuild --install --preinstall \"npm run build:libzmq\"",
     "build:docs": "jsdoc -R README.md -d docs lib/*.js",
     "test": "mocha --expose-gc --slow 300",
     "test:electron": "electron-mocha --slow 300",
