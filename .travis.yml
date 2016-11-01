@@ -46,7 +46,7 @@ deploy:
   skip_cleanup: true
   # Linking to prebuild directly since it doesn't work inside a npm script.
   script:
-    - node_modules/prebuild/bin.js --all -u $GH_TOKEN
+    - node_modules/prebuild/bin.js --all --strip -u $GH_TOKEN
   on:
     condition: "$DEPLOY = true"
     tags: true
