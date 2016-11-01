@@ -24,7 +24,7 @@
     "node": ">=0.10"
   },
   "scripts": {
-    "build:libzmq": "node scripts/download-win-lib.js && ./build_libzmq.sh",
+    "build:libzmq": "node scripts/preinstall.js",
     "install": "prebuild --install --preinstall \"npm run build:libzmq\"",
     "rebuild": "prebuild --compile",
     "prebuild": "prebuild --all --strip",

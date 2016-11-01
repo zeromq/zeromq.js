@@ -13,4 +13,15 @@ if (process.platform === 'win32') {
   }
 
   download(TAR_URL, FILE_NAME);
+} else {
+  console.log('Building libzmq for ' + process.platform)
+
+  var spawn = require('child_process').spawn;
+  var child = spawn('./build_libzmq.sh');
+
+  child.stdout.pipe(process.stdout);
+  child.stderr.pipe(process.stderr);
+  child.on('error', (err) => {
+  console.log('Failed to start child process.');
+});
 }
