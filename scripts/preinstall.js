@@ -23,6 +23,6 @@ if (process.platform === 'win32') {
   child.stdout.pipe(process.stdout);
   child.stderr.pipe(process.stderr);
   child.on('error', (err) => {
-    console.log('Failed to start child process.');
+    console.error('Failed to start child process.');
   });
 }
