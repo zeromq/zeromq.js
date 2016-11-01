@@ -3,7 +3,7 @@ set -e
 
 test -d zmq || mkdir zmq
 
-ZMQ=4.1.5
+ZMQ=4.1.6
 ZMQ_REPO=zeromq/zeromq4-1
 
 realpath() {
