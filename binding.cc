@@ -26,7 +26,9 @@
 #include <node_version.h>
 #include <node_buffer.h>
 #include <zmq.h>
+#if (ZMQ_VERSION < 40200)
 #include <zmq_utils.h>
+#endif
 #include <assert.h>
 #include <stddef.h>
 #include <stdio.h>
