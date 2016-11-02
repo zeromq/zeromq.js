@@ -8,7 +8,6 @@
       'cflags_cc!': ['-fno-exceptions'],
       'conditions': [
         ['OS=="win"', {
-          'download_lib': '<!(node scripts/download-win-lib 2>&1 > zmq-build.log)',
           'msbuild_toolset': 'v140',
           'defines': ['ZMQ_STATIC'],
           'include_dirs': ['windows/include'],
@@ -18,7 +17,6 @@
           ],
         }],
         ['OS=="mac" or OS=="solaris"', {
-          'install_zmq': '<!(./build_libzmq.sh 2>&1 > zmq-build.log)',
           'xcode_settings': {
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
             'MACOSX_DEPLOYMENT_TARGET': '10.7',
@@ -29,7 +27,6 @@
         ['OS=="openbsd" or OS=="freebsd"', {
         }],
         ['OS=="linux"', {
-          'install_zmq': '<!(./build_libzmq.sh 2>&1 > zmq-build.log)',
           'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
           'include_dirs': [ '<(PRODUCT_DIR)/../../zmq/include' ],
         }],

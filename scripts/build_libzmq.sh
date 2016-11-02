@@ -9,7 +9,8 @@ ZMQ_REPO=zeromq/zeromq4-1
 realpath() {
     [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
 }
-export ZMQ_PREFIX="$(dirname $(realpath $0))/zmq"
+export MAIN_DIR="$(dirname $(realpath $0))/../"
+export ZMQ_PREFIX=$MAIN_DIR/zmq
 export ZMQ_SRC_DIR=zeromq-$ZMQ
 cd $ZMQ_PREFIX
 
@@ -17,7 +18,7 @@ export CFLAGS=-fPIC
 export CXXFLAGS=-fPIC
 export PKG_CONFIG_PATH=$ZMQ_PREFIX/lib/pkgconfig
 
-test -f zeromq-$ZMQ.tar.gz || ZMQ=$ZMQ ZMQ_REPO=$ZMQ_REPO node ../scripts/download-zmq.js 2>&1 > ../zmq-build.log
+test -f zeromq-$ZMQ.tar.gz || ZMQ=$ZMQ ZMQ_REPO=$ZMQ_REPO node $MAIN_DIR/scripts/download-zmq.js
 test -d $ZMQ_SRC_DIR || tar xzf zeromq-$ZMQ.tar.gz
 cd $ZMQ_SRC_DIR
 
