@@ -1,5 +1,4 @@
-comment:
-    layout: header
+comment: false
 coverage:
     status:
         patch:
