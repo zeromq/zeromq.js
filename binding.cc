@@ -655,7 +655,7 @@ namespace zmq {
       return Nan::ThrowError("Must pass an option");
     if (!info[0]->IsNumber())
       return Nan::ThrowTypeError("Option must be an integer");
-    int64_t option = Nan::To<int64_t>(info[0]).FromJust();
+    int option = Nan::To<int>(info[0]).FromJust();
 
     GET_SOCKET(info);
 
@@ -679,7 +679,7 @@ namespace zmq {
       return Nan::ThrowError("Must pass an option and a value");
     if (!info[0]->IsNumber())
       return Nan::ThrowTypeError("Option must be an integer");
-    int64_t option = Nan::To<int64_t>(info[0]).FromJust();
+    int option = Nan::To<int>(info[0]).FromJust();
     GET_SOCKET(info);
 
     if (opts_int.count(option)) {
