@@ -3,8 +3,8 @@ set -e
 
 test -d zmq || mkdir zmq
 
-ZMQ=4.1.6
-ZMQ_REPO=zeromq/zeromq4-1
+ZMQ=4.2.0
+ZMQ_REPO=zeromq/libzmq
 
 realpath() {
     [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
