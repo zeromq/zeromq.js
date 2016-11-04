@@ -14,6 +14,7 @@
           'libraries': [
             '<(PRODUCT_DIR)/../../windows/lib/libzmq',
             'ws2_32.lib',
+            'iphlpapi'
           ],
         }],
         ['OS=="mac" or OS=="solaris"', {
