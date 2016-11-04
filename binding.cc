@@ -655,7 +655,7 @@ namespace zmq {
       return Nan::ThrowError("Must pass an option");
     if (!info[0]->IsNumber())
       return Nan::ThrowTypeError("Option must be an integer");
-    int64_t option = Nan::To<int64_t>(info[0]).FromJust();
+    int option = Nan::To<int>(info[0]).FromJust();
 
     GET_SOCKET(info);
 
@@ -679,7 +679,7 @@ namespace zmq {
       return Nan::ThrowError("Must pass an option and a value");
     if (!info[0]->IsNumber())
       return Nan::ThrowTypeError("Option must be an integer");
-    int64_t option = Nan::To<int64_t>(info[0]).FromJust();
+    int option = Nan::To<int>(info[0]).FromJust();
     GET_SOCKET(info);
 
     if (opts_int.count(option)) {
@@ -1082,7 +1082,7 @@ namespace zmq {
     int flags = 0;
     int64_t more = 1;
     size_t more_size = sizeof(more);
-    size_t index = 0;
+    uint32_t index = 0;
 
     Local<Array> result = Nan::New<Array>();
 
@@ -1252,7 +1252,7 @@ namespace zmq {
     if (len % 2 != 0)
       return Nan::ThrowTypeError("Batch length must be even!");
 
-    for (size_t i = 0; i < len; i += 2) {
+    for (uint32_t i = 0; i < len; i += 2) {
       if (checkPollOut) {
         while (zmq_getsockopt(socket->socket_, ZMQ_EVENTS, &events, &events_size)) {
           if (zmq_errno() != EINTR)
