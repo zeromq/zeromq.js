@@ -1,14 +1,14 @@
 # zeromq
 
 [![codecov](https://codecov.io/gh/zeromq/zeromq.js/branch/master/graph/badge.svg)](https://codecov.io/gh/zeromq/zeromq.js)
-[![](https://img.shields.io/badge/version-latest-blue.svg)](https://github.com/nteract/zmq-prebuilt)
+[![](https://img.shields.io/badge/version-latest-blue.svg)](https://github.com/zeromq/zeromq.js)
 [![Build Status](https://travis-ci.org/zeromq/zeromq.js.svg?branch=master)](https://travis-ci.org/zeromq/zeromq.js)
 [![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/zeromq/zeromq.js)
-[![](https://img.shields.io/badge/version-stable-blue.svg)](https://github.com/nteract/zmq-prebuilt/releases/tag/v1.4.0)
+[![](https://img.shields.io/badge/version-stable-blue.svg)](https://github.com/zeromq/zeromq.js/releases)
 [![Build Status](https://travis-ci.org/nteract/zmq-prebuilt-testing.svg?branch=master)](https://travis-ci.org/nteract/zmq-prebuilt-testing)
 [![Build status](https://ci.appveyor.com/api/projects/status/ox85p208tsxw6vt1?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt-testing)
 
-[**Users**](#installation--users) | [**Contributors and Development**](#installation---contributors-and-development) | [**Maintainers**](#for-maintainers-creating-a-release)
+[**Users**](#installation---users) | [**From Source**](#installation---from-source) | [**Contributors and Development**](#installation---contributors-and-development) | [**Maintainers**](#for-maintainers-creating-a-release)
 
 **zeromq**: Your ready to use, prebuilt [ØMQ](http://www.zeromq.org/)
 bindings for [Node.js](https://nodejs.org/en/).
@@ -40,25 +40,26 @@ npm install zeromq
 
 Now, prepare to be amazed by the wonders of binaries.
 
+## Installation - From Source
 
-## Installation - Contributors and Development
+If you want to use `zeromq` inside your [Electron](http://electron.atom.io/) application
+or if you are working on a Linux 32-bit system, you have to build `zeromq` from source.
 
-To set up `zeromq` for development, fork this repository and
-clone your fork to your system.
+### Prerequisites
 
-**Prerequisites for Linux**
+**Linux**
 - `python` (`v2.7` recommended, `v3.x.x` is not supported)
 - `make`
 - A proper C/C++ compiler toolchain, like [GCC](https://gcc.gnu.org/)
 
 Use your distribution's package manager to install.
 
-**Prerequisites for macOS**
+**macOS**
 
 - `python` (`v2.7` recommended, `v3.x.x` is not supported): already installed on Mac OS X
 - `Xcode Command Line Tools`: Can be installed with `xcode-select --install`
 
-**Prerequisites for Windows**
+**Windows**
 
 - **Option 1:** Install all the required tools and configurations using Microsoft's [windows-build-tools](https://github.com/felixrieseberg/windows-build-tools) by running `npm install -g windows-build-tools` from an elevated PowerShell (run as Administrator).
 - **Option 2:** Install dependencies and configuration manually
@@ -72,7 +73,38 @@ Use your distribution's package manager to install.
   3. Launch cmd, `npm config set msvs_version 2015`
 
 
-**Installation**
+### Installation
+
+Now you can install `zeromq` with the following:
+
+```bash
+npm install zeromq
+```
+
+
+### Rebuilding for Electron
+
+If you want to use `zeromq` inside your [Electron](http://electron.atom.io/) application
+it needs to be rebuild against Electron headers.
+
+We highly recommend [`electron-builder`](https://github.com/electron-userland/electron-builder)
+which handles this automatically.
+
+If you don't want to use `electron-builder` you can rebuild `zeromq` manually by running:
+```
+npm rebuild zeromq --runtime=electron --target=1.4.5 --disturl=https://atom.io/download/atom-shell --build-from-source
+```
+Where `target` is your desired Electron version.
+
+You can find more information on the [Electron website](http://electron.atom.io/docs/tutorial/using-native-node-modules/).
+
+
+## Installation - Contributors and Development
+
+To set up `zeromq` for development, fork this repository and
+clone your fork to your system.
+
+Make sure you have the required [dependencies for building `zeromq` from source](#installation---from-source) installed.
 
 Install a development version of `zeromq` with the following:
 
