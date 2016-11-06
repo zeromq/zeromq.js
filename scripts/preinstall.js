@@ -6,13 +6,13 @@ var fs = require('fs');
 var ZMQ = '4.2.0';
 
 function buildZMQ(scriptPath) {
-  console.log('Building libzmq for ' + process.platform)
+  console.log('Building libzmq for ' + process.platform);
 
   var child = spawn(scriptPath, [ZMQ]);
 
   child.stdout.pipe(process.stdout);
   child.stderr.pipe(process.stderr);
-  child.on('error', (err) => {
+  child.on('error', function(err) {
     console.error('Failed to start child process.');
   });
 }
@@ -46,6 +46,8 @@ if (process.platform === 'win32') {
   if (fs.existsSync(FILE_NAME)) {
     buildZMQ(SCRIPT_PATH);
   } else {
-    download(TAR_URL, FILE_NAME, function() { buildZMQ(SCRIPT_PATH); });
+    download(TAR_URL, FILE_NAME, function() {
+      buildZMQ(SCRIPT_PATH);
+    });
   }
 }
