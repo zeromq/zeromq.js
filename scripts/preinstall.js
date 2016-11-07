@@ -3,7 +3,15 @@ var spawn = require('child_process').spawn;
 var path = require('path');
 var fs = require('fs');
 
-var ZMQ = '4.2.0';
+var ZMQ;
+var ZMQ_REPO;
+if (process.platform == 'linux') {
+  ZMQ = '4.1.6';
+  ZMQ_REPO = 'zeromq4-1';
+} else {
+  ZMQ = '4.2.0';
+  ZMQ_REPO = 'libzmq';
+}
 
 function buildZMQ(scriptPath) {
   console.log('Building libzmq for ' + process.platform);
@@ -35,7 +43,7 @@ if (process.platform === 'win32') {
 
 } else {
   var SCRIPT_PATH = path.join(__dirname, 'build_libzmq.sh');
-  var TAR_URL = 'https://github.com/zeromq/libzmq/releases/download/v' + ZMQ + '/zeromq-' + ZMQ + '.tar.gz';
+  var TAR_URL = 'https://github.com/zeromq/' + ZMQ_REPO + '/releases/download/v' + ZMQ + '/zeromq-' + ZMQ + '.tar.gz';
   var DIR = path.join(__dirname, '..', 'zmq');
   var FILE_NAME = path.join(DIR, 'zeromq-' + ZMQ + '.tar.gz');
 
