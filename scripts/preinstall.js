@@ -13,7 +13,7 @@ if (process.platform == 'linux') {
   ZMQ_REPO = 'libzmq';
 }
 
-function buildZMQ(scriptPath) {
+function buildZMQ(scriptPath, zmqDir) {
   console.log('Building libzmq for ' + process.platform);
 
   var child = spawn(scriptPath, [ZMQ]);
@@ -23,6 +23,18 @@ function buildZMQ(scriptPath) {
   child.on('error', function(err) {
     console.error('Failed to start child process.');
   });
+  child.on('close', function(code) {
+    if (code !== 0) {
+      return console.error('child process exited with code ' + code);
+    }
+    var message = 'Succesfully build libzmq on ' + Date();
+    fs.writeFile(path.join(zmqDir, 'BUILD_SUCCESS'), message, function(err) {
+      if (err) {
+        return console.error(err.message);
+      }
+      console.log(message);
+    });
+});
 }
 
 if (process.platform === 'win32') {
@@ -44,18 +56,23 @@ if (process.platform === 'win32') {
 } else {
   var SCRIPT_PATH = path.join(__dirname, 'build_libzmq.sh');
   var TAR_URL = 'https://github.com/zeromq/' + ZMQ_REPO + '/releases/download/v' + ZMQ + '/zeromq-' + ZMQ + '.tar.gz';
-  var DIR = path.join(__dirname, '..', 'zmq');
-  var FILE_NAME = path.join(DIR, 'zeromq-' + ZMQ + '.tar.gz');
+  var DIR_NAME = path.join(__dirname, '..', 'zmq');
+  var FILE_NAME = path.join(DIR_NAME, 'zeromq-' + ZMQ + '.tar.gz');
 
-  if (!fs.existsSync(DIR)) {
-    fs.mkdirSync(DIR);
+  if (!fs.existsSync(DIR_NAME)) {
+    fs.mkdirSync(DIR_NAME);
+  }
+
+  if (fs.existsSync(path.join(DIR_NAME, 'BUILD_SUCCESS'))) {
+    return console.log('Libzmq found, skipping rebuild.');
   }
 
   if (fs.existsSync(FILE_NAME)) {
-    buildZMQ(SCRIPT_PATH);
-  } else {
-    download(TAR_URL, FILE_NAME, function() {
-      buildZMQ(SCRIPT_PATH);
-    });
+    return buildZMQ(SCRIPT_PATH, DIR_NAME);
   }
+
+  download(TAR_URL, FILE_NAME, function() {
+    buildZMQ(SCRIPT_PATH, DIR_NAME);
+  });
+
 }
