@@ -8,22 +8,23 @@ else
   exit 1
 fi
 
-export ZMQ_PREFIX="$(dirname $0)/../zmq"
+export BASE=$(dirname "$0")
+export ZMQ_PREFIX="${BASE}/../zmq"
 export ZMQ_SRC_DIR=zeromq-$ZMQ
-cd $ZMQ_PREFIX
+cd "${ZMQ_PREFIX}"
 
 export CFLAGS=-fPIC
 export CXXFLAGS=-fPIC
-export PKG_CONFIG_PATH=$ZMQ_PREFIX/lib/pkgconfig
+export PKG_CONFIG_PATH="${ZMQ_PREFIX}/lib/pkgconfig"
 
-test -d $ZMQ_SRC_DIR || tar xzf zeromq-$ZMQ.tar.gz
-cd $ZMQ_SRC_DIR
+test -d "${ZMQ_SRC_DIR}" || tar xzf zeromq-$ZMQ.tar.gz
+cd "${ZMQ_SRC_DIR}"
 
 test -f configure || ./autogen.sh
-./configure --prefix=$ZMQ_PREFIX --with-relaxed --enable-static --disable-shared
+./configure "--prefix=${ZMQ_PREFIX}" --with-relaxed --enable-static --disable-shared
 make -j 2
 make install
 
-cd $ZMQ_PREFIX
-rm -rf $ZMQ_SRC_DIR
+cd "${ZMQ_PREFIX}"
+rm -rf "${ZMQ_SRC_DIR}"
 rm -f zeromq-$ZMQ.tar.gz
