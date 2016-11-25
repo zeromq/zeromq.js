@@ -552,7 +552,8 @@ namespace zmq {
     size_t len = sizeof(uv_os_sock_t);
 
     if (zmq_getsockopt(socket_, ZMQ_FD, &socket, &len)) {
-      throw std::runtime_error(ErrorMessage());
+      Nan::ThrowError(ErrorMessage());
+      return;
     }
 
     #if ZMQ_CAN_MONITOR
