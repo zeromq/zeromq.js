@@ -1400,8 +1400,10 @@ namespace zmq {
   void
   Socket::Close() {
     if (socket_) {
-      if (zmq_close(socket_) < 0)
-        throw std::runtime_error(ErrorMessage());
+      if (zmq_close(socket_) < 0) {
+        Nan::ThrowError(ErrorMessage());
+        return;
+      }
       socket_ = NULL;
       state_ = STATE_CLOSED;
       context_.Reset();
