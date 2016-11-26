@@ -1195,13 +1195,13 @@ namespace zmq {
         if (zmq_msg_init_data(&msg_, Buffer::Data(buf), Buffer::Length(buf),
             BufferReference::FreeCallback, bufref_) < 0) {
           delete bufref_;
-          throw std::runtime_error(ErrorMessage());
+          Nan::ThrowError(ErrorMessage());
         }
       };
 
       inline ~OutgoingMessage() {
         if (zmq_msg_close(&msg_) < 0)
-          throw std::runtime_error(ErrorMessage());
+          Nan::ThrowError(ErrorMessage());
       };
 
       inline operator zmq_msg_t*() {
