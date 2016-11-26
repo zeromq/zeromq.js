@@ -240,7 +240,7 @@ namespace zmq {
 
   Context::Context(int io_threads) : Nan::ObjectWrap() {
     context_ = zmq_init(io_threads);
-    if (!context_) throw std::runtime_error(ErrorMessage());
+    if (!context_) Nan::ThrowError(ErrorMessage());
   }
 
   Context *
@@ -251,7 +251,10 @@ namespace zmq {
   void
   Context::Close() {
     if (context_ != NULL) {
-      if (zmq_term(context_) < 0) throw std::runtime_error(ErrorMessage());
+      if (zmq_term(context_) < 0) {
+        Nan::ThrowError(ErrorMessage());
+        return;
+      }
       context_ = NULL;
     }
   }
