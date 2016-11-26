@@ -988,12 +988,12 @@ namespace zmq {
         public:
           inline MessageReference() {
             if (zmq_msg_init(&msg_) < 0)
-              throw std::runtime_error(ErrorMessage());
+              Nan::ThrowError(ErrorMessage());
           }
 
           inline ~MessageReference() {
             if (zmq_msg_close(&msg_) < 0)
-              throw std::runtime_error(ErrorMessage());
+              Nan::ThrowError(ErrorMessage());
           }
 
           inline operator zmq_msg_t*() {
