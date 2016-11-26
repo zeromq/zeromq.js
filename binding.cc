@@ -1060,8 +1060,10 @@ namespace zmq {
     zmq_socket_monitor(this->socket_, NULL, ZMQ_EVENT_ALL);
 
     // Close the monitor socket and stop timer
-    if (zmq_close(this->monitor_socket_) < 0)
-      throw std::runtime_error(ErrorMessage());
+    if (zmq_close(this->monitor_socket_) < 0) {
+      Nan::ThrowError(ErrorMessage());
+      return;
+    }
     uv_timer_stop(this->monitor_handle_);
     this->monitor_handle_ = NULL;
     this->monitor_socket_ = NULL;
