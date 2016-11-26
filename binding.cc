@@ -374,8 +374,10 @@ namespace zmq {
       if (rc < 0) {
         if (zmq_errno()==EINTR) {
           continue;
+        } else {
+          Nan::ThrowError(ErrorMessage());
+          return -1;
         }
-        throw std::runtime_error(ErrorMessage());
       } else {
         break;
       }
