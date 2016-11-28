@@ -8,6 +8,7 @@ else
   exit 1
 fi
 
+export MACOSX_DEPLOYMENT_TARGET=10.9
 export BASE=$(dirname "$0")
 export ZMQ_PREFIX="${BASE}/../zmq"
 export ZMQ_SRC_DIR=zeromq-$ZMQ

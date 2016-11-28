@@ -20,7 +20,7 @@
         ['OS=="mac" or OS=="solaris"', {
           'xcode_settings': {
             'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
-            'MACOSX_DEPLOYMENT_TARGET': '10.7',
+            'MACOSX_DEPLOYMENT_TARGET': '10.9',
           },
           'libraries': [ '<(PRODUCT_DIR)/../../zmq/lib/libzmq.a' ],
           'include_dirs': [ '<(PRODUCT_DIR)/../../zmq/include' ],
