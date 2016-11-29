@@ -5,7 +5,7 @@ environment:
     - nodejs_version: "4"
       deploy: "true"
     - nodejs_version: "6"
-      electron: "1.4.4"
+      electron: "1.4.10"
 
 platform:
   - x64
@@ -15,10 +15,8 @@ build: off
 
 install:
   - ps: Install-Product node $env:nodejs_version $env:platform
-  - npm install
-  - IF DEFINED ELECTRON (npm install electron-prebuilt@%ELECTRON%)
-  # We always need to rebuild for electron even for electron <= 1.1.3
-  - IF DEFINED ELECTRON (node_modules\.bin\node-gyp rebuild --runtime=electron --target=%ELECTRON% --disturl=https://atom.io/download/atom-shell --build-from-source)
+  - IF DEFINED ELECTRON (npm install electron@%ELECTRON%)
+  - IF DEFINED ELECTRON (npm install --runtime=electron --target=%ELECTRON% --disturl=https://atom.io/download/electron) ELSE (npm install)
 
 
 test_script:
