@@ -14,9 +14,7 @@ matrix:
     - node_js: "6"
       env: DEPLOY="true"
     - node_js: "6"
-      env: ELECTRON="1.1.3"
-    - node_js: "6"
-      env: ELECTRON="1.4.4" REBUILD="true"
+      env: ELECTRON="1.4.10"
     - os: osx
       node_js: "6"
       env: DEPLOY="true"
@@ -31,9 +29,8 @@ before_install:
   - test "$(uname)" = "Darwin"  || export CXX=g++-4.9 CC=gcc-4.9
 
 install:
-  - npm install
-  - '[ -z "$ELECTRON" ] || npm install electron-prebuilt@${ELECTRON}'
-  - '[ -z "$REBUILD" ] || ./node_modules/node-gyp/bin/node-gyp.js rebuild --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/atom-shell --build-from-source'
+  - '[ -z "$ELECTRON" ] || npm install electron@${ELECTRON}'
+  - 'if [[ -z "$ELECTRON" ]]; then npm install; else npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi'
 
 script: if [[ -z "$ELECTRON" ]]; then travis_retry npm run coverage; else travis_retry npm run test:electron; fi
 
