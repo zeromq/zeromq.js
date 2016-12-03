@@ -5,8 +5,8 @@
 [![Build Status](https://travis-ci.org/zeromq/zeromq.js.svg?branch=master)](https://travis-ci.org/zeromq/zeromq.js)
 [![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/zeromq/zeromq.js)
 [![](https://img.shields.io/badge/version-stable-blue.svg)](https://github.com/zeromq/zeromq.js/releases)
-[![Build Status](https://travis-ci.org/nteract/zmq-prebuilt-testing.svg?branch=master)](https://travis-ci.org/nteract/zmq-prebuilt-testing)
-[![Build status](https://ci.appveyor.com/api/projects/status/ox85p208tsxw6vt1?svg=true)](https://ci.appveyor.com/project/nteract/zmq-prebuilt-testing)
+[![Build Status](https://travis-ci.org/zeromq/zeromq.js.svg?branch=prebuilt-testing)](https://travis-ci.org/zeromq/zeromq.js)
+[![Build status](https://ci.appveyor.com/api/projects/status/w189dgubmg9darun/branch/master?svg=true)](https://ci.appveyor.com/project/zeromq/zeromq-js/branch/prebuilt-testing)
 
 [**Users**](#installation---users) | [**From Source**](#installation---from-source) | [**Contributors and Development**](#installation---contributors-and-development) | [**Maintainers**](#for-maintainers-creating-a-release)
 
