@@ -1,13 +1,28 @@
 language: node_js
-node_js:
-  - "0.10"
-  - "0.12"
-  - "4"
-  - "5"
-  - "6"
-  - "7"
-os:
-  - linux
-  - osx
-install: npm install zeromq
-script: node node_modules/zeromq/examples/smoketest.js
+matrix:
+  include:
+  - node_js: "0.10"
+  - node_js: "0.12"
+  - node_js: "4"
+  - node_js: "5"
+  - node_js: "6"
+  - node_js: "7"
+  - node_js: "6"
+    env: ELECTRON="1.4.10" ELECTRON_RUN_AS_NODE=1
+  - node_js: "6"
+    env: ELECTRON="1.3.0" ELECTRON_RUN_AS_NODE=1
+  - node_js: "6"
+    env: ELECTRON="1.2.0" ELECTRON_RUN_AS_NODE=1
+  - node_js: "6"
+    env: ELECTRON="1.0.0" ELECTRON_RUN_AS_NODE=1
+
+env:
+  global:
+    SMOKE_TEST: node_modules/zeromq/examples/smoketest.js
+
+install:
+  - '[ -z "$ELECTRON" ] || npm install electron-prebuilt@${ELECTRON}'
+  - 'if [[ -z "$ELECTRON" ]]; then npm install zeromq; else npm install zeromq --runtime=electron --target=${ELECTRON}; fi'
+
+script:
+  - 'if [[ -z "$ELECTRON" ]]; then node $SMOKE_TEST; else node_modules/electron-prebuilt/cli.js $SMOKE_TEST; fi'
