@@ -40,10 +40,20 @@ npm install zeromq
 
 Now, prepare to be amazed by the wonders of binaries.
 
-## Installation - From Source
+### Rebuilding for Electron
 
 If you want to use `zeromq` inside your [Electron](http://electron.atom.io/) application
-or if you are working on a Linux 32-bit system, you have to build `zeromq` from source.
+it needs to be rebuild against Electron headers. We ship prebuilt binaries for Electron so you won't need to build `zeromq` from source.
+
+You can rebuild `zeromq` manually by running:
+```bash
+npm rebuild zeromq --runtime=electron --target=1.4.5
+```
+Where `target` is your desired Electron version. This will download the correct binary for usage in Electron.
+
+## Installation - From Source
+
+If you are working on a Linux 32-bit system or want to install a developement version, you have to build `zeromq` from source.
 
 ### Prerequisites
 
@@ -80,24 +90,6 @@ Now you can install `zeromq` with the following:
 ```bash
 npm install zeromq
 ```
-
-
-### Rebuilding for Electron
-
-If you want to use `zeromq` inside your [Electron](http://electron.atom.io/) application
-it needs to be rebuild against Electron headers.
-
-We highly recommend [`electron-builder`](https://github.com/electron-userland/electron-builder)
-which handles this automatically.
-
-If you don't want to use `electron-builder` you can rebuild `zeromq` manually by running:
-```
-npm rebuild zeromq --runtime=electron --target=1.4.5 --disturl=https://atom.io/download/atom-shell --build-from-source
-```
-Where `target` is your desired Electron version.
-
-You can find more information on the [Electron website](http://electron.atom.io/docs/tutorial/using-native-node-modules/).
-
 
 ## Installation - Contributors and Development
 
@@ -221,6 +213,3 @@ prebuilds are uploaded, run the following to publish the release:
 ```bash
 npm publish
 ```
-
-To check if the binaries are packaged correctly, you can push a commit to
-[`nteract/zmq-prebuilt-testing`](https://github.com/nteract/zmq-prebuilt-testing).
