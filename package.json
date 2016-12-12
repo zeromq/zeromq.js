@@ -9,14 +9,15 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "nan": "^2.4.0",
-    "prebuild": "^5.0.0"
+    "@lgeiger/prebuild-install": "^2.0.1",
+    "nan": "^2.4.0"
   },
   "devDependencies": {
     "electron-mocha": "^3.2.1",
     "jsdoc": "^3.4.2",
     "mocha": "^3.2.0",
     "nyc": "^10.0.0",
+    "prebuild": "^5.0.0",
     "semver": "^5.3.0",
     "should": "^11.1.0"
   },
@@ -25,7 +26,7 @@
   },
   "scripts": {
     "build:libzmq": "node scripts/preinstall.js",
-    "install": "prebuild --install --preinstall \"npm run build:libzmq\"",
+    "install": "prebuild-install || (npm run build:libzmq && node-gyp rebuild)",
     "prebuild": "prebuild --all --strip",
     "build:docs": "jsdoc -R README.md -d docs lib/*.js",
     "postpublish": "./scripts/trigger_travis_build.sh",
