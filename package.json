@@ -9,7 +9,7 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "@lgeiger/prebuild-install": "^2.0.1",
+    "@lgeiger/prebuild-install": "^2.0.2",
     "nan": "^2.4.0"
   },
   "devDependencies": {
