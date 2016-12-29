@@ -9,8 +9,8 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "@lgeiger/prebuild-install": "^2.0.2",
-    "nan": "^2.4.0"
+    "nan": "^2.4.0",
+    "prebuild-install": "^2.0.0"
   },
   "devDependencies": {
     "electron-mocha": "^3.2.1",
