@@ -1,8 +1,7 @@
 # zeromq
 
-[![Greenkeeper badge](https://badges.greenkeeper.io/zeromq/zeromq.js.svg)](https://greenkeeper.io/)
-
 [![codecov](https://codecov.io/gh/zeromq/zeromq.js/branch/master/graph/badge.svg)](https://codecov.io/gh/zeromq/zeromq.js)
+[![Greenkeeper badge](https://badges.greenkeeper.io/zeromq/zeromq.js.svg)](https://greenkeeper.io/)
 [![](https://img.shields.io/badge/version-latest-blue.svg)](https://github.com/zeromq/zeromq.js)
 [![Build Status](https://travis-ci.org/zeromq/zeromq.js.svg?branch=master)](https://travis-ci.org/zeromq/zeromq.js)
 [![Build status](https://ci.appveyor.com/api/projects/status/6u7saauir2msxpou?svg=true)](https://ci.appveyor.com/project/zeromq/zeromq.js)
