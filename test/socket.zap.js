@@ -22,10 +22,6 @@ describe('socket.zap', function(){
 
   it('should support curve', function(done){
     var port = 'tcp://127.0.0.1:12347';
-    if (!semver.gte(zmq.version, '4.0.0')) {
-      done();
-      return;
-    }
 
     try {
       rep.curve_server = 0;
@@ -71,11 +67,6 @@ describe('socket.zap', function(){
 
   it('should support null', function(done){
     var port = 'tcp://127.0.0.1:12345';
-    if (!semver.gte(zmq.version, '4.0.0')) {
-      done();
-      return;
-    }
-
     rep.on('message', function(msg){
       msg.should.be.an.instanceof(Buffer);
       msg.toString().should.equal('hello');
@@ -100,10 +91,6 @@ describe('socket.zap', function(){
 
   it('should support plain', function(done){
     var port = 'tcp://127.0.0.1:12346';
-    if (!semver.gte(zmq.version, '4.0.0')) {
-      done();
-      return;
-    }
 
     rep.on('message', function(msg){
       msg.should.be.an.instanceof(Buffer);

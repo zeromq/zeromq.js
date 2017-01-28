@@ -43,10 +43,6 @@
 # define snprintf _snprintf_s
 #endif
 
-#define ZMQ_CAN_DISCONNECT (ZMQ_VERSION_MAJOR == 3 && ZMQ_VERSION_MINOR >= 2) || ZMQ_VERSION_MAJOR > 3
-#define ZMQ_CAN_UNBIND (ZMQ_VERSION_MAJOR == 3 && ZMQ_VERSION_MINOR >= 2) || ZMQ_VERSION_MAJOR > 3
-#define ZMQ_CAN_MONITOR (ZMQ_VERSION > 30201)
-#define ZMQ_CAN_SET_CTX (ZMQ_VERSION_MAJOR == 3 && ZMQ_VERSION_MINOR >= 2) || ZMQ_VERSION_MAJOR > 3
 
 using namespace v8;
 using namespace node;
@@ -79,10 +75,8 @@ namespace zmq {
       static Context *GetContext(const Nan::FunctionCallbackInfo<Value>&);
       void Close();
       static NAN_METHOD(Close);
-#if ZMQ_CAN_SET_CTX
       static NAN_METHOD(GetOpt);
       static NAN_METHOD(SetOpt);
-#endif
 
       void* context_;
   };
@@ -95,10 +89,8 @@ namespace zmq {
       void NotifySendReady();
       void CallbackIfReady();
 
-#if ZMQ_CAN_MONITOR
       void MonitorEvent(uint16_t event_id, int32_t event_value, char *endpoint);
       void MonitorError(const char *error_msg);
-#endif
 
     private:
       static NAN_METHOD(New);
@@ -129,18 +121,14 @@ namespace zmq {
       static void UV_BindAsyncAfter(uv_work_t* req);
 
       static NAN_METHOD(BindSync);
-#if ZMQ_CAN_UNBIND
       static NAN_METHOD(Unbind);
 
       static void UV_UnbindAsync(uv_work_t* req);
       static void UV_UnbindAsyncAfter(uv_work_t* req);
 
       static NAN_METHOD(UnbindSync);
-#endif
       static NAN_METHOD(Connect);
-#if ZMQ_CAN_DISCONNECT
       static NAN_METHOD(Disconnect);
-#endif
 
       class IncomingMessage;
       static NAN_METHOD(Recv);
@@ -156,7 +144,6 @@ namespace zmq {
       bool pending_;
       uint8_t state_;
       int32_t endpoints;
-#if ZMQ_CAN_MONITOR
       void *monitor_socket_;
       uv_timer_t *monitor_handle_;
       int64_t timer_interval_;
@@ -165,7 +152,6 @@ namespace zmq {
       static NAN_METHOD(Monitor);
       void Unmonitor();
       static NAN_METHOD(Unmonitor);
-#endif
 
       short PollForEvents();
       uv_poll_t *poll_handle_;
@@ -174,12 +160,9 @@ namespace zmq {
 
   Nan::Persistent<String> send_callback_symbol;
   Nan::Persistent<String> read_callback_symbol;
-
-#if ZMQ_CAN_MONITOR
   Nan::Persistent<String> monitor_symbol;
   Nan::Persistent<String> monitor_error;
   int monitors_count = 0;
-#endif
 
   static NAN_MODULE_INIT(Initialize);
 
@@ -208,11 +191,8 @@ namespace zmq {
     t->InstanceTemplate()->SetInternalFieldCount(1);
 
     Nan::SetPrototypeMethod(t, "close", Close);
-#if ZMQ_CAN_SET_CTX
     Nan::SetPrototypeMethod(t, "setOpt", SetOpt);
     Nan::SetPrototypeMethod(t, "getOpt", GetOpt);
-#endif
-
     Nan::Set(target, Nan::New("Context").ToLocalChecked(), Nan::GetFunction(t).ToLocalChecked());
   }
 
@@ -264,7 +244,6 @@ namespace zmq {
     return;
   }
 
-#if ZMQ_CAN_SET_CTX
   NAN_METHOD(Context::SetOpt) {
     if (info.Length() != 2)
       return Nan::ThrowError("Must pass an option and a value");
@@ -290,7 +269,7 @@ namespace zmq {
     int value = zmq_ctx_get(context->context_, option);
     info.GetReturnValue().Set(Nan::New<Integer>(value));
   }
-#endif
+
   /*
    * Socket methods.
    */
@@ -307,10 +286,8 @@ namespace zmq {
 
     Nan::SetPrototypeMethod(t, "bind", Bind);
     Nan::SetPrototypeMethod(t, "bindSync", BindSync);
-#if ZMQ_CAN_UNBIND
     Nan::SetPrototypeMethod(t, "unbind", Unbind);
     Nan::SetPrototypeMethod(t, "unbindSync", UnbindSync);
-#endif
     Nan::SetPrototypeMethod(t, "connect", Connect);
     Nan::SetPrototypeMethod(t, "getsockopt", GetSockOpt);
     Nan::SetPrototypeMethod(t, "setsockopt", SetSockOpt);
@@ -321,17 +298,11 @@ namespace zmq {
     Nan::SetPrototypeMethod(t, "send", Send);
     Nan::SetPrototypeMethod(t, "sendv", Sendv);
     Nan::SetPrototypeMethod(t, "close", Close);
-
-#if ZMQ_CAN_DISCONNECT
     Nan::SetPrototypeMethod(t, "disconnect", Disconnect);
-#endif
-
-#if ZMQ_CAN_MONITOR
     Nan::SetPrototypeMethod(t, "monitor", Monitor);
     Nan::SetPrototypeMethod(t, "unmonitor", Unmonitor);
     monitor_symbol.Reset(Nan::New("onMonitorEvent").ToLocalChecked());
     monitor_error.Reset(Nan::New("onMonitorError").ToLocalChecked());
-#endif
 
     Nan::Set(target, Nan::New("SocketBinding").ToLocalChecked(), Nan::GetFunction(t).ToLocalChecked());
 
@@ -424,7 +395,6 @@ namespace zmq {
     s->CallbackIfReady();
   }
 
-#if ZMQ_CAN_MONITOR
   void
   Socket::MonitorEvent(uint16_t event_id, int32_t event_value, char *event_endpoint) {
     Nan::HandleScope scope;
@@ -479,7 +449,6 @@ namespace zmq {
         uint16_t event_id;
         int32_t event_value;
 
-#if ZMQ_VERSION_MAJOR >= 4
         uint8_t *data = static_cast<uint8_t *>(zmq_msg_data(&msg1));
         event_id = *reinterpret_cast<uint16_t *>(data);
         event_value = *reinterpret_cast<uint32_t *>(data + 2);
@@ -503,16 +472,6 @@ namespace zmq {
 
         // null terminate our string
         event_endpoint[len]=0;
-#else
-        // monitoring on zmq < 4 used zmq_event_t
-        zmq_event_t event;
-        memcpy (&event, zmq_msg_data (&msg1), sizeof (zmq_event_t));
-        event_id = event.event;
-
-        // Bit of a hack, but all events in the zmq_event_t union have the same layout so this will work for all event types.
-        event_value = event.data.connected.fd;
-        snprintf(event_endpoint, sizeof(event_endpoint), "%s", event.data.connected.addr);
-#endif
 
         s->MonitorEvent(event_id, event_value, event_endpoint);
         zmq_msg_close(&msg1);
@@ -534,7 +493,6 @@ namespace zmq {
       s->MonitorError(error);
     }
   }
-#endif
 
   Socket::Socket(Context *context, int type) : Nan::ObjectWrap() {
     context_.Reset(context->handle());
@@ -561,9 +519,7 @@ namespace zmq {
       return;
     }
 
-    #if ZMQ_CAN_MONITOR
-      this->monitor_socket_ = NULL;
-    #endif
+    this->monitor_socket_ = NULL;
 
     uv_poll_init_socket(uv_default_loop(), poll_handle_, socket);
     uv_poll_start(poll_handle_, UV_READABLE, Socket::UV_PollCallback);
@@ -824,7 +780,6 @@ namespace zmq {
     return;
   }
 
-#if ZMQ_CAN_UNBIND
   NAN_METHOD(Socket::Unbind) {
     if (!info[0]->IsString())
       return Nan::ThrowTypeError("Address must be a string!");
@@ -900,7 +855,6 @@ namespace zmq {
 
     return;
   }
-#endif
 
   NAN_METHOD(Socket::Connect) {
     if (!info[0]->IsString()) {
@@ -921,7 +875,6 @@ namespace zmq {
     return;
   }
 
-#if ZMQ_CAN_DISCONNECT
   NAN_METHOD(Socket::Disconnect) {
 
     if (!info[0]->IsString()) {
@@ -940,7 +893,6 @@ namespace zmq {
 
     return;
   }
-#endif
 
   /*
    * An object that creates an empty ØMQ message, which can be used for
@@ -1008,7 +960,6 @@ namespace zmq {
       MessageReference* msgref_;
   };
 
-#if ZMQ_CAN_MONITOR
   NAN_METHOD(Socket::Monitor) {
     int64_t timer_interval = 10; // default to 10ms interval
     int64_t num_of_events = 1; // default is 1 event per interval
@@ -1077,8 +1028,6 @@ namespace zmq {
     return;
   }
 
-#endif
-
   NAN_METHOD(Socket::Readv) {
     Socket* socket = GetSocket(info);
     if (socket->state_ != STATE_READY)
@@ -1121,14 +1070,8 @@ namespace zmq {
       }
 
       while (true) {
-      #if ZMQ_VERSION_MAJOR == 2
-        rc = zmq_recv(socket->socket_, part, flags);
-      #elif ZMQ_VERSION_MAJOR == 3
-        rc = zmq_recvmsg(socket->socket_, part, flags);
-      #else
         rc = zmq_msg_recv(part, socket->socket_, flags);
         checkPollIn = false;
-      #endif
 
         if (rc < 0) {
           if (zmq_errno() == EINTR)
@@ -1165,11 +1108,7 @@ namespace zmq {
     IncomingMessage msg;
     while (true) {
       int rc;
-    #if ZMQ_VERSION_MAJOR == 2
-      rc = zmq_recv(socket->socket_, msg, flags);
-    #else
       rc = zmq_recvmsg(socket->socket_, msg, flags);
-    #endif
       if (rc < 0) {
         if (zmq_errno()==EINTR) {
           continue;
@@ -1298,14 +1237,8 @@ namespace zmq {
 
       while (true) {
         int rc;
-      #if ZMQ_VERSION_MAJOR == 2
-        rc = zmq_send(socket->socket_, &msg, flags);
-      #elif ZMQ_VERSION_MAJOR == 3
-        rc = zmq_sendmsg(socket->socket_, &msg, flags);
-      #else
         rc = zmq_msg_send(&msg, socket->socket_, flags);
         checkPollOut = false;
-      #endif
         if (rc < 0){
           if (zmq_errno() == EINTR) {
             continue;
@@ -1369,13 +1302,7 @@ namespace zmq {
     std::copy(dat, dat + len, cp);
     while (true) {
       int rc;
-    #if ZMQ_VERSION_MAJOR == 2
-      rc = zmq_send(socket->socket_, &msg, flags);
-    #elif ZMQ_VERSION_MAJOR == 3
-      rc = zmq_sendmsg(socket->socket_, &msg, flags);
-    #else
       rc = zmq_msg_send(&msg, socket->socket_, flags);
-    #endif
       if (rc < 0){
         if (zmq_errno()==EINTR) {
           continue;
@@ -1423,13 +1350,6 @@ namespace zmq {
     return;
   }
 
-  // Make zeromq versions less than 2.1.3 work by defining
-  // the new constants if they don't already exist
-  #if (ZMQ_VERSION < 20103)
-  #   define ZMQ_DEALER ZMQ_XREQ
-  #   define ZMQ_ROUTER ZMQ_XREP
-  #endif
-
   /*
    * Module functions.
    */
@@ -1444,7 +1364,6 @@ namespace zmq {
     info.GetReturnValue().Set(Nan::New<String>(version_info).ToLocalChecked());
   }
 
-#if ZMQ_VERSION_MAJOR >= 4
    static NAN_METHOD(ZmqCurveKeypair) {
 
     char public_key [41];
@@ -1461,7 +1380,6 @@ namespace zmq {
 
     info.GetReturnValue().Set(obj);
   }
-#endif
 
   static NAN_MODULE_INIT(Initialize) {
     Nan::HandleScope scope;
@@ -1506,23 +1424,12 @@ namespace zmq {
     opts_binary.insert(38); // ZMQ_TCP_ACCEPT_FILTER
 
     // transition types
-    #if ZMQ_VERSION_MAJOR >= 3
-    opts_int.insert(15); // ZMQ_EVENTS 3.x int
-    opts_int.insert(8); // ZMQ_RATE 3.x int
-    opts_int.insert(9); // ZMQ_RECOVERY_IVL 3.x int
-    opts_int.insert(13); // ZMQ_RCVMORE 3.x int
-    opts_int.insert(11); // ZMQ_SNDBUF 3.x int
-    opts_int.insert(12); // ZMQ_RCVBUF 3.x int
-    #else
-    opts_uint32.insert(15); // ZMQ_EVENTS 2.x uint32_t
-    opts_int64.insert(8); // ZMQ_RATE 2.x int64_t
-    opts_int64.insert(9); // ZMQ_RECOVERY_IVL 2.x int64_t
-    opts_int64.insert(13); // ZMQ_RCVMORE 2.x int64_t
-    opts_uint64.insert(11); // ZMQ_SNDBUF 2.x uint64_t
-    opts_uint64.insert(12); // ZMQ_RCVBUF 2.x uint64_t
-    #endif
-
-    #if ZMQ_VERSION_MAJOR >= 4
+    opts_int.insert(15); // ZMQ_EVENTS int
+    opts_int.insert(8); // ZMQ_RATE int
+    opts_int.insert(9); // ZMQ_RECOVERY_IVL int
+    opts_int.insert(13); // ZMQ_RCVMORE int
+    opts_int.insert(11); // ZMQ_SNDBUF int
+    opts_int.insert(12); // ZMQ_RCVBUF int
     opts_int.insert(43); // ZMQ_MECHANISM
     opts_int.insert(44); // ZMQ_PLAIN_SERVER
     opts_binary.insert(45); // ZMQ_PLAIN_USERNAME
@@ -1534,18 +1441,11 @@ namespace zmq {
     opts_int.insert(51); //ZMQ_PROBE_ROUTER
     opts_binary.insert(55); // ZMQ_ZAP_DOMAIN
     opts_int.insert(66); //ZMQ_HANDSHAKE_IVL
-    #endif
 
-    NODE_DEFINE_CONSTANT(target, ZMQ_CAN_DISCONNECT);
-    NODE_DEFINE_CONSTANT(target, ZMQ_CAN_UNBIND);
-    NODE_DEFINE_CONSTANT(target, ZMQ_CAN_MONITOR);
-    NODE_DEFINE_CONSTANT(target, ZMQ_CAN_SET_CTX);
     NODE_DEFINE_CONSTANT(target, ZMQ_PUB);
     NODE_DEFINE_CONSTANT(target, ZMQ_SUB);
-    #if ZMQ_VERSION_MAJOR >= 3
     NODE_DEFINE_CONSTANT(target, ZMQ_XPUB);
     NODE_DEFINE_CONSTANT(target, ZMQ_XSUB);
-    #endif
     NODE_DEFINE_CONSTANT(target, ZMQ_REQ);
     NODE_DEFINE_CONSTANT(target, ZMQ_XREQ);
     NODE_DEFINE_CONSTANT(target, ZMQ_REP);
@@ -1555,27 +1455,20 @@ namespace zmq {
     NODE_DEFINE_CONSTANT(target, ZMQ_PUSH);
     NODE_DEFINE_CONSTANT(target, ZMQ_PULL);
     NODE_DEFINE_CONSTANT(target, ZMQ_PAIR);
-    #if ZMQ_VERSION_MAJOR >= 4
     NODE_DEFINE_CONSTANT(target, ZMQ_STREAM);
-    #endif
 
     NODE_DEFINE_CONSTANT(target, ZMQ_POLLIN);
     NODE_DEFINE_CONSTANT(target, ZMQ_POLLOUT);
     NODE_DEFINE_CONSTANT(target, ZMQ_POLLERR);
 
     NODE_DEFINE_CONSTANT(target, ZMQ_SNDMORE);
-    #if ZMQ_VERSION_MAJOR == 2
-    NODE_DEFINE_CONSTANT(target, ZMQ_NOBLOCK);
-    #endif
 
     NODE_DEFINE_CONSTANT(target, STATE_READY);
     NODE_DEFINE_CONSTANT(target, STATE_BUSY);
     NODE_DEFINE_CONSTANT(target, STATE_CLOSED);
 
     Nan::SetMethod(target, "zmqVersion", ZmqVersion);
-    #if ZMQ_VERSION_MAJOR >= 4
     Nan::SetMethod(target, "zmqCurveKeypair", ZmqCurveKeypair);
-    #endif
 
     Context::Initialize(target);
     Socket::Initialize(target);

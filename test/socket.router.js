@@ -6,16 +6,6 @@ describe('socket.router', function(){
   it('should handle the unroutable', function(done){
     var complete = 0;
 
-    if (!semver.gte(zmq.version, '3.2.0')) {
-      done();
-      return console.warn('Test requires libzmq >= 3.2.0');
-    }
-
-    if (semver.eq(zmq.version, '3.2.1')) {
-      done();
-      return console.warn('ZMQ_ROUTER_MANDATORY is broken in libzmq = 3.2.1');
-    }
-
     var envelope = '12384982398293';
 
     var errMsgs = require('os').platform() === 'win32' ? ['Unknown error'] : [];
