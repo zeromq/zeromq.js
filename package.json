@@ -10,14 +10,14 @@
   },
   "dependencies": {
     "nan": "^2.4.0",
-    "prebuild-install": "^2.0.0"
+    "prebuild-install": "^2.1.1"
   },
   "devDependencies": {
     "electron-mocha": "^3.2.1",
     "jsdoc": "^3.4.2",
     "mocha": "^3.2.0",
     "nyc": "^10.0.0",
-    "prebuild": "^6.0.0",
+    "prebuild": "^6.1.0",
     "semver": "^5.3.0",
     "should": "^11.1.0"
   },
