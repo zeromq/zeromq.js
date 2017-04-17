@@ -23,9 +23,9 @@ cd "${ZMQ_SRC_DIR}"
 
 test -f configure || ./autogen.sh
 if [ "$ZMQ" = "4.1.6" ]; then
-  ./configure "--prefix=${ZMQ_PREFIX}" --with-relaxed --enable-static --disable-shared ;
+  ./configure "--prefix=${ZMQ_PREFIX}" --with-relaxed --enable-static --disable-shared --without-documentation ;
 else
-  ./configure "--prefix=${ZMQ_PREFIX}" --disable-pedantic --enable-static --disable-shared ;
+  ./configure "--prefix=${ZMQ_PREFIX}" --disable-pedantic --enable-static --disable-shared --without-documentation ;
 fi
 make -j 2
 make install
