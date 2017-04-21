@@ -217,3 +217,7 @@ prebuilds are uploaded, run the following to publish the release:
 ```bash
 npm publish
 ```
+
+## Background
+
+This codebase largely came from the npm module `zmq` and was, at one point, named `nteract/zmq-prebuilt`. It started as a community run fork of `zmq` that fixed up the build process and automated prebuilt binaries. In the process of setting up a way to do statically compiled binaries of zeromq for node, `zmq-static` was created. Eventually `zmq-prebuilt` was able to do the job of `zmq-static` and it was deprecated. Once `zmq-prebuilt` was shipping for a while, allowed building from source,  and suggesting people use it for electron + node.js, the repository moved to the zeromq org and it became official.
