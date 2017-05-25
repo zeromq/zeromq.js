@@ -20,26 +20,23 @@ function download(fileUrl, filename, callback) {
             writeToFile(filename, res, callback);
           });
         } else {
-          https.get(
-            url.resolve(url.parse(fileUrl).hostname, response.headers.location),
-            function(res) {
-              writeToFile(filename, res, callback);
-            }
-          );
+          https
+            .get(
+              url.resolve(
+                url.parse(fileUrl).hostname,
+                response.headers.location
+              ),
+              function(res) {
+                writeToFile(filename, res, callback);
+              }
+            )
+            .on("error", callback);
         }
       } else {
         writeToFile(filename, response, callback);
       }
     })
-    .on("error", function(err) {
-      console.error(err);
-      if (err.code === "ECONNRESET") {
-        console.error("\n** Your connection was reset. **");
-        console.error(
-          "\n** Are you behind a proxy or a firewall that is preventing a connection? **"
-        );
-      }
-    });
+    .on("error", callback);
 }
 
 module.exports = {
