@@ -37,6 +37,20 @@ function buildZMQ(scriptPath, zmqDir) {
   });
 }
 
+function handleError(err) {
+  if (!err) {
+    return;
+  }
+  console.error(err);
+  if (err.code === "ECONNRESET") {
+    console.error("\n** Your connection was reset. **");
+    console.error(
+      "\n** Are you behind a proxy or a firewall that is preventing a connection? **"
+    );
+  }
+  process.exit(1);
+}
+
 if (process.platform === "win32") {
   var LIB_URL =
     "https://github.com/nteract/libzmq-win/releases/download/v2.0.0/libzmq-" +
@@ -53,7 +67,10 @@ if (process.platform === "win32") {
 
   if (!fs.existsSync(FILE_NAME)) {
     console.log("Downloading libzmq for Windows");
-    download(LIB_URL, FILE_NAME, function() {
+    download(LIB_URL, FILE_NAME, function(err) {
+      if (err) {
+        handleError(err);
+      }
       console.log("Download finished");
     });
   }
@@ -84,7 +101,10 @@ if (process.platform === "win32") {
     process.exit(0);
   }
 
-  download(TAR_URL, FILE_NAME, function() {
+  download(TAR_URL, FILE_NAME, function(err) {
+    if (err) {
+      handleError(err);
+    }
     buildZMQ(SCRIPT_PATH, DIR_NAME);
   });
 }
