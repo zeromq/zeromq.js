@@ -9,7 +9,7 @@ if (process.platform == "linux") {
   ZMQ = "4.1.6";
   ZMQ_REPO = "zeromq4-1";
 } else {
-  ZMQ = "4.2.0";
+  ZMQ = "4.2.2";
   ZMQ_REPO = "libzmq";
 }
 
