@@ -7,6 +7,7 @@ matrix:
   - node_js: "5"
   - node_js: "6"
   - node_js: "7"
+  - node_js: "8"
   - node_js: "6"
     env: ELECTRON="1.4.10" ELECTRON_RUN_AS_NODE=1
   - node_js: "6"
