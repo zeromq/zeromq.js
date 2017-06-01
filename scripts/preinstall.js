@@ -53,7 +53,7 @@ function handleError(err) {
 
 if (process.platform === "win32") {
   var LIB_URL =
-    "https://github.com/nteract/libzmq-win/releases/download/v2.0.0/libzmq-" +
+    "https://github.com/nteract/libzmq-win/releases/download/v2.1.0/libzmq-" +
     ZMQ +
     "-" +
     process.arch +
