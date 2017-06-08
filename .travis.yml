@@ -1,19 +1,17 @@
 language: node_js
 sudo: false
 
-addons:
-  apt:
-    sources:
-    - ubuntu-toolchain-r-test
-    packages:
-    - gcc-4.8
-    - g++-4.8
-
 matrix:
   include:
-    - node_js: "6"
+    - os: linux
+      dist: trusty
+      sudo: required
+      node_js: "6"
       env: DEPLOY="true"
-    - node_js: "6"
+    - os: linux
+      dist: trusty
+      sudo: required
+      node_js: "6"
       env: ELECTRON="1.4.10"
     - os: osx
       node_js: "6"
@@ -27,7 +25,6 @@ env:
 before_install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  - test "$(uname)" = "Darwin" || export CXX=g++-4.8 CC=gcc-4.8
 
 install:
   - '[ -z "$ELECTRON" ] || npm install electron@${ELECTRON}'
