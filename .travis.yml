@@ -6,8 +6,8 @@ addons:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - gcc-4.6
-    - g++-4.6
+    - gcc-4.8
+    - g++-4.8
 
 matrix:
   include:
@@ -27,7 +27,7 @@ env:
 before_install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  - test "$(uname)" = "Darwin" || export CXX=g++-4.6 CC=gcc-4.6
+  - test "$(uname)" = "Darwin" || export CXX=g++-4.8 CC=gcc-4.8
 
 install:
   - '[ -z "$ELECTRON" ] || npm install electron@${ELECTRON}'
