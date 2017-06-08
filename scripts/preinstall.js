@@ -3,15 +3,8 @@ var spawn = require("child_process").spawn;
 var path = require("path");
 var fs = require("fs");
 
-var ZMQ;
-var ZMQ_REPO;
-if (process.platform == "linux") {
-  ZMQ = "4.1.6";
-  ZMQ_REPO = "zeromq4-1";
-} else {
-  ZMQ = "4.2.2";
-  ZMQ_REPO = "libzmq";
-}
+var ZMQ = "4.2.2";
+var ZMQ_REPO = "libzmq";
 
 function buildZMQ(scriptPath, zmqDir) {
   console.log("Building libzmq for " + process.platform);
