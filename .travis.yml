@@ -1,4 +1,8 @@
 language: node_js
+
+dist: trusty
+sudo: false
+
 matrix:
   include:
   - node_js: "0.10"
