@@ -26,8 +26,8 @@ echo "Build zeromq.js for ${ARCH} with gcc ${GCC}"
 if [[ -z $3 ]]; then
   npm install "--arch=${ARCH}"
 else
-  PREBUILD_OPTS="-u ${GH_TOKEN}"
+  PREBUILD_OPTS=" -u ${GH_TOKEN}"
 fi
 
 # Set architecture to arm because prebuild does not differ between arm versions at the moment
-node_modules/prebuild/bin.js "--arch=arm" --all --strip "${PREBUILD_OPTS}"
+node_modules/prebuild/bin.js "--arch=arm" --all --strip"${PREBUILD_OPTS}"
