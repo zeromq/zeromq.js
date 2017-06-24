@@ -16,7 +16,7 @@ matrix:
       node_js: "6"
       env:
         - DEPLOY="true"
-        - ARCH="arm-linux-gnueabihf"
+        - ARCH="armv7"
         - GCC="4.8"
     - os: osx
       node_js: "6"
@@ -48,7 +48,7 @@ deploy:
   skip_cleanup: true
   # Linking to prebuild directly since it doesn't work inside a npm script.
   script:
-    - node_modules/prebuild/bin.js --all --strip -u $GH_TOKEN
+    - 'if [[ -z "$ARCH" ]]; then node_modules/prebuild/bin.js --all --strip -u ${GH_TOKEN}; else bash ./scripts/cross_compile.sh ${ARCH} ${GCC} ${GH_TOKEN}; fi'
   on:
     condition: "$DEPLOY = true"
     tags: true
