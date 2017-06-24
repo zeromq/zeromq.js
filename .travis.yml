@@ -33,7 +33,7 @@ before_install:
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 
 install:
-  - 'if [[ "$ARCH" == "armhf" ]]; then ./scripts/build_for_armhf.sh; fi'
+  - 'if [[ "$ARCH" == "armhf" ]]; then bash ./scripts/build_for_armhf.sh; fi'
   - 'if [[ "$ELECTRON" ]]; then npm install electron@${ELECTRON}; fi'
   - '[[ "$ARCH" ]] || if [[ -z "$ELECTRON" ]]; then npm install; else npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi'
 
