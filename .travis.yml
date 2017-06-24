@@ -1,5 +1,5 @@
 language: node_js
-sudo: false
+sudo: required
 
 matrix:
   include:
@@ -28,12 +28,12 @@ env:
 
 before_install:
   - 'if [[ "$ARCH" ]]; then sudo apt-get -qq update; fi'
-  - 'if [[ "$ARCH" === "armhf" ]]; then sudo apt-get install -y gcc-4.8-arm-linux-gnueabihf g++-4.8-arm-linux-gnueabihf; fi'
+  - 'if [[ "$ARCH" == "armhf" ]]; then sudo apt-get install -y gcc-4.8-arm-linux-gnueabihf g++-4.8-arm-linux-gnueabihf; fi'
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
 
 install:
-  - 'if [[ "$ARCH" === "armhf" ]]; then ./scripts/build_for_armhf.sh; fi'
+  - 'if [[ "$ARCH" == "armhf" ]]; then ./scripts/build_for_armhf.sh; fi'
   - 'if [[ "$ELECTRON" ]]; then npm install electron@${ELECTRON}; fi'
   - '[[ "$ARCH" ]] || if [[ -z "$ELECTRON" ]]; then npm install; else npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi'
 
