@@ -15,8 +15,9 @@ matrix:
       dist: trusty
       node_js: "6"
       env:
-        - ARCH="armhf"
         - DEPLOY="true"
+        - ARCH="arm-linux-gnueabihf"
+        - GCC="4.8"
     - os: osx
       node_js: "6"
       env: DEPLOY="true"
@@ -27,14 +28,12 @@ env:
     - secure: AMY9chDNyNawxPhxAksCREhbQoOmphQKo2hDuYIPXBCUNF6Zik969QlB07TVjo+Bo0KVEbG4ANTdI0FkFIhg4MuJIWUkW30ZDyCSovUx8zyWB/7IN23A4Cx4p4ZnKjezTHUQpZ9InRIZzy9kOR+215IIBP6GfxbUY89eDA6ARElcv1rwDjZqSnLAxfie6v80vIbhWxNK4kQjiEyIez5eWBjRg4//dmb63TvJjc78GFTaqmh6lRIApAyA0uKka14XR/PJw5IpDR+0Q2omHl4t4zbu9MdVNYMSD+c6iNxOq3fqZJwnyJ1ELErbtR8oeKgZX1SOew5QTCUZWQsa+ySYTCzUnhWjhCgN6W0ciVtT2PslS/ZcvnrGGIxJAOmTZwINw8sAp8yYdY9QCJOGdB5ah2oUBLGKElcFGqSblohXUEM1tXeRchmpXiiAxnPNtxc6lkZzz6NxDl2OFXSmjMS4Cr8cA//Bn6gM04xRJyETy86/8KDoL+ENc7gkeiuYUOFqkAn5X8PrqPdsPmF7yA61IF1ru/OgtiuCh+eqnzZKBPImJo2KfUIqVuRi/6eUaDfWLT7d/J84Vbe3p2nPxoFd2pSw60f/lIkzFSRZx3vBjQiW2MVUN7ZTdawMOzE4TpIV7rDOkKe7qJJobquJEjd2X9Z+8JiTYXK2pPN2GceiqAM=
 
 before_install:
-  - 'if [[ "$ARCH" ]]; then sudo apt-get -qq update; fi'
-  - 'if [[ "$ARCH" == "armhf" ]]; then sudo apt-get install -y gcc-4.8-arm-linux-gnueabihf g++-4.8-arm-linux-gnueabihf; fi'
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  - if [[ "$ELECTRON" ]]; then npm install electron@${ELECTRON}; fi
 
 install:
-  - 'if [[ "$ARCH" == "armhf" ]]; then bash ./scripts/build_for_armhf.sh; fi'
-  - 'if [[ "$ELECTRON" ]]; then npm install electron@${ELECTRON}; fi'
+  - 'if [[ "$ARCH" ]]; then bash ./scripts/cross_compile.sh ${ARCH} ${GCC}; fi'
   - '[[ "$ARCH" ]] || if [[ -z "$ELECTRON" ]]; then npm install; else npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi'
 
 script:
