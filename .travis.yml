@@ -1,18 +1,22 @@
 language: node_js
-sudo: false
+sudo: required
 
 matrix:
   include:
     - os: linux
       dist: trusty
-      sudo: required
       node_js: "6"
       env: DEPLOY="true"
     - os: linux
       dist: trusty
-      sudo: required
       node_js: "6"
       env: ELECTRON="1.4.10"
+    - os: linux
+      dist: trusty
+      node_js: "6"
+      env:
+        - DEPLOY="true"
+        - ARCH="armv7"
     - os: osx
       node_js: "6"
       env: DEPLOY="true"
@@ -25,23 +29,25 @@ env:
 before_install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  - if [[ "$ELECTRON" ]]; then npm install electron@${ELECTRON}; fi
 
 install:
-  - '[ -z "$ELECTRON" ] || npm install electron@${ELECTRON}'
-  - 'if [[ -z "$ELECTRON" ]]; then npm install; else npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi'
+  - 'if [[ "$ARCH" ]]; then bash ./scripts/cross_compile.sh ${ARCH}; fi'
+  - '[[ "$ARCH" ]] || if [[ -z "$ELECTRON" ]]; then npm install; else npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi'
 
-script: if [[ -z "$ELECTRON" ]]; then travis_retry npm run coverage; else travis_retry npm run test:electron; fi
+script:
+  - '[[ "$ARCH" ]] || if [[ -z "$ELECTRON" ]]; then travis_retry npm run coverage; else travis_retry npm run test:electron; fi'
 
 after_success:
-  - bash ./scripts/publish_docs.sh
-  - 'if [[ $DEPLOY == true && $TRAVIS_OS_NAME == linux ]]; then bash <(curl -s https://codecov.io/bash); fi'
+  - '[[ "$ARCH" ]] || bash ./scripts/publish_docs.sh'
+  - '[[ "$ARCH" ]] || if [[ $DEPLOY == true && $TRAVIS_OS_NAME == linux ]]; then bash <(curl -s https://codecov.io/bash); fi'
 
 deploy:
   provider: script
   skip_cleanup: true
   # Linking to prebuild directly since it doesn't work inside a npm script.
   script:
-    - node_modules/prebuild/bin.js --all --strip -u $GH_TOKEN
+    - 'if [[ -z "$ARCH" ]]; then ./node_modules/prebuild/bin.js --all --strip -u ${GH_TOKEN}; else bash ./scripts/cross_compile.sh ${ARCH} ${GH_TOKEN}; fi'
   on:
     condition: "$DEPLOY = true"
     tags: true
