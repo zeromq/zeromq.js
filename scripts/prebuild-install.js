@@ -6,9 +6,10 @@ var arch = process.arch;
 
 if (platform === 'linux' && arch === 'arm') {
   arch += 'v' + process.config.variables.arm_version;
+  path += ' --arch=' + arch;
 }
 
-exec(path + ' --arch=' + arch, function(err, stdout, stderr) {
+exec(path, function(err, stdout, stderr) {
   console.log(stdout);
   console.log(stderr);
   if (err) process.exit(1);
