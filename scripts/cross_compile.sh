@@ -26,7 +26,5 @@ echo "Building zeromq.js for ${ARCH}"
 if [[ -z $2 ]]; then
   npm install "--arch=${TRIPLE}"
 else
-  PREBUILD_OPTS="-u ${GH_TOKEN}"
+  ./node_modules/prebuild/bin.js "--arch=${ARCH}" --all --strip -u "${GH_TOKEN}"
 fi
-
-./node_modules/prebuild/bin.js "--arch=${ARCH}" --all --strip ${PREBUILD_OPTS}
