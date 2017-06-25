@@ -1,33 +1,32 @@
 #!/bin/bash
 
-TYPE=$1
-GCC=$2
-GH_TOKEN=$3
+ARCH=$1
+GH_TOKEN=$2
 
-if [[ "${TYPE}" == "armv6" ]]; then
-  ARCH="arm-linux-gnueabi"
-elif [[ "${TYPE}" == "armv7" ]]; then
-  ARCH="arm-linux-gnueabihf"
+# Only support armv7 for now
+if [[ "${ARCH}" == "armv7" ]]; then
+  TRIPLE="arm-linux-gnueabihf"
+  GCC="4.8"
+  PACKAGES="gcc-${GCC}-${TRIPLE} g++-${GCC}-${TRIPLE}"
+  export CC="${TRIPLE}-gcc-${GCC}"
+  export CXX="${TRIPLE}-g++-${GCC}"
+  export STRIP="${TRIPLE}-strip"
 else
   exit 1
 fi
 
 # Update dependencies
 sudo apt-get -qq update
-sudo apt-get install -y "gcc-${GCC}-${ARCH}" "g++-${GCC}-${ARCH}"
+sudo apt-get install -y ${PACKAGES}
 
-export CC="${ARCH}-gcc-${GCC}"
-export CXX="${ARCH}-g++-${GCC}"
-export STRIP="${ARCH}-strip"
-export ZMQ_BUILD_OPTIONS="--host=${ARCH}"
+export ZMQ_BUILD_OPTIONS="--host=${TRIPLE}"
 
-echo "Build zeromq.js for ${ARCH} with gcc ${GCC}"
+echo "Building zeromq.js for ${ARCH}"
 
-if [[ -z $3 ]]; then
-  npm install "--arch=${ARCH}"
+if [[ -z $2 ]]; then
+  npm install "--arch=${TRIPLE}"
 else
-  PREBUILD_OPTS=" -u ${GH_TOKEN}"
+  PREBUILD_OPTS="-u ${GH_TOKEN}"
 fi
 
-# Set architecture to arm because prebuild does not differ between arm versions at the moment
-node_modules/prebuild/bin.js "--arch=arm" --all --strip"${PREBUILD_OPTS}"
+./node_modules/prebuild/bin.js "--arch=${ARCH}" --all --strip ${PREBUILD_OPTS}

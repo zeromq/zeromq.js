@@ -17,7 +17,6 @@ matrix:
       env:
         - DEPLOY="true"
         - ARCH="armv7"
-        - GCC="4.8"
     - os: osx
       node_js: "6"
       env: DEPLOY="true"
@@ -33,7 +32,7 @@ before_install:
   - if [[ "$ELECTRON" ]]; then npm install electron@${ELECTRON}; fi
 
 install:
-  - 'if [[ "$ARCH" ]]; then bash ./scripts/cross_compile.sh ${ARCH} ${GCC}; fi'
+  - 'if [[ "$ARCH" ]]; then bash ./scripts/cross_compile.sh ${ARCH}; fi'
   - '[[ "$ARCH" ]] || if [[ -z "$ELECTRON" ]]; then npm install; else npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi'
 
 script:
@@ -48,7 +47,7 @@ deploy:
   skip_cleanup: true
   # Linking to prebuild directly since it doesn't work inside a npm script.
   script:
-    - 'if [[ -z "$ARCH" ]]; then node_modules/prebuild/bin.js --all --strip -u ${GH_TOKEN}; else bash ./scripts/cross_compile.sh ${ARCH} ${GCC} ${GH_TOKEN}; fi'
+    - 'if [[ -z "$ARCH" ]]; then ./node_modules/prebuild/bin.js --all --strip -u ${GH_TOKEN}; else bash ./scripts/cross_compile.sh ${ARCH} ${GH_TOKEN}; fi'
   on:
     condition: "$DEPLOY = true"
     tags: true
