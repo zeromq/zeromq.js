@@ -4,9 +4,12 @@ var pbi = 'prebuild-install';
 var platform = process.platform;
 var arch = process.arch;
 
-if (platform === 'linux' && arch === 'arm') {
-  arch += 'v' + process.config.variables.arm_version;
-  pbi += ' --arch=' + arch;
+if (
+  platform === 'linux' &&
+  (arch === 'arm' || arch === 'arm64')
+) {
+  var armv = (arch === 'arm64') ? '8' : process.config.variables.arm_version;
+  pbi += ' --arch=armv' + armv;
 }
 
 exec(pbi, function(err, stdout, stderr) {
