@@ -47,7 +47,7 @@ deploy:
   skip_cleanup: true
   # Linking to prebuild directly since it doesn't work inside a npm script.
   script:
-    - 'if [[ -z "$ARCH" ]]; then ./node_modules/prebuild/bin.js --all --strip -u ${GH_TOKEN}; else bash ./scripts/cross_compile.sh ${ARCH} ${GH_TOKEN}; fi'
+    - 'if [ -z "$ARCH" ]; then ./node_modules/prebuild/bin.js --all --strip -u ${GH_TOKEN}; else bash ./scripts/cross_compile.sh ${ARCH} ${GH_TOKEN}; fi'
   on:
     condition: "$DEPLOY = true"
     tags: true
