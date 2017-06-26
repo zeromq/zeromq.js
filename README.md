@@ -23,7 +23,7 @@ application by providing well-tested, ready to use ØMQ bindings.
 zeromq supports all major operating systems, including:
 
 * OS X/Darwin 64-bit
-* Linux 64-bit
+* Linux (64-bit, ARMv7 and ARMv8)
 * Windows (64-bit and 32-bit)
 
 Use **zeromq** and take advantage of the *elegant simplicity of binaries*.
