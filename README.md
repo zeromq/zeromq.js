@@ -22,9 +22,9 @@ source can lead to developer frustration.
 application by providing well-tested, ready to use ØMQ bindings.
 zeromq supports all major operating systems, including:
 
-* OS X/Darwin 64-bit
-* Linux (64-bit, ARMv7 and ARMv8)
-* Windows (64-bit and 32-bit)
+* OS X/Darwin (x64)
+* Linux (x64, ARMv7 and ARMv8)
+* Windows (x64 and x86)
 
 Use **zeromq** and take advantage of the *elegant simplicity of binaries*.
 
@@ -79,7 +79,7 @@ Use your distribution's package manager to install.
 - **Option 2:** Install dependencies and configuration manually
    1. Visual C++ Build Environment:
      * **Option 1:** Install [Visual C++ Build Tools](http://go.microsoft.com/fwlink/?LinkId=691126) using the *Default Install* option.
-     * **Option 2:** Install [Visual Studio 2015](https://www.visualstudio.com/products/visual-studio-community-vs) (or modify an existing installation) and select *Common Tools for Visual C++* during setup.  
+     * **Option 2:** Install [Visual Studio 2015](https://www.visualstudio.com/products/visual-studio-community-vs) (or modify an existing installation) and select *Common Tools for Visual C++* during setup.
 
   > :bulb: [Windows Vista / 7 only] requires [.NET Framework 4.5.1](http://www.microsoft.com/en-us/download/details.aspx?id=40773)
 
