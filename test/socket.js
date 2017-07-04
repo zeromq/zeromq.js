@@ -41,6 +41,13 @@ describe('socket', function(){
   it('should support options', function(){
     sock = zmq.socket('req', { backlog: 30 });
     sock.backlog.should.equal(30);
+	// ZMTP 3.1 heartbeat
+	sock.heartbeat_ivl = 42;
+    sock.heartbeat_ivl.should.equal(42);
+	sock.heartbeat_ttl = 43;
+    sock.heartbeat_ttl.should.equal(43);
+	sock.heartbeat_timeout = 44;
+    sock.heartbeat_timeout.should.equal(44);
     sock.close();
   });
 
