@@ -41,15 +41,6 @@ describe('socket', function(){
   it('should support options', function(){
     sock = zmq.socket('req', { backlog: 30 });
     sock.backlog.should.equal(30);
-    // ZMTP 3.1 heartbeat
-    sock.setsockopt(zmq.ZMQ_HEARTBEAT_IVL, 42);
-    sock.setsockopt(zmq.ZMQ_HEARTBEAT_TTL, 200);
-    sock.setsockopt(zmq.ZMQ_HEARTBEAT_TIMEOUT, 44);
-
-    sock.getsockopt(zmq.ZMQ_HEARTBEAT_IVL).should.equal(42);
-    sock.getsockopt(zmq.ZMQ_HEARTBEAT_TTL).should.equal(200); // internally rounded down to the nearest decisecond. (see zmq's API)
-    sock.getsockopt(zmq.ZMQ_HEARTBEAT_TIMEOUT).should.equal(44);
-
     sock.close();
   });
 
