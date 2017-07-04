@@ -1545,6 +1545,11 @@ namespace zmq {
     opts_binary.insert(55); // ZMQ_ZAP_DOMAIN
     opts_int.insert(56); // ZMQ_ROUTER_HANDOVER
     opts_int.insert(66); //ZMQ_HANDSHAKE_IVL
+	#if ZMQ_VERSION_MINOR >= 2
+	opts_int.insert(75); //ZMQ_HEARTBEAT_IVL
+	opts_int.insert(76); //ZMQ_HEARTBEAT_TTL
+	opts_int.insert(77); //ZMQ_HEARTBEAT_TIMEOUT
+    #endif
     #endif
 
     NODE_DEFINE_CONSTANT(target, ZMQ_CAN_DISCONNECT);
