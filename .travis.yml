@@ -1,31 +1,31 @@
 language: node_js
+node_js: "6"
 sudo: required
 
 matrix:
   include:
     - os: linux
       dist: trusty
-      node_js: "6"
-      env: DEPLOY="true"
+      env:
+        - DEPLOY="true"
+        - MAIN="true"
     - os: linux
       dist: trusty
-      node_js: "6"
       env:
         - DEPLOY="true"
         - ARCH="armv7"
     - os: linux
       dist: trusty
-      node_js: "6"
       env:
         - DEPLOY="true"
         - ARCH="armv8"
     - os: linux
       dist: trusty
-      node_js: "6"
-      env: ELECTRON="1.4.10"
+      env:
+        - ELECTRON="1.4.10"
     - os: osx
-      node_js: "6"
-      env: DEPLOY="true"
+      env:
+        - DEPLOY="true"
 
 env:
   global:
@@ -35,33 +35,28 @@ env:
 before_install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  - npm install -g npm@5
-  - npm install -g greenkeeper-lockfile@1
-  - if [[ "$ELECTRON" ]]; then npm install electron@${ELECTRON}; fi
+  - if [ -n "$ELECTRON" ]; then npm install electron@${ELECTRON}; fi
 
 install:
-  - 'if [[ "$ARCH" ]]; then bash ./scripts/cross_compile.sh ${ARCH}; fi'
-  - '[[ "$ARCH" ]] || if [[ -z "$ELECTRON" ]]; then npm install; else npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi'
-
-before_script:
-  - greenkeeper-lockfile-update
+  - if [ -n "$ARCH" ]; then bash ./scripts/cross_compile.sh ${ARCH}; fi
+  - if [ -n "$ELECTRON" ]; then npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi
+  - if [ -z "$ARCH" && -z "$ELECTRON" ]; then npm install; fi
 
 script:
-  - '[[ "$ARCH" ]] || if [[ -z "$ELECTRON" ]]; then travis_retry npm run coverage; else travis_retry npm run test:electron; fi'
+  - if [ -n "$ELECTRON" ]; then travis_retry npm run test:electron; fi
+  - if [ -z "$ARCH" && -z "$ELECTRON" ]; then travis_retry npm run coverage; fi
 
 after_success:
-  - greenkeeper-lockfile-upload
-  - '[[ "$ARCH" ]] || bash ./scripts/publish_docs.sh'
-  - '[[ "$ARCH" ]] || if [[ $DEPLOY == true && $TRAVIS_OS_NAME == linux ]]; then bash <(curl -s https://codecov.io/bash); fi'
+  - if [ "$MAIN" = "true" ]; then bash <(curl -s https://codecov.io/bash); fi
+  - if [ "$MAIN" = "true" ]; then bash ./scripts/publish_docs.sh; fi
 
 deploy:
   provider: script
   skip_cleanup: true
-  # Linking to prebuild directly since it doesn't work inside a npm script.
   script:
-    - 'if [ -z "$ARCH" ]; then ./node_modules/prebuild/bin.js --all --strip -u ${GH_TOKEN}; else bash ./scripts/cross_compile.sh ${ARCH} ${GH_TOKEN}; fi'
+    - if [ -z "$ARCH" ]; then ./node_modules/prebuild/bin.js --all --strip -u ${GH_TOKEN}; else bash ./scripts/cross_compile.sh ${ARCH} ${GH_TOKEN}; fi
   on:
-    condition: "$DEPLOY = true"
+    condition: $DEPLOY = "true"
     tags: true
 
 notifications:
