@@ -40,11 +40,11 @@ before_install:
 install:
   - if [ -n "$ARCH" ]; then bash ./scripts/cross_compile.sh ${ARCH}; fi
   - if [ -n "$ELECTRON" ]; then npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi
-  - if [ -z "$ARCH" && -z "$ELECTRON" ]; then npm install; fi
+  - if [ -z "$ARCH" ] && [ -z "$ELECTRON" ]; then npm install; fi
 
 script:
   - if [ -n "$ELECTRON" ]; then travis_retry npm run test:electron; fi
-  - if [ -z "$ARCH" && -z "$ELECTRON" ]; then travis_retry npm run coverage; fi
+  - if [ -z "$ARCH" ] && [ -z "$ELECTRON" ]; then travis_retry npm run coverage; fi
 
 after_success:
   - if [ "$MAIN" = "true" ]; then bash <(curl -s https://codecov.io/bash); fi
