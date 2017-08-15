@@ -24,3 +24,5 @@ windows/lib/libzmq.lib
 coverage
 .nyc_output
 coverage.lcov
+
+package-lock.json

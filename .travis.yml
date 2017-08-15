@@ -35,8 +35,6 @@ env:
 before_install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  - npm install -g npm@5
-  - if [ "$MAIN" = "true" ]; then npm install -g greenkeeper-lockfile@1; fi
   - if [ -n "$ELECTRON" ]; then npm install electron@${ELECTRON}; fi
 
 install:
@@ -44,15 +42,11 @@ install:
   - if [ -n "$ELECTRON" ]; then npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi
   - if [ -z "$ARCH" ] && [ -z "$ELECTRON" ]; then npm install; fi
 
-before_script:
-  - if [ "$MAIN" = "true" ]; then greenkeeper-lockfile-update; fi
-
 script:
   - if [ -n "$ELECTRON" ]; then travis_retry npm run test:electron; fi
   - if [ -z "$ARCH" ] && [ -z "$ELECTRON" ]; then travis_retry npm run coverage; fi
 
 after_success:
-  - if [ "$MAIN" = "true" ]; then greenkeeper-lockfile-upload; fi
   - if [ "$MAIN" = "true" ]; then bash <(curl -s https://codecov.io/bash); fi
   - if [ "$MAIN" = "true" ]; then bash ./scripts/publish_docs.sh; fi
 
