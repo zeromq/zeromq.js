@@ -1549,6 +1549,7 @@ namespace zmq {
     opts_int.insert(75); //ZMQ_HEARTBEAT_IVL
     opts_int.insert(76); //ZMQ_HEARTBEAT_TTL
     opts_int.insert(77); //ZMQ_HEARTBEAT_TIMEOUT
+    opts_int.insert(79); //ZMQ_CONNECT_TIMEOUT
     #endif
     #endif
 
