@@ -5,7 +5,7 @@ var platform = process.platform;
 var arch = process.arch;
 
 if (process.env.npm_config_zmq_external == "true") {
-  /* Requested to use external libzmq, we must rebuild. */
+  console.log('Requested to use external libzmq. Skipping download of prebuilt binaries.');
   process.exit(1);
 }
 

@@ -7,7 +7,7 @@ var ZMQ = "4.2.2";
 var ZMQ_REPO = "libzmq";
 
 if (process.env.npm_config_zmq_external == "true") {
-  console.log("Skipping libzmq build");
+  console.log("Requested to use external libzmq. Skipping libzmq build");
   process.exit(0);
 }
 
