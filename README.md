@@ -41,6 +41,13 @@ npm install zeromq
 
 Now, prepare to be amazed by the wonders of binaries.
 
+To use your system's libzmq (if it has been installed and development headers
+are available):
+
+```bash
+npm install zeromq --zmq-external
+```
+
 ### Rebuilding for Electron
 
 If you want to use `zeromq` inside your [Electron](http://electron.atom.io/) application
