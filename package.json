@@ -26,7 +26,7 @@
   },
   "scripts": {
     "build:libzmq": "node scripts/preinstall.js",
-    "install": "node scripts/prebuild-install.js || (npm run build:libzmq && node-gyp rebuild)",
+    "install": "node scripts/prebuild-install.js || (node scripts/preinstall.js && node-gyp rebuild)",
     "prebuild": "prebuild --all --strip",
     "build:docs": "jsdoc -R README.md -d docs lib/*.js",
     "postpublish": "./scripts/trigger_travis_build.sh",
