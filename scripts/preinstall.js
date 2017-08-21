@@ -6,6 +6,11 @@ var fs = require("fs");
 var ZMQ = "4.2.2";
 var ZMQ_REPO = "libzmq";
 
+if (process.env.npm_config_zmq_external == "true") {
+  console.log("Skipping libzmq build");
+  process.exit(0);
+}
+
 function buildZMQ(scriptPath, zmqDir) {
   console.log("Building libzmq for " + process.platform);
 

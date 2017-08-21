@@ -4,6 +4,11 @@ var pbi = 'prebuild-install';
 var platform = process.platform;
 var arch = process.arch;
 
+if (process.env.npm_config_zmq_external == "true") {
+  /* Requested to use external libzmq, we must rebuild. */
+  process.exit(1);
+}
+
 if (
   platform === 'linux' &&
   (arch === 'arm' || arch === 'arm64')
