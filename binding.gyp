@@ -10,7 +10,7 @@
       'cflags!': ['-fno-exceptions'],
       'cflags_cc!': ['-fno-exceptions'],
       'conditions': [
-        ["zmq_external", {
+        ["zmq_external == 'true'", {
           'link_settings': {
             'libraries': ['-lzmq'],
           },
