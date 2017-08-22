@@ -340,6 +340,7 @@ namespace zmq {
   }
 
   Socket::~Socket() {
+    Unmonitor();
     Close();
   }
 
