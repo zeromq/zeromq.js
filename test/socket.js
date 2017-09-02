@@ -35,7 +35,9 @@ describe('socket', function(){
   });
 
   it('should close', function(){
+    sock.closed.should.equal(false);
     sock.close();
+    sock.closed.should.equal(true);
   });
 
   it('should support options', function(){
