@@ -48,6 +48,8 @@
 #define ZMQ_CAN_MONITOR (ZMQ_VERSION > 30201)
 #define ZMQ_CAN_SET_CTX (ZMQ_VERSION_MAJOR == 3 && ZMQ_VERSION_MINOR >= 2) || ZMQ_VERSION_MAJOR > 3
 
+#define ZERO_COPY_MESSAGE_SEND 1
+
 using namespace v8;
 using namespace node;
 
@@ -1294,12 +1296,13 @@ namespace zmq {
 
       int flags = Nan::To<int>(flagsObj).FromJust();
 
-#if 1
+#if ZERO_COPY_MESSAGE_SEND
       /* Non-copying implementation. */
       OutgoingMessage msg_p(buf);
 #else
       /* Copying implementation. */
       zmq_msg_t msg;
+      int rc;
       size_t len = Buffer::Length(buf);
       rc = zmq_msg_init_size(&msg, len);
       if (rc != 0)
