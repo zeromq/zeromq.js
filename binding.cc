@@ -1053,8 +1053,9 @@ namespace zmq {
               delete async_;
               delete this;
               Nan::ThrowError("Async initialization failed");
+            } else {
+              async_->data = this;
             }
-            async_->data = this;
           }
 
           inline ~BufferReference() {
