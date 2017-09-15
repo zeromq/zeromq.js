@@ -1026,8 +1026,8 @@ namespace zmq {
 
   class Socket::OutgoingMessage {
     public:
-      inline OutgoingMessage(Local<Object> buf) {
-        bufref_ = new BufferReference(buf);
+      inline OutgoingMessage(Local<Object> buf)
+        : bufref_(new BufferReference(buf)) {
         if (zmq_msg_init_data(&msg_, Buffer::Data(buf), Buffer::Length(buf),
             BufferReference::FreeCallback, bufref_) < 0) {
           delete bufref_;
@@ -1047,21 +1047,25 @@ namespace zmq {
     private:
       class BufferReference {
         public:
-          inline BufferReference(Local<Object> buf) {
-            async = new uv_async_t;
-            uv_async_init(uv_default_loop(), async, Destroy);
-            async->data = this;
-            persistent.Reset(buf);
+          inline BufferReference(Local<Object> buf)
+            : persistent_(buf), async_(new uv_async_t) {
+            if (uv_async_init(uv_default_loop(), async_, Destroy) < 0) {
+              delete async_;
+              delete this;
+              Nan::ThrowError("Async initialization failed");
+            }
+            async_->data = this;
           }
 
           inline ~BufferReference() {
-            persistent.Reset();
+            persistent_.Reset();
           }
 
           // Called by zmq when the message has been sent.
           // NOTE: May be called from a worker thread. Do not modify V8/Node.
-          static void FreeCallback(void* data, void* bufref) {
-            uv_async_send(static_cast<BufferReference*>(bufref)->async);
+          static void FreeCallback(void*, void* bufref) {
+            int result = uv_async_send(static_cast<BufferReference*>(bufref)->async_);
+            assert(result == 0);
           }
 
           static void Destroy(uv_async_t* async) {
@@ -1070,8 +1074,8 @@ namespace zmq {
             delete bufref;
           }
         private:
-          Nan::Persistent<Object> persistent;
-          uv_async_t* async;
+          Nan::Persistent<Object> persistent_;
+          uv_async_t* async_;
       };
 
     zmq_msg_t msg_;
