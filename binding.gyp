@@ -40,6 +40,10 @@
               'libraries': ['<(PRODUCT_DIR)/../../zmq/lib/libzmq.a'],
               'include_dirs': ['<(PRODUCT_DIR)/../../zmq/include'],
             }],
+            ['OS=="android"', {
+              'cflags': ['-fPIC'],
+              'cflags_cc': ['-fPIC'],
+            }],
           ],
         }],
       ],
