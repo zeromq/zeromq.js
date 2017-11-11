@@ -10,7 +10,7 @@
       'cflags!': ['-fno-exceptions'],
       'cflags_cc!': ['-fno-exceptions'],
       'conditions': [
-        ["zmq_external == 'true'" or "OS==android", {
+        ["zmq_external == 'true'", {
           'link_settings': {
             'libraries': ['-lzmq'],
           },
@@ -41,6 +41,7 @@
               'include_dirs': ['<(PRODUCT_DIR)/../../zmq/include'],
             }],
             ['OS=="android"', {
+              'libraries': ['-lzmq'],
               'cflags': ['-fPIC'],
               'cflags_cc': ['-fPIC'],
             }],
