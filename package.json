@@ -33,7 +33,7 @@
     "test": "mocha --expose-gc --slow 300",
     "test:electron": "electron-mocha --slow 300",
     "precoverage": "nyc npm run test",
-    "coverage": "nyc report --reporter=text-lcov > coverage/lcov.info"
+    "coverage": "nyc report --reporter=text-lcov > coverage.lcov"
   },
   "keywords": [
     "zeromq",
