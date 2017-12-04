@@ -64,7 +64,7 @@ For packaging your Electron application we recommend using [`electron-builder`](
 
 ## Installation - From Source
 
-If you are working on a Linux 32-bit system or want to install a developement version, you have to build `zeromq` from source.
+If you are working on a Linux 32-bit system or want to install a development version, you have to build `zeromq` from source.
 
 ### Prerequisites
 
