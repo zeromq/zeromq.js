@@ -3,6 +3,7 @@ var spawn = require("child_process").spawn;
 var path = require("path");
 var fs = require("fs");
 
+var ARCH = process.arch;
 var ZMQ = "4.2.2";
 var ZMQ_REPO = "libzmq";
 
@@ -14,7 +15,7 @@ if (process.env.npm_config_zmq_external == "true") {
 function buildZMQ(scriptPath, zmqDir) {
   console.log("Building libzmq for " + process.platform);
 
-  var child = spawn(scriptPath, [ZMQ]);
+  var child = spawn(scriptPath, [ZMQ, ARCH]);
 
   child.stdout.pipe(process.stdout);
   child.stderr.pipe(process.stderr);

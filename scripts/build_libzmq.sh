@@ -8,14 +8,20 @@ else
   exit 1
 fi
 
+if [ "$2" = "ia32" ]; then
+  export CFLAGS="-fPIC -m32"
+  export CXXFLAGS="-fPIC -m32"
+else
+  export CFLAGS=-fPIC
+  export CXXFLAGS=-fPIC
+fi
+
 export MACOSX_DEPLOYMENT_TARGET=10.9
 export BASE=$(dirname "$0")
 export ZMQ_PREFIX="${BASE}/../zmq"
 export ZMQ_SRC_DIR=zeromq-$ZMQ
 cd "${ZMQ_PREFIX}"
 
-export CFLAGS=-fPIC
-export CXXFLAGS=-fPIC
 export PKG_CONFIG_PATH="${ZMQ_PREFIX}/lib/pkgconfig"
 
 test -d "${ZMQ_SRC_DIR}" || tar xzf zeromq-$ZMQ.tar.gz
