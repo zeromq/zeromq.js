@@ -1141,6 +1141,7 @@ namespace zmq {
       return;
     }
     uv_timer_stop(this->monitor_handle_);
+    uv_close(reinterpret_cast<uv_handle_t*>(this->monitor_handle_), on_uv_close);
     this->monitor_handle_ = NULL;
     this->monitor_socket_ = NULL;
   }
