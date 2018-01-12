@@ -1,4 +1,4 @@
-# zeromq
+# zeromq.js
 
 [![codecov](https://codecov.io/gh/zeromq/zeromq.js/branch/master/graph/badge.svg)](https://codecov.io/gh/zeromq/zeromq.js)
 [![Greenkeeper badge](https://badges.greenkeeper.io/zeromq/zeromq.js.svg)](https://greenkeeper.io/)
@@ -11,7 +11,7 @@
 
 [**Users**](#installation---users) | [**From Source**](#installation---from-source) | [**Contributors and Development**](#installation---contributors-and-development) | [**Maintainers**](#for-maintainers-creating-a-release)
 
-**zeromq**: Your ready to use, prebuilt [ØMQ](http://www.zeromq.org/)
+**`zeromq`**: Your ready to use, prebuilt [ØMQ](http://www.zeromq.org/)
 bindings for [Node.js](https://nodejs.org/en/).
 
 ØMQ provides handy functionality when working with sockets. Yet,
