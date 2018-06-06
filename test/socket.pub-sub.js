@@ -131,4 +131,61 @@ describe('socket.pub-sub', function(){
     });
   });
 
+  it('should subscribe to character arguments', function(done){
+
+    sub.subscribe('ABC012');
+
+    sub.on('message', function (msg) {
+
+      msg.should.be.an.instanceof(Buffer);
+      msg.toString().should.equal('ABC012');
+      sub.close();
+      return done();
+    });
+
+    var addr = "inproc://stuff_sspsfa";
+
+    sub.bind(addr, function (error) {
+      if (error) throw error;
+      pub.connect(addr);
+
+      setTimeout(function() {
+        pub.send('012');
+        pub.send('ABC');
+        pub.send('MSG');
+        pub.send('ABC012');
+      }, 100.0);
+
+    });
+  })
+
+  it('should subscribe to binary argument', function(done){
+
+
+    sub.subscribe(Buffer.from(new Uint8Array([65, 66, 67, 48, 49, 50])));
+
+    sub.on('message', function (msg) {
+      msg.should.be.an.instanceof(Buffer);
+      msg.toString().should.equal('ABC0123');
+      sub.close();
+      return done();
+
+    });
+
+    var addr = "inproc://stuff_sspsfb";
+
+    sub.bind(addr, function (error) {
+      if (error) throw error;
+      pub.connect(addr);
+
+      setTimeout(function() {
+        pub.send('ABC');
+        pub.send('MSG');
+        pub.send('MSG1');
+        pub.send(Buffer.from(new Uint8Array([65, 66, 67, 48, 49, 50, 51])));
+      }, 100.0);
+
+    });
+
+  })
 });
