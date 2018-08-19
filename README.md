@@ -38,7 +38,9 @@ Install `zeromq` with the following:
 ```bash
 npm install zeromq
 ```
-
+windows users:
+do not forget to set msvs_version according to your visual studio version 2013,2015,2017
+  `npm config set msvs_version 2015`
 Now, prepare to be amazed by the wonders of binaries.
 
 To use your system's libzmq (if it has been installed and development headers
@@ -91,7 +93,8 @@ Use your distribution's package manager to install.
   > :bulb: [Windows Vista / 7 only] requires [.NET Framework 4.5.1](http://www.microsoft.com/en-us/download/details.aspx?id=40773)
 
   2. Install [Python 2.7](https://www.python.org/downloads/) or [Miniconda 2.7](http://conda.pydata.org/miniconda.html) (`v3.x.x` is not supported), and run `npm config set python python2.7`
-  3. Launch cmd, `npm config set msvs_version 2015`
+  3. Launch cmd, and set msvs_version according to your visual studio version 2013,2015,2017
+  `npm config set msvs_version 2015`
 
 
 ### Installation
