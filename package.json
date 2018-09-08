@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "nan": "^2.10.0",
-    "prebuild-install": "5.0.0"
+    "prebuild-install": "5.1.0"
   },
   "devDependencies": {
     "electron-mocha": "^6.0.0",
