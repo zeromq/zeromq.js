@@ -2,10 +2,10 @@ environment:
   GITHUB_TOKEN:
     secure: E1HpiZf9OJuc8XPGA57hJbCQlMWVCPVBePHiWF/BgmJ/+e/2OplyifiS/x8CJtcw
   matrix:
-    - nodejs_version: "4"
+    - nodejs_version: "10"
       deploy: "true"
-    - nodejs_version: "6"
-      electron: "1.4.10"
+    - nodejs_version: "10"
+      electron: "3.0.0"
 
 platform:
   - x64
