@@ -24,20 +24,20 @@ module.exports.start = function(count) {
     var zapReq = {
       version: data.shift(),
       requestId: data.shift(),
-      domain: new Buffer(data.shift()).toString('utf8'),
-      address: new Buffer(data.shift()).toString('utf8'),
-      identity: new Buffer(data.shift()).toString('utf8'),
-      mechanism: new Buffer(data.shift()).toString('utf8'),
+      domain: Buffer.from(data.shift()).toString('utf8'),
+      address: Buffer.from(data.shift()).toString('utf8'),
+      identity: Buffer.from(data.shift()).toString('utf8'),
+      mechanism: Buffer.from(data.shift()).toString('utf8'),
       credentials: data.slice(0)
     };
 
     zap.send(returnPath.concat([
       zapReq.version,
       zapReq.requestId,
-      new Buffer("200", "utf8"),
-      new Buffer("OK", "utf8"),
-      new Buffer(0),
-      new Buffer(0)
+      Buffer.from("200", "utf8"),
+      Buffer.from("OK", "utf8"),
+      Buffer.alloc(0),
+      Buffer.alloc(0)
     ]));
   });
   

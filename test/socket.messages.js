@@ -36,7 +36,7 @@ describe('socket.messages', function(){
       push.connect('inproc://stuff_ssm');
       push.send('string');
       push.send(15.99);
-      push.send(new Buffer('buffer'));
+      push.send(Buffer.from('buffer'));
     });
   });
 
@@ -53,7 +53,7 @@ describe('socket.messages', function(){
     pull.bind('inproc://stuff_ssmm', function (error) {
       if (error) throw error;
       push.connect('inproc://stuff_ssmm');
-      push.send(['string', 15.99, new Buffer('buffer')]);
+      push.send(['string', 15.99, Buffer.from('buffer')]);
     });
   });
 
@@ -111,7 +111,7 @@ describe('socket.messages', function(){
       if (error) throw error;
       push.send('string');
       push.send(15.99);
-      push.send(new Buffer('buffer'));
+      push.send(Buffer.from('buffer'));
       pull.connect('tcp://127.0.0.1:12345');
     });
   });
