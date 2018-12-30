@@ -61,7 +61,7 @@ npm rebuild zeromq --runtime=electron --target=1.4.5
 ```
 Where `target` is your desired Electron version. This will download the correct binary for usage in Electron.
 
-For packaging your Electron application we recommend using [`electron-builder`](https://github.com/electron-userland/electron-builder) which handles rebuilding automatically. Enable the `npmSkipBuildFromSource` option to make use of the prebuilt binaries. For a real world example take a look at [nteract](https://github.com/nteract/nteract/blob/master/package.json).
+For packaging your Electron application we recommend using [`electron-builder`](https://github.com/electron-userland/electron-builder) which handles rebuilding automatically. Enable the `npmSkipBuildFromSource` option to make use of the prebuilt binaries. For a real world example take a look at [nteract](https://github.com/nteract/nteract/blob/master/applications/desktop/package.json).
 
 
 ## Installation - From Source
