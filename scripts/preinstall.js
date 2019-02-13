@@ -4,7 +4,7 @@ var path = require("path");
 var fs = require("fs");
 
 var ARCH = process.arch;
-var ZMQ = "4.2.2";
+var ZMQ = "4.3.1";
 var ZMQ_REPO = "libzmq";
 
 if (process.env.npm_config_zmq_external == "true") {
