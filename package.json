@@ -15,7 +15,7 @@
   "devDependencies": {
     "electron-mocha": "^6.0.0",
     "jsdoc": "^3.5.4",
-    "mocha": "^5.0.0",
+    "mocha": "^6.0.0",
     "nyc": "^12.0.2",
     "prebuild": "^8.1.0",
     "semver": "^5.4.1",
