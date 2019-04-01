@@ -13,7 +13,7 @@
     "prebuild-install": "5.2.1"
   },
   "devDependencies": {
-    "electron-mocha": "^6.0.0",
+    "electron-mocha": "^7.0.0",
     "jsdoc": "^3.5.4",
     "mocha": "^5.0.0",
     "nyc": "^12.0.2",
