@@ -50,6 +50,8 @@ are available):
 npm install zeromq --zmq-external
 ```
 
+china users: github is blocked by GFW of some ISP since [996.icu](https://github.com/996icu/996.ICU). a download from github during installation may be blocked. if your installation process sleeps for minutes, you may need proxy. the download procedure is NOT implemented by npm but by a building script, so it's useless to change to china npm source, you have to set a GLOBAL proxy.
+
 ### Rebuilding for Electron
 
 If you want to use `zeromq` inside your [Electron](http://electron.atom.io/) application
