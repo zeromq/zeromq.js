@@ -17,7 +17,11 @@ if (
   pbi += ' --arch=armv' + armv;
 }
 
-exec(pbi, function(err, stdout, stderr) {
+var options = {
+  env: process.env,
+};
+
+exec(pbi, options, function(err, stdout, stderr) {
   console.log(stdout);
   console.log(stderr);
   if (err) process.exit(1);
