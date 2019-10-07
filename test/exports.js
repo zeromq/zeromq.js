@@ -134,4 +134,10 @@ describe('exports', function(){
   it('should export methods', function(){
     zmq.socket.should.be.a.Function;
   });
+
+  it('should export socket helpers', function(){
+    for (var type in zmq.types) {
+      zmq['socket' + type.charAt(0).toUpperCase() + type.substring(1)].should.be.a.Function;
+    }
+  });
 });

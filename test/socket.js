@@ -46,6 +46,12 @@ describe('socket', function(){
     sock.close();
   });
 
+  it('should helpers support options', function(){
+    sock = zmq.socketReq({ backlog: 30 });
+    sock.backlog.should.equal(30);
+    sock.close();
+  });
+
   it('should throw a javascript error if it hits the system file descriptor limit', function() {
     var i, socks = [], numSocks = 10000;
     function hitlimit() {
