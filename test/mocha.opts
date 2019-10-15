@@ -3,3 +3,4 @@ test/unit/*-test.ts test/unit/compat/*-test.{ts,js}
 --require ts-node/register
 --require choma
 --expose-gc
+--exit
