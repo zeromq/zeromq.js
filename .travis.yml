@@ -1,68 +1,154 @@
 language: node_js
-node_js:
-- "6"
-- "8"
-- "10"
-- "11"
-sudo: required
+cache: yarn
+dist: bionic
 
-matrix:
+jobs:
   include:
-    - os: linux
-      dist: trusty
-      env:
-        - DEPLOY="true"
-        - MAIN="true"
-    - os: linux
-      dist: trusty
-      env:
-        - DEPLOY="true"
-        - ARCH="armv7"
-    - os: linux
-      dist: trusty
-      env:
-        - DEPLOY="true"
-        - ARCH="armv8"
-    - os: linux
-      dist: trusty
-      env:
-        - ELECTRON="3.0.0"
-    - os: osx
-      env:
-        - DEPLOY="true"
+  ## TEST STAGE
 
-env:
-  global:
-    - GH_REF: github.com/nteract/zmq-prebuilt.git
-    - secure: AMY9chDNyNawxPhxAksCREhbQoOmphQKo2hDuYIPXBCUNF6Zik969QlB07TVjo+Bo0KVEbG4ANTdI0FkFIhg4MuJIWUkW30ZDyCSovUx8zyWB/7IN23A4Cx4p4ZnKjezTHUQpZ9InRIZzy9kOR+215IIBP6GfxbUY89eDA6ARElcv1rwDjZqSnLAxfie6v80vIbhWxNK4kQjiEyIez5eWBjRg4//dmb63TvJjc78GFTaqmh6lRIApAyA0uKka14XR/PJw5IpDR+0Q2omHl4t4zbu9MdVNYMSD+c6iNxOq3fqZJwnyJ1ELErbtR8oeKgZX1SOew5QTCUZWQsa+ySYTCzUnhWjhCgN6W0ciVtT2PslS/ZcvnrGGIxJAOmTZwINw8sAp8yYdY9QCJOGdB5ah2oUBLGKElcFGqSblohXUEM1tXeRchmpXiiAxnPNtxc6lkZzz6NxDl2OFXSmjMS4Cr8cA//Bn6gM04xRJyETy86/8KDoL+ENc7gkeiuYUOFqkAn5X8PrqPdsPmF7yA61IF1ru/OgtiuCh+eqnzZKBPImJo2KfUIqVuRi/6eUaDfWLT7d/J84Vbe3p2nPxoFd2pSw60f/lIkzFSRZx3vBjQiW2MVUN7ZTdawMOzE4TpIV7rDOkKe7qJJobquJEjd2X9Z+8JiTYXK2pPN2GceiqAM=
+  # Test main OSes on Node 10.x branch.
+  - os: linux
+    node_js: "10.16"
+    env: ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true
 
-before_install:
-  - export DISPLAY=':99.0'
-  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-  - if [ -n "$ELECTRON" ]; then npm install electron@${ELECTRON}; fi
+  - os: linux
+    env: ALPINE_CHROOT=3.10 ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true
+    sudo: required
+
+  - os: osx
+    env: ZMQ_DRAFT=true
+    node_js: "10.16"
+
+  - os: windows
+    node_js: "10.16"
+    # https://travis-ci.community/t/build-doesnt-finish-after-completing-tests/288
+    env: ZMQ_DRAFT=true YARN_GPG=no
+
+  - os: windows
+    node_js: "10.16/x86"
+    # https://travis-ci.community/t/build-doesnt-finish-after-completing-tests/288
+    env: ZMQ_DRAFT=true YARN_GPG=no
+
+  # Test shared libraries on Linux and macOS.
+  - os: linux
+    node_js: "10.16"
+    env: ZMQ_SHARED=true
+    addons: {apt: {packages: libzmq3-dev}}
+
+  - os: osx
+    node_js: "10.16"
+    env: ZMQ_SHARED=true
+    addons: {homebrew: {packages: zeromq, update: true}}
+
+  # Test older versions of ZMQ.
+  - os: linux
+    node_js: "10.16"
+    env: ZMQ_VERSION=4.2.4
+
+  # Test recent Node versions.
+  - os: linux
+    node_js: "12"
+    env: ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true
+
+  - os: linux
+    node_js: "13"
+    env: ZMQ_DRAFT=true
+
+  ## PREBUILD STAGE
+
+  - stage: prebuild
+    os: linux
+    env: ARCHIVE_SUFFIX=-x64
+    node_js: "10.16"
+    script: script/ci/prebuild.sh
+
+  - stage: prebuild
+    os: linux
+    env: ALPINE_CHROOT=3.10 ARCHIVE_SUFFIX=-x64-musl
+    sudo: required
+    script: script/ci/prebuild.sh
+
+  - stage: prebuild
+    os: linux
+    node_js: "10.16"
+    env: ARCH=arm TRIPLE=arm-linux-gnueabihf GCC=8 ARCHIVE_SUFFIX=-armv7
+    addons: {apt: {packages: [gcc-8-arm-linux-gnueabihf, g++-8-arm-linux-gnueabihf]}}
+    script: script/ci/prebuild.sh
+
+  - stage: prebuild
+    os: linux
+    node_js: "10.16"
+    env: ARCH=arm64 TRIPLE=aarch64-linux-gnu GCC=8 ARCHIVE_SUFFIX=-armv8
+    addons: {apt: {packages: [gcc-8-aarch64-linux-gnu, g++-8-aarch64-linux-gnu]}}
+    script: script/ci/prebuild.sh
+
+  - stage: prebuild
+    os: osx
+    node_js: "10.16"
+    script: script/ci/prebuild.sh
+
+  - stage: prebuild
+    os: windows
+    node_js: "10.16"
+    # https://travis-ci.community/t/build-doesnt-finish-after-completing-tests/288
+    env: YARN_GPG=no ARCHIVE_SUFFIX=-x64
+    script: script/ci/prebuild.sh
+
+  - stage: prebuild
+    os: windows
+    node_js: "10.16/x86"
+    # https://travis-ci.community/t/build-doesnt-finish-after-completing-tests/288
+    env: YARN_GPG=no ARCHIVE_SUFFIX=-x86
+    script: script/ci/prebuild.sh
+
+  ## PUBLISH STAGE
+
+  - stage: publish
+    os: linux
+    node_js: "10.16"
+    env: IGNORE_SCRIPTS=true
+    script: script/ci/package.sh
+
+  fast_finish: true
+  allow_failures:
+  - os: linux
+    node_js: "13"
+
+stages:
+- name: test
+- name: prebuild
+  if: tag IS present
+- name: publish
+  if: tag IS present
 
 install:
-  - if [ -n "$ARCH" ]; then bash ./scripts/cross_compile.sh ${ARCH}; fi
-  - if [ -n "$ELECTRON" ]; then npm install --runtime=electron --target=${ELECTRON} --disturl=https://atom.io/download/electron; fi
-  - if [ -z "$ARCH" ] && [ -z "$ELECTRON" ]; then npm install; fi
+- travis_retry script/ci/install.sh
 
 script:
-  - if [ -n "$ELECTRON" ]; then travis_retry npm run test:electron; fi
-  - if [ -z "$ARCH" ] && [ -z "$ELECTRON" ]; then travis_retry npm run coverage; fi
-
-after_success:
-  - if [ "$MAIN" = "true" ]; then bash <(curl -s https://codecov.io/bash); fi
-  - if [ "$MAIN" = "true" ]; then bash ./scripts/publish_docs.sh; fi
+- travis_retry script/ci/test.sh
 
 deploy:
-  provider: script
+# Deploy prebuilds to Github releases.
+- provider: releases
+  draft: false
+  file: "${TRAVIS_TAG:-latest}-${TRAVIS_OS_NAME}${ARCHIVE_SUFFIX}.tar.gz"
   skip_cleanup: true
-  script:
-    - if [ -z "$ARCH" ]; then ./node_modules/prebuild/bin.js --all --strip -u ${GH_TOKEN}; else bash ./scripts/cross_compile.sh ${ARCH} ${GH_TOKEN}; fi
   on:
-    condition: $DEPLOY = "true"
     tags: true
+    condition: "$TRAVIS_BUILD_STAGE_NAME = Prebuild"
+  # api_key:
+  #   secure: ...
 
-notifications:
-  slack:
-    secure: nklWvK1Mvoj5zly8PO0WmgQdakaSa5Ixwbxw4+1yyIKgyEUbyHzu0oySMAuyMPPV3nLaTaB/bwFxvrsUP6lxoO1CvQMUTrucLm3H5FXDDuTBBw5/tREFyuUy6XPeVsTPdL9ltrvCn8mTBYNZOM/3BWq6mV0XDHpxAIgE3FA2AUTrNoAxLqXC/V7ZmTnDYuH2T/cdeyP+Ri0UDuszUn/dzTM/fOSVpJ/J74JylJ5FH7x5z9lnD6T/916t8//i4tzoEaFkS4V7QgAj0Bta8BEMP0BN40Wap9UgXfrzafCnHDjcbKRoyVEs09kWMbrdY572EGiow2B+QOlYELLYCcD00VH71zDCpw1Ji6di3v+CxCzxFcNyZz8i/Hb8PIfYTyHV2C43X/doVzC3MVllw+d3IVTR0smn2jwjhr+szm9MDQcnUxq5zuOCiAMzE51hbhLQATUNQIiqsD0X+NK3o5urb/Fjb6I6q3MO7GJkuvsda1ni5OEPeFAlYKjvgBiwUZnc32uBHfd3iGzbdwzihSKreuIdVTCtmlnhVmM0ztg5E+BQ8SxWJPxLw5c+9ZaEja5bVCkZF4L3P/EcsdBQ1YmorsROgf/p+PsrnqKAy9zU/NynQQYODx28IPcuQgJbhzeTUEINnFej513BRnkREgjLY5bjXY6iLjKdlRo8kPVqrj8=
+# Deploy package including all generated prebuilds to NPM.
+- provider: npm
+  email: r.w.timmermans@gmail.com
+  skip_cleanup: true
+  on:
+    tags: true
+    condition: "$TRAVIS_BUILD_STAGE_NAME = Publish"
+  # api_key:
+  #   secure: ...
+
+# env:
+#   global:
+#     secure: ...

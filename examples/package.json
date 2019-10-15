@@ -1,0 +1,14 @@
+{
+  "name": "zeromq-examples",
+  "license": "MIT",
+  "dependencies": {
+    "zeromq": "file:.."
+  },
+  "devDependencies": {
+    "ts-node": ">= 0"
+  },
+  "scripts": {
+    "majordomo": "ts-node majordomo",
+    "queue": "ts-node queue"
+  }
+}

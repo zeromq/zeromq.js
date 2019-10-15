@@ -1,48 +1,168 @@
 {
   'variables': {
-    'zmq_external%': 'false',
+    'zmq_shared%': 'false',
+    'zmq_draft%': 'false',
   },
+
   'targets': [
     {
-      'target_name': 'zmq',
-      'sources': ['binding.cc'],
-      'include_dirs' : ["<!(node -e \"require('nan')\")"],
-      'cflags!': ['-fno-exceptions'],
-      'cflags_cc!': ['-fno-exceptions'],
+      'target_name': 'libzmq',
+      'type': 'none',
+
       'conditions': [
-        ["zmq_external == 'true'", {
+        ["zmq_shared == 'false'", {
+          'actions': [{
+            'action_name': 'build_libzmq',
+            'inputs': ['package.json'],
+            'outputs': ['libzmq/lib'],
+            'action': ['sh', '<(PRODUCT_DIR)/../../script/build.sh'],
+          }],
+        }],
+      ],
+    },
+
+    {
+      'target_name': 'zeromq',
+      'dependencies': ['libzmq'],
+      'sources': [
+        'src/binding.cc',
+        'src/context.cc',
+        'src/incoming_msg.cc',
+        'src/observer.cc',
+        'src/outgoing_msg.cc',
+        'src/proxy.cc',
+        'src/socket.cc',
+      ],
+
+      'include_dirs': [
+        "<!@(node -p \"require('node-addon-api').include\")",
+        '<(PRODUCT_DIR)/../libzmq/include',
+      ],
+
+      'defines': [
+        'NAPI_VERSION=4',
+        'NAPI_DISABLE_CPP_EXCEPTIONS',
+        'ZMQ_STATIC',
+      ],
+
+      'conditions': [
+        ["zmq_draft == 'true'", {
+          'defines': [
+            'ZMQ_BUILD_DRAFT_API',
+          ],
+        }],
+
+        ["zmq_shared == 'true'", {
           'link_settings': {
             'libraries': ['-lzmq'],
           },
         }, {
           'conditions': [
-            ['OS=="win"', {
-              'msbuild_toolset': 'v140',
-              'defines': ['ZMQ_STATIC'],
-              'include_dirs': ['windows/include'],
+            ['OS != "win"', {
               'libraries': [
-                '<(PRODUCT_DIR)/../../windows/lib/libzmq',
+                '<(PRODUCT_DIR)/../libzmq/lib/libzmq.a',
+              ],
+            }],
+
+            ['OS == "win"', {
+              'msbuild_toolset': 'v141',
+              'libraries': [
+                '<(PRODUCT_DIR)/../libzmq/lib/libzmq',
                 'ws2_32.lib',
                 'iphlpapi',
               ],
             }],
-            ['OS=="mac" or OS=="solaris"', {
-              'xcode_settings': {
-                'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
-                'MACOSX_DEPLOYMENT_TARGET': '10.9',
-              },
-              'libraries': ['<(PRODUCT_DIR)/../../zmq/lib/libzmq.a'],
-              'include_dirs': ['<(PRODUCT_DIR)/../../zmq/include'],
-            }],
-            ['OS=="openbsd" or OS=="freebsd"', {
-            }],
-            ['OS=="linux"', {
-              'libraries': ['<(PRODUCT_DIR)/../../zmq/lib/libzmq.a'],
-              'include_dirs': ['<(PRODUCT_DIR)/../../zmq/include'],
-            }],
           ],
         }],
       ],
-    }
-  ]
+
+      'configurations': {
+        'Debug': {
+          'conditions': [
+            ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
+              'cflags_cc!': [
+                '-std=gnu++0x',
+                '-std=gnu++1y'
+              ],
+              'cflags_cc+': [
+                '-std=c++11',
+                '-Wno-missing-field-initializers',
+              ],
+            }],
+
+            ['OS == "mac"', {
+              'xcode_settings': {
+                # https://pewpewthespells.com/blog/buildsettings.html
+                'CLANG_CXX_LIBRARY': 'libc++',
+                'CLANG_CXX_LANGUAGE_STANDARD': 'c++11',
+                'MACOSX_DEPLOYMENT_TARGET': '10.9',
+                'WARNING_CFLAGS': [
+                  '-Wextra',
+                  '-Wno-unused-parameter',
+                  '-Wno-missing-field-initializers',
+                ],
+              },
+            }],
+
+            ['OS == "win"', {
+              'msvs_settings': {
+                'VCCLCompilerTool': {
+                  # 0 - MultiThreaded (/MT)
+                  # 1 - MultiThreadedDebug (/MTd)
+                  # 2 - MultiThreadedDLL (/MD)
+                  # 3 - MultiThreadedDebugDLL (/MDd)
+                  'RuntimeLibrary': 3,
+                },
+              },
+            }],
+          ],
+        },
+
+        'Release': {
+          'conditions': [
+            ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
+              'cflags_cc!': [
+                '-std=gnu++0x',
+                '-std=gnu++1y'
+              ],
+              'cflags_cc+': [
+                '-std=c++11',
+                '-flto',
+                '-Wno-missing-field-initializers',
+              ],
+            }],
+
+            ['OS == "mac"', {
+              # https://pewpewthespells.com/blog/buildsettings.html
+              'xcode_settings': {
+                'CLANG_CXX_LIBRARY': 'libc++',
+                'CLANG_CXX_LANGUAGE_STANDARD': 'c++11',
+                'MACOSX_DEPLOYMENT_TARGET': '10.9',
+                'LLVM_LTO': 'YES',
+                'GCC_OPTIMIZATION_LEVEL': '3',
+                'DEPLOYMENT_POSTPROCESSING': 'YES',
+                'GCC_SYMBOLS_PRIVATE_EXTERN': 'YES',
+                'DEAD_CODE_STRIPPING': 'YES',
+              },
+            }],
+
+            ['OS == "win"', {
+              'msvs_settings': {
+                'VCCLCompilerTool': {
+                  # 0 - MultiThreaded (/MT)
+                  # 1 - MultiThreadedDebug (/MTd)
+                  # 2 - MultiThreadedDLL (/MD)
+                  # 3 - MultiThreadedDebugDLL (/MDd)
+                  'RuntimeLibrary': 2,
+                },
+                'VCLinkerTool': {
+                  'AdditionalOptions': ['/ignore:4099'],
+                },
+              },
+            }],
+          ],
+        },
+      },
+    },
+  ],
 }
