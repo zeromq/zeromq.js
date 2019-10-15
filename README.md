@@ -274,4 +274,4 @@ Wait for continuous integration to finish. Prebuilds will be generated for all s
 
 Version 6+ is a complete rewrite of previous versions of ZeroMQ.js in order to be more reliable, correct, and usable in modern JavaScript & TypeScript code as first outlined in [this issue](https://github.com/zeromq/zeromq.js/issues/189). Previous versions of ZeroMQ.js were based on `zmq` and a fork that included prebuilt binaries.
 
-See detailed changes in the [CHANGELOG](CHANGELOG).
+See detailed changes in the [CHANGELOG](CHANGELOG.md).
