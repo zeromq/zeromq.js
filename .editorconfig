@@ -1,15 +1,14 @@
 root = true
 
 [*]
-end_of_line = lf
 charset = utf-8
+end_of_line = lf
+indent_style = space
+insert_final_newline = true
 trim_trailing_whitespace = true
 
-[*.js]
-indent_style = space
+[*.{js,ts}]
 indent_size = 2
 
-[*.cc]
-indent_style = space
-indent_size = 2
-
+[*.{h,cc}]
+indent_size = 4
