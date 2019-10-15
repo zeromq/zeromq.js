@@ -2,11 +2,12 @@
 
 [![Greenkeeper monitoring](https://img.shields.io/badge/dependencies-monitored-brightgreen.svg)](https://greenkeeper.io/) [![Travis build status](https://img.shields.io/travis/zeromq/zeromq.js.svg)](https://travis-ci.org/zeromq/zeromq.js)
 
-## ⚠️⚠️⚠️ This is work in progress and published only as a beta version ⚠️⚠️⚠️
+## ⚠️⚠️⚠️ This is work in progress and published only as a beta version. For the current stable version see the [5.x branch](https://github.com/zeromq/zeromq.js/tree/5.x) ⚠️⚠️⚠️
+
 [ØMQ](http://zeromq.org) bindings for Node.js. The goals of this library are:
-* Semantically as similar as possible to the [native](https://github.com/zeromq/libzmq) ØMQ library.
+* Semantically similar to the [native](https://github.com/zeromq/libzmq) ØMQ library, while sticking to JavaScript idioms.
+* Use modern JavaScript and Node.js features such as `async`/`await` and async iterators.
 * High performance.
-* Use modern JavaScript and Node.js features such as  `async`/`await` and async iterators.
 * Fully usable with TypeScript.
 
 # Table of contents
