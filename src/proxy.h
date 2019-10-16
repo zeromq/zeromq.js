@@ -27,6 +27,7 @@ protected:
 private:
     inline void SendCommand(const char* command);
 
+    Napi::AsyncContext async_context;
     Napi::ObjectReference front_ref;
     Napi::ObjectReference back_ref;
     Napi::ObjectReference capture_ref;
@@ -35,5 +36,8 @@ private:
     void* control_pub = nullptr;
 };
 }
+
+static_assert(!std::is_copy_constructible<zmq::Proxy>::value, "not copyable");
+static_assert(!std::is_move_constructible<zmq::Proxy>::value, "not movable");
 
 #endif

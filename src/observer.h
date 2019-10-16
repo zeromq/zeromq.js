@@ -48,9 +48,13 @@ private:
         inline void WritableCallback() {}
     };
 
+    Napi::AsyncContext async_context;
     Observer::Poller poller;
     void* socket = nullptr;
 
     friend class Socket;
 };
 }
+
+static_assert(!std::is_copy_constructible<zmq::Observer>::value, "not copyable");
+static_assert(!std::is_move_constructible<zmq::Observer>::value, "not movable");

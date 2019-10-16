@@ -91,6 +91,7 @@ private:
         void WritableCallback();
     };
 
+    Napi::AsyncContext async_context;
     Napi::ObjectReference context_ref;
     Napi::ObjectReference observer_ref;
     Socket::Poller poller;
@@ -109,3 +110,6 @@ private:
     friend class Proxy;
 };
 }
+
+static_assert(!std::is_copy_constructible<zmq::Socket>::value, "not copyable");
+static_assert(!std::is_move_constructible<zmq::Socket>::value, "not movable");
