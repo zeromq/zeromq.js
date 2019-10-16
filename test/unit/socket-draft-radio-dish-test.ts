@@ -2,6 +2,7 @@ import * as zmq from "../../src"
 import * as draft from "../../src/draft"
 
 import {assert} from "chai"
+import {randomBytes} from "crypto"
 import {testProtos, uniqAddress} from "./helpers"
 
 if (zmq.capability.draft) {
@@ -25,16 +26,23 @@ if (zmq.capability.draft) {
       describe("send/receive", function() {
         it("should deliver messages", async function() {
           /* RADIO -> foo -> DISH
-                  -> bar -> joined all
-                  -> baz ->
-                  -> qux ->
+                   -> bar -> joined all
+                   -> baz ->
+                   -> qux ->
           */
 
           const address = uniqAddress(proto)
           const messages = ["foo", "bar", "baz", "qux"]
+
+          /* Max 15 non-null bytes. */
+          const uuid = Buffer.from([
+            0xf6, 0x46, 0x1f, 0x03, 0xd2, 0x0d, 0xc8, 0x66,
+            0xe5, 0x5f, 0xf5, 0xa1, 0x65, 0x62, 0xb2,
+          ])
+
           const received: string[] = []
 
-          dish.join("test")
+          dish.join(uuid)
 
           await dish.bind(address)
           await radio.connect(address)
@@ -43,14 +51,15 @@ if (zmq.capability.draft) {
             /* Wait briefly before publishing to avoid slow joiner syndrome. */
             await new Promise((resolve) => setTimeout(resolve, 25))
             for (const msg of messages) {
-              await radio.send(msg, {group: "test"})
+              await radio.send(msg, {group: uuid})
             }
           }
 
           const receive = async () => {
             for await (const [msg, {group}] of dish) {
               assert.instanceOf(msg, Buffer)
-              assert.equal(group, "test")
+              assert.instanceOf(group, Buffer)
+              assert.deepEqual(group, uuid)
               received.push(msg.toString())
               if (received.length === messages.length) break
             }
@@ -64,9 +73,9 @@ if (zmq.capability.draft) {
       describe("join/leave", function() {
         it("should filter messages", async function() {
           /* RADIO -> foo -X  DISH
-                  -> bar ->  joined "ba"
-                  -> baz ->
-                  -> qux -X
+                   -> bar ->  joined "ba"
+                   -> baz ->
+                   -> qux -X
           */
 
           const address = uniqAddress(proto)
@@ -91,7 +100,7 @@ if (zmq.capability.draft) {
           const receive = async () => {
             for await (const [msg, {group}] of dish) {
               assert.instanceOf(msg, Buffer)
-              assert.equal(group, msg.slice(0, 2).toString())
+              assert.deepEqual(group, msg.slice(0, 2))
               received.push(msg.toString())
               if (received.length === 2) break
             }

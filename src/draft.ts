@@ -16,14 +16,14 @@ import {
 const {send, receive, join, leave} = methods
 
 
-export interface ServerRoutingOptions {
-  routingId: number
-}
-
 export class Server extends Socket {
   constructor(options?: SocketOptions<Server>) {
     super(SocketType.Server, options)
   }
+}
+
+interface ServerRoutingOptions {
+  routingId: number
 }
 
 export interface Server extends
@@ -42,17 +42,17 @@ export interface Client extends Readable<[Message]>, Writable<MessageLike> {}
 Object.assign(Client.prototype, {send, receive})
 
 
-export interface RadioDishGroupOptions {
-  group: string
-}
-
 export class Radio extends Socket {
   constructor(options?: SocketOptions<Radio>) {
     super(SocketType.Radio, options)
   }
 }
 
-export interface Radio extends Writable<MessageLike, [RadioDishGroupOptions]> {}
+interface RadioGroupOptions {
+  group: Buffer | string
+}
+
+export interface Radio extends Writable<MessageLike, [RadioGroupOptions]> {}
 Object.assign(Radio.prototype, {send})
 
 
@@ -73,7 +73,11 @@ export class Dish extends Socket {
   }
 }
 
-export interface Dish extends Readable<[Message, RadioDishGroupOptions]> {}
+interface DishGroupOptions {
+  group: Buffer
+}
+
+export interface Dish extends Readable<[Message, DishGroupOptions]> {}
 Object.assign(Dish.prototype, {receive})
 
 
