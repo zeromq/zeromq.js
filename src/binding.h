@@ -46,7 +46,3 @@
 #define ZMQ_HAS_POLLABLE_THREAD_SAFE 1
 #endif
 #endif
-
-namespace zmq {
-extern napi_async_context AsyncContext;
-}

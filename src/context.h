@@ -17,6 +17,9 @@ public:
     explicit Context(const Napi::CallbackInfo& info);
     ~Context();
 
+    Context(Context&&) = delete;
+    Context& operator=(Context&&) = delete;
+
 protected:
     template <typename T>
     inline Napi::Value GetCtxOpt(const Napi::CallbackInfo& info);
@@ -32,3 +35,6 @@ private:
     friend class Proxy;
 };
 }
+
+static_assert(!std::is_copy_constructible<zmq::Context>::value, "not copyable");
+static_assert(!std::is_move_constructible<zmq::Context>::value, "not movable");

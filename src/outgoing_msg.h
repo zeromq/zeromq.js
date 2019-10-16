@@ -69,3 +69,6 @@ public:
     }
 };
 }
+
+static_assert(!std::is_copy_constructible<zmq::OutgoingMsg>::value, "not copyable");
+static_assert(!std::is_move_constructible<zmq::OutgoingMsg>::value, "not movable");

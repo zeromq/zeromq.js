@@ -85,7 +85,7 @@
                 '-std=gnu++1y'
               ],
               'cflags_cc+': [
-                '-std=c++11',
+                '-std=c++14',
                 '-Wno-missing-field-initializers',
               ],
             }],
@@ -94,7 +94,7 @@
               'xcode_settings': {
                 # https://pewpewthespells.com/blog/buildsettings.html
                 'CLANG_CXX_LIBRARY': 'libc++',
-                'CLANG_CXX_LANGUAGE_STANDARD': 'c++11',
+                'CLANG_CXX_LANGUAGE_STANDARD': 'c++14',
                 'MACOSX_DEPLOYMENT_TARGET': '10.9',
                 'WARNING_CFLAGS': [
                   '-Wextra',
@@ -126,7 +126,7 @@
                 '-std=gnu++1y'
               ],
               'cflags_cc+': [
-                '-std=c++11',
+                '-std=c++14',
                 '-flto',
                 '-Wno-missing-field-initializers',
               ],
@@ -136,7 +136,7 @@
               # https://pewpewthespells.com/blog/buildsettings.html
               'xcode_settings': {
                 'CLANG_CXX_LIBRARY': 'libc++',
-                'CLANG_CXX_LANGUAGE_STANDARD': 'c++11',
+                'CLANG_CXX_LANGUAGE_STANDARD': 'c++14',
                 'MACOSX_DEPLOYMENT_TARGET': '10.9',
                 'LLVM_LTO': 'YES',
                 'GCC_OPTIMIZATION_LEVEL': '3',

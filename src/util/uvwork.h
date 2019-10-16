@@ -16,7 +16,7 @@ class UvWork {
 
 public:
     inline UvWork(E execute, C complete)
-        : execute_callback(execute), complete_callback(complete) {
+        : execute_callback(std::move(execute)), complete_callback(std::move(complete)) {
         work->data = this;
     }
 
@@ -41,7 +41,7 @@ public:
 template <typename E, typename C>
 static inline int32_t UvQueue(Napi::Env env, E execute, C complete) {
     auto loop = UvLoop(env);
-    auto work = new UvWork<E, C>(execute, complete);
+    auto work = new UvWork<E, C>(std::move(execute), std::move(complete));
     return work->Exec(loop);
 }
 }

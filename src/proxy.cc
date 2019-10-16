@@ -18,7 +18,8 @@ struct ProxyContext {
     ProxyContext(std::string&& address) : address(std::move(address)) {}
 };
 
-Proxy::Proxy(const Napi::CallbackInfo& info) : Napi::ObjectWrap<Proxy>(info) {
+Proxy::Proxy(const Napi::CallbackInfo& info)
+    : Napi::ObjectWrap<Proxy>(info), async_context(Env(), "Proxy") {
     auto args = {
         Argument{"Front-end must be a socket object", &Napi::Value::IsObject},
         Argument{"Back-end must be a socket object", &Napi::Value::IsObject},
@@ -47,13 +48,13 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
     if (Env().IsExceptionPending()) return Env().Undefined();
 
     if (front->endpoints == 0) {
-        Napi::Error::New(info.Env(), "Front-end socket must be bound or connected")
+        Napi::Error::New(Env(), "Front-end socket must be bound or connected")
             .ThrowAsJavaScriptException();
         return Env().Undefined();
     }
 
     if (back->endpoints == 0) {
-        Napi::Error::New(info.Env(), "Back-end socket must be bound or connected")
+        Napi::Error::New(Env(), "Back-end socket must be bound or connected")
             .ThrowAsJavaScriptException();
         return Env().Undefined();
     }
@@ -96,7 +97,7 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
     auto front_ptr = front->socket;
     auto back_ptr = back->socket;
 
-    auto status = UvQueue(info.Env(),
+    auto status = UvQueue(Env(),
         [=]() {
             /* Don't access V8 internals here! Executed in worker thread. */
             if (zmq_bind(control_sub, run_ctx->address.c_str()) < 0) {
@@ -110,7 +111,7 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
             }
         },
         [=]() {
-            AsyncScope scope(Env());
+            AsyncScope scope(Env(), async_context);
 
             front->Close();
             back->Close();

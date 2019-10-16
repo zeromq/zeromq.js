@@ -9,6 +9,9 @@ public:
     IncomingMsg();
     ~IncomingMsg();
 
+    IncomingMsg(const IncomingMsg&) = delete;
+    IncomingMsg& operator=(const IncomingMsg&) = delete;
+
     Napi::Value IntoBuffer(const Napi::Env& env);
 
     inline operator zmq_msg_t*() {
@@ -32,3 +35,6 @@ private:
     bool moved = false;
 };
 }
+
+static_assert(!std::is_copy_constructible<zmq::IncomingMsg>::value, "not copyable");
+static_assert(!std::is_move_constructible<zmq::IncomingMsg>::value, "not movable");
