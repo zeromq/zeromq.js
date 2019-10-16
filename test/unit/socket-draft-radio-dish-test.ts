@@ -2,7 +2,6 @@ import * as zmq from "../../src"
 import * as draft from "../../src/draft"
 
 import {assert} from "chai"
-import {randomBytes} from "crypto"
 import {testProtos, uniqAddress} from "./helpers"
 
 if (zmq.capability.draft) {
