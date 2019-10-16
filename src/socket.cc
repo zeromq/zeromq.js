@@ -315,7 +315,9 @@ void Socket::Receive(const Napi::Promise::Deferred& res) {
 
         case ZMQ_DISH: {
             auto meta = Napi::Object::New(Env());
-            meta.Set("group", zmq_msg_group(part));
+            auto data = zmq_msg_group(part);
+            auto length = strnlen(data, ZMQ_GROUP_MAX_LENGTH);
+            meta.Set("group", Napi::Buffer<char>::Copy(Env(), data, length));
             list[i++] = meta;
             break;
         }
