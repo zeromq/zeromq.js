@@ -1,21 +1,22 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include "binding.h"
+#include "prefix.h"
+
 #include "outgoing_msg.h"
 #include "poller.h"
 
-#include <unordered_set>
-
 namespace zmq {
-class Socket : public Napi::ObjectWrap<Socket> {
+class Module;
+
+class Socket : public Napi::ObjectWrap<Socket>, public Closable {
 public:
-    static Napi::FunctionReference Constructor;
-    static std::unordered_set<void*> ActivePtrs;
-    static void Initialize(Napi::Env& env, Napi::Object& exports);
+    static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Socket(const Napi::CallbackInfo& info);
-    ~Socket();
+    virtual ~Socket();
+
+    void Close() override;
 
 protected:
     enum class State : uint8_t {
@@ -58,7 +59,6 @@ private:
 
     inline void Ref();
     inline void Unref();
-    void Close();
 
     /* Send/receive are usually in a hot path and will benefit slightly
        from being inlined. They are used in more than one location and are
@@ -95,6 +95,8 @@ private:
     Napi::ObjectReference context_ref;
     Napi::ObjectReference observer_ref;
     Socket::Poller poller;
+
+    Module& module;
     void* socket = nullptr;
 
     int64_t send_timeout = -1;

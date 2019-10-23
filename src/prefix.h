@@ -10,13 +10,7 @@
 #endif
 
 #include <cassert>
-
 #include <iostream>
-
-#include "util/arguments.h"
-#include "util/error.h"
-#include "util/object.h"
-#include "util/to_string.h"
 
 #ifdef _MSC_VER
 #define force_inline inline __forceinline
@@ -46,3 +40,11 @@
 #define ZMQ_HAS_POLLABLE_THREAD_SAFE 1
 #endif
 #endif
+
+/* A thing that can be closed. Simple interface to allow us to correctly clean
+   up ZMQ resources at agent exit. */
+namespace zmq {
+struct Closable {
+    virtual void Close() = 0;
+};
+}

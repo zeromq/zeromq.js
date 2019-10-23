@@ -7,6 +7,8 @@
 namespace zmq {
 template <typename T>
 struct UvDeleter {
+    constexpr UvDeleter(){};
+
     inline void operator()(T* handle) {
         /* If uninitialized, simply delete the memory. We
            may not call uv_close() on uninitialized handles. */

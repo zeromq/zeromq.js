@@ -1,18 +1,16 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include "binding.h"
-#include "util/trash.h"
+#include "prefix.h"
 
 #include <forward_list>
 
 namespace zmq {
+class Module;
+
 class OutgoingMsg {
 public:
     class Parts;
-
-    static void Initialize(Napi::Env env);
-    static void Terminate();
 
     /* Avoid copying outgoing messages, since the destructor is not copy safe,
        nor should we have to copy messages with the right STL containers. */
@@ -22,7 +20,7 @@ public:
     /* Outgoing message. Takes a string or buffer argument and releases
        the underlying V8 resources whenever the message is sent, or earlier
        if the message was copied (small buffers & strings). */
-    explicit OutgoingMsg(Napi::Value value);
+    explicit OutgoingMsg(Napi::Value value, Module& module);
     ~OutgoingMsg();
 
     inline operator zmq_msg_t*() {
@@ -32,14 +30,18 @@ public:
 private:
     class Reference {
         Napi::Reference<Napi::Value> persistent;
+        Module& module;
 
     public:
-        inline explicit Reference(Napi::Value val) : persistent(Napi::Persistent(val)) {}
+        inline explicit Reference(Napi::Value val, Module& module)
+            : persistent(Napi::Persistent(val)), module(module) {}
+
+        void Recycle();
     };
 
-    static Trash<Reference> trash;
-
     zmq_msg_t msg;
+
+    friend class Module;
 };
 
 /* Simple list over outgoing messages. Will take a single v8 value or an array
@@ -49,7 +51,7 @@ class OutgoingMsg::Parts {
 
 public:
     inline Parts() {}
-    explicit Parts(Napi::Value value);
+    explicit Parts(Napi::Value value, Module& module);
 
     inline std::forward_list<OutgoingMsg>::iterator begin() {
         return parts.begin();

@@ -21,58 +21,56 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       global.gc()
     })
 
-    describe("run", function() {
-      it("should fail if front end is not bound or connected", async function() {
-        await proxy.backEnd.bind(uniqAddress(proto))
+    it("should fail if front end is not bound or connected", async function() {
+      await proxy.backEnd.bind(uniqAddress(proto))
 
-        try {
-          await proxy.run()
-          assert.ok(false)
-        } catch (err) {
-          assert.instanceOf(err, Error)
-          assert.equal(err.message, "Front-end socket must be bound or connected")
-        }
-      })
+      try {
+        await proxy.run()
+        assert.ok(false)
+      } catch (err) {
+        assert.instanceOf(err, Error)
+        assert.equal(err.message, "Front-end socket must be bound or connected")
+      }
+    })
 
-      it("should fail if front end is not open", async function() {
-        await proxy.frontEnd.bind(uniqAddress(proto))
-        await proxy.backEnd.bind(uniqAddress(proto))
-        proxy.frontEnd.close()
+    it("should fail if front end is not open", async function() {
+      await proxy.frontEnd.bind(uniqAddress(proto))
+      await proxy.backEnd.bind(uniqAddress(proto))
+      proxy.frontEnd.close()
 
-        try {
-          await proxy.run()
-          assert.ok(false)
-        } catch (err) {
-          assert.instanceOf(err, Error)
-          assert.equal(err.message, "Front-end socket must be bound or connected")
-        }
-      })
+      try {
+        await proxy.run()
+        assert.ok(false)
+      } catch (err) {
+        assert.instanceOf(err, Error)
+        assert.equal(err.message, "Front-end socket must be bound or connected")
+      }
+    })
 
-      it("should fail if back end is not bound or connected", async function() {
-        await proxy.frontEnd.bind(uniqAddress(proto))
+    it("should fail if back end is not bound or connected", async function() {
+      await proxy.frontEnd.bind(uniqAddress(proto))
 
-        try {
-          await proxy.run()
-          assert.ok(false)
-        } catch (err) {
-          assert.instanceOf(err, Error)
-          assert.equal(err.message, "Back-end socket must be bound or connected")
-        }
-      })
+      try {
+        await proxy.run()
+        assert.ok(false)
+      } catch (err) {
+        assert.instanceOf(err, Error)
+        assert.equal(err.message, "Back-end socket must be bound or connected")
+      }
+    })
 
-      it("should fail if back end is not open", async function() {
-        await proxy.frontEnd.bind(uniqAddress(proto))
-        await proxy.backEnd.bind(uniqAddress(proto))
-        proxy.backEnd.close()
+    it("should fail if back end is not open", async function() {
+      await proxy.frontEnd.bind(uniqAddress(proto))
+      await proxy.backEnd.bind(uniqAddress(proto))
+      proxy.backEnd.close()
 
-        try {
-          await proxy.run()
-          assert.ok(false)
-        } catch (err) {
-          assert.instanceOf(err, Error)
-          assert.equal(err.message, "Back-end socket must be bound or connected")
-        }
-      })
+      try {
+        await proxy.run()
+        assert.ok(false)
+      } catch (err) {
+        assert.instanceOf(err, Error)
+        assert.equal(err.message, "Back-end socket must be bound or connected")
+      }
     })
   })
 }

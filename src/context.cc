@@ -1,35 +1,39 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #include "context.h"
+#include "module.h"
 #include "socket.h"
 
 #include "util/uvwork.h"
 
-#include <unordered_set>
-
 namespace zmq {
-/* Create a reference to a single global context that is automatically
-   closed on process exit. This is the default context. */
-Napi::ObjectReference GlobalContext;
+Context::Context(const Napi::CallbackInfo& info)
+    : Napi::ObjectWrap<Context>(info), module(*reinterpret_cast<Module*>(info.Data())) {
+    /* If this module has no global context, then create one with a process
+       wide context pointer that is shared between threads/agents. */
+    if (module.GlobalContext.IsEmpty()) {
+        if (!ValidateArguments(info, {})) return;
 
-Napi::FunctionReference Context::Constructor;
-
-std::unordered_set<void*> Context::ActivePtrs;
-
-Context::Context(const Napi::CallbackInfo& info) : Napi::ObjectWrap<Context>(info) {
-    auto args = {
-        Argument{"Options must be an object", &Napi::Value::IsObject,
-            &Napi::Value::IsUndefined},
-    };
-
-    if (!ValidateArguments(info, args)) return;
-
-    context = zmq_ctx_new();
-    if (context != nullptr) {
-        ActivePtrs.insert(context);
+        /* Just use the same shared global context pointer. Contexts are
+           threadsafe anyway. */
+        context = module.Global().SharedContext;
     } else {
-        ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
+        auto args = {
+            Argument{"Options must be an object", &Napi::Value::IsObject,
+                &Napi::Value::IsUndefined},
+        };
+
+        if (!ValidateArguments(info, args)) return;
+
+        context = zmq_ctx_new();
+    }
+
+    if (context == nullptr) {
+        ErrnoException(Env(), EINVAL).ThrowAsJavaScriptException();
         return;
     }
+
+    /* Initialization was successful, register the context for cleanup. */
+    module.ObjectReaper.Add(this);
 
     /* Sealing causes setting/getting invalid options to throw an error.
        Otherwise they would fail silently, which is very confusing. */
@@ -41,12 +45,30 @@ Context::Context(const Napi::CallbackInfo& info) : Napi::ObjectWrap<Context>(inf
 }
 
 Context::~Context() {
-    if (context != nullptr) {
-        /* Messages may still be in the pipeline, so we only shutdown
-           and do not terminate the context just yet. */
-        auto err = zmq_ctx_shutdown(context);
-        assert(err == 0);
+    Close();
+}
 
+void Context::Close() {
+    /* A context will not be explicitly closed unless the current agent/thread
+       is terminated. This method will only be called by a reaper, if the
+       context object has not been GC'ed. */
+    if (context != nullptr) {
+        module.ObjectReaper.Remove(this);
+
+        /* Do not shut down the globally shared context. */
+        if (context != module.Global().SharedContext) {
+            /* Request ZMQ context shutdown but do not terminate yet because
+               termination may block depending on ZMQ_BLOCKY/ZMQ_LINGER. This
+               should definitely be avoided during GC and may only be acceptable
+               at process exit. */
+            auto err = zmq_ctx_shutdown(context);
+            assert(err == 0);
+
+            /* Pass the ZMQ context on to terminator for cleanup at exit. */
+            module.Global().ContextTerminator.Add(context);
+        }
+
+        /* Reset pointer to avoid double close. */
         context = nullptr;
     }
 }
@@ -190,23 +212,7 @@ void Context::SetCtxOpt(const Napi::CallbackInfo& info) {
     }
 }
 
-void TerminateAll(void*) {
-    OutgoingMsg::Terminate();
-
-    /* Close all currently open sockets. */
-    for (auto socket : Socket::ActivePtrs) {
-        auto err = zmq_close(socket);
-        assert(err == 0);
-    }
-
-    /* Terminate all remaining contexts on process exit. */
-    for (auto context : Context::ActivePtrs) {
-        auto err = zmq_ctx_term(context);
-        assert(err == 0);
-    }
-}
-
-void Context::Initialize(Napi::Env& env, Napi::Object& exports) {
+void Context::Initialize(Module& module, Napi::Object& exports) {
     auto proto = {
         InstanceMethod("getBoolOption", &Context::GetCtxOpt<bool>),
         InstanceMethod("setBoolOption", &Context::SetCtxOpt<bool>),
@@ -218,22 +224,14 @@ void Context::Initialize(Napi::Env& env, Napi::Object& exports) {
 #endif
     };
 
-    auto constructor = DefineClass(env, "Context", proto);
+    auto constructor = DefineClass(exports.Env(), "Context", proto, &module);
 
     /* Create global context that is closed on process exit. */
     auto context = constructor.New({});
-
-    GlobalContext = Napi::Persistent(context);
-    GlobalContext.SuppressDestruct();
-
+    module.GlobalContext = Napi::Persistent(context);
     exports.Set("context", context);
 
-    Constructor = Napi::Persistent(constructor);
-    Constructor.SuppressDestruct();
-
+    module.Context = Napi::Persistent(constructor);
     exports.Set("Context", constructor);
-
-    auto status = napi_add_env_cleanup_hook(env, TerminateAll, nullptr);
-    assert(status == napi_ok);
 }
 }

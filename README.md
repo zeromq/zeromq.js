@@ -192,9 +192,9 @@ pub.bind("tcp://*:3456", err => {
 
 In order to develop and test the library, you'll need the following:
 
-* A working C/C++ compiler toolchain with make
-* Python 2.7
 * Node.js 10+
+* A working C/C++ compiler toolchain with make
+* Python 2.7 (or Python 3 with Node 12.13+)
 * CMake 2.8+
 * curl
 * clang-format is strongly recommended

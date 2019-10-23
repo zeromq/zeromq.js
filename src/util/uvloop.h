@@ -4,7 +4,8 @@
 namespace zmq {
 inline uv_loop_t* UvLoop(Napi::Env env) {
     uv_loop_t* loop = nullptr;
-    napi_get_uv_event_loop(env, &loop);
+    auto status = napi_get_uv_event_loop(env, &loop);
+    assert(status == napi_ok);
     return loop;
 }
 }

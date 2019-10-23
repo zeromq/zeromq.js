@@ -1,17 +1,21 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include "binding.h"
+#include "prefix.h"
+
 #include "poller.h"
 
 namespace zmq {
-class Observer : public Napi::ObjectWrap<Observer> {
+class Module;
+
+class Observer : public Napi::ObjectWrap<Observer>, public Closable {
 public:
-    static Napi::FunctionReference Constructor;
-    static void Initialize(Napi::Env& env, Napi::Object& exports);
+    static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Observer(const Napi::CallbackInfo& info);
-    ~Observer();
+    virtual ~Observer();
+
+    void Close() override;
 
 protected:
     inline void Close(const Napi::CallbackInfo& info);
@@ -22,7 +26,6 @@ protected:
 private:
     inline bool ValidateOpen() const;
     bool HasEvents() const;
-    void Close();
 
     force_inline void Receive(const Napi::Promise::Deferred& res);
 
@@ -50,6 +53,8 @@ private:
 
     Napi::AsyncContext async_context;
     Observer::Poller poller;
+
+    Module& module;
     void* socket = nullptr;
 
     friend class Socket;

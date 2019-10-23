@@ -9,6 +9,7 @@
   },
   "scripts": {
     "majordomo": "ts-node majordomo",
-    "queue": "ts-node queue"
+    "queue": "ts-node queue",
+    "threaded-worker": "ts-node threaded-worker"
   }
 }

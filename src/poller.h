@@ -178,8 +178,10 @@ private:
        edge trigger that should allow us to check for read AND write events.
        There is no guarantee that any events are available. */
     static void Callback(uv_poll_t* poll, int32_t status, int32_t events) {
-        auto& poller = *reinterpret_cast<Poller*>(poll->data);
-        if (status == 0) poller.Trigger();
+        if (status == 0) {
+            auto& poller = *reinterpret_cast<Poller*>(poll->data);
+            poller.Trigger();
+        }
     };
 };
 }

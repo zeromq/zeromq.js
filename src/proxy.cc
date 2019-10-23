@@ -1,25 +1,27 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #include "proxy.h"
 #include "context.h"
+#include "module.h"
 #include "socket.h"
 
+#include "util/arguments.h"
 #include "util/async_scope.h"
+#include "util/error.h"
 #include "util/uvwork.h"
 
 #ifdef ZMQ_HAS_STEERABLE_PROXY
 
 namespace zmq {
-Napi::FunctionReference Proxy::Constructor;
-
 struct ProxyContext {
     std::string address;
     uint32_t error = 0;
 
-    ProxyContext(std::string&& address) : address(std::move(address)) {}
+    explicit ProxyContext(std::string&& address) : address(std::move(address)) {}
 };
 
 Proxy::Proxy(const Napi::CallbackInfo& info)
-    : Napi::ObjectWrap<Proxy>(info), async_context(Env(), "Proxy") {
+    : Napi::ObjectWrap<Proxy>(info), async_context(Env(), "Proxy"),
+      module(*reinterpret_cast<Module*>(info.Data())) {
     auto args = {
         Argument{"Front-end must be a socket object", &Napi::Value::IsObject},
         Argument{"Back-end must be a socket object", &Napi::Value::IsObject},
@@ -37,6 +39,8 @@ Proxy::Proxy(const Napi::CallbackInfo& info)
 }
 
 Proxy::~Proxy() {}
+
+void Proxy::Close() {}
 
 Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
     if (!ValidateArguments(info, {})) return Env().Undefined();
@@ -63,17 +67,13 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
     if (Env().IsExceptionPending()) return Env().Undefined();
 
     control_sub = zmq_socket(context->context, ZMQ_DEALER);
-    if (control_sub != nullptr) {
-        Socket::ActivePtrs.insert(control_sub);
-    } else {
+    if (control_sub == nullptr) {
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
         return Env().Undefined();
     }
 
     control_pub = zmq_socket(context->context, ZMQ_DEALER);
-    if (control_pub != nullptr) {
-        Socket::ActivePtrs.insert(control_pub);
-    } else {
+    if (control_pub == nullptr) {
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
         return Env().Undefined();
     }
@@ -116,11 +116,9 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
             front->Close();
             back->Close();
 
-            Socket::ActivePtrs.erase(control_pub);
             auto err1 = zmq_close(control_pub);
             assert(err1 == 0);
 
-            Socket::ActivePtrs.erase(control_sub);
             auto err2 = zmq_close(control_sub);
             assert(err2 == 0);
 
@@ -144,6 +142,12 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
 }
 
 void Proxy::SendCommand(const char* command) {
+    /* Don't send commands if the proxy has terminated. */
+    if (control_pub == nullptr) {
+        ErrnoException(Env(), EBADF).ThrowAsJavaScriptException();
+        return;
+    }
+
     while (zmq_send_const(control_pub, command, strlen(command), ZMQ_DONTWAIT) < 0) {
         if (zmq_errno() != EINTR) {
             ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
@@ -175,7 +179,7 @@ Napi::Value Proxy::GetBackEnd(const Napi::CallbackInfo& info) {
     return back_ref.Value();
 }
 
-void Proxy::Initialize(Napi::Env& env, Napi::Object& exports) {
+void Proxy::Initialize(Module& module, Napi::Object& exports) {
     auto proto = {
         InstanceMethod("run", &Proxy::Run),
         InstanceMethod("pause", &Proxy::Pause),
@@ -186,11 +190,8 @@ void Proxy::Initialize(Napi::Env& env, Napi::Object& exports) {
         InstanceAccessor("backEnd", &Proxy::GetBackEnd, nullptr),
     };
 
-    auto constructor = DefineClass(env, "Proxy", proto);
-
-    Constructor = Napi::Persistent(constructor);
-    Constructor.SuppressDestruct();
-
+    auto constructor = DefineClass(exports.Env(), "Proxy", proto, &module);
+    module.Proxy = Napi::Persistent(constructor);
     exports.Set("Proxy", constructor);
 }
 }
