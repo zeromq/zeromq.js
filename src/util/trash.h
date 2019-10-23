@@ -18,11 +18,10 @@ class Trash {
     std::deque<std::unique_ptr<T>> values;
     std::mutex lock;
     UvHandle<uv_async_t> async;
-    bool terminated;
 
 public:
     /* Construct trash with an associated asynchronous callback. */
-    inline void Initialize(Napi::Env env) {
+    inline Trash(const Napi::Env& env) {
         auto loop = UvLoop(env);
 
         async->data = this;
@@ -39,11 +38,8 @@ public:
     /* Add given item to the trash, marking it for deletion next time the
        async callback is called by UV. */
     inline void Add(T* item) {
-        {
-            std::lock_guard<std::mutex> guard(lock);
-            if (terminated) return;
-            values.emplace_back(std::unique_ptr<T>(item));
-        }
+        std::lock_guard<std::mutex> guard(lock);
+        values.emplace_back(std::unique_ptr<T>(item));
 
         /* Call to uv_async_send() should never return nonzero. UV ensures
            that calls are coalesced if they occur frequently. This is good
@@ -57,13 +53,6 @@ public:
     inline void Clear() {
         std::lock_guard<std::mutex> guard(lock);
         values.clear();
-    }
-
-    /* Stop the trash from touching any referenced values. This method is
-       called after event loop exit when V8 objects are no longer valid. */
-    inline void Terminate() {
-        std::lock_guard<std::mutex> guard(lock);
-        terminated = true;
     }
 };
 }

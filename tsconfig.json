@@ -2,13 +2,11 @@
   "exclude": ["*.d.ts"],
   "compilerOptions": {
     "allowJs": false,
-    "target": "es2017",
+    "target": "es2018",
     "outDir": "lib",
     "declaration": true,
     "module": "commonjs",
     "types": ["node", "mocha"],
-    "lib": ["es2017", "esnext.asynciterable"],
-    "downlevelIteration": true,
     "strict": true,
     "strictPropertyInitialization": false
   }

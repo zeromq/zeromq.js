@@ -1,11 +1,11 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #include "outgoing_msg.h"
+#include "module.h"
+
+#include "util/error.h"
 
 namespace zmq {
-/* Static collection of outgoing message references that can be recycled. */
-Trash<OutgoingMsg::Reference> OutgoingMsg::trash;
-
-OutgoingMsg::OutgoingMsg(Napi::Value value) {
+OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
     static auto constexpr zero_copy_threshold = 32;
     auto buffer_send = [&](uint8_t* data, size_t length) {
         /* Zero-copy heuristic. There's an overhead in releasing the buffer with an
@@ -17,9 +17,9 @@ OutgoingMsg::OutgoingMsg(Napi::Value value) {
                message is sent by ZeroMQ on an *arbitrary* thread. It will add
                the reference to the global trash, which will schedule a callback
                on the main v8 thread in order to safely dispose of the reference. */
-            auto ref = new Reference(value);
+            auto ref = new Reference(value, module);
             auto recycle = [](void*, void* item) {
-                trash.Add(static_cast<Reference*>(item));
+                static_cast<Reference*>(item)->Recycle();
             };
 
             if (zmq_msg_init_data(&msg, data, length, recycle, ref) < 0) {
@@ -91,23 +91,19 @@ OutgoingMsg::~OutgoingMsg() {
     assert(err == 0);
 }
 
-void OutgoingMsg::Initialize(Napi::Env env) {
-    trash.Initialize(env);
+void OutgoingMsg::Reference::Recycle() {
+    module.MsgTrash.Add(this);
 }
 
-void OutgoingMsg::Terminate() {
-    trash.Terminate();
-}
-
-OutgoingMsg::Parts::Parts(Napi::Value value) {
+OutgoingMsg::Parts::Parts(Napi::Value value, Module& module) {
     if (value.IsArray()) {
         /* Reverse insert parts into outgoing message list. */
         auto arr = value.As<Napi::Array>();
         for (auto i = arr.Length(); i--;) {
-            parts.emplace_front(arr[i]);
+            parts.emplace_front(arr[i], module);
         }
     } else {
-        parts.emplace_front(value);
+        parts.emplace_front(value, module);
     }
 }
 

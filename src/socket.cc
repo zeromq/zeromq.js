@@ -1,15 +1,19 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #include "socket.h"
 #include "context.h"
+#include "incoming_msg.h"
+#include "module.h"
 #include "observer.h"
 
-#include "incoming_msg.h"
+#include "util/arguments.h"
 #include "util/async_scope.h"
+#include "util/error.h"
 #include "util/uvloop.h"
 #include "util/uvwork.h"
 
 #include <cmath>
 #include <limits>
+#include <unordered_set>
 
 namespace zmq {
 /* Ordinary static cast for all available numeric types. */
@@ -49,12 +53,9 @@ struct AddressContext {
     explicit AddressContext(std::string&& address) : address(std::move(address)) {}
 };
 
-Napi::FunctionReference Socket::Constructor;
-
-std::unordered_set<void*> Socket::ActivePtrs;
-
 Socket::Socket(const Napi::CallbackInfo& info)
-    : Napi::ObjectWrap<Socket>(info), async_context(Env(), "Socket"), poller(*this) {
+    : Napi::ObjectWrap<Socket>(info), async_context(Env(), "Socket"), poller(*this),
+      module(*reinterpret_cast<Module*>(info.Data())) {
     auto args = {
         Argument{"Socket type must be a number", &Napi::Value::IsNumber},
         Argument{"Options must be an object", &Napi::Value::IsObject,
@@ -71,10 +72,10 @@ Socket::Socket(const Napi::CallbackInfo& info)
             context_ref.Reset(options.Get("context").As<Napi::Object>(), 1);
             options.Delete("context");
         } else {
-            context_ref.Reset(GlobalContext.Value(), 1);
+            context_ref.Reset(module.GlobalContext.Value(), 1);
         }
     } else {
-        context_ref.Reset(GlobalContext.Value(), 1);
+        context_ref.Reset(module.GlobalContext.Value(), 1);
     }
 
     auto context = Context::Unwrap(context_ref.Value());
@@ -150,9 +151,8 @@ Socket::Socket(const Napi::CallbackInfo& info)
         goto error;
     }
 
-    /* Initialization was successful, store the socket pointer in a list for
-       cleanup at process exit. */
-    ActivePtrs.insert(socket);
+    /* Initialization was successful, register the socket for cleanup. */
+    module.ObjectReaper.Add(this);
 
     /* Sealing causes setting/getting invalid options to throw an error.
        Otherwise they would fail silently, which is very confusing. */
@@ -242,6 +242,8 @@ bool Socket::HasEvents(int32_t requested) const {
 
 void Socket::Close() {
     if (socket != nullptr) {
+        module.ObjectReaper.Remove(this);
+
         Napi::HandleScope scope(Env());
 
         /* Unreference this socket if necessary. */
@@ -254,7 +256,6 @@ void Socket::Close() {
         poller.Close();
 
         /* Close succeeds unless socket is invalid. */
-        ActivePtrs.erase(socket);
         auto err = zmq_close(socket);
         assert(err == 0);
 
@@ -263,6 +264,8 @@ void Socket::Close() {
         context_ref.Reset();
 
         state = State::Closed;
+
+        /* Reset pointer to avoid double close. */
         socket = nullptr;
     }
 }
@@ -513,7 +516,7 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
 
     if (!ValidateOpen()) return Env().Undefined();
 
-    OutgoingMsg::Parts parts(info[0]);
+    OutgoingMsg::Parts parts(info[0], module);
 
 #ifdef ZMQ_HAS_POLLABLE_THREAD_SAFE
     switch (type) {
@@ -794,7 +797,7 @@ void Socket::SetSockOpt(const Napi::CallbackInfo& info) {
 Napi::Value Socket::GetEvents(const Napi::CallbackInfo& info) {
     /* Reuse the same observer object every time it is accessed. */
     if (observer_ref.IsEmpty()) {
-        observer_ref.Reset(Observer::Constructor.New({Value()}), 1);
+        observer_ref.Reset(module.Observer.New({Value()}), 1);
     }
 
     return observer_ref.Value();
@@ -816,7 +819,7 @@ Napi::Value Socket::GetWritable(const Napi::CallbackInfo& info) {
     return Napi::Boolean::New(Env(), HasEvents(ZMQ_POLLOUT));
 }
 
-void Socket::Initialize(Napi::Env& env, Napi::Object& exports) {
+void Socket::Initialize(Module& module, Napi::Object& exports) {
     auto proto = {
         InstanceMethod("bind", &Socket::Bind),
         InstanceMethod("unbind", &Socket::Unbind),
@@ -852,11 +855,8 @@ void Socket::Initialize(Napi::Env& env, Napi::Object& exports) {
         InstanceAccessor("writable", &Socket::GetWritable, nullptr),
     };
 
-    auto constructor = DefineClass(env, "Socket", proto);
-
-    Constructor = Napi::Persistent(constructor);
-    Constructor.SuppressDestruct();
-
+    auto constructor = DefineClass(exports.Env(), "Socket", proto, &module);
+    module.Socket = Napi::Persistent(constructor);
     exports.Set("Socket", constructor);
 }
 

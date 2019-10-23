@@ -1,6 +1,7 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #include "observer.h"
 #include "context.h"
+#include "module.h"
 #include "socket.h"
 
 #include "incoming_msg.h"
@@ -9,30 +10,61 @@
 #include <array>
 
 namespace zmq {
-Napi::FunctionReference Observer::Constructor;
-
 template <typename T, typename... N>
 auto constexpr make_array(N&&... args) -> std::array<T, sizeof...(args)> {
     return {{std::forward<N>(args)...}};
 }
 
 /* Events must be in order corresponding to the value of the #define value. */
-static auto events = make_array<const char*>("connect",  // ZMQ_EVENT_CONNECTED
-    "connect:delay",  // ZMQ_EVENT_CONNECT_DELAYED
-    "connect:retry",  // ZMQ_EVENT_CONNECT_RETRIED
-    "bind",  // ZMQ_EVENT_LISTENING
-    "bind:error",  // ZMQ_EVENT_BIND_FAILED
-    "accept",  // ZMQ_EVENT_ACCEPTED
-    "accept:error",  // ZMQ_EVENT_ACCEPT_FAILED
-    "close",  // ZMQ_EVENT_CLOSED
-    "close:error",  // ZMQ_EVENT_CLOSE_FAILED
-    "disconnect",  // ZMQ_EVENT_DISCONNECTED
-    "end",  // ZMQ_EVENT_MONITOR_STOPPED
-    "handshake:error:other",  // ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL
-    "handshake",  // ZMQ_EVENT_HANDSHAKE_SUCCEEDED
-    "handshake:error:protocol",  // ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL
-    "handshake:error:auth",  // ZMQ_EVENT_HANDSHAKE_FAILED_AUTH
-    /* ^-- Insert new events here. */
+static auto events = make_array<const char*>(
+    /* ZMQ_EVENT_CONNECTED */
+    "connect",
+
+    /* EVENT_CONNECT_DELAYED */
+    "connect:delay",
+
+    /* EVENT_CONNECT_RETRIED */
+    "connect:retry",
+
+    /* EVENT_LISTENING */
+    "bind",
+
+    /* EVENT_BIND_FAILED */
+    "bind:error",
+
+    /* EVENT_ACCEPTED */
+    "accept",
+
+    /* EVENT_ACCEPT_FAILED */
+    "accept:error",
+
+    /* EVENT_CLOSED */
+    "close",
+
+    /* EVENT_CLOSE_FAILED */
+    "close:error",
+
+    /* EVENT_DISCONNECTED */
+    "disconnect",
+
+    /* EVENT_MONITOR_STOPPED */
+    "end",
+
+    /* EVENT_HANDSHAKE_FAILED_NO_DETAIL */
+    "handshake:error:other",
+
+    /* EVENT_HANDSHAKE_SUCCEEDED */
+    "handshake",
+
+    /* EVENT_HANDSHAKE_FAILED_PROTOCOL */
+    "handshake:error:protocol",
+
+    /* EVENT_HANDSHAKE_FAILED_AUTH */
+    "handshake:error:auth",
+
+    /* <---- Insert new events here. */
+
+    /* Fallback if the event was unknown. */
     "unknown");
 
 /* https://stackoverflow.com/questions/757059/position-of-least-significant-bit-that-is-set
@@ -48,7 +80,8 @@ static inline const char* EventName(uint32_t val) {
 }
 
 Observer::Observer(const Napi::CallbackInfo& info)
-    : Napi::ObjectWrap<Observer>(info), async_context(Env(), "Observer"), poller(*this) {
+    : Napi::ObjectWrap<Observer>(info), async_context(Env(), "Observer"), poller(*this),
+      module(*reinterpret_cast<Module*>(info.Data())) {
     auto args = {
         Argument{"Socket must be a socket object", &Napi::Value::IsObject},
     };
@@ -92,9 +125,8 @@ Observer::Observer(const Napi::CallbackInfo& info)
         goto error;
     }
 
-    /* Initialization was successful, store the socket pointer in a list for
-       cleanup at process exit. */
-    Socket::ActivePtrs.insert(socket);
+    /* Initialization was successful, register the observer for cleanup. */
+    module.ObjectReaper.Add(this);
 
     return;
 
@@ -133,13 +165,15 @@ bool Observer::HasEvents() const {
 
 void Observer::Close() {
     if (socket != nullptr) {
+        module.ObjectReaper.Remove(this);
+
         Napi::HandleScope scope(Env());
 
         /* Close succeeds unless socket is invalid. */
-        Socket::ActivePtrs.erase(socket);
         auto err = zmq_close(socket);
         assert(err == 0);
 
+        /* Reset pointer to avoid double close. */
         socket = nullptr;
 
         /* Stop all polling and release event handlers. Callling this after
@@ -244,18 +278,15 @@ Napi::Value Observer::GetClosed(const Napi::CallbackInfo& info) {
     return Napi::Boolean::New(Env(), socket == nullptr);
 }
 
-void Observer::Initialize(Napi::Env& env, Napi::Object& exports) {
+void Observer::Initialize(Module& module, Napi::Object& exports) {
     auto proto = {
         InstanceMethod("close", &Observer::Close),
         InstanceMethod("receive", &Observer::Receive),
         InstanceAccessor("closed", &Observer::GetClosed, nullptr),
     };
 
-    auto constructor = DefineClass(env, "Observer", proto);
-
-    Constructor = Napi::Persistent(constructor);
-    Constructor.SuppressDestruct();
-
+    auto constructor = DefineClass(exports.Env(), "Observer", proto, &module);
+    module.Observer = Napi::Persistent(constructor);
     exports.Set("Observer", constructor);
 }
 

@@ -1,18 +1,21 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include "binding.h"
+#include "prefix.h"
 
 #ifdef ZMQ_HAS_STEERABLE_PROXY
 
 namespace zmq {
-class Proxy : public Napi::ObjectWrap<Proxy> {
+class Module;
+
+class Proxy : public Napi::ObjectWrap<Proxy>, public Closable {
 public:
-    static Napi::FunctionReference Constructor;
-    static void Initialize(Napi::Env& env, Napi::Object& exports);
+    static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Proxy(const Napi::CallbackInfo& info);
-    ~Proxy();
+    virtual ~Proxy();
+
+    void Close() override;
 
 protected:
     inline Napi::Value Run(const Napi::CallbackInfo& info);
@@ -32,6 +35,7 @@ private:
     Napi::ObjectReference back_ref;
     Napi::ObjectReference capture_ref;
 
+    Module& module;
     void* control_sub = nullptr;
     void* control_pub = nullptr;
 };

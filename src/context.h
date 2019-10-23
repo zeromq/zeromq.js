@@ -1,24 +1,22 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include "binding.h"
-
-#include <unordered_set>
+#include "prefix.h"
 
 namespace zmq {
-extern Napi::ObjectReference GlobalContext;
+class Module;
 
-class Context : public Napi::ObjectWrap<Context> {
+class Context : public Napi::ObjectWrap<Context>, public Closable {
 public:
-    static Napi::FunctionReference Constructor;
-    static std::unordered_set<void*> ActivePtrs;
-    static void Initialize(Napi::Env& env, Napi::Object& exports);
+    static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Context(const Napi::CallbackInfo& info);
-    ~Context();
+    virtual ~Context();
 
     Context(Context&&) = delete;
     Context& operator=(Context&&) = delete;
+
+    void Close() override;
 
 protected:
     template <typename T>
@@ -28,6 +26,7 @@ protected:
     inline void SetCtxOpt(const Napi::CallbackInfo& info);
 
 private:
+    Module& module;
     void* context = nullptr;
 
     friend class Socket;

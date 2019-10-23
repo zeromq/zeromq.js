@@ -93,7 +93,10 @@ export declare function curveKeyPair(): {
  * messages of their associated sockets.
  *
  * It is usually not necessary to instantiate a new context – the global
- * {@link context} is used for new sockets by default.
+ * {@link context} is used for new sockets by default. The global context is the
+ * only context that is shared between threads (when using
+ * [worker_threads](https://nodejs.org/api/worker_threads.html)). Custom
+ * contexts can only be used in the same thread.
  *
  * ```typescript
  * // Use default context (recommended).
@@ -105,6 +108,12 @@ export declare function curveKeyPair(): {
  * const context = new Context()
  * const socket = new Dealer({context})
  * ```
+ *
+ * **Note:** By default all contexts (including the global context) will prevent
+ * the process from terminating if there are any messages in an outgoing queue,
+ * even if the associated socket was closed. For some applications this is
+ * unnecessary or unwanted. Consider setting {@link Context.blocky} to `false`
+ * or setting {@link Socket.linger} for each new socket.
  */
 export declare class Context {
   /**

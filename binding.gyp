@@ -25,9 +25,9 @@
       'target_name': 'zeromq',
       'dependencies': ['libzmq'],
       'sources': [
-        'src/binding.cc',
         'src/context.cc',
         'src/incoming_msg.cc',
+        'src/module.cc',
         'src/observer.cc',
         'src/outgoing_msg.cc',
         'src/proxy.cc',
