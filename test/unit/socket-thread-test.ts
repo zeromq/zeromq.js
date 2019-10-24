@@ -18,13 +18,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sockA.connect(address)
           await sockA.send(["foo", "bar"])
 
-          const incoming = await sockB.receive()
-
-          /* Closing sockets explicitly in threads is required until Node 13+.
-             https://github.com/nodejs/node/pull/28428 */
-          sockA.close()
-          sockB.close()
-          return incoming
+          return sockB.receive()
         })
 
         assert.deepEqual(["foo", "bar"], recv.map((buf) => Buffer.from(buf).toString()))
@@ -45,10 +39,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sockB.connect(address)
           for await (const msg of sockB) {
             await sockB.send(msg)
-
-            /* Closing sockets explicitly in threads is required until Node 13+.
-               https://github.com/nodejs/node/pull/28428 */
-            sockB.close()
             return
           }
         })
@@ -69,12 +59,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sockA.bind(address)
           await sockA.send(["foo", "bar"])
 
-          const incoming = await sockA.receive()
-
-          /* Closing sockets explicitly in threads is required until Node 13+.
-             https://github.com/nodejs/node/pull/28428 */
-          sockA.close()
-          return incoming
+          return sockA.receive()
         })
 
         /* tslint:disable-next-line: no-shadowed-variable */
@@ -83,10 +68,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sockB.connect(address)
           for await (const msg of sockB) {
             await sockB.send(msg)
-
-            /* Closing sockets explicitly in threads is required until Node 13+.
-               https://github.com/nodejs/node/pull/28428 */
-            sockB.close()
             return
           }
         })

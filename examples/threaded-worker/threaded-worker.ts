@@ -51,8 +51,6 @@ export class ThreadedWorker {
   }
 
   async stop() {
-    /* Closing sockets explicitly in threads is required until Node 13+.
-       https://github.com/nodejs/node/pull/28428 */
     this.input.close()
     this.output.close()
     this.signal.close()
@@ -60,22 +58,18 @@ export class ThreadedWorker {
 
   /* Loop over input and produce output. */
   async run() {
-    try {
-      for await (const [pos, req] of this.input) {
-        if (req.length !== 1) {
-          console.log(`skipping invalid '${req}'`)
-          continue
-        }
-
-        console.log(`received work '${req}' at ${pos}`)
-
-        const res = await this.work(req.toString())
-        await this.output.send([pos, res])
-
-        console.log(`finished work '${req}' -> '${res}' at ${pos}`)
+    for await (const [pos, req] of this.input) {
+      if (req.length !== 1) {
+        console.log(`skipping invalid '${req}'`)
+        continue
       }
-    } finally {
-      this.stop()
+
+      console.log(`received work '${req}' at ${pos}`)
+
+      const res = await this.work(req.toString())
+      await this.output.send([pos, res])
+
+      console.log(`finished work '${req}' -> '${res}' at ${pos}`)
     }
   }
 
