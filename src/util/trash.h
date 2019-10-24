@@ -25,8 +25,12 @@ public:
         auto loop = UvLoop(env);
 
         async->data = this;
-        auto err = uv_async_init(loop, async,
-            [](uv_async_t* async) { reinterpret_cast<Trash*>(async->data)->Clear(); });
+
+        auto clear = [](uv_async_t* async) {
+            reinterpret_cast<Trash*>(async->data)->Clear();
+        };
+
+        auto err = uv_async_init(loop, async, clear);
 
         assert(err == 0);
 

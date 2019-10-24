@@ -31,8 +31,17 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
            does include an overhead in having to call a finalizer when the
            buffer is GC'ed. For very small messages it is faster to copy. */
         moved = true;
-        return Napi::Buffer<uint8_t>::New(env, data, length,
-            [](const Napi::Env& env, uint8_t*, Reference* ref) { delete ref; }, ref);
+
+        /* Put appropriate GC pressure according to the size of the buffer. */
+        Napi::MemoryManagement::AdjustExternalMemory(env, length);
+
+        auto release = [](const Napi::Env& env, uint8_t*, Reference* ref) {
+            auto length = zmq_msg_size(*ref);
+            Napi::MemoryManagement::AdjustExternalMemory(env, -length);
+            delete ref;
+        };
+
+        return Napi::Buffer<uint8_t>::New(env, data, length, release, ref);
     }
 
     if (length > 0) {
