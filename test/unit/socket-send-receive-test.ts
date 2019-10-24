@@ -287,21 +287,22 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       it("should release buffers", async function() {
         const weak = require("weak-napi")
 
-        const address = uniqAddress(proto)
-        await sockB.bind(address)
-        sockA.connect(address)
-
+        const n = 10
         let released = 0
 
         const send = async (size: number) => {
-          const msg = Buffer.alloc(size)
-          weak(msg, () => {released++})
-          await sockA.send(msg)
+          for (let i = 0; i < n; i++) {
+            const msg = Buffer.alloc(size)
+            weak(msg, () => {released++})
+            await sockA.send(msg)
+          }
         }
 
         const receive = async () => {
-          const msg = await sockB.receive()
-          weak(msg, () => {released++})
+          for (let i = 0; i < n; i++) {
+            const msg = await sockB.receive()
+            weak(msg, () => {released++})
+          }
         }
 
         await Promise.all([
@@ -309,35 +310,38 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           receive(),
         ])
 
-        await sockB.unbind(address)
-
         /* Repeated GC to allow inproc messages from being collected. */
         for (let i = 0; i < 5; i++) {
           global.gc()
           await new Promise((resolve) => setTimeout(resolve, 2))
         }
 
-        assert.equal(released, 2)
+        assert.equal(released, n * 2)
       })
 
       it("should release buffers after echo", async function() {
         const weak = require("weak-napi")
 
+        const n = 10
         let released = 0
 
         const echo = async () => {
-          const [msg] = await sockB.receive()
-          await sockB.send(msg)
-          weak(msg, () => {released++})
+          for (let i = 0; i < n; i++) {
+            const [msg] = await sockB.receive()
+            await sockB.send(msg)
+            weak(msg, () => {released++})
+          }
         }
 
         const send = async (size: number) => {
-          const msg = Buffer.alloc(size)
-          weak(msg, () => {released++})
-          await sockA.send(msg)
+          for (let i = 0; i < n; i++) {
+            const msg = Buffer.alloc(size)
+            weak(msg, () => {released++})
+            await sockA.send(msg)
 
-          const [rep] = await sockA.receive()
-          weak(rep, () => {released++})
+            const [rep] = await sockA.receive()
+            weak(rep, () => {released++})
+          }
 
           sockA.close()
           sockB.close()
@@ -354,7 +358,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await new Promise((resolve) => setTimeout(resolve, 2))
         }
 
-        assert.equal(released, 3)
+        assert.equal(released, n * 3)
       })
 
       if (proto === "inproc") {
