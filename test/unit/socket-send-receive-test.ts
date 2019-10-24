@@ -311,9 +311,50 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         await sockB.unbind(address)
 
-        global.gc()
-        await new Promise((resolve) => setTimeout(resolve, 5))
-        assert.equal(released, proto === "inproc" ? 1 : 2)
+        /* Repeated GC to allow inproc messages from being collected. */
+        for (let i = 0; i < 5; i++) {
+          global.gc()
+          await new Promise((resolve) => setTimeout(resolve, 2))
+        }
+
+        assert.equal(released, 2)
+      })
+
+      it("should release buffers after echo", async function() {
+        const weak = require("weak-napi")
+
+        let released = 0
+
+        const echo = async () => {
+          const [msg] = await sockB.receive()
+          await sockB.send(msg)
+          weak(msg, () => {released++})
+        }
+
+        const send = async (size: number) => {
+          const msg = Buffer.alloc(size)
+          weak(msg, () => {released++})
+          await sockA.send(msg)
+
+          const [rep] = await sockA.receive()
+          weak(rep, () => {released++})
+
+          sockA.close()
+          sockB.close()
+        }
+
+        await Promise.all([
+          send(2048),
+          echo(),
+        ])
+
+        /* Repeated GC to allow inproc messages from being collected. */
+        for (let i = 0; i < 5; i++) {
+          global.gc()
+          await new Promise((resolve) => setTimeout(resolve, 2))
+        }
+
+        assert.equal(released, 3)
       })
 
       if (proto === "inproc") {
