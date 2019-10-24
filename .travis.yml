@@ -48,11 +48,13 @@ jobs:
   # Test recent Node versions.
   - os: linux
     node_js: "12"
-    env: ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true
+    # Skip GC tests due to https://github.com/node-ffi-napi/weak-napi/issues/16
+    env: ZMQ_DRAFT=true SKIP_GC_TESTS=true INCLUDE_COMPAT_TESTS=true
 
   - os: linux
     node_js: "13"
-    env: ZMQ_DRAFT=true
+    # Skip GC tests due to https://github.com/node-ffi-napi/weak-napi/issues/16
+    env: ZMQ_DRAFT=true SKIP_GC_TESTS=true
 
   ## PREBUILD STAGE
 
