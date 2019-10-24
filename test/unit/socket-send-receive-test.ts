@@ -78,6 +78,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should copy and release small buffers", async function() {
+        if (process.env.SKIP_GC_TESTS) this.skip()
         const weak = require("weak-napi")
 
         let released = false
@@ -95,6 +96,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should retain large buffers", async function() {
+        if (process.env.SKIP_GC_TESTS) this.skip()
         const weak = require("weak-napi")
 
         let released = false
@@ -285,6 +287,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should release buffers", async function() {
+        if (process.env.SKIP_GC_TESTS) this.skip()
         const weak = require("weak-napi")
 
         const n = 10
@@ -320,6 +323,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should release buffers after echo", async function() {
+        if (process.env.SKIP_GC_TESTS) this.skip()
         const weak = require("weak-napi")
 
         const n = 10
