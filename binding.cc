@@ -1297,8 +1297,8 @@ namespace zmq {
         }
       }
 
-      Local<Object> buf = batch->Get(i).As<Object>();
-      Local<Number> flagsObj = batch->Get(i + 1).As<Number>();
+      Local<Object> buf = batch->Get(Nan::GetCurrentContext(), i).ToLocalChecked().As<Object>();
+      Local<Number> flagsObj = batch->Get(Nan::GetCurrentContext(), i + 1).ToLocalChecked().As<Number>();
 
       int flags = Nan::To<int>(flagsObj).FromJust();
 
