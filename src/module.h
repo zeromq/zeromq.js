@@ -48,9 +48,15 @@ class Module {
 public:
     explicit Module(Napi::Object exports);
 
+    ~Module() {
+        Terminating = true;
+    }
+
     inline class Global& Global() {
         return *global;
     }
+
+    bool Terminating = false;
 
     /* The order of properties defines their destruction in reverse order and is
        very important to ensure a clean process exit. During the destruction of
