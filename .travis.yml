@@ -136,8 +136,9 @@ deploy:
   on:
     tags: true
     condition: "$TRAVIS_BUILD_STAGE_NAME = Prebuild"
-  # api_key:
-  #   secure: ...
+  api_key:
+    # Github API token for @zeromqjs-integration
+    secure: LGumSW+o+hjoYeYTR0HPSkeonjipv5jdflV0AjzIkgQpZAYQv7tOtKBZDbHTdn1kK/P6Kgu3MpzmOsOD/Wr8tdUEK23u1IgL4oUi+sWxqIz0qpOXRnNo6flxZ71LWOtdRJsx9tM+sGKIcHwgcAzvKLeaILheBFxRyYWajluRvCzGfzpcgM5fBxl/lyhJ6KC5xQYbMVZJSHH0frUeSzs3FIlW2NPYBeRk0BWpsmxcLaNGZt2rPEg2RZszRSk7me+i8Z3QmhcbFwugT1LmnRqnHFG3xt4kndwEMUPmncdmyCO//V+cBHCjkt1T3Y06o6BoGC5hSjZvu5E2msAOlfx3iB9ZBxuVE2av2MEwdGh16sOg7wUYJN/OBHNIn8aevvDyWBfCwxqXCUV+Y4UzDqL01JePjYHTpaUN5v4dD+Pw6g6rUj2B4ImMb54Uum8NikcqODjii1iJqF08wZdrentTOz85eLLclRY3qu5I0dR50DPfZt1sXVgIzBt/jCDADLUlIFmvwFCRn3/wp+//xNFZMFy0LyaxDuVfKnje4lcHSo3/ueIBYvyKh4UwWs2WZwt34rzaABAKzSy+/B2d8cFRo+ov0jiwdIdxIexYAI0GjoA3+gOq6GnscSIxEwtH440Lzu+Deq5A602OZnXY1rnlaxcVG+V2ldmxY6EGOwMdZxc=
 
 # Deploy package including all generated prebuilds to NPM.
 - provider: npm
@@ -146,9 +147,11 @@ deploy:
   on:
     tags: true
     condition: "$TRAVIS_BUILD_STAGE_NAME = Publish"
-  # api_key:
-  #   secure: ...
+  api_key:
+    # NPM API token for @zeromqjs-integration
+    secure: sJLxdZXXP0pbUEt2PQkJfraPHqG0jrpoesdVDw189KQvOyeLxRMzuF+BpxGhm6wkrOVF+H4AMVbpTC52yZoHZBLMLUNcHhXjMeztxVsuCe54NLDWSZQ9xGzrZh8npZZCykjdkb+Ax0Xf8wNRcBPZy7KNCoA/JD/qkRyzMjIOQLefxdxAQUcFdYh4sWWc6GqJzxVjX7/Q6jh9l+5Ky+ayLypGaZRirSrsVCsrGhhebPCx9RVQrzopips5fC8UJRF+t3oWRmsrqlsh4FAlo6PPRVzraJL8b92krHrea1wtIPJbTH66sWxzvCw3O8TyiQIkTQwCKVSTmJ4UOVsKchIwWABdno/7DS/5kQyvP/f8yuQ+/kburuRxeJWkTuOz08EAQBviGR5VxVbffPBQyakfEhO0Aw9BC4yGZxTx4mXv2JqSAZRuDS4tntAfpVbkBUZvIDMqGAviMlM9JgTyvoEYmRJAUA33vjaKTa2kJ/bls/lSej6Hl/f5BJ7PHHzofmqi4PPdqRVHX61zrm/TaG5OfIO8wS2cTGFwTWOHcn9BCYzkEm8z+xJ9Kz4dRpKCQAKDCr/FXRAGSyWtA7Wk6T9hdx67wKHOXTRaoiT+V1Ci9xPAUFURJKl/Cef7VOMT1imnx0o3VKlX2md/Up9oSi0tuXHrz+Vol/D+3hMEgVsbub8=
 
-# env:
-#   global:
-#     secure: ...
+env:
+  global:
+    # GITHUB_TOKEN=<Github API token for @zeromqjs-integration>
+    secure: C4S4sfX6e3VubfxkeM1LA3qbKM1BnhnCLVOgCHiHYeRpnVROMQmXqxo9S0cy+M0oj35jdaGWaCjJjbdpE2ofc/9MMEGeBsT91Gz3cE9HAmwDsp4XD12fxjrK0tTr6Bu/G1gxmUYxNw3Vb0EeaRAMx19MO/vRQTbxlSGf38zNLQccioqPq1ihIHAg9g6K9gtoE/WZnCTvydvOQYnBpBaEsiQJBVmmqZnO6Rxg1t8dxRjyUnzEufdKzPT4Qf1sn6zIC7mM362ndIuE4V483BiK5xt/ZDzkb6QPdgWSnTS2dBc2gCrNMnIAdqY1tbQ9PdDr8phY/X5tYqjZwwL8sRcab5gZm5qTzK1fdz3sYOYDU1j8uUyh7W9H10ePHkwhQgQxZc6g8kkwEq8mA/35dMO+x/VaIYYDUoFW8rU+suVFThuSGZhjCzEwM4+b/BkL26Ux1MrXJdsaqpRqBJNJKO9SyaDBrdNHZ4aYLhvnTikE82PR98mQTO7bPdZbrmMPVa1mE9dl1TOdPCk22ykzJuIMYSaFDDm5fUF3smkBqmkvVE3EO4FoVYyVL5tM4PoZzIQVO9H6w8nli49Ry0zZ0mEuUuEKG+uH4ZY6wL49m/f7WJ3ndnUF8FUHoW1Z43V2SZ+MHtIZX8srQxWmXN38x2hHc9HePN629SHEqx7OV8zFoJU=
