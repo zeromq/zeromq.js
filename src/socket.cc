@@ -252,8 +252,9 @@ void Socket::Close() {
             endpoints = 0;
         }
 
-        /* Stop all polling and release event handlers. */
-        poller.Close();
+        /* Stop all polling and release event handlers. If the module is
+           terminating, first cancel all callbacks (they won't work anymore). */
+        poller.Close(module.Terminating);
 
         /* Close succeeds unless socket is invalid. */
         auto err = zmq_close(socket);
@@ -343,8 +344,7 @@ Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
 
     state = Socket::State::Blocked;
     auto res = Napi::Promise::Deferred::New(Env());
-    auto run_ctx =
-        std::make_shared<AddressContext>(info[0].As<Napi::String>().Utf8Value());
+    auto run_ctx = std::make_shared<AddressContext>(info[0].As<Napi::String>());
 
     auto status = UvQueue(Env(),
         [=]() {
@@ -395,8 +395,7 @@ Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
 
     state = Socket::State::Blocked;
     auto res = Napi::Promise::Deferred::New(Env());
-    auto run_ctx =
-        std::make_shared<AddressContext>(info[0].As<Napi::String>().Utf8Value());
+    auto run_ctx = std::make_shared<AddressContext>(info[0].As<Napi::String>());
 
     auto status = UvQueue(Env(),
         [=]() {

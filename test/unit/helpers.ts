@@ -1,5 +1,7 @@
 import * as path from "path"
 import * as semver from "semver"
+
+import {spawn} from "child_process"
 import {Worker} from "worker_threads"
 
 import * as zmq from "../../src"
@@ -51,7 +53,7 @@ export function createWorker<T, D extends {}>(
       parentPort.postMessage(msg)
     }
 
-    run().then(global.gc)
+    run()
   `
 
   const worker = new Worker(src, {
@@ -69,5 +71,35 @@ export function createWorker<T, D extends {}>(
         reject(new Error(`Worker stopped with exit code ${code}`))
       }
     })
+  })
+}
+
+export function createProcess(fn: () => void): Promise<number> {
+  const src = `
+    const zmq = require(${JSON.stringify(path.resolve(__dirname, "../.."))})
+    const fn = ${fn.toString()}
+    fn()
+  `
+
+  const child = spawn(process.argv[0], ["--expose_gc"])
+  child.stdin.write(src)
+  child.stdin.end()
+
+  child.stdout.on("data", (data: Buffer) => console.log(data.toString()))
+  child.stderr.on("data", (data: Buffer) => console.error(data.toString()))
+
+  return new Promise((resolve, reject) => {
+    child.on("close", (code: number, signal: string) => {
+      if (signal != null) {
+        reject(new Error(`Child exited with ${signal}`))
+      } else {
+        resolve(code)
+      }
+    })
+
+    setTimeout(() => {
+      resolve(-1)
+      child.kill()
+    }, 1000)
   })
 }

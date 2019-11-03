@@ -65,7 +65,10 @@ public:
 
     /* Safely close and release all handles. This can be called before
        destruction to release resources early. */
-    inline void Close() {
+    inline void Close(bool cancel = false) {
+        /* Cancels watched events, don't trigger. */
+        if (cancel) events = 0;
+
         /* Trigger all watched events manually, which causes any pending
            operation to succeed or fail immediately. */
         if (events) Trigger(events);
