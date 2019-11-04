@@ -13,8 +13,14 @@ async function download() {
   const [, user, repo] = url.match(/\/([a-z0-9_.-]+)\/([a-z0-9_.-]+)\.git$/i)
 
   const res = await fetch(`https://api.github.com/repos/${user}/${repo}/releases/tags/v${version}`)
+
   if (!res.ok) {
-    throw new Error(`Github release v${version} not found (${res.status})`)
+    if (res.status == 404) {
+      throw new Error(`Github release v${version} not found (${res.status})`)
+    } else {
+      const body = await res.text()
+      throw new Error(`Github release v${version} not accessible (${res.status}): ${body}`)
+    }
   }
 
   const {assets} = await res.json()
