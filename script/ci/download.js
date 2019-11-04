@@ -10,7 +10,7 @@ async function download() {
     throw new Error(`Version mismatch (TRAVIS_TAG=${process.env.TRAVIS_TAG}, version=${version}`)
   }
 
-  const [, user, repo] = url.match(/\/([a-z0-9_-]+)\/([a-z0-9_-]+)\.git$/i)
+  const [, user, repo] = url.match(/\/([a-z0-9_.-]+)\/([a-z0-9_.-]+)\.git$/i)
 
   const res = await fetch(`https://api.github.com/repos/${user}/${repo}/releases/tags/v${version}`)
   if (!res.ok) {
