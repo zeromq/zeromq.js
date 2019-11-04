@@ -10,6 +10,9 @@
 * High performance.
 * Fully usable with TypeScript.
 
+The API reference [can be found here](http://zeromq.github.io/zeromq.js/globals.html).
+
+
 # Table of contents
 
 * [Installation](#installation)
