@@ -41,17 +41,17 @@
     "LICENSE",
     "README.md",
     "binding.gyp",
-    "compat.js",
-    "compat.d.ts",
-    "draft.js",
     "draft.d.ts",
+    "draft.js",
     "lib/*.d.ts",
     "lib/*.js",
     "src/util/*.h",
     "src/*.cc",
     "src/*.h",
     "script/build.sh",
-    "prebuilds"
+    "prebuilds",
+    "v5-compat.d.ts",
+    "v5-compat.js"
   ],
   "scripts": {
     "install": "node-gyp-build",
