@@ -112,9 +112,6 @@ jobs:
     script: script/ci/package.sh
 
   fast_finish: true
-  allow_failures:
-  - os: linux
-    node_js: "13"
 
 stages:
 - name: test
