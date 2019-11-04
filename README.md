@@ -2,7 +2,7 @@
 
 [![Greenkeeper monitoring](https://img.shields.io/badge/dependencies-monitored-brightgreen.svg)](https://greenkeeper.io/) [![Travis build status](https://img.shields.io/travis/zeromq/zeromq.js.svg)](https://travis-ci.org/zeromq/zeromq.js)
 
-## ⚠️⚠️⚠️ This is work in progress and published only as a beta version. For the current stable version see the [5.x branch](https://github.com/zeromq/zeromq.js/tree/5.x) ⚠️⚠️⚠️
+## ⚠️⚠️⚠️ This is work in progress and published as a beta version. For the current stable version see the [5.x branch](https://github.com/zeromq/zeromq.js/tree/5.x) ⚠️⚠️⚠️
 
 [ØMQ](http://zeromq.org) bindings for Node.js. The goals of this library are:
 * Semantically similar to the [native](https://github.com/zeromq/libzmq) ØMQ library, while sticking to JavaScript idioms.
@@ -26,7 +26,7 @@
 Install ZeroMQ.js with prebuilt binaries:
 
 ```sh
-npm install zeromq@6.0.0-beta.1
+npm install zeromq
 ```
 
 Requirements for prebuilt binaries:
@@ -44,13 +44,13 @@ If a prebuilt binary is not available for your platform, installing will attempt
 If you want to link against a shared ZeroMQ library, you can build and link with the shared library as follows:
 
 ```sh
-npm install zeromq@6.0.0-beta.1 --zmq-shared
+npm install zeromq --zmq-shared
 ```
 
 If you wish to use any DRAFT sockets then it is also necessary to compile the library from source:
 
 ```sh
-npm install zeromq@6.0.0-beta.1 --zmq-draft
+npm install zeromq --zmq-draft
 ```
 
 Make sure you have the following installed before attempting to build from source:
@@ -81,7 +81,7 @@ async function run() {
   await sock.bind("tcp://127.0.0.1:3000")
   console.log("Producer bound to port 3000")
 
-  while (!sock.closed) {
+  while (true) {
     await sock.send("some work")
     await new Promise(resolve => setTimeout(resolve, 500))
   }
@@ -101,8 +101,7 @@ async function run() {
   sock.connect("tcp://127.0.0.1:3000")
   console.log("Worker connected to port 3000")
 
-  while (!sock.closed) {
-    const [msg] = await sock.receive()
+  for await (const [msg] of sock) {
     console.log("work: %s", msg.toString())
   }
 }
@@ -127,7 +126,7 @@ async function run() {
   await sock.bind("tcp://127.0.0.1:3000")
   console.log("Publisher bound to port 3000")
 
-  while (!sock.closed) {
+  while (true) {
     console.log("sending a multipart message envelope")
     await sock.send(["kitty cats", "meow!"])
     await new Promise(resolve => setTimeout(resolve, 500))
@@ -149,8 +148,7 @@ async function run() {
   sock.subscribe("kitty cats")
   console.log("Subscriber connected to port 3000")
 
-  while (!sock.closed) {
-    const [topic, msg] = await sock.receive()
+  for await (const [topic, msg] of sock) {
     console.log("received a message related to:", topic, "containing message:", msg)
   }
 }
