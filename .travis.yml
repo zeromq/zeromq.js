@@ -141,7 +141,7 @@ deploy:
 
 # Deploy package including all generated prebuilds to NPM.
 - provider: npm
-  email: r.w.timmermans@gmail.com
+  email: rolftimmermans+zeromqjs@voormedia.com
   skip_cleanup: true
   on:
     tags: true
