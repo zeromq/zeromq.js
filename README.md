@@ -2,7 +2,7 @@
 
 [![Greenkeeper monitoring](https://img.shields.io/badge/dependencies-monitored-brightgreen.svg)](https://greenkeeper.io/) [![Travis build status](https://img.shields.io/travis/zeromq/zeromq.js.svg)](https://travis-ci.org/zeromq/zeromq.js)
 
-## ⚠️⚠️⚠️ This is work in progress and published as a beta version. For the current stable version see the [5.x branch](https://github.com/zeromq/zeromq.js/tree/5.x) ⚠️⚠️⚠️
+## ⚠️ Version 6.0.0 (in beta) features a brand new API that solves many fundamental issues and is recommended for new projects. For the current stable version see the [5.x branch](https://github.com/zeromq/zeromq.js/tree/5.x) ⚠️
 
 [ØMQ](http://zeromq.org) bindings for Node.js. The goals of this library are:
 * Semantically similar to the [native](https://github.com/zeromq/libzmq) ØMQ library, while sticking to JavaScript idioms.
