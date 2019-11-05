@@ -36,7 +36,7 @@ We rely on [`prebuild`](https://github.com/mafintosh/prebuild).
 Install `zeromq` with the following:
 
 ```bash
-npm install zeromq
+npm install zeromq@5
 ```
 windows users:
 do not forget to set msvs_version according to your visual studio version 2013,2015,2017
@@ -47,7 +47,7 @@ To use your system's libzmq (if it has been installed and development headers
 are available):
 
 ```bash
-npm install zeromq --zmq-external
+npm install zeromq@5 --zmq-external
 ```
 
 ### Rebuilding for Electron
@@ -102,7 +102,7 @@ Use your distribution's package manager to install.
 Now you can install `zeromq` with the following:
 
 ```bash
-npm install zeromq
+npm install zeromq@5
 ```
 
 ## Installation - Contributors and Development
