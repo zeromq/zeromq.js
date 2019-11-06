@@ -100,6 +100,6 @@ export function createProcess(fn: () => void): Promise<number> {
     setTimeout(() => {
       resolve(-1)
       child.kill()
-    }, 1000)
+    }, 750)
   })
 }

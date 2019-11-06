@@ -29,7 +29,7 @@ describe("context process exit", function() {
     })
 
     it("should not occur when sockets are open and polling", async function() {
-      this.slow(750)
+      this.slow(1000)
       const code = await createProcess(() => {
         const socket1 = new zmq.Dealer
         socket1.connect("inproc://foo")
@@ -84,7 +84,7 @@ describe("context process exit", function() {
     })
 
     it("should not occur when sockets are open and polling", async function() {
-      this.slow(750)
+      this.slow(1000)
       const code = await createProcess(() => {
         const context = new zmq.Context
         const socket1 = new zmq.Dealer({context})

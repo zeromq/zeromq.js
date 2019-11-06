@@ -22,7 +22,27 @@ describe("socket process exit", function() {
     assert.equal(code, 0)
   })
 
-  it("should occur cleanly when reading events", async function() {
+  it("should occur cleanly when sending on unbound socket", async function() {
+    this.slow(200)
+    const code = await createProcess(async () => {
+      const sock = new zmq.Publisher
+      await sock.send("test")
+    })
+
+    assert.equal(code, 0)
+  })
+
+  it("should not occur when sending and blocked on unbound socket", async function() {
+    this.slow(1000)
+    const code = await createProcess(async () => {
+      const sock = new zmq.Dealer
+      await sock.send("test")
+    })
+
+    assert.equal(code, -1)
+  })
+
+  it("should occur cleanly on socket close when reading events", async function() {
     this.slow(200)
     const code = await createProcess(() => {
       const sock = new zmq.Dealer
@@ -35,8 +55,23 @@ describe("socket process exit", function() {
       }
 
       readEvents()
+      sock.close()
     })
 
     assert.equal(code, 0)
+  })
+
+  it("should not occur while reading events", async function() {
+    this.slow(1000)
+    const code = await createProcess(async () => {
+      const sock = new zmq.Dealer
+
+      const events = []
+      for await (const event of sock.events) {
+        events.push(event)
+      }
+    })
+
+    assert.equal(code, -1)
   })
 })

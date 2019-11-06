@@ -178,9 +178,8 @@ void Observer::Close() {
 
         /* Stop all polling and release event handlers. Callling this after
            setting socket to null causes a pending receive promise to be
-           resolved with undefined. If the module is terminating, first cancel
-           all callbacks (they won't work anymore). */
-        poller.Close(module.Terminating);
+           resolved with undefined. */
+        poller.Close();
     }
 }
 

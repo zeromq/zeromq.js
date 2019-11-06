@@ -384,6 +384,26 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       }
     })
 
+    if (proto !== "inproc") {
+      describe("when connected after send/receive", function() {
+        it("should deliver message", async function() {
+          const address = uniqAddress(proto)
+
+          const sent = "foo"
+          const promise = Promise.all([
+            sockB.receive(),
+            sockA.send(sent),
+          ])
+
+          await sockB.bind(address)
+          await sockA.connect(address)
+
+          const [recv] = await promise
+          assert.deepEqual([sent], recv.map((buf: Buffer) => buf.toString()))
+        })
+      })
+    }
+
     describe("when closed", function() {
       beforeEach(function() {
         sockA.close()

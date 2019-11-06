@@ -57,9 +57,6 @@ private:
     inline bool ValidateOpen() const;
     bool HasEvents(int32_t events) const;
 
-    inline void Ref();
-    inline void Unref();
-
     /* Send/receive are usually in a hot path and will benefit slightly
        from being inlined. They are used in more than one location and are
        not necessarily automatically inlined by all compilers. */

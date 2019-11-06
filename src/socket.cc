@@ -246,15 +246,11 @@ void Socket::Close() {
 
         Napi::HandleScope scope(Env());
 
-        /* Unreference this socket if necessary. */
-        if (endpoints > 0) {
-            poller.Unref();
-            endpoints = 0;
-        }
+        /* Clear endpoint count. */
+        endpoints = 0;
 
-        /* Stop all polling and release event handlers. If the module is
-           terminating, first cancel all callbacks (they won't work anymore). */
-        poller.Close(module.Terminating);
+        /* Stop all polling and release event handlers. */
+        poller.Close();
 
         /* Close succeeds unless socket is invalid. */
         auto err = zmq_close(socket);
@@ -358,7 +354,9 @@ Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
         },
         [=]() {
             AsyncScope scope(Env(), async_context);
+
             state = Socket::State::Open;
+            endpoints++;
 
             if (request_close) {
                 Close();
@@ -368,10 +366,6 @@ Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
                 res.Reject(
                     ErrnoException(Env(), run_ctx->error, run_ctx->address).Value());
                 return;
-            }
-
-            if (endpoints++ == 0) {
-                poller.Ref();
             }
 
             res.Resolve(Env().Undefined());
@@ -409,7 +403,9 @@ Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
         },
         [=]() {
             AsyncScope scope(Env(), async_context);
+
             state = Socket::State::Open;
+            --endpoints;
 
             if (request_close) {
                 Close();
@@ -419,10 +415,6 @@ Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
                 res.Reject(
                     ErrnoException(Env(), run_ctx->error, run_ctx->address).Value());
                 return;
-            }
-
-            if (--endpoints == 0) {
-                poller.Unref();
             }
 
             res.Resolve(Env().Undefined());
@@ -450,9 +442,7 @@ void Socket::Connect(const Napi::CallbackInfo& info) {
         return;
     }
 
-    if (endpoints++ == 0) {
-        poller.Ref();
-    }
+    endpoints++;
 }
 
 void Socket::Disconnect(const Napi::CallbackInfo& info) {
@@ -469,9 +459,7 @@ void Socket::Disconnect(const Napi::CallbackInfo& info) {
         return;
     }
 
-    if (--endpoints == 0) {
-        poller.Unref();
-    }
+    --endpoints;
 }
 
 void Socket::Close(const Napi::CallbackInfo& info) {
