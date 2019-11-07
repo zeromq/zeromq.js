@@ -65,10 +65,10 @@ static inline const char* EventName(uint32_t val) {
         return "handshake:error:auth";
 #endif
 
-    /* <---- Insert new events here. */
+        /* <---- Insert new events here. */
 
-    /* Fallback if the event was unknown. */
     default:
+        /* Fallback if the event was unknown, which should not happen. */
         return "unknown";
     }
 }
@@ -83,6 +83,7 @@ static inline const char* AuthError(uint32_t val) {
     case 500:
         return "Internal error";
     default:
+        /* Fallback if the auth error was unknown, which should not happen. */
         return "Unknown error";
     }
 }
@@ -116,6 +117,7 @@ static inline std::pair<const char*, const char*> ProtoError(uint32_t val) {
         PROTO_ERROR_CASE(ZAP, INVALID_STATUS_CODE);
         PROTO_ERROR_CASE(ZAP, INVALID_METADATA);
     default:
+        /* Fallback if the proto error was unknown, which should not happen. */
         return std::make_pair("Unknown error", "ERR_UNKNOWN");
     }
 }

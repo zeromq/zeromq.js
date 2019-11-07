@@ -1,3 +1,4 @@
+import * as semver from "semver"
 import * as zmq from "../../src"
 
 import {assert} from "chai"
@@ -15,7 +16,7 @@ for (const proto of testProtos("tcp", "ipc")) {
     })
 
     afterEach(function() {
-      handler.stop()
+      if (handler) handler.stop()
       sockA.close()
       sockB.close()
       global.gc()
@@ -49,6 +50,9 @@ for (const proto of testProtos("tcp", "ipc")) {
       })
 
       it("should report authentication error", async function() {
+        /* ZMQ < 4.3.0 does not have these event details. */
+        if (semver.satisfies(zmq.version, "< 4.3.0")) this.skip()
+
         handler = new ValidatingZapHandler({
           domain: "test",
           mechanism: "PLAIN",
@@ -86,7 +90,10 @@ for (const proto of testProtos("tcp", "ipc")) {
         assert.equal(eventB.error.status, 400)
       })
 
-      it("should report protocol error", async function() {
+      it("should report protocol version error", async function() {
+        /* ZMQ < 4.3.0 does not have these event details. */
+        if (semver.satisfies(zmq.version, "< 4.3.0")) this.skip()
+
         handler = new CustomZapHandler(
           ([path, delim, version, id, ...rest]) => {
             return [path, delim, "9.9", id, "200", "OK", null, null]
@@ -97,7 +104,6 @@ for (const proto of testProtos("tcp", "ipc")) {
         sockA.zapDomain = "test"
 
         sockB.plainUsername = "user"
-        sockB.plainPassword = "BAD PASS"
 
         const address = uniqAddress(proto)
         await sockA.bind(address)
@@ -109,6 +115,52 @@ for (const proto of testProtos("tcp", "ipc")) {
         assert.instanceOf(eventA.error, Error)
         assert.equal(eventA.error.message, "ZAP protocol error")
         assert.equal(eventA.error.code, "ERR_ZAP_BAD_VERSION")
+      })
+
+      it("should report protocol format error", async function() {
+        /* ZMQ < 4.3.0 does not have these event details. */
+        if (semver.satisfies(zmq.version, "< 4.3.0")) this.skip()
+
+        handler = new CustomZapHandler(
+          ([path, delim, ...rest]) => {
+            return [path, delim, null, null]
+          },
+        )
+
+        sockA.plainServer = true
+        sockA.zapDomain = "test"
+
+        sockB.plainUsername = "user"
+
+        const address = uniqAddress(proto)
+        await sockA.bind(address)
+        await sockB.connect(address)
+
+        const eventA = await captureEvent(sockA, "handshake:error:protocol")
+        assert.equal(eventA.type, "handshake:error:protocol")
+        assert.equal(eventA.address, address)
+        assert.instanceOf(eventA.error, Error)
+        assert.equal(eventA.error.message, "ZAP protocol error")
+        assert.equal(eventA.error.code, "ERR_ZAP_MALFORMED_REPLY")
+      })
+
+      it("should report mechanism mismatch error", async function() {
+        /* ZMQ < 4.3.0 does not have these event details. */
+        if (semver.satisfies(zmq.version, "< 4.3.0")) this.skip()
+
+        sockA.plainServer = true
+        sockB.curveServer = true
+
+        const address = uniqAddress(proto)
+        await sockA.bind(address)
+        await sockB.connect(address)
+
+        const eventA = await captureEvent(sockA, "handshake:error:protocol")
+        assert.equal(eventA.type, "handshake:error:protocol")
+        assert.equal(eventA.address, address)
+        assert.instanceOf(eventA.error, Error)
+        assert.equal(eventA.error.message, "ZMTP protocol error")
+        assert.equal(eventA.error.code, "ERR_ZMTP_MECHANISM_MISMATCH")
       })
     })
   })
