@@ -79,6 +79,7 @@ static inline const char* EventName(uint32_t val) {
     return events[ffs];
 }
 
+#ifdef ZMQ_EVENT_HANDSHAKE_FAILED_AUTH
 static inline const char* AuthError(uint32_t val) {
     switch (val) {
     case 300:
@@ -91,7 +92,9 @@ static inline const char* AuthError(uint32_t val) {
         return "Unknown error";
     }
 }
+#endif
 
+#ifdef ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL
 static inline std::pair<const char*, const char*> ProtoError(uint32_t val) {
 #define PROTO_ERROR_CASE(_prefix, _err)                                                  \
     case ZMQ_PROTOCOL_ERROR_##_prefix##_##_err:                                          \
@@ -122,6 +125,7 @@ static inline std::pair<const char*, const char*> ProtoError(uint32_t val) {
         return std::make_pair("Unknown error", "ERR_UNKNOWN");
     }
 }
+#endif
 
 Observer::Observer(const Napi::CallbackInfo& info)
     : Napi::ObjectWrap<Observer>(info), async_context(Env(), "Observer"), poller(*this),
