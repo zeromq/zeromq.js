@@ -10,73 +10,67 @@
 #include <array>
 
 namespace zmq {
-template <typename T, typename... N>
-auto constexpr make_array(N&&... args) -> std::array<T, sizeof...(args)> {
-    return {{std::forward<N>(args)...}};
-}
+static inline const char* EventName(uint32_t val) {
+    switch (val) {
+    case ZMQ_EVENT_CONNECTED:
+        return "connect";
 
-/* Events must be in order corresponding to the value of the #define value. */
-static auto events = make_array<const char*>(
-    /* ZMQ_EVENT_CONNECTED */
-    "connect",
+    case ZMQ_EVENT_CONNECT_DELAYED:
+        return "connect:delay";
 
-    /* EVENT_CONNECT_DELAYED */
-    "connect:delay",
+    case ZMQ_EVENT_CONNECT_RETRIED:
+        return "connect:retry";
 
-    /* EVENT_CONNECT_RETRIED */
-    "connect:retry",
+    case ZMQ_EVENT_LISTENING:
+        return "bind";
 
-    /* EVENT_LISTENING */
-    "bind",
+    case ZMQ_EVENT_BIND_FAILED:
+        return "bind:error";
 
-    /* EVENT_BIND_FAILED */
-    "bind:error",
+    case ZMQ_EVENT_ACCEPTED:
+        return "accept";
 
-    /* EVENT_ACCEPTED */
-    "accept",
+    case ZMQ_EVENT_ACCEPT_FAILED:
+        return "accept:error";
 
-    /* EVENT_ACCEPT_FAILED */
-    "accept:error",
+    case ZMQ_EVENT_CLOSED:
+        return "close";
 
-    /* EVENT_CLOSED */
-    "close",
+    case ZMQ_EVENT_CLOSE_FAILED:
+        return "close:error";
 
-    /* EVENT_CLOSE_FAILED */
-    "close:error",
+    case ZMQ_EVENT_DISCONNECTED:
+        return "disconnect";
 
-    /* EVENT_DISCONNECTED */
-    "disconnect",
+    case ZMQ_EVENT_MONITOR_STOPPED:
+        return "end";
 
-    /* EVENT_MONITOR_STOPPED */
-    "end",
+#ifdef ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL
+    case ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL:
+        return "handshake:error:other";
+#endif
 
-    /* EVENT_HANDSHAKE_FAILED_NO_DETAIL */
-    "handshake:error:other",
+#ifdef ZMQ_EVENT_HANDSHAKE_SUCCEEDED
+    case ZMQ_EVENT_HANDSHAKE_SUCCEEDED:
+        return "handshake";
+#endif
 
-    /* EVENT_HANDSHAKE_SUCCEEDED */
-    "handshake",
+#ifdef ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL
+    case ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL:
+        return "handshake:error:protocol";
+#endif
 
-    /* EVENT_HANDSHAKE_FAILED_PROTOCOL */
-    "handshake:error:protocol",
-
-    /* EVENT_HANDSHAKE_FAILED_AUTH */
-    "handshake:error:auth",
+#ifdef ZMQ_EVENT_HANDSHAKE_FAILED_AUTH
+    case ZMQ_EVENT_HANDSHAKE_FAILED_AUTH:
+        return "handshake:error:auth";
+#endif
 
     /* <---- Insert new events here. */
 
     /* Fallback if the event was unknown. */
-    "unknown");
-
-/* https://stackoverflow.com/questions/757059/position-of-least-significant-bit-that-is-set
- */
-static inline const char* EventName(uint32_t val) {
-    static const int multiply[32] = {0, 1, 28, 2, 29, 14, 24, 3, 30, 22, 20, 15, 25, 17,
-        4, 8, 31, 27, 13, 23, 21, 19, 16, 7, 26, 12, 18, 6, 11, 5, 10, 9};
-
-    uint32_t ffs = multiply[((uint32_t)((val & -val) * 0x077CB531U)) >> 27];
-
-    if (ffs >= events.size()) return events.back();
-    return events[ffs];
+    default:
+        return "unknown";
+    }
 }
 
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_AUTH
