@@ -79,6 +79,50 @@ static inline const char* EventName(uint32_t val) {
     return events[ffs];
 }
 
+static inline const char* AuthError(uint32_t val) {
+    switch (val) {
+    case 300:
+        return "Temporary error";
+    case 400:
+        return "Authentication failure";
+    case 500:
+        return "Internal error";
+    default:
+        return "Unknown error";
+    }
+}
+
+static inline std::pair<const char*, const char*> ProtoError(uint32_t val) {
+#define PROTO_ERROR_CASE(_prefix, _err)                                                  \
+    case ZMQ_PROTOCOL_ERROR_##_prefix##_##_err:                                          \
+        return std::make_pair(#_prefix " protocol error", "ERR_" #_prefix "_" #_err);
+
+    switch (val) {
+        PROTO_ERROR_CASE(ZMTP, UNSPECIFIED);
+        PROTO_ERROR_CASE(ZMTP, UNEXPECTED_COMMAND);
+        PROTO_ERROR_CASE(ZMTP, INVALID_SEQUENCE);
+        PROTO_ERROR_CASE(ZMTP, KEY_EXCHANGE);
+        PROTO_ERROR_CASE(ZMTP, MALFORMED_COMMAND_UNSPECIFIED);
+        PROTO_ERROR_CASE(ZMTP, MALFORMED_COMMAND_MESSAGE);
+        PROTO_ERROR_CASE(ZMTP, MALFORMED_COMMAND_HELLO);
+        PROTO_ERROR_CASE(ZMTP, MALFORMED_COMMAND_INITIATE);
+        PROTO_ERROR_CASE(ZMTP, MALFORMED_COMMAND_ERROR);
+        PROTO_ERROR_CASE(ZMTP, MALFORMED_COMMAND_READY);
+        PROTO_ERROR_CASE(ZMTP, MALFORMED_COMMAND_WELCOME);
+        PROTO_ERROR_CASE(ZMTP, INVALID_METADATA);
+        PROTO_ERROR_CASE(ZMTP, CRYPTOGRAPHIC);
+        PROTO_ERROR_CASE(ZMTP, MECHANISM_MISMATCH);
+        PROTO_ERROR_CASE(ZAP, UNSPECIFIED);
+        PROTO_ERROR_CASE(ZAP, MALFORMED_REPLY);
+        PROTO_ERROR_CASE(ZAP, BAD_REQUEST_ID);
+        PROTO_ERROR_CASE(ZAP, BAD_VERSION);
+        PROTO_ERROR_CASE(ZAP, INVALID_STATUS_CODE);
+        PROTO_ERROR_CASE(ZAP, INVALID_METADATA);
+    default:
+        return std::make_pair("Unknown error", "ERR_UNKNOWN");
+    }
+}
+
 Observer::Observer(const Napi::CallbackInfo& info)
     : Napi::ObjectWrap<Observer>(info), async_context(Env(), "Observer"), poller(*this),
       module(*reinterpret_cast<Module*>(info.Data())) {
@@ -198,7 +242,7 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
 
     auto data1 = static_cast<uint8_t*>(zmq_msg_data(&msg1));
     auto event_id = *reinterpret_cast<uint16_t*>(data1);
-    auto event_value = *reinterpret_cast<uint32_t*>(data1 + 2);
+    auto value = *reinterpret_cast<uint32_t*>(data1 + 2);
     zmq_msg_close(&msg1);
 
     zmq_msg_init(&msg2);
@@ -223,23 +267,41 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
     zmq_msg_close(&msg2);
 
     switch (event_id) {
-    case ZMQ_EVENT_CONNECT_RETRIED:
-        event["interval"] = Napi::Number::New(Env(), event_value);
+    case ZMQ_EVENT_CONNECT_RETRIED: {
+        event["interval"] = Napi::Number::New(Env(), value);
         break;
+    }
+
     case ZMQ_EVENT_BIND_FAILED:
     case ZMQ_EVENT_ACCEPT_FAILED:
     case ZMQ_EVENT_CLOSE_FAILED:
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL
-    case ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL:
-#endif
-        event["error"] = ErrnoException(Env(), event_value).Value();
+    case ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL: {
+        event["error"] = ErrnoException(Env(), value).Value();
         break;
-    case ZMQ_EVENT_MONITOR_STOPPED:
+    }
+#endif
+
+#ifdef ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL
+    case ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL: {
+        auto desc = ProtoError(value);
+        event["error"] = CodedException(Env(), desc.first, desc.second).Value();
+        break;
+    }
+#endif
+
+#ifdef ZMQ_EVENT_HANDSHAKE_FAILED_AUTH
+    case ZMQ_EVENT_HANDSHAKE_FAILED_AUTH: {
+        event["error"] = StatusException(Env(), AuthError(value), value).Value();
+        break;
+    }
+#endif
+
+    case ZMQ_EVENT_MONITOR_STOPPED: {
         /* Also close the monitoring socket. */
         Close();
         break;
-        // case ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL:
-        // case ZMQ_EVENT_HANDSHAKE_FAILED_AUTH:
+    }
     }
 
     res.Resolve(event);

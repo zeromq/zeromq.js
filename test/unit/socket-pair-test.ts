@@ -5,12 +5,12 @@ import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} pair/pair`, function() {
-    let sockA: zmq.Dealer
-    let sockB: zmq.Dealer
+    let sockA: zmq.Pair
+    let sockB: zmq.Pair
 
     beforeEach(function() {
-      sockA = new zmq.Dealer
-      sockB = new zmq.Dealer
+      sockA = new zmq.Pair
+      sockB = new zmq.Pair
     })
 
     afterEach(function() {

@@ -15,6 +15,22 @@ static inline void Warn(const Napi::Env& env, const std::string& msg) {
     fn.Call({Napi::String::New(env, msg)});
 }
 
+static inline Napi::Error StatusException(
+    const Napi::Env& env, const std::string& msg, uint32_t status) {
+    Napi::HandleScope scope(env);
+    auto exception = Napi::Error::New(env, msg);
+    exception.Set("status", Napi::Number::New(env, status));
+    return exception;
+}
+
+static inline Napi::Error CodedException(
+    const Napi::Env& env, const std::string& msg, const std::string& code) {
+    Napi::HandleScope scope(env);
+    auto exception = Napi::Error::New(env, msg);
+    exception.Set("code", Napi::String::New(env, code));
+    return exception;
+}
+
 /* This mostly duplicates node::ErrnoException, but it is not public. */
 static inline Napi::Error ErrnoException(const Napi::Env& env, int32_t error) {
     Napi::HandleScope scope(env);

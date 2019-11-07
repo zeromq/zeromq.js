@@ -145,6 +145,35 @@ interface ErrnoError extends Error {
   errno: number
 }
 
+interface AuthError extends Error {
+  status: 300 | 400 | 500
+}
+
+interface ProtoError extends Error {
+  code: (
+    "ERR_ZMTP_UNSPECIFIED" |
+    "ERR_ZMTP_UNEXPECTED_COMMAND" |
+    "ERR_ZMTP_INVALID_SEQUENCE" |
+    "ERR_ZMTP_KEY_EXCHANGE" |
+    "ERR_ZMTP_MALFORMED_COMMAND_UNSPECIFIED" |
+    "ERR_ZMTP_MALFORMED_COMMAND_MESSAGE" |
+    "ERR_ZMTP_MALFORMED_COMMAND_HELLO" |
+    "ERR_ZMTP_MALFORMED_COMMAND_INITIATE" |
+    "ERR_ZMTP_MALFORMED_COMMAND_ERROR" |
+    "ERR_ZMTP_MALFORMED_COMMAND_READY" |
+    "ERR_ZMTP_MALFORMED_COMMAND_WELCOME" |
+    "ERR_ZMTP_INVALID_METADATA" |
+    "ERR_ZMTP_CRYPTOGRAPHIC" |
+    "ERR_ZMTP_MECHANISM_MISMATCH" |
+    "ERR_ZAP_UNSPECIFIED" |
+    "ERR_ZAP_MALFORMED_REPLY" |
+    "ERR_ZAP_BAD_REQUEST_ID" |
+    "ERR_ZAP_BAD_VERSION" |
+    "ERR_ZAP_INVALID_STATUS_CODE" |
+    "ERR_ZAP_INVALID_METADATA"
+  )
+}
+
 interface EventAddress {
   address: string
 }
@@ -153,8 +182,8 @@ interface EventInterval {
   interval: number
 }
 
-interface EventError {
-  error: ErrnoError
+interface EventError<E = ErrnoError> {
+  error: E
 }
 
 type EventFor<T extends string, D = {}> = Expand<{type: T} & D>
@@ -264,8 +293,8 @@ export type Event = (
   EventFor<"disconnect", EventAddress> |
   EventFor<"end"> |
   EventFor<"handshake", EventAddress> |
-  EventFor<"handshake:error:protocol", EventAddress> | /* TODO add error data */
-  EventFor<"handshake:error:auth", EventAddress> | /* TODO add error data */
+  EventFor<"handshake:error:protocol", EventAddress & EventError<ProtoError>> |
+  EventFor<"handshake:error:auth", EventAddress & EventError<AuthError>> |
   EventFor<"handshake:error:other", EventAddress & EventError> |
   EventFor<"unknown">
 )
