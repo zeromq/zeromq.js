@@ -1,5 +1,7 @@
 ### Unreleased
 
+* Error details have been added to the "handshake:error:protocol" and "handshake:error:auth" events.
+
 * Reading from event observers now prevent the Node process from exiting, even if the underlying socket is no longer being used.
 
 * Reading or writing on unbound and unconnected sockets now prevent the Node process from exiting.
