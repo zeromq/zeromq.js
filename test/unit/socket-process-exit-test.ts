@@ -4,6 +4,7 @@ import {assert} from "chai"
 import {createProcess, uniqAddress} from "./helpers"
 
 describe("socket process exit", function() {
+  /* Reported: https://github.com/nodejs/node-addon-api/issues/591 */
   it.skip("should occur cleanly when sending in exit hook", async function() {
     this.slow(200)
     const code = await createProcess(async () => {
