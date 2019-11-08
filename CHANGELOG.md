@@ -1,4 +1,4 @@
-### Unreleased
+### v6.0.0-beta.3
 
 * Error details have been added to the "handshake:error:protocol" and "handshake:error:auth" events.
 
