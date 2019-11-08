@@ -6,8 +6,11 @@ import {Worker} from "worker_threads"
 
 import * as zmq from "../../src"
 
-/* Stop pending messages in test suite from preventing process exit. */
-zmq.context.blocky = false
+console.log(`ZeroMQ version ${zmq.version}`)
+if (semver.satisfies(zmq.version, ">= 4.2")) {
+  /* Stop pending messages in test suite from preventing process exit. */
+  zmq.context.blocky = false
+}
 
 /* Windows cannot bind on a ports just above 1014; start higher to be safe. */
 let seq = 5000

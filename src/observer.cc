@@ -276,11 +276,10 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
     case ZMQ_EVENT_ACCEPT_FAILED:
     case ZMQ_EVENT_CLOSE_FAILED:
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL
-    case ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL: {
+    case ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL:
+#endif
         event["error"] = ErrnoException(Env(), value).Value();
         break;
-    }
-#endif
 
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL
     case ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL: {
@@ -291,10 +290,9 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
 #endif
 
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_AUTH
-    case ZMQ_EVENT_HANDSHAKE_FAILED_AUTH: {
+    case ZMQ_EVENT_HANDSHAKE_FAILED_AUTH:
         event["error"] = StatusException(Env(), AuthError(value), value).Value();
         break;
-    }
 #endif
 
     case ZMQ_EVENT_MONITOR_STOPPED: {

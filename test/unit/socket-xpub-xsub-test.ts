@@ -1,3 +1,4 @@
+import * as semver from "semver"
 import * as zmq from "../../src"
 
 import {assert} from "chai"
@@ -223,6 +224,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should forward all subscriptions/unsubscriptions", async function() {
+        /* ZMQ 4.2 first introduced ZMQ_XPUB_VERBOSER. */
+        if (semver.satisfies(zmq.version, "< 4.2")) this.skip()
+
         const address = uniqAddress(proto)
 
         const subs: Buffer[] = []
