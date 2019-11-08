@@ -1,7 +1,7 @@
 import * as zmq from "../../src"
 
 import {assert} from "chai"
-import {testProtos, uniqAddress} from "./helpers"
+import {captureEvent, captureEventsUntil, testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} events`, function() {
@@ -21,18 +21,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("when not connected", function() {
       it("should receive events", async function() {
-        const events: zmq.Event[] = []
+        const done = captureEventsUntil(sockA, "end")
+        sockA.close()
 
-        const read = async () => {
-          for await (const event of sockA.events) {
-            events.push(event)
-          }
-        }
-
-        const done = read()
-        await sockA.close()
-        await done
-
+        const events = await done
         assert.deepEqual(events, [{type: "end"}])
       })
     })
@@ -42,110 +34,50 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.equal(sockA.events, sockA.events)
       })
 
-      it("should receive bind events", async function() {
-        const address = uniqAddress(proto)
-        const events: zmq.Event[] = []
+      if (proto !== "inproc") {
+        it("should receive bind events", async function() {
+          const address = uniqAddress(proto)
 
-        const read = async () => {
-          for await (const event of sockA.events) {
-            events.push(event)
-          }
-        }
+          const [event] = await Promise.all([
+            captureEvent(sockA, "bind"),
+            sockA.bind(address),
+            sockB.connect(address),
+          ])
 
-        const done = read()
+          assert.deepEqual(event, {type: "bind", address})
+        })
 
-        await sockA.bind(address)
-        await sockB.connect(address)
-        await new Promise((resolve) => setTimeout(resolve, 15))
-        sockA.close()
-        sockB.close()
-        await done
-        await new Promise((resolve) => setTimeout(resolve, 15))
+        it("should receive connect events", async function() {
+          this.slow(250)
+          const address = uniqAddress(proto)
 
-        if (proto === "inproc") {
-          assert.deepEqual(events, [{type: "end"}])
-        } else {
-          assert.deepInclude(events, {type: "bind", address})
-          assert.deepInclude(events, {type: "accept", address})
-          assert.deepInclude(events, {type: "close", address})
-          assert.deepInclude(events, {type: "end"})
-        }
-      })
+          const [event] = await Promise.all([
+            captureEvent(sockB, "connect"),
+            sockA.bind(address),
+            sockB.connect(address),
+          ])
 
-      it("should receive connect events", async function() {
-        const address = uniqAddress(proto)
-        const events: zmq.Event[] = []
+          assert.deepEqual(event, {type: "connect", address})
+        })
+      }
 
-        const read = async () => {
-          for await (const event of sockB.events) {
-            events.push(event)
-          }
-        }
+      if (proto === "tcp") {
+        it("should receive error events", async function() {
+          const address = uniqAddress(proto)
 
-        const done = read()
+          await sockA.bind(address)
+          const [event] = await Promise.all([
+            captureEvent(sockB, "bind:error"),
+            sockB.bind(address).catch(() => {/* Ignore */}),
+          ])
 
-        await sockA.bind(address)
-        await sockB.connect(address)
-        await new Promise((resolve) => setTimeout(resolve, 15))
-        sockA.close()
-        sockB.close()
-        await done
-        await new Promise((resolve) => setTimeout(resolve, 15))
-
-        if (proto === "inproc") {
-          assert.deepEqual(events, [{type: "end"}])
-        } else {
-          if (proto === "tcp") {
-            assert.deepInclude(events, {type: "connect:delay", address})
-          }
-
-          assert.deepInclude(events, {type: "connect", address})
-          assert.deepInclude(events, {type: "end"})
-        }
-      })
-
-      it("should receive error events", async function() {
-        const address = uniqAddress(proto)
-        const events: zmq.Event[] = []
-
-        const read = async () => {
-          for await (const event of sockB.events) {
-            events.push(event)
-          }
-        }
-
-        const done = read()
-
-        await sockA.bind(address)
-        try {
-          await sockB.bind(address)
-        } catch (err) {
-          /* Ignore error here */
-        }
-
-        await new Promise((resolve) => setTimeout(resolve, 15))
-        sockA.close()
-        sockB.close()
-        await done
-
-        if (proto === "tcp") {
-          let bindError = false
-          for (const event of events) {
-            if (event.type === "bind:error") {
-              bindError = true
-              assert.equal("tcp://" + event.address, address)
-              assert.instanceOf(event.error, Error)
-              assert.equal(event.error.message, "Address already in use")
-              assert.equal(event.error.code, "EADDRINUSE")
-              assert.typeOf(event.error.errno, "number")
-            }
-          }
-
-          assert.equal(true, bindError)
-        }
-
-        assert.deepInclude(events, {type: "end"})
-      })
+          assert.equal("tcp://" + event.address, address)
+          assert.instanceOf(event.error, Error)
+          assert.equal(event.error.message, "Address already in use")
+          assert.equal(event.error.code, "EADDRINUSE")
+          assert.typeOf(event.error.errno, "number")
+        })
+      }
 
       it("should receive events with emitter", async function() {
         const address = uniqAddress(proto)
@@ -174,13 +106,18 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           "is not possible to read events with events.receive().",
         )
 
-        await sockA.bind(address)
-        await sockB.connect(address)
-        await new Promise((resolve) => setTimeout(resolve, 15))
+        const connected = captureEvent(sockB, "connect")
+        const done = Promise.all([
+          captureEvent(sockA, "end"),
+          sockA.bind(address),
+          sockB.connect(address),
+        ])
+
+        if (proto !== "inproc") await connected
         sockA.close()
         sockB.close()
-        await new Promise((resolve) => setTimeout(resolve, 15))
 
+        await done
         if (proto === "inproc") {
           assert.deepEqual(events, [{type: "end"}])
         } else {

@@ -2,7 +2,7 @@ import * as semver from "semver"
 import * as zmq from "../../src"
 
 import {assert} from "chai"
-import {testProtos, uniqAddress} from "./helpers"
+import {captureEvent, testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc")) {
   describe(`socket with ${proto} zap`, function() {
@@ -66,12 +66,12 @@ for (const proto of testProtos("tcp", "ipc")) {
         sockB.plainPassword = "BAD PASS"
 
         const address = uniqAddress(proto)
-        await sockA.bind(address)
-        await sockB.connect(address)
 
         const [eventA, eventB] = await Promise.all([
           captureEvent(sockA, "handshake:error:auth"),
           captureEvent(sockB, "handshake:error:auth"),
+          sockA.bind(address),
+          sockB.connect(address),
         ])
 
         assert.equal(eventA.type, "handshake:error:auth")
@@ -106,10 +106,12 @@ for (const proto of testProtos("tcp", "ipc")) {
         sockB.plainUsername = "user"
 
         const address = uniqAddress(proto)
-        await sockA.bind(address)
-        await sockB.connect(address)
+        const [eventA] = await Promise.all([
+          captureEvent(sockA, "handshake:error:protocol"),
+          sockA.bind(address),
+          sockB.connect(address),
+        ])
 
-        const eventA = await captureEvent(sockA, "handshake:error:protocol")
         assert.equal(eventA.type, "handshake:error:protocol")
         assert.equal(eventA.address, address)
         assert.instanceOf(eventA.error, Error)
@@ -133,10 +135,12 @@ for (const proto of testProtos("tcp", "ipc")) {
         sockB.plainUsername = "user"
 
         const address = uniqAddress(proto)
-        await sockA.bind(address)
-        await sockB.connect(address)
+        const [eventA] = await Promise.all([
+          captureEvent(sockA, "handshake:error:protocol"),
+          sockA.bind(address),
+          sockB.connect(address),
+        ])
 
-        const eventA = await captureEvent(sockA, "handshake:error:protocol")
         assert.equal(eventA.type, "handshake:error:protocol")
         assert.equal(eventA.address, address)
         assert.instanceOf(eventA.error, Error)
@@ -152,10 +156,12 @@ for (const proto of testProtos("tcp", "ipc")) {
         sockB.curveServer = true
 
         const address = uniqAddress(proto)
-        await sockA.bind(address)
-        await sockB.connect(address)
+        const [eventA] = await Promise.all([
+          captureEvent(sockA, "handshake:error:protocol"),
+          sockA.bind(address),
+          sockB.connect(address),
+        ])
 
-        const eventA = await captureEvent(sockA, "handshake:error:protocol")
         assert.equal(eventA.type, "handshake:error:protocol")
         assert.equal(eventA.address, address)
         assert.instanceOf(eventA.error, Error)
@@ -251,11 +257,4 @@ class CustomZapHandler extends ZapHandler {
     this.handle = handler
     this.run()
   }
-}
-
-function captureEvent<E extends zmq.EventType>(
-  socket: zmq.Socket,
-  event: E,
-): Promise<zmq.EventOfType<E>> {
-  return new Promise((resolve) => socket.events.on<E>(event, resolve))
 }

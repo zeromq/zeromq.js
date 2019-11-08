@@ -16,7 +16,8 @@ export function uniqAddress(proto: string) {
   const id = seq++
   switch (proto) {
   case "ipc":
-    return `${proto}://${__dirname}/../../tmp/${proto}-${id}`
+    const sock = path.resolve(__dirname, `../../tmp/${proto}-${id}`)
+    return `${proto}://${sock}`
   case "tcp":
   case "udp":
     return `${proto}://127.0.0.1:${id}`
@@ -102,4 +103,25 @@ export function createProcess(fn: () => void): Promise<number> {
       child.kill()
     }, 750)
   })
+}
+
+export function captureEvent<E extends zmq.EventType>(
+  socket: zmq.Socket,
+  type: E,
+): Promise<zmq.EventOfType<E>> {
+  return new Promise((resolve) => socket.events.on<E>(type, resolve))
+}
+
+export async function captureEventsUntil(
+  socket: zmq.Socket,
+  type: zmq.EventType,
+): Promise<zmq.Event[]> {
+  const events = []
+
+  for await (const event of socket.events) {
+    events.push(event)
+    if (event.type === type) break
+  }
+
+  return events
 }
