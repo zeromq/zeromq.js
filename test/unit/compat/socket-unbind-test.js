@@ -1,10 +1,11 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
+/* This test is very unreliable in practice, especially in CI.
+   It is disabled by default. */
+if (process.env.INCLUDE_COMPAT_TESTS && process.env.INCLUDE_COMPAT_UNBIND_TEST) {
   const zmq = require("./load")
   const semver = require("semver")
   const {assert} = require("chai")
   const {testProtos, uniqAddress} = require("../helpers")
 
-  /* TODO: This test regularly hangs. */
   for (const proto of testProtos("tcp")) {
     describe(`compat socket with ${proto} unbind`, function() {
       beforeEach(function() {
