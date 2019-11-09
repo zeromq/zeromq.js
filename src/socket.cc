@@ -8,6 +8,7 @@
 #include "util/arguments.h"
 #include "util/async_scope.h"
 #include "util/error.h"
+#include "util/uvimmediate.h"
 #include "util/uvloop.h"
 #include "util/uvwork.h"
 
@@ -16,6 +17,10 @@
 #include <unordered_set>
 
 namespace zmq {
+/* The maximum number of sync I/O operations that are allowed before the I/O
+   methods will force the returned promise to be resolved in the next tick. */
+auto constexpr max_sync_operations = 1 << 9;
+
 /* Ordinary static cast for all available numeric types. */
 template <typename T>
 T NumberCast(const Napi::Number& num) {
@@ -524,28 +529,33 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
 #endif
 
     if (send_timeout == 0 || HasEvents(ZMQ_POLLOUT)) {
-        /* We can send on the socket immediately. This is a separate code
-           path so we can avoid creating a lambda. */
-        auto res = Napi::Promise::Deferred::New(Env());
-        Send(res, parts);
-
-        /* This operation may have caused a state change, so we must update
-           the poller state manually! */
-        poller.Trigger();
-
-        return res.Promise();
-    } else {
-        /* Check if we are already polling for writes. If so that means
-           two async read operations are started; which we do not allow.
-           This is not laziness; we should not introduce additional queueing
-           because it would break ZMQ semantics. */
-        if (poller.PollingWritable()) {
-            ErrnoException(Env(), EAGAIN).ThrowAsJavaScriptException();
-            return Env().Undefined();
+        /* We can send on the socket immediately. This is a fast path. NOTE: We
+           must make sure to not keep returning synchronously resolved promises,
+           or we will starve the event loop. This can happen because ZMQ uses a
+           background I/O thread, which could mean that the Node.js process is
+           busy sending data to the I/O thread but is no longer able to respond
+           to other events. This operation may have caused a state change, so we
+           must also update the poller state manually! */
+        if (sync_operations++ < max_sync_operations) {
+            auto res = Napi::Promise::Deferred::New(Env());
+            Send(res, parts);
+            poller.Trigger();
+            return res.Promise();
         }
 
-        return poller.WritePromise(send_timeout, std::move(parts));
+        SetImmediate(Env(), [&]() { poller.Trigger(); });
     }
+
+    /* Check if we are already polling for writes. If so that means two async
+       read operations are started; which we do not allow. This is not laziness;
+       we should not introduce additional queueing because it would break ZMQ
+       semantics. */
+    if (poller.PollingWritable()) {
+        ErrnoException(Env(), EAGAIN).ThrowAsJavaScriptException();
+        return Env().Undefined();
+    }
+
+    return poller.WritePromise(send_timeout, std::move(parts));
 }
 
 Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
@@ -553,27 +563,27 @@ Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
     if (!ValidateOpen()) return Env().Undefined();
 
     if (receive_timeout == 0 || HasEvents(ZMQ_POLLIN)) {
-        /* We can read from the socket immediately. This is a separate code
-           path so we can avoid creating a lambda. */
-        auto res = Napi::Promise::Deferred::New(Env());
-        Receive(res);
-
-        /* This operation may have caused a state change, so we must update
-           the poller state manually! */
-        poller.Trigger();
-
-        return res.Promise();
-    } else {
-        /* Check if we are already polling for reads. Only one promise may
-           receive the next message, so we must ensure that receive
-           operations are in sequence. */
-        if (poller.PollingReadable()) {
-            ErrnoException(Env(), EAGAIN).ThrowAsJavaScriptException();
-            return Env().Undefined();
+        /* We can read from the socket immediately. This is a fast path.
+           Also see the related comments in Send(). */
+        if (sync_operations++ < max_sync_operations) {
+            auto res = Napi::Promise::Deferred::New(Env());
+            Receive(res);
+            poller.Trigger();
+            return res.Promise();
         }
 
-        return poller.ReadPromise(receive_timeout);
+        SetImmediate(Env(), [&]() { poller.Trigger(); });
     }
+
+    /* Check if we are already polling for reads. Only one promise may receive
+       the next message, so we must ensure that receive operations are in
+       sequence. */
+    if (poller.PollingReadable()) {
+        ErrnoException(Env(), EAGAIN).ThrowAsJavaScriptException();
+        return Env().Undefined();
+    }
+
+    return poller.ReadPromise(receive_timeout);
 }
 
 void Socket::Join(const Napi::CallbackInfo& info) {
@@ -848,11 +858,13 @@ void Socket::Initialize(Module& module, Napi::Object& exports) {
 }
 
 void Socket::Poller::ReadableCallback() {
+    socket.sync_operations = 0;
     AsyncScope scope(read_deferred.Env(), socket.async_context);
     socket.Receive(read_deferred);
 }
 
 void Socket::Poller::WritableCallback() {
+    socket.sync_operations = 0;
     AsyncScope scope(write_deferred.Env(), socket.async_context);
     socket.Send(write_deferred, write_value);
     write_value.Clear();
@@ -865,7 +877,7 @@ Napi::Value Socket::Poller::ReadPromise(int64_t timeout) {
 }
 
 Napi::Value Socket::Poller::WritePromise(int64_t timeout, OutgoingMsg::Parts&& value) {
-    write_deferred = Napi::Promise::Deferred(read_deferred.Env());
+    write_deferred = Napi::Promise::Deferred(write_deferred.Env());
     write_value = std::move(value);
     zmq::Poller<Poller>::PollWritable(timeout);
     return write_deferred.Promise();

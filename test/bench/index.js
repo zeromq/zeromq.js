@@ -21,7 +21,7 @@ const msgsizes = [
 
 /* Which benchmarks to run. */
 const benchmarks = {
-  "create-socket": {n, options: {delay: 0.5}},
+  // "create-socket": {n, options: {delay: 0.5}},
   "queue": {n, msgsizes},
   "deliver": {n, protos, msgsizes},
   "deliver-multipart": {n, protos, msgsizes},

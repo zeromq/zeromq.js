@@ -6,7 +6,8 @@
 
 namespace zmq {
 OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
-    static auto constexpr zero_copy_threshold = 32;
+    static auto constexpr zero_copy_threshold = 1 << 7;
+
     auto buffer_send = [&](uint8_t* data, size_t length) {
         /* Zero-copy heuristic. There's an overhead in releasing the buffer with an
            async call to the main thread (v8 is not threadsafe), so copying small

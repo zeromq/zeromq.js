@@ -382,6 +382,42 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           assert.equal(orig.slice(0, 1).toString(), "@")
         })
       }
+
+      it("should not starve event loop", async function() {
+        this.slow(250)
+
+        sockA.sendHighWaterMark = 5000
+        sockB.receiveHighWaterMark = 5000
+
+        const countDelays = async (fn: () => Promise<void>) => {
+          let delays = 0
+          await new Promise((resolve) => setTimeout(resolve, 15))
+          const interval = setInterval(() => {delays++}, 0)
+          await new Promise(setImmediate) /* Move to check phase. */
+          await fn()
+          clearInterval(interval)
+          await new Promise((resolve) => setTimeout(resolve, 15))
+          return delays
+        }
+
+        /* Send should not starve. */
+        const sendDelays = await countDelays(async () => {
+          for (let i = 0; i < 2500; i++) {
+            await sockA.send("x")
+          }
+        })
+
+        /* Receive should not starve. */
+        const recvDelays = await countDelays(async () => {
+          for (let i = 0; i < 2500; i++) {
+            await sockB.receive()
+          }
+        })
+
+        /* Should equal 4 under most circumstances. */
+        assert.isAtLeast(sendDelays, 3)
+        assert.isAtLeast(recvDelays, 3)
+      })
     })
 
     if (proto !== "inproc") {

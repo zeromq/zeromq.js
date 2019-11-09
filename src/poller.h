@@ -26,10 +26,6 @@ public:
         int32_t err;
         auto loop = UvLoop(env);
 
-        /* Initialize uv pollers and timers, but unreference them immediately.
-           The poller will be referenced once the socket connects or binds.
-           The timers are weak references and will never prevent an exit. */
-
         poll->data = this;
         err = uv_poll_init_socket(loop, poll, fd);
         if (err != 0) return err;
@@ -77,20 +73,20 @@ public:
         assert((events & UV_READABLE) == 0);
 
         if (timeout > 0) {
-            auto result = uv_timer_start(readable_timer,
+            auto err = uv_timer_start(readable_timer,
                 [](uv_timer_t* timer) {
                     auto& poller = *reinterpret_cast<Poller*>(timer->data);
                     poller.Trigger(UV_READABLE);
                 },
                 timeout, 0);
 
-            assert(result == 0);
+            assert(err == 0);
         }
 
         if (!events) {
             /* Only start polling if we were not polling already. */
-            auto result = uv_poll_start(poll, UV_READABLE, Callback);
-            assert(result == 0);
+            auto err = uv_poll_start(poll, UV_READABLE, Callback);
+            assert(err == 0);
         }
 
         events |= UV_READABLE;
@@ -100,22 +96,22 @@ public:
         assert((events & UV_WRITABLE) == 0);
 
         if (timeout > 0) {
-            auto result = uv_timer_start(writable_timer,
+            auto err = uv_timer_start(writable_timer,
                 [](uv_timer_t* timer) {
                     auto& poller = *reinterpret_cast<Poller*>(timer->data);
                     poller.Trigger(UV_WRITABLE);
                 },
                 timeout, 0);
 
-            assert(result == 0);
+            assert(err == 0);
         }
 
         /* Note: We poll for READS only! "ZMQ shall signal ANY pending
            events on the socket in an edge-triggered fashion by making the
            file descriptor become ready for READING." */
         if (!events) {
-            auto result = uv_poll_start(poll, UV_READABLE, Callback);
-            assert(result == 0);
+            auto err = uv_poll_start(poll, UV_READABLE, Callback);
+            assert(err == 0);
         }
 
         events |= UV_WRITABLE;
@@ -140,19 +136,19 @@ private:
     inline void Trigger(int32_t triggered) {
         events &= ~triggered;
         if (!events) {
-            auto result = uv_poll_stop(poll);
-            assert(result == 0);
+            auto err = uv_poll_stop(poll);
+            assert(err == 0);
         }
 
         if (triggered & UV_READABLE) {
-            auto result = uv_timer_stop(readable_timer);
-            assert(result == 0);
+            auto err = uv_timer_stop(readable_timer);
+            assert(err == 0);
             static_cast<T*>(this)->ReadableCallback();
         }
 
         if (triggered & UV_WRITABLE) {
-            auto result = uv_timer_stop(writable_timer);
-            assert(result == 0);
+            auto err = uv_timer_stop(writable_timer);
+            assert(err == 0);
             static_cast<T*>(this)->WritableCallback();
         }
     }

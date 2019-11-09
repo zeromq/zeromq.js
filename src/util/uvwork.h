@@ -20,7 +20,7 @@ public:
         work->data = this;
     }
 
-    inline int32_t Exec(uv_loop_t* loop) {
+    inline int32_t Schedule(uv_loop_t* loop) {
         auto err = uv_queue_work(loop, work.get(),
             [](uv_work_t* req) {
                 auto& work = *reinterpret_cast<UvWork*>(req->data);
@@ -39,9 +39,9 @@ public:
 };
 
 template <typename E, typename C>
-static inline int32_t UvQueue(Napi::Env env, E execute, C complete) {
+static inline int32_t UvQueue(const Napi::Env& env, E execute, C complete) {
     auto loop = UvLoop(env);
     auto work = new UvWork<E, C>(std::move(execute), std::move(complete));
-    return work->Exec(loop);
+    return work->Schedule(loop);
 }
 }

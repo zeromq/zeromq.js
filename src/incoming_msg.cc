@@ -21,7 +21,7 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
         return env.Undefined();
     }
 
-    static auto constexpr zero_copy_threshold = 32;
+    static auto constexpr zero_copy_threshold = 1 << 7;
 
     auto data = reinterpret_cast<uint8_t*>(zmq_msg_data(*ref));
     auto length = zmq_msg_size(*ref);

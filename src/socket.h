@@ -98,6 +98,7 @@ private:
 
     int64_t send_timeout = -1;
     int64_t receive_timeout = -1;
+    uint32_t sync_operations = 0;
     uint32_t endpoints = 0;
 
     State state = State::Open;

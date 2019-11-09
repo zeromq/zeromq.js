@@ -13,7 +13,7 @@ if (zmq.cur) {
 }
 
 if (zmq.ng) {
-  zmq.ng.global.maxSockets = n
+  zmq.ng.context.maxSockets = n
   suite.add(`create socket n=${n} zmq=ng`, Object.assign({
     fn: deferred => {
       const sockets = []

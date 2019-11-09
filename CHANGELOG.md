@@ -1,3 +1,7 @@
+### Unreleased
+
+* Break out of busy loops automatically when the number of synchronous I/O operations moves beyond a built-in threshold. This avoids the ZeroMQ background I/O process(es) starving the Node.js event loop when it can process messages faster than the application, potentially causing decreased responsiveness and/or high memory usage.
+
 ### v6.0.0-beta.3
 
 * Error details have been added to the "handshake:error:protocol" and "handshake:error:auth" events.
