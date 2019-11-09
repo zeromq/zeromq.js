@@ -152,21 +152,33 @@ for (const proto of testProtos("tcp", "ipc")) {
         /* ZMQ < 4.3.0 does not have these event details. */
         if (semver.satisfies(zmq.version, "< 4.3.0")) this.skip()
 
+        this.slow(250)
+
         sockA.plainServer = true
         sockB.curveServer = true
 
         const address = uniqAddress(proto)
-        const [eventA] = await Promise.all([
+        const [eventA, eventB] = await Promise.all([
           captureEvent(sockA, "handshake:error:protocol"),
+          captureEvent(sockB, "handshake:error:protocol"),
           sockA.bind(address),
           sockB.connect(address),
         ])
 
         assert.equal(eventA.type, "handshake:error:protocol")
+        assert.equal(eventB.type, "handshake:error:protocol")
+
         assert.equal(eventA.address, address)
+        assert.equal(eventB.address, address)
+
         assert.instanceOf(eventA.error, Error)
+        assert.instanceOf(eventB.error, Error)
+
         assert.equal(eventA.error.message, "ZMTP protocol error")
+        assert.equal(eventB.error.message, "ZMTP protocol error")
+
         assert.equal(eventA.error.code, "ERR_ZMTP_MECHANISM_MISMATCH")
+        assert.equal(eventB.error.code, "ERR_ZMTP_MECHANISM_MISMATCH")
       })
     })
   })
