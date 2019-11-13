@@ -6,6 +6,7 @@
 
 #include "incoming_msg.h"
 #include "util/async_scope.h"
+#include "util/take.h"
 
 #include <array>
 
@@ -315,21 +316,18 @@ Napi::Value Observer::Receive(const Napi::CallbackInfo& info) {
     if (!ValidateArguments(info, {})) return Env().Undefined();
     if (!ValidateOpen()) return Env().Undefined();
 
+    if (poller.Reading()) {
+        ErrnoException(Env(), EAGAIN).ThrowAsJavaScriptException();
+        return Env().Undefined();
+    }
+
     if (HasEvents()) {
-        /* We can read from the socket immediately. This is a separate code
-           path so we can avoid creating a lambda. */
+        /* We can read from the socket immediately. This is a fast path. */
         auto res = Napi::Promise::Deferred::New(Env());
         Receive(res);
         return res.Promise();
     } else {
-        /* Check if we are already polling for reads. Only one promise may
-           receive the next message, so we must ensure that receive
-           operations are in sequence. */
-        if (poller.PollingReadable()) {
-            ErrnoException(Env(), EAGAIN).ThrowAsJavaScriptException();
-            return Env().Undefined();
-        }
-
+        poller.PollReadable(0);
         return poller.ReadPromise();
     }
 }
@@ -351,13 +349,16 @@ void Observer::Initialize(Module& module, Napi::Object& exports) {
 }
 
 void Observer::Poller::ReadableCallback() {
-    AsyncScope scope(read_deferred.Env(), socket.async_context);
-    socket.Receive(read_deferred);
+    assert(read_deferred);
+
+    AsyncScope scope(socket.Env(), socket.async_context);
+    socket.Receive(take(read_deferred));
 }
 
 Napi::Value Observer::Poller::ReadPromise() {
-    read_deferred = Napi::Promise::Deferred(read_deferred.Env());
-    zmq::Poller<Poller>::PollReadable(0);
-    return read_deferred.Promise();
+    assert(!read_deferred);
+
+    read_deferred = Napi::Promise::Deferred(socket.Env());
+    return read_deferred->Promise();
 }
 }

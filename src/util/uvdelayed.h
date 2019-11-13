@@ -6,13 +6,15 @@
 
 namespace zmq {
 template <typename C>
-class UvImmediate {
+class UvDelayed {
     UvHandle<uv_check_t> check;
     UvHandle<uv_idle_t> idle;
     C delayed_callback;
 
 public:
-    UvImmediate(uv_loop_t* loop, C&& callback) : delayed_callback(std::move(callback)) {
+    UvDelayed(const Napi::Env& env, C&& callback)
+        : delayed_callback(std::move(callback)) {
+        auto loop = UvLoop(env);
         int32_t err;
 
         check->data = this;
@@ -32,7 +34,9 @@ public:
         assert(err == 0);
 
         err = uv_check_start(check, [](uv_check_t* check) {
-            auto& immediate = *reinterpret_cast<UvImmediate*>(check->data);
+            auto& immediate = *reinterpret_cast<UvDelayed*>(check->data);
+            immediate.check.reset();
+            immediate.idle.reset();
             immediate.delayed_callback();
             delete &immediate;
         });
@@ -41,9 +45,10 @@ public:
     }
 };
 
+/* This is similar to JS setImmediate(). */
 template <typename C>
-static inline void SetImmediate(const Napi::Env& env, C callback) {
-    auto immediate = new UvImmediate<C>(UvLoop(env), std::move(callback));
+static inline void UvScheduleDelayed(const Napi::Env& env, C callback) {
+    auto immediate = new UvDelayed<C>(env, std::move(callback));
     return immediate->Schedule();
 }
 }

@@ -5,6 +5,8 @@
 
 #include "poller.h"
 
+#include <optional>
+
 namespace zmq {
 class Module;
 
@@ -31,13 +33,16 @@ private:
 
     class Poller : public zmq::Poller<Poller> {
         Observer& socket;
-        Napi::Promise::Deferred read_deferred;
+        std::optional<Napi::Promise::Deferred> read_deferred;
 
     public:
-        explicit Poller(Observer& observer)
-            : socket(observer), read_deferred(socket.Env()) {}
+        explicit Poller(Observer& observer) : socket(observer) {}
 
         Napi::Value ReadPromise();
+
+        inline bool Reading() const {
+            return read_deferred.has_value();
+        }
 
         inline bool ValidateReadable() const {
             return socket.HasEvents();

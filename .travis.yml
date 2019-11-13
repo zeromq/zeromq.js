@@ -4,9 +4,9 @@ dist: bionic
 
 jobs:
   include:
+
   ## TEST STAGE
 
-  # Test main OSes on Node 10.x branch.
   - os: linux
     node_js: "10.16"
     env: ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true
@@ -16,6 +16,7 @@ jobs:
     sudo: required
 
   - os: osx
+    osx_image: xcode10
     env: ZMQ_DRAFT=true
     node_js: "10.16"
 
@@ -36,6 +37,7 @@ jobs:
     addons: {apt: {packages: libzmq3-dev}}
 
   - os: osx
+    osx_image: xcode10
     node_js: "10.16"
     env: ZMQ_SHARED=true
     addons: {homebrew: {packages: zeromq, update: true}}
@@ -55,6 +57,14 @@ jobs:
     node_js: "13"
     # Skip GC tests due to https://github.com/node-ffi-napi/weak-napi/issues/16
     env: ZMQ_DRAFT=true SKIP_GC_TESTS=true
+
+  ## ADDITIONAL TESTS
+
+  # This test ensures the delayed resolution of read/write promises is correct
+  # by disabling immediate resolution (which happens 99% of the time) entirely.
+  - os: linux
+    node_js: "10.16"
+    env: ZMQ_NO_SYNC_RESOLVE=true ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true NODE_NO_WARNINGS=1
 
   ## PREBUILD STAGE
 
@@ -86,6 +96,7 @@ jobs:
 
   - stage: prebuild
     os: osx
+    osx_image: xcode10
     node_js: "10.16"
     script: script/ci/prebuild.sh
 

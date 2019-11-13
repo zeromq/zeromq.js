@@ -1662,25 +1662,27 @@ function defineOpt<T extends {prototype: any}, K extends ReadableKeys<PrototypeO
   const desc: PropertyDescriptor = {}
 
   if (acc & Acc.Read) {
+    const getter = `get${type}Option`
     if (values) {
       desc.get = function get(this: any) {
-        return values[this[`get${type}Option`](id)]
+        return values[this[getter](id)]
       }
     } else {
       desc.get = function get(this: any) {
-        return this[`get${type}Option`](id)
+        return this[getter](id)
       }
     }
   }
 
   if (acc & Acc.Write) {
+    const setter = `set${type}Option`
     if (values) {
       desc.set = function set(this: any, val: any) {
-        this[`set${type}Option`](id, values.indexOf(val))
+        this[setter](id, values.indexOf(val))
       }
     } else {
       desc.set = function set(this: any, val: any) {
-        this[`set${type}Option`](id, val)
+        this[setter](id, val)
       }
     }
   }

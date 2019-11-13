@@ -45,27 +45,19 @@ public:
     /* Safely close and release all handles. This can be called before
        destruction to release resources early. */
     inline void Close() {
-        /* Trigger all watched events manually, which causes any pending
-           operation to succeed or fail immediately. */
-        if (events) Trigger(events);
+        /* Trigger watched events manually, which causes any pending operation
+           to succeed or fail immediately. */
+        Trigger(events);
 
         /* Pollers and timers are stopped automatically by uv_close() which is
            wrapped in UvHandle. */
 
         /* Release references to all UV handles. */
-        poll.reset(nullptr);
-        readable_timer.reset(nullptr);
-        writable_timer.reset(nullptr);
+        poll.reset();
+        readable_timer.reset();
+        writable_timer.reset();
 
         if (finalize) finalize();
-    }
-
-    inline bool PollingReadable() const {
-        return events & UV_READABLE;
-    }
-
-    inline bool PollingWritable() const {
-        return events & UV_WRITABLE;
     }
 
     /* Start polling for readable state, with the given timeout. */
@@ -119,13 +111,19 @@ public:
 
     /* Trigger any events that are ready. Use validation callbacks to see
        which events are actually available. */
-    inline void Trigger() {
+    inline void TriggerReadable() {
         if (events & UV_READABLE) {
-            if (static_cast<T*>(this)->ValidateReadable()) Trigger(UV_READABLE);
+            if (static_cast<T*>(this)->ValidateReadable()) {
+                Trigger(UV_READABLE);
+            }
         }
+    }
 
+    inline void TriggerWritable() {
         if (events & UV_WRITABLE) {
-            if (static_cast<T*>(this)->ValidateWritable()) Trigger(UV_WRITABLE);
+            if (static_cast<T*>(this)->ValidateWritable()) {
+                Trigger(UV_WRITABLE);
+            }
         }
     }
 
@@ -159,8 +157,9 @@ private:
     static void Callback(uv_poll_t* poll, int32_t status, int32_t events) {
         if (status == 0) {
             auto& poller = *reinterpret_cast<Poller*>(poll->data);
-            poller.Trigger();
+            poller.TriggerReadable();
+            poller.TriggerWritable();
         }
-    };
+    }
 };
 }

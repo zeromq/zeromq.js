@@ -28,8 +28,12 @@ using handle_ptr = std::unique_ptr<T, UvDeleter<T>>;
 
 /* Smart UV handle that closes and releases itself on destruction. */
 template <typename T>
-struct UvHandle : public handle_ptr<T> {
+class UvHandle : handle_ptr<T> {
+public:
     inline UvHandle() : handle_ptr<T>{new T{}, UvDeleter<T>()} {};
+
+    using handle_ptr<T>::reset;
+    using handle_ptr<T>::operator->;
 
     inline operator bool() {
         return handle_ptr<T>::operator bool() && handle_ptr<T>::get()->type != 0;

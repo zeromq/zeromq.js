@@ -6,6 +6,8 @@
 #include "outgoing_msg.h"
 #include "poller.h"
 
+#include <optional>
+
 namespace zmq {
 class Module;
 
@@ -65,16 +67,23 @@ private:
 
     class Poller : public zmq::Poller<Poller> {
         Socket& socket;
-        Napi::Promise::Deferred read_deferred;
-        Napi::Promise::Deferred write_deferred;
+        std::optional<Napi::Promise::Deferred> read_deferred;
+        std::optional<Napi::Promise::Deferred> write_deferred;
         OutgoingMsg::Parts write_value;
 
     public:
-        explicit Poller(Socket& socket)
-            : socket(socket), read_deferred(socket.Env()), write_deferred(socket.Env()) {}
+        explicit Poller(Socket& socket) : socket(socket) {}
 
-        Napi::Value ReadPromise(int64_t timeout);
-        Napi::Value WritePromise(int64_t timeout, OutgoingMsg::Parts&& parts);
+        Napi::Value ReadPromise();
+        Napi::Value WritePromise(OutgoingMsg::Parts&& parts);
+
+        inline bool Reading() const {
+            return read_deferred.has_value();
+        }
+
+        inline bool Writing() const {
+            return write_deferred.has_value();
+        }
 
         inline bool ValidateReadable() const {
             return socket.HasEvents(ZMQ_POLLIN);
