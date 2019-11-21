@@ -29,7 +29,7 @@ The API reference [can be found here](http://zeromq.github.io/zeromq.js/globals.
 Install ZeroMQ.js with prebuilt binaries:
 
 ```sh
-npm install zeromq
+npm install zeromq@6.0.0-beta.4
 ```
 
 Requirements for prebuilt binaries:
@@ -47,13 +47,13 @@ If a prebuilt binary is not available for your platform, installing will attempt
 If you want to link against a shared ZeroMQ library, you can build and link with the shared library as follows:
 
 ```sh
-npm install zeromq --zmq-shared
+npm install zeromq@6.0.0-beta.4 --zmq-shared
 ```
 
 If you wish to use any DRAFT sockets then it is also necessary to compile the library from source:
 
 ```sh
-npm install zeromq --zmq-draft
+npm install zeromq@6.0.0-beta.4 --zmq-draft
 ```
 
 Make sure you have the following installed before attempting to build from source:
