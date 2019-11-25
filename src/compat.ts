@@ -721,17 +721,17 @@ class Socket extends EventEmitter {
 }
 
 for (const key in shortOptions) {
-  if (shortOptions.hasOwnProperty(key)) {
-    Object.defineProperty(Socket.prototype, key, {
-      get(this: Socket) {
-        return this.getsockopt(shortOptions[key as keyof typeof shortOptions])
-      },
-      set(this: Socket, val: string | Buffer) {
-        if ("string" === typeof val) val = Buffer.from(val, "utf8")
-        return this.setsockopt(shortOptions[key as keyof typeof shortOptions], val)
-      },
-    })
-  }
+  if (!shortOptions.hasOwnProperty(key)) continue
+  if (Socket.prototype.hasOwnProperty(key)) continue
+  Object.defineProperty(Socket.prototype, key, {
+    get(this: Socket) {
+      return this.getsockopt(shortOptions[key as keyof typeof shortOptions])
+    },
+    set(this: Socket, val: string | Buffer) {
+      if ("string" === typeof val) val = Buffer.from(val, "utf8")
+      return this.setsockopt(shortOptions[key as keyof typeof shortOptions], val)
+    },
+  })
 }
 
 function createSocket(type: SocketType, options: {[key: string]: any} = {}) {

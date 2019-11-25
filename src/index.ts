@@ -355,35 +355,37 @@ interface EventEmitter {
   ): void
 }
 
-Object.defineProperty(Observer.prototype, "emitter", {
-  get: function emitter(this: Observer) {
-    const events = require("events")
-    const value: EventEmitter = new events.EventEmitter()
+if (!Observer.prototype.hasOwnProperty("emitter")) {
+  Object.defineProperty(Observer.prototype, "emitter", {
+    get: function emitter(this: Observer) {
+      const events = require("events")
+      const value: EventEmitter = new events.EventEmitter()
 
-    const boundReceive = this.receive.bind(this)
-    Object.defineProperty(this, "receive", {
-      get: () => {
-        throw new Error(
-          "Observer is in event emitter mode. " +
-          "After a call to events.on() it is not possible to read events " +
-          "with events.receive().",
-        )
-      },
-    })
+      const boundReceive = this.receive.bind(this)
+      Object.defineProperty(this, "receive", {
+        get: () => {
+          throw new Error(
+            "Observer is in event emitter mode. " +
+            "After a call to events.on() it is not possible to read events " +
+            "with events.receive().",
+          )
+        },
+      })
 
-    const run = async () => {
-      while (!this.closed) {
-        const event = await boundReceive()
-        value.emit(event.type, event)
+      const run = async () => {
+        while (!this.closed) {
+          const event = await boundReceive()
+          value.emit(event.type, event)
+        }
       }
-    }
 
-    run()
+      run()
 
-    Object.defineProperty(this, "emitter", {value})
-    return value
-  },
-})
+      Object.defineProperty(this, "emitter", {value})
+      return value
+    },
+  })
+}
 
 Observer.prototype.on = function on(this: {emitter: EventSubscriber}, ...args) {
   return this.emitter.on(...args)
@@ -1688,6 +1690,7 @@ function defineOpt<T extends {prototype: any}, K extends ReadableKeys<PrototypeO
   }
 
   for (const target of targets) {
+    if (target.prototype.hasOwnProperty(name)) continue
     Object.defineProperty(target.prototype, name, desc)
   }
 }
