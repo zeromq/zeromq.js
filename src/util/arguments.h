@@ -82,18 +82,17 @@ public:
 private:
     template <size_t I = 0>
     std::optional<Napi::Error> eval(const Napi::CallbackInfo& info) const {
-        if (auto err = std::get<I>(validators)(I, info[I])) return err;
-        return eval<I + 1>(info);
-    }
+        if constexpr (I == N) {
+            if (info.Length() > N) {
+                auto msg = "Expected " + to_string(N) + " argument" + (N != 1 ? "s" : "");
+                return Napi::TypeError::New(info.Env(), msg);
+            }
 
-    template <>
-    std::optional<Napi::Error> eval<N>(const Napi::CallbackInfo& info) const {
-        if (info.Length() > N) {
-            auto msg = "Expected " + to_string(N) + " argument" + (N != 1 ? "s" : "");
-            return Napi::TypeError::New(info.Env(), msg);
+            return {};
+        } else {
+            if (auto err = std::get<I>(validators)(I, info[I])) return err;
+            return eval<I + 1>(info);
         }
-
-        return {};
     }
 };
 }
