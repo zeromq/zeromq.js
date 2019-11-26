@@ -4,8 +4,8 @@
 #include <errno.h>
 
 namespace zmq {
-static inline const char* ErrnoMessage(int32_t errorno);
-static inline const char* ErrnoCode(int32_t errorno);
+static inline constexpr const char* ErrnoMessage(int32_t errorno);
+static inline constexpr const char* ErrnoCode(int32_t errorno);
 
 /* Generates a process warning message. */
 static inline void Warn(const Napi::Env& env, const std::string& msg) {
@@ -48,7 +48,7 @@ static inline Napi::Error ErrnoException(
 }
 
 /* Convert errno to human readable error message. */
-static inline const char* ErrnoMessage(int32_t errorno) {
+static inline constexpr const char* ErrnoMessage(int32_t errorno) {
     /* Clarify a few confusing default messages; otherwise rely on zmq. */
     switch (errorno) {
     case EFAULT:
@@ -73,7 +73,7 @@ static inline const char* ErrnoMessage(int32_t errorno) {
 
 /* This is copied from Node.js; the mapping is not in a public API. */
 /* Copyright Node.js contributors. All rights reserved. */
-static inline const char* ErrnoCode(int32_t errorno) {
+static inline constexpr const char* ErrnoCode(int32_t errorno) {
 #define ERRNO_CASE(e)                                                                    \
     case e:                                                                              \
         return #e;

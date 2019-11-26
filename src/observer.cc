@@ -11,7 +11,7 @@
 #include <array>
 
 namespace zmq {
-static inline const char* EventName(uint32_t val) {
+static inline constexpr const char* EventName(uint32_t val) {
     switch (val) {
     case ZMQ_EVENT_CONNECTED:
         return "connect";
@@ -75,7 +75,7 @@ static inline const char* EventName(uint32_t val) {
 }
 
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_AUTH
-static inline const char* AuthError(uint32_t val) {
+static inline constexpr const char* AuthError(uint32_t val) {
     switch (val) {
     case 300:
         return "Temporary error";
@@ -127,11 +127,11 @@ static inline std::pair<const char*, const char*> ProtoError(uint32_t val) {
 Observer::Observer(const Napi::CallbackInfo& info)
     : Napi::ObjectWrap<Observer>(info), async_context(Env(), "Observer"), poller(*this),
       module(*reinterpret_cast<Module*>(info.Data())) {
-    auto args = {
-        Argument{"Socket must be a socket object", &Napi::Value::IsObject},
+    Arg::Validator args{
+        Arg::Required<Arg::Object>("Socket must be a socket object"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
 
     auto target = Socket::Unwrap(info[0].As<Napi::Object>());
     if (Env().IsExceptionPending()) return;
@@ -307,13 +307,14 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
 }
 
 void Observer::Close(const Napi::CallbackInfo& info) {
-    if (!ValidateArguments(info, {})) return;
+    if (Arg::Validator().ThrowIfInvalid(info)) return;
 
     Close();
 }
 
 Napi::Value Observer::Receive(const Napi::CallbackInfo& info) {
-    if (!ValidateArguments(info, {})) return Env().Undefined();
+    if (Arg::Validator().ThrowIfInvalid(info)) return Env().Undefined();
+
     if (!ValidateOpen()) return Env().Undefined();
 
     if (poller.Reading()) {

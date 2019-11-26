@@ -11,18 +11,17 @@ Context::Context(const Napi::CallbackInfo& info)
     /* If this module has no global context, then create one with a process
        wide context pointer that is shared between threads/agents. */
     if (module.GlobalContext.IsEmpty()) {
-        if (!ValidateArguments(info, {})) return;
+        if (Arg::Validator().ThrowIfInvalid(info)) return;
 
         /* Just use the same shared global context pointer. Contexts are
            threadsafe anyway. */
         context = module.Global().SharedContext;
     } else {
-        auto args = {
-            Argument{"Options must be an object", &Napi::Value::IsObject,
-                &Napi::Value::IsUndefined},
+        Arg::Validator args{
+            Arg::Optional<Arg::Object>("Options must be an object"),
         };
 
-        if (!ValidateArguments(info, args)) return;
+        if (args.ThrowIfInvalid(info)) return;
 
         context = zmq_ctx_new();
     }
@@ -75,11 +74,11 @@ void Context::Close() {
 
 template <>
 Napi::Value Context::GetCtxOpt<bool>(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Identifier must be a number", &Napi::Value::IsNumber},
+    Arg::Validator args{
+        Arg::Required<Arg::Number>("Identifier must be a number"),
     };
 
-    if (!ValidateArguments(info, args)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) return Env().Undefined();
 
     uint32_t option = info[0].As<Napi::Number>();
 
@@ -94,12 +93,12 @@ Napi::Value Context::GetCtxOpt<bool>(const Napi::CallbackInfo& info) {
 
 template <>
 void Context::SetCtxOpt<bool>(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Identifier must be a number", &Napi::Value::IsNumber},
-        Argument{"Option value must be a boolean", &Napi::Value::IsBoolean},
+    Arg::Validator args{
+        Arg::Required<Arg::Number>("Identifier must be a number"),
+        Arg::Required<Arg::Boolean>("Option value must be a boolean"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
 
     uint32_t option = info[0].As<Napi::Number>();
 
@@ -112,11 +111,11 @@ void Context::SetCtxOpt<bool>(const Napi::CallbackInfo& info) {
 
 template <typename T>
 Napi::Value Context::GetCtxOpt(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Identifier must be a number", &Napi::Value::IsNumber},
+    Arg::Validator args{
+        Arg::Required<Arg::Number>("Identifier must be a number"),
     };
 
-    if (!ValidateArguments(info, args)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) return Env().Undefined();
 
     uint32_t option = info[0].As<Napi::Number>();
 
@@ -131,12 +130,12 @@ Napi::Value Context::GetCtxOpt(const Napi::CallbackInfo& info) {
 
 template <typename T>
 void Context::SetCtxOpt(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Identifier must be a number", &Napi::Value::IsNumber},
-        Argument{"Option value must be a number", &Napi::Value::IsNumber},
+    Arg::Validator args{
+        Arg::Required<Arg::Number>("Identifier must be a number"),
+        Arg::Required<Arg::Number>("Option value must be a number"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
 
     uint32_t option = info[0].As<Napi::Number>();
 

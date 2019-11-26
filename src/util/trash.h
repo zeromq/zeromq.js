@@ -31,7 +31,6 @@ public:
         };
 
         auto err = uv_async_init(loop, async, clear);
-
         assert(err == 0);
 
         /* Immediately unreference this handle in order to prevent the async
@@ -43,7 +42,7 @@ public:
        async callback is called by UV. */
     inline void Add(T* item) {
         std::lock_guard<std::mutex> guard(lock);
-        values.emplace_back(std::unique_ptr<T>(item));
+        values.emplace_back(item);
 
         /* Call to uv_async_send() should never return nonzero. UV ensures
            that calls are coalesced if they occur frequently. This is good

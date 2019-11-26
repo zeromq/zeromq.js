@@ -22,12 +22,12 @@ struct ProxyContext {
 Proxy::Proxy(const Napi::CallbackInfo& info)
     : Napi::ObjectWrap<Proxy>(info), async_context(Env(), "Proxy"),
       module(*reinterpret_cast<Module*>(info.Data())) {
-    auto args = {
-        Argument{"Front-end must be a socket object", &Napi::Value::IsObject},
-        Argument{"Back-end must be a socket object", &Napi::Value::IsObject},
+    Arg::Validator args{
+        Arg::Required<Arg::Object>("Front-end must be a socket object"),
+        Arg::Required<Arg::Object>("Back-end must be a socket object"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
 
     front_ref.Reset(info[0].As<Napi::Object>(), 1);
     Socket::Unwrap(front_ref.Value());
@@ -43,7 +43,7 @@ Proxy::~Proxy() {}
 void Proxy::Close() {}
 
 Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
-    if (!ValidateArguments(info, {})) return Env().Undefined();
+    if (Arg::Validator().ThrowIfInvalid(info)) return Env().Undefined();
 
     auto front = Socket::Unwrap(front_ref.Value());
     if (Env().IsExceptionPending()) return Env().Undefined();
@@ -157,17 +157,20 @@ void Proxy::SendCommand(const char* command) {
 }
 
 void Proxy::Pause(const Napi::CallbackInfo& info) {
-    if (!ValidateArguments(info, {})) return;
+    if (Arg::Validator().ThrowIfInvalid(info)) return;
+
     SendCommand("PAUSE");
 }
 
 void Proxy::Resume(const Napi::CallbackInfo& info) {
-    if (!ValidateArguments(info, {})) return;
+    if (Arg::Validator().ThrowIfInvalid(info)) return;
+
     SendCommand("RESUME");
 }
 
 void Proxy::Terminate(const Napi::CallbackInfo& info) {
-    if (!ValidateArguments(info, {})) return;
+    if (Arg::Validator().ThrowIfInvalid(info)) return;
+
     SendCommand("TERMINATE");
 }
 

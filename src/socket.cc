@@ -20,7 +20,7 @@
 namespace zmq {
 /* The maximum number of sync I/O operations that are allowed before the I/O
    methods will force the returned promise to be resolved in the next tick. */
-auto constexpr max_sync_operations = 1 << 9;
+[[maybe_unused]] auto constexpr max_sync_operations = 1 << 9;
 
 /* Ordinary static cast for all available numeric types. */
 template <typename T>
@@ -39,7 +39,7 @@ uint64_t NumberCast<uint64_t>(const Napi::Number& num) {
     if (value > static_cast<double>((1ull << 53) - 1)) {
         Warn(num.Env(),
             "Value is larger than Number.MAX_SAFE_INTEGER and may have been rounded "
-            "inaccurately");
+            "inaccurately.");
     }
 
     /* If the next representable value of the double is beyond the maximum
@@ -62,13 +62,12 @@ struct AddressContext {
 Socket::Socket(const Napi::CallbackInfo& info)
     : Napi::ObjectWrap<Socket>(info), async_context(Env(), "Socket"), poller(*this),
       module(*reinterpret_cast<Module*>(info.Data())) {
-    auto args = {
-        Argument{"Socket type must be a number", &Napi::Value::IsNumber},
-        Argument{"Options must be an object", &Napi::Value::IsObject,
-            &Napi::Value::IsUndefined},
+    Arg::Validator args{
+        Arg::Required<Arg::Number>("Socket type must be a number"),
+        Arg::Optional<Arg::Object>("Options must be an object"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
 
     type = info[0].As<Napi::Number>().Uint32Value();
 
@@ -217,7 +216,7 @@ void Socket::WarnUnlessImmediateOption(int32_t option) const {
 
     if (immediate.count(option) != 0) return;
     if (endpoints == 0 && state == State::Open) return;
-    Warn(Env(), "Socket option will not take effect until next connect/bind");
+    Warn(Env(), "Socket option will not take effect until next connect/bind.");
 }
 
 bool Socket::ValidateOpen() const {
@@ -336,11 +335,12 @@ void Socket::Receive(const Napi::Promise::Deferred& res) {
 }
 
 Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Address must be a string", &Napi::Value::IsString},
+    Arg::Validator args{
+        Arg::Required<Arg::String>("Address must be a string"),
     };
 
-    if (!ValidateArguments(info, args)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) return Env().Undefined();
+
     if (!ValidateOpen()) return Env().Undefined();
 
     state = Socket::State::Blocked;
@@ -385,11 +385,12 @@ Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
 }
 
 Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Address must be a string", &Napi::Value::IsString},
+    Arg::Validator args{
+        Arg::Required<Arg::String>("Address must be a string"),
     };
 
-    if (!ValidateArguments(info, args)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) return Env().Undefined();
+
     if (!ValidateOpen()) return Env().Undefined();
 
     state = Socket::State::Blocked;
@@ -434,11 +435,12 @@ Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
 }
 
 void Socket::Connect(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Address must be a string", &Napi::Value::IsString},
+    Arg::Validator args{
+        Arg::Required<Arg::String>("Address must be a string"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
+
     if (!ValidateOpen()) return;
 
     std::string address = info[0].As<Napi::String>();
@@ -451,11 +453,12 @@ void Socket::Connect(const Napi::CallbackInfo& info) {
 }
 
 void Socket::Disconnect(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Address must be a string", &Napi::Value::IsString},
+    Arg::Validator args{
+        Arg::Required<Arg::String>("Address must be a string"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
+
     if (!ValidateOpen()) return;
 
     std::string address = info[0].As<Napi::String>();
@@ -468,7 +471,7 @@ void Socket::Disconnect(const Napi::CallbackInfo& info) {
 }
 
 void Socket::Close(const Napi::CallbackInfo& info) {
-    if (!ValidateArguments(info, {})) return;
+    if (Arg::Validator().ThrowIfInvalid(info)) return;
 
     /* We can't access the socket when it is blocked, delay closing. */
     if (state == State::Blocked) {
@@ -479,31 +482,28 @@ void Socket::Close(const Napi::CallbackInfo& info) {
     }
 }
 
-inline bool IsNotUndefined(const Napi::Value& value) {
-    return !value.IsUndefined();
-}
-
 Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
     switch (type) {
 #ifdef ZMQ_HAS_POLLABLE_THREAD_SAFE
     case ZMQ_SERVER:
     case ZMQ_RADIO: {
-        auto args = {
-            Argument{"Message must be present", &IsNotUndefined},
-            Argument{"Options must be an object", &Napi::Value::IsObject},
+        Arg::Validator args{
+            Arg::Required<Arg::NotUndefined>("Message must be present"),
+            Arg::Required<Arg::Object>("Options must be an object"),
         };
 
-        if (!ValidateArguments(info, args)) return Env().Undefined();
+        if (args.ThrowIfInvalid(info)) return Env().Undefined();
+
         break;
     }
 
 #endif
     default: {
-        auto args = {
-            Argument{"Message must be present", &IsNotUndefined},
+        Arg::Validator args{
+            Arg::Required<Arg::NotUndefined>("Message must be present"),
         };
 
-        if (!ValidateArguments(info, args)) return Env().Undefined();
+        if (args.ThrowIfInvalid(info)) return Env().Undefined();
     }
     }
 
@@ -542,7 +542,7 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
            busy sending data to the I/O thread but is no longer able to respond
            to other events. */
 #ifdef ZMQ_NO_SYNC_RESOLVE
-        Warn(Env(), "Promise resolving by send() is delayed (ZMQ_NO_SYNC_RESOLVE)");
+        Warn(Env(), "Promise resolving by send() is delayed (ZMQ_NO_SYNC_RESOLVE).");
 #else
         if (sync_operations++ < max_sync_operations) {
             auto res = Napi::Promise::Deferred::New(Env());
@@ -570,7 +570,8 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
 }
 
 Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
-    if (!ValidateArguments(info, {})) return Env().Undefined();
+    if (Arg::Validator().ThrowIfInvalid(info)) return Env().Undefined();
+
     if (!ValidateOpen()) return Env().Undefined();
 
     if (poller.Reading()) {
@@ -582,7 +583,7 @@ Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
         /* We can read from the socket immediately. This is a fast path.
            Also see the related comments in Send(). */
 #ifdef ZMQ_NO_SYNC_RESOLVE
-        Warn(Env(), "Promise resolving by receive() is delayed (ZMQ_NO_SYNC_RESOLVE)");
+        Warn(Env(), "Promise resolving by receive() is delayed (ZMQ_NO_SYNC_RESOLVE).");
 #else
         if (sync_operations++ < max_sync_operations) {
             auto res = Napi::Promise::Deferred::New(Env());
@@ -611,12 +612,12 @@ Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
 
 void Socket::Join(const Napi::CallbackInfo& info) {
 #ifdef ZMQ_HAS_POLLABLE_THREAD_SAFE
-    auto args = {
-        Argument{"Group must be a string or buffer", &Napi::Value::IsString,
-            &Napi::Value::IsBuffer},
+    Arg::Validator args{
+        Arg::Required<Arg::String, Arg::Buffer>("Group must be a string or buffer"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
+
     if (!ValidateOpen()) return;
 
     auto str = [&]() {
@@ -639,12 +640,12 @@ void Socket::Join(const Napi::CallbackInfo& info) {
 
 void Socket::Leave(const Napi::CallbackInfo& info) {
 #ifdef ZMQ_HAS_POLLABLE_THREAD_SAFE
-    auto args = {
-        Argument{"Group must be a string or buffer", &Napi::Value::IsString,
-            &Napi::Value::IsBuffer},
+    Arg::Validator args{
+        Arg::Required<Arg::String, Arg::Buffer>("Group must be a string or buffer"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
+
     if (!ValidateOpen()) return;
 
     auto str = [&]() {
@@ -667,11 +668,11 @@ void Socket::Leave(const Napi::CallbackInfo& info) {
 
 template <>
 Napi::Value Socket::GetSockOpt<bool>(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Identifier must be a number", &Napi::Value::IsNumber},
+    Arg::Validator args{
+        Arg::Required<Arg::Number>("Identifier must be a number"),
     };
 
-    if (!ValidateArguments(info, args)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) return Env().Undefined();
 
     uint32_t option = info[0].As<Napi::Number>();
 
@@ -687,12 +688,12 @@ Napi::Value Socket::GetSockOpt<bool>(const Napi::CallbackInfo& info) {
 
 template <>
 void Socket::SetSockOpt<bool>(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Identifier must be a number", &Napi::Value::IsNumber},
-        Argument{"Option value must be a boolean", &Napi::Value::IsBoolean},
+    Arg::Validator args{
+        Arg::Required<Arg::Number>("Identifier must be a number"),
+        Arg::Required<Arg::Boolean>("Option value must be a boolean"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
 
     int32_t option = info[0].As<Napi::Number>();
     WarnUnlessImmediateOption(option);
@@ -706,11 +707,11 @@ void Socket::SetSockOpt<bool>(const Napi::CallbackInfo& info) {
 
 template <>
 Napi::Value Socket::GetSockOpt<char*>(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Identifier must be a number", &Napi::Value::IsNumber},
+    Arg::Validator args{
+        Arg::Required<Arg::Number>("Identifier must be a number"),
     };
 
-    if (!ValidateArguments(info, args)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) return Env().Undefined();
 
     uint32_t option = info[0].As<Napi::Number>();
 
@@ -731,13 +732,13 @@ Napi::Value Socket::GetSockOpt<char*>(const Napi::CallbackInfo& info) {
 
 template <>
 void Socket::SetSockOpt<char*>(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Identifier must be a number", &Napi::Value::IsNumber},
-        Argument{"Option value must be a string or buffer", &Napi::Value::IsString,
-            &Napi::Value::IsBuffer, &Napi::Value::IsNull},
+    Arg::Validator args{
+        Arg::Required<Arg::Number>("Identifier must be a number"),
+        Arg::Required<Arg::String, Arg::Buffer, Arg::Null>(
+            "Option value must be a string or buffer"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
 
     int32_t option = info[0].As<Napi::Number>();
     WarnUnlessImmediateOption(option);
@@ -767,11 +768,11 @@ void Socket::SetSockOpt<char*>(const Napi::CallbackInfo& info) {
 
 template <typename T>
 Napi::Value Socket::GetSockOpt(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Identifier must be a number", &Napi::Value::IsNumber},
+    Arg::Validator args{
+        Arg::Required<Arg::Number>("Identifier must be a number"),
     };
 
-    if (!ValidateArguments(info, args)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) return Env().Undefined();
 
     uint32_t option = info[0].As<Napi::Number>();
 
@@ -787,12 +788,12 @@ Napi::Value Socket::GetSockOpt(const Napi::CallbackInfo& info) {
 
 template <typename T>
 void Socket::SetSockOpt(const Napi::CallbackInfo& info) {
-    auto args = {
-        Argument{"Identifier must be a number", &Napi::Value::IsNumber},
-        Argument{"Option value must be a number", &Napi::Value::IsNumber},
+    Arg::Validator args{
+        Arg::Required<Arg::Number>("Identifier must be a number"),
+        Arg::Required<Arg::Number>("Option value must be a number"),
     };
 
-    if (!ValidateArguments(info, args)) return;
+    if (args.ThrowIfInvalid(info)) return;
 
     int32_t option = info[0].As<Napi::Number>();
     WarnUnlessImmediateOption(option);

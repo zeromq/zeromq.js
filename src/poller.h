@@ -23,20 +23,22 @@ public:
        event may be present on the corresponding ZMQ socket. */
     inline int32_t Initialize(
         Napi::Env env, uv_os_sock_t& fd, std::function<void()> finalizer = nullptr) {
-        int32_t err;
         auto loop = UvLoop(env);
 
         poll->data = this;
-        err = uv_poll_init_socket(loop, poll, fd);
-        if (err != 0) return err;
+        if (auto err = uv_poll_init_socket(loop, poll, fd); err != 0) {
+            return err;
+        }
 
         readable_timer->data = this;
-        err = uv_timer_init(loop, readable_timer);
-        if (err != 0) return err;
+        if (auto err = uv_timer_init(loop, readable_timer); err != 0) {
+            return err;
+        }
 
         writable_timer->data = this;
-        err = uv_timer_init(loop, writable_timer);
-        if (err != 0) return err;
+        if (auto err = uv_timer_init(loop, writable_timer); err != 0) {
+            return err;
+        }
 
         finalize = finalizer;
         return 0;
