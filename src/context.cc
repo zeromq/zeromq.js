@@ -110,71 +110,6 @@ void Context::SetCtxOpt<bool>(const Napi::CallbackInfo& info) {
     }
 }
 
-#ifdef ZMQ_BUILD_DRAFT_API
-
-// template <>
-// Napi::Value Context::GetCtxOpt<char*>(const Napi::CallbackInfo& info) {
-//     auto args = {
-//         Argument{"Identifier must be a number", &Napi::Value::IsNumber},
-//     };
-//
-//     if (!ValidateArguments(info, args)) return Env().Undefined();
-//
-//     uint32_t option = info[0].As<Napi::Number>();
-//
-//     char value[1024];
-//     size_t length = sizeof(value) - 1;
-//     if (zmq_ctx_get_ext(context, option, value, &length) < 0) {
-//         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
-//         return Env().Undefined();
-//     }
-//
-//     if (length == 0 || (length == 1 && value[0] == 0)) {
-//         return Env().Null();
-//     } else {
-//         value[length] = '\0';
-//         return Napi::String::New(Env(), value);
-//     }
-// }
-//
-// template <>
-// void Context::SetCtxOpt<char*>(const Napi::CallbackInfo& info) {
-//     auto args = {
-//         Argument{"Identifier must be a number", &Napi::Value::IsNumber},
-//         Argument{"Option value must be a string or buffer", &Napi::Value::IsString,
-//             &Napi::Value::IsBuffer, &Napi::Value::IsNull},
-//     };
-//
-//     if (!ValidateArguments(info, args)) return;
-//
-//     int32_t option = info[0].As<Napi::Number>();
-//     WarnUnlessImmediateOption(option);
-//
-//     int32_t err;
-//     if (info[1].IsBuffer()) {
-//         Napi::Object buf = info[1].As<Napi::Object>();
-//         auto length = buf.As<Napi::Buffer<char>>().Length();
-//         auto value = buf.As<Napi::Buffer<char>>().Data();
-//         err = zmq_ctx_set_ext(context, option, value, length);
-//     } else if (info[1].IsString()) {
-//         std::string str = info[1].As<Napi::String>();
-//         auto length = str.length();
-//         auto value = str.data();
-//         err = zmq_ctx_set_ext(context, option, value, length);
-//     } else {
-//         auto length = 0u;
-//         auto value = nullptr;
-//         err = zmq_ctx_set_ext(context, option, value, length);
-//     }
-//
-//     if (err < 0) {
-//         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
-//         return;
-//     }
-// }
-
-#endif
-
 template <typename T>
 Napi::Value Context::GetCtxOpt(const Napi::CallbackInfo& info) {
     auto args = {
@@ -218,10 +153,6 @@ void Context::Initialize(Module& module, Napi::Object& exports) {
         InstanceMethod("setBoolOption", &Context::SetCtxOpt<bool>),
         InstanceMethod("getInt32Option", &Context::GetCtxOpt<int32_t>),
         InstanceMethod("setInt32Option", &Context::SetCtxOpt<int32_t>),
-#ifdef ZMQ_BUILD_DRAFT_API
-    // InstanceMethod("getStringOption", &Context::GetCtxOpt<char*>),
-    // InstanceMethod("setStringOption", &Context::SetCtxOpt<char*>),
-#endif
     };
 
     auto constructor = DefineClass(exports.Env(), "Context", proto, &module);
