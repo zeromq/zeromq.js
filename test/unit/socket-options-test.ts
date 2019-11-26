@@ -193,7 +193,7 @@ describe("socket options", function() {
       await new Promise(process.nextTick)
       assert.deepEqual(
         warnings.map((w) => w.message),
-        ["Socket option will not take effect until next connect/bind"],
+        ["Socket option will not take effect until next connect/bind."],
       )
 
       sock.close()
@@ -211,7 +211,7 @@ describe("socket options", function() {
       await new Promise(process.nextTick)
       assert.deepEqual(
         warnings.map((w) => w.message),
-        ["Socket option will not take effect until next connect/bind"],
+        ["Socket option will not take effect until next connect/bind."],
       )
 
       await promise
@@ -230,7 +230,7 @@ describe("socket options", function() {
       await new Promise(process.nextTick)
       assert.deepEqual(
         warnings.map((w) => w.message),
-        ["Socket option will not take effect until next connect/bind"],
+        ["Socket option will not take effect until next connect/bind."],
       )
 
       sock.close()
@@ -250,7 +250,7 @@ describe("socket options", function() {
         warnings.map((w) => w.message),
         [
           "Value is larger than Number.MAX_SAFE_INTEGER and " +
-          "may have been rounded inaccurately",
+          "may have been rounded inaccurately.",
         ],
       )
     })
