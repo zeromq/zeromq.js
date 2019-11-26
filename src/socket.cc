@@ -471,7 +471,7 @@ void Socket::Disconnect(const Napi::CallbackInfo& info) {
 }
 
 void Socket::Close(const Napi::CallbackInfo& info) {
-    if (Arg::Validator().ThrowIfInvalid(info)) return;
+    if (Arg::Validator{}.ThrowIfInvalid(info)) return;
 
     /* We can't access the socket when it is blocked, delay closing. */
     if (state == State::Blocked) {
@@ -570,7 +570,7 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
 }
 
 Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
-    if (Arg::Validator().ThrowIfInvalid(info)) return Env().Undefined();
+    if (Arg::Validator{}.ThrowIfInvalid(info)) return Env().Undefined();
 
     if (!ValidateOpen()) return Env().Undefined();
 

@@ -11,7 +11,7 @@ Context::Context(const Napi::CallbackInfo& info)
     /* If this module has no global context, then create one with a process
        wide context pointer that is shared between threads/agents. */
     if (module.GlobalContext.IsEmpty()) {
-        if (Arg::Validator().ThrowIfInvalid(info)) return;
+        if (Arg::Validator{}.ThrowIfInvalid(info)) return;
 
         /* Just use the same shared global context pointer. Contexts are
            threadsafe anyway. */

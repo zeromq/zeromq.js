@@ -43,7 +43,7 @@ Proxy::~Proxy() {}
 void Proxy::Close() {}
 
 Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
-    if (Arg::Validator().ThrowIfInvalid(info)) return Env().Undefined();
+    if (Arg::Validator{}.ThrowIfInvalid(info)) return Env().Undefined();
 
     auto front = Socket::Unwrap(front_ref.Value());
     if (Env().IsExceptionPending()) return Env().Undefined();
@@ -157,19 +157,19 @@ void Proxy::SendCommand(const char* command) {
 }
 
 void Proxy::Pause(const Napi::CallbackInfo& info) {
-    if (Arg::Validator().ThrowIfInvalid(info)) return;
+    if (Arg::Validator{}.ThrowIfInvalid(info)) return;
 
     SendCommand("PAUSE");
 }
 
 void Proxy::Resume(const Napi::CallbackInfo& info) {
-    if (Arg::Validator().ThrowIfInvalid(info)) return;
+    if (Arg::Validator{}.ThrowIfInvalid(info)) return;
 
     SendCommand("RESUME");
 }
 
 void Proxy::Terminate(const Napi::CallbackInfo& info) {
-    if (Arg::Validator().ThrowIfInvalid(info)) return;
+    if (Arg::Validator{}.ThrowIfInvalid(info)) return;
 
     SendCommand("TERMINATE");
 }

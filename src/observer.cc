@@ -307,13 +307,13 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
 }
 
 void Observer::Close(const Napi::CallbackInfo& info) {
-    if (Arg::Validator().ThrowIfInvalid(info)) return;
+    if (Arg::Validator{}.ThrowIfInvalid(info)) return;
 
     Close();
 }
 
 Napi::Value Observer::Receive(const Napi::CallbackInfo& info) {
-    if (Arg::Validator().ThrowIfInvalid(info)) return Env().Undefined();
+    if (Arg::Validator{}.ThrowIfInvalid(info)) return Env().Undefined();
 
     if (!ValidateOpen()) return Env().Undefined();
 
