@@ -57,12 +57,30 @@ else
     echo > "${SRC_DIR}/builds/cmake/Modules/ClangFormat.cmake"
   fi
 
-  cmake -G "${CMAKE_GENERATOR}" "${BUILD_OPTIONS}" -DCMAKE_INSTALL_PREFIX="${PATH_PREFIX}" -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_STATIC=ON -DBUILD_TESTS=OFF -DBUILD_SHARED=OFF -DWITH_DOCS=OFF "${SRC_DIR}"
+  cmake -G "${CMAKE_GENERATOR}" \
+    "${BUILD_OPTIONS}" \
+    -DCMAKE_INSTALL_PREFIX="${PATH_PREFIX}" \
+    -DCMAKE_INSTALL_LIBDIR=lib \
+    -DBUILD_STATIC=ON \
+    -DBUILD_TESTS=OFF \
+    -DBUILD_SHARED=OFF \
+    -DWITH_DOCS=OFF \
+    "${SRC_DIR}"
 
   if [ -n "${WINDIR}" ]; then
-    cmake --build . --config Release --target install -- -verbosity:Minimal -maxcpucount
-    mv "${PATH_PREFIX}/lib/libzmq-v${TOOLSET_VERSION}-mt-s-${ZMQ_VERSION//./_}.lib" "${PATH_PREFIX}/lib/libzmq.lib"
+    cmake \
+      --build . \
+      --config Release \
+      --target install \
+      -- -verbosity:Minimal -maxcpucount
+    mv \
+      "${PATH_PREFIX}/lib/libzmq-v${TOOLSET_VERSION}-mt-s-${ZMQ_VERSION//./_}.lib" \
+      "${PATH_PREFIX}/lib/libzmq.lib"
   else
-    cmake --build . --config Release --target install -- -j5
+    cmake \
+      --build .\
+      --config Release \
+      --target install \
+      -- -j5
   fi
 fi
