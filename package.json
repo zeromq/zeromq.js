@@ -52,7 +52,8 @@
     "prebuilds",
     "v5-compat.d.ts",
     "v5-compat.js",
-    "vendor/*.h"
+    "vendor/*.h",
+    "vendor/LICENSE.md"
   ],
   "scripts": {
     "install": "node-gyp-build",
