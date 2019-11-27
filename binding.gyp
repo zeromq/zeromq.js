@@ -36,7 +36,7 @@
       ],
 
       'include_dirs': [
-        "<!@(node -p \"require('node-addon-api').include\")",
+        "vendor",
         '<(PRODUCT_DIR)/../libzmq/include',
       ],
 

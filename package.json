@@ -10,7 +10,6 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "node-addon-api": "^1.7.1",
     "node-gyp-build": "^4.1.0"
   },
   "devDependencies": {
@@ -24,6 +23,7 @@
     "choma": ">= 1.2",
     "gunzip-maybe": "^1.4.1",
     "mocha": ">= 4.0",
+    "node-addon-api": "rolftimmermans/node-addon-api#fix-copy-constructors",
     "node-fetch": "^2.6.0",
     "prebuildify": "^3.0",
     "semver": ">= 0",
@@ -51,13 +51,15 @@
     "script/build.sh",
     "prebuilds",
     "v5-compat.d.ts",
-    "v5-compat.js"
+    "v5-compat.js",
+    "vendor/*.h"
   ],
   "scripts": {
     "install": "node-gyp-build",
     "ci:compile": "tsc --project tsconfig-build.json",
     "ci:doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
     "ci:prebuild": "prebuildify --napi --strip",
+    "dev:build": "rm -f vendor/* && touch vendor/.gitkeep && cp node_modules/node-addon-api/{*.h,LICENSE.md} vendor && prebuildify --napi --build-from-source --debug",
     "dev:test": "tsc --project tsconfig-build.json && mocha && tslint -t stylish --project . && script/format.sh && rm -f tmp/*",
     "dev:bench": "node --expose-gc test/bench"
   },

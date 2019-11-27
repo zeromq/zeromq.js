@@ -194,7 +194,7 @@ pub.bind("tcp://*:3456", err => {
 In order to develop and test the library, you'll need the following:
 
 * Node.js 10+
-* A working C/C++ compiler toolchain with make
+* A working C++17 compiler toolchain with make
 * Python 2.7 (or Python 3 with Node 12.13+)
 * CMake 2.8+
 * curl
@@ -241,6 +241,7 @@ The test suite can be run with:
 
 ```sh
 npm install
+npm run dev:build
 npm run dev:test
 ```
 
@@ -248,6 +249,7 @@ Or, if you prefer:
 
 ```sh
 yarn
+yarn run dev:build
 yarn run dev:test
 ```
 
