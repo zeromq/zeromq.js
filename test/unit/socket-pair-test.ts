@@ -9,8 +9,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     let sockB: zmq.Pair
 
     beforeEach(function() {
-      sockA = new zmq.Pair
-      sockB = new zmq.Pair
+      sockA = new zmq.Pair()
+      sockB = new zmq.Pair()
     })
 
     afterEach(function() {

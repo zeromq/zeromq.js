@@ -10,7 +10,7 @@ describe("socket construction", function() {
   describe("with constructor", function() {
     it("should throw if called as function", function() {
       assert.throws(
-        () => (zmq.Socket as any)(1, new zmq.Context),
+        () => (zmq.Socket as any)(1, new zmq.Context()),
         TypeError,
         "Class constructors cannot be invoked without 'new'",
       )
@@ -18,7 +18,7 @@ describe("socket construction", function() {
 
     it("should throw with too few arguments", function() {
       assert.throws(
-        () => new (zmq.Socket as any),
+        () => new (zmq.Socket as any)(),
         TypeError,
         "Socket type must be a number",
       )
@@ -26,7 +26,7 @@ describe("socket construction", function() {
 
     it("should throw with too many arguments", function() {
       assert.throws(
-        () => new (zmq.Socket as any)(1, new zmq.Context, 2),
+        () => new (zmq.Socket as any)(1, new zmq.Context(), 2),
         TypeError,
         "Expected 2 arguments",
       )
@@ -42,7 +42,7 @@ describe("socket construction", function() {
 
     it("should throw with wrong type argument", function() {
       assert.throws(
-        () => new (zmq.Socket as any)("foo", new zmq.Context),
+        () => new (zmq.Socket as any)("foo", new zmq.Context()),
         TypeError,
         "Socket type must be a number",
       )
@@ -50,8 +50,7 @@ describe("socket construction", function() {
 
     it("should throw with wrong type id", function() {
       try {
-        /* tslint:disable-next-line: no-unused-expression */
-        new (zmq.Socket as any)(37, new zmq.Context)
+        new (zmq.Socket as any)(37, new zmq.Context())
         assert.ok(false)
       } catch (err) {
         assert.instanceOf(err, Error)
@@ -63,21 +62,22 @@ describe("socket construction", function() {
 
     it("should throw with invalid context", function() {
       try {
-        /* tslint:disable-next-line: no-unused-expression */
         new (zmq.Socket as any)(1, {context: {}})
         assert.ok(false)
       } catch (err) {
         assert.instanceOf(err, Error)
         assert.oneOf(err.message, [
-          "Invalid pointer passed as argument", /* before 8.7 */
-          "Invalid argument", /* as of 8.7 */
+          "Invalid pointer passed as argument" /* before 8.7 */,
+          "Invalid argument" /* as of 8.7 */,
         ])
       }
     })
 
     it("should create socket with default context", function() {
       class MySocket extends zmq.Socket {
-        constructor() { super(1) }
+        constructor() {
+          super(1)
+        }
       }
       const sock1 = new MySocket()
       const sock2 = new MySocket()
@@ -87,9 +87,11 @@ describe("socket construction", function() {
 
     it("should create socket with given context", function() {
       class MySocket extends zmq.Socket {
-        constructor(opts: zmq.SocketOptions<MySocket>) { super(1, opts) }
+        constructor(opts: zmq.SocketOptions<MySocket>) {
+          super(1, opts)
+        }
       }
-      const context = new zmq.Context
+      const context = new zmq.Context()
       const socket = new MySocket({context})
       assert.instanceOf(socket, zmq.Socket)
       assert.equal(socket.context, context)
@@ -106,13 +108,13 @@ describe("socket construction", function() {
     })
 
     it("should create socket with default context", function() {
-      const sock = new zmq.Dealer
+      const sock = new zmq.Dealer()
       assert.instanceOf(sock, zmq.Dealer)
       assert.equal(sock.context, zmq.context)
     })
 
     it("should create socket with given context", function() {
-      const ctxt = new zmq.Context
+      const ctxt = new zmq.Context()
       const sock = new zmq.Dealer({context: ctxt})
       assert.instanceOf(sock, zmq.Socket)
       assert.equal(sock.context, ctxt)

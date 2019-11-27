@@ -1,9 +1,8 @@
-/* tslint:disable: no-var-requires ban-types */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 /* Declare all native C++ classes and methods in this file. */
 const path = require("path")
 module.exports = require("node-gyp-build")(path.join(__dirname, ".."))
-
 
 /* We are removing public methods from the Socket prototype that do not apply
    to all socket types. We will re-assign them to the prototypes of the
@@ -11,10 +10,10 @@ module.exports = require("node-gyp-build")(path.join(__dirname, ".."))
    wrapped in JS methods later, to ensure best performance. Any changes to
    their signatures should be handled in C++ exclusively. */
 interface SpecializedMethods {
-  send: Function,
-  receive: Function,
-  join: Function,
-  leave: Function,
+  send: Function
+  receive: Function
+  join: Function
+  leave: Function
 }
 
 const sack: Partial<SpecializedMethods> = {}
@@ -27,13 +26,11 @@ for (const key of ["send", "receive", "join", "leave"] as const) {
 module.exports.methods = sack
 export declare const methods: SpecializedMethods
 
-
 /**
  * The version of the ØMQ library the bindings were built with. Formatted as
  * `(major).(minor).(patch)`. For example: `"4.3.2"`.
  */
 export declare const version: string
-
 
 /**
  * Exposes some of the optionally available ØMQ capabilities, which may depend
@@ -53,15 +50,14 @@ export declare const version: string
  * * `draft` – Wether the library is built with support for DRAFT sockets.
  */
 export declare const capability: Partial<{
-  ipc: boolean,
-  pgm: boolean,
-  tipc: boolean,
-  norm: boolean,
-  curve: boolean,
-  gssapi: boolean,
-  draft: boolean,
+  ipc: boolean
+  pgm: boolean
+  tipc: boolean
+  norm: boolean
+  curve: boolean
+  gssapi: boolean
+  draft: boolean
 }>
-
 
 /**
  * Returns a new random key pair to be used with the CURVE security mechanism.
@@ -83,10 +79,9 @@ export declare const capability: Partial<{
  * a 40 character Z85-encoded string.
  */
 export declare function curveKeyPair(): {
-  publicKey: string,
-  secretKey: string,
+  publicKey: string
+  secretKey: string
 }
-
 
 /**
  * A ØMQ context. Contexts manage the background I/O to send and receive
@@ -139,7 +134,6 @@ export declare class Context {
  */
 export declare const context: Context
 
-
 interface ErrnoError extends Error {
   code: string
   errno: number
@@ -150,28 +144,27 @@ interface AuthError extends Error {
 }
 
 interface ProtoError extends Error {
-  code: (
-    "ERR_ZMTP_UNSPECIFIED" |
-    "ERR_ZMTP_UNEXPECTED_COMMAND" |
-    "ERR_ZMTP_INVALID_SEQUENCE" |
-    "ERR_ZMTP_KEY_EXCHANGE" |
-    "ERR_ZMTP_MALFORMED_COMMAND_UNSPECIFIED" |
-    "ERR_ZMTP_MALFORMED_COMMAND_MESSAGE" |
-    "ERR_ZMTP_MALFORMED_COMMAND_HELLO" |
-    "ERR_ZMTP_MALFORMED_COMMAND_INITIATE" |
-    "ERR_ZMTP_MALFORMED_COMMAND_ERROR" |
-    "ERR_ZMTP_MALFORMED_COMMAND_READY" |
-    "ERR_ZMTP_MALFORMED_COMMAND_WELCOME" |
-    "ERR_ZMTP_INVALID_METADATA" |
-    "ERR_ZMTP_CRYPTOGRAPHIC" |
-    "ERR_ZMTP_MECHANISM_MISMATCH" |
-    "ERR_ZAP_UNSPECIFIED" |
-    "ERR_ZAP_MALFORMED_REPLY" |
-    "ERR_ZAP_BAD_REQUEST_ID" |
-    "ERR_ZAP_BAD_VERSION" |
-    "ERR_ZAP_INVALID_STATUS_CODE" |
-    "ERR_ZAP_INVALID_METADATA"
-  )
+  code:
+    | "ERR_ZMTP_UNSPECIFIED"
+    | "ERR_ZMTP_UNEXPECTED_COMMAND"
+    | "ERR_ZMTP_INVALID_SEQUENCE"
+    | "ERR_ZMTP_KEY_EXCHANGE"
+    | "ERR_ZMTP_MALFORMED_COMMAND_UNSPECIFIED"
+    | "ERR_ZMTP_MALFORMED_COMMAND_MESSAGE"
+    | "ERR_ZMTP_MALFORMED_COMMAND_HELLO"
+    | "ERR_ZMTP_MALFORMED_COMMAND_INITIATE"
+    | "ERR_ZMTP_MALFORMED_COMMAND_ERROR"
+    | "ERR_ZMTP_MALFORMED_COMMAND_READY"
+    | "ERR_ZMTP_MALFORMED_COMMAND_WELCOME"
+    | "ERR_ZMTP_INVALID_METADATA"
+    | "ERR_ZMTP_CRYPTOGRAPHIC"
+    | "ERR_ZMTP_MECHANISM_MISMATCH"
+    | "ERR_ZAP_UNSPECIFIED"
+    | "ERR_ZAP_MALFORMED_REPLY"
+    | "ERR_ZAP_BAD_REQUEST_ID"
+    | "ERR_ZAP_BAD_VERSION"
+    | "ERR_ZAP_INVALID_STATUS_CODE"
+    | "ERR_ZAP_INVALID_METADATA"
 }
 
 interface EventAddress {
@@ -280,24 +273,23 @@ type EventFor<T extends string, D = {}> = Expand<{type: T} & D>
  *   not interpret. Please submit a pull request for new event types if they are
  *   not yet included.
  */
-export type Event = (
-  EventFor<"accept", EventAddress> |
-  EventFor<"accept:error", EventAddress & EventError> |
-  EventFor<"bind", EventAddress> |
-  EventFor<"bind:error", EventAddress & EventError> |
-  EventFor<"connect", EventAddress> |
-  EventFor<"connect:delay", EventAddress> |
-  EventFor<"connect:retry", EventAddress & EventInterval> |
-  EventFor<"close", EventAddress> |
-  EventFor<"close:error", EventAddress & EventError> |
-  EventFor<"disconnect", EventAddress> |
-  EventFor<"end"> |
-  EventFor<"handshake", EventAddress> |
-  EventFor<"handshake:error:protocol", EventAddress & EventError<ProtoError>> |
-  EventFor<"handshake:error:auth", EventAddress & EventError<AuthError>> |
-  EventFor<"handshake:error:other", EventAddress & EventError> |
-  EventFor<"unknown">
-)
+export type Event =
+  | EventFor<"accept", EventAddress>
+  | EventFor<"accept:error", EventAddress & EventError>
+  | EventFor<"bind", EventAddress>
+  | EventFor<"bind:error", EventAddress & EventError>
+  | EventFor<"connect", EventAddress>
+  | EventFor<"connect:delay", EventAddress>
+  | EventFor<"connect:retry", EventAddress & EventInterval>
+  | EventFor<"close", EventAddress>
+  | EventFor<"close:error", EventAddress & EventError>
+  | EventFor<"disconnect", EventAddress>
+  | EventFor<"end">
+  | EventFor<"handshake", EventAddress>
+  | EventFor<"handshake:error:protocol", EventAddress & EventError<ProtoError>>
+  | EventFor<"handshake:error:auth", EventAddress & EventError<AuthError>>
+  | EventFor<"handshake:error:other", EventAddress & EventError>
+  | EventFor<"unknown">
 
 /**
  * A union type of all available event types. See {@link Event} for an overview
@@ -311,8 +303,9 @@ export type EventType = Event["type"]
  *
  * @typeparam E The specific event type.
  */
-export type EventOfType<E extends EventType = EventType> =
-  Expand<Extract<Event, Event & EventFor<E>>>
+export type EventOfType<E extends EventType = EventType> = Expand<
+  Extract<Event, Event & EventFor<E>>
+>
 
 /**
  * An event observer for ØMQ sockets. This starts up a ZMQ monitoring socket
@@ -399,7 +392,7 @@ export declare class Observer {
  */
 export declare class Proxy<
   F extends Socket = Socket,
-  B extends Socket = Socket,
+  B extends Socket = Socket
 > {
   /**
    * Returns the original front-end socket.
@@ -619,7 +612,6 @@ export declare abstract class Socket {
   protected setStringOption(option: number, value: string | Buffer | null): void
 }
 
-
 export const enum SocketType {
   Pair = 0,
   Publisher = 1,
@@ -644,28 +636,28 @@ export const enum SocketType {
   Datagram = 18,
 }
 
-
 /* Utility types. */
 
 /* https://stackoverflow.com/questions/49579094 */
-type IfEquals<X, Y, A, B = never> =
-  (<T>() => T extends X ? 1 : 2) extends
-  (<T>() => T extends Y ? 1 : 2) ? A : B
+type IfEquals<X, Y, A, B = never> = (<T>() => T extends X ? 1 : 2) extends <
+  T
+>() => T extends Y ? 1 : 2
+  ? A
+  : B
 
 /* https://stackoverflow.com/questions/57683303 */
-type Expand<T> = T extends infer O ? { [K in keyof O]: O[K] } : never
+type Expand<T> = T extends infer O ? {[K in keyof O]: O[K]} : never
 
 /** @internal */
 export type ReadableKeys<T> = {
-  /* tslint:disable-next-line: ban-types */
   [P in keyof T]-?: T[P] extends Function ? never : P
 }[keyof T]
 
 /** @internal */
 export type WritableKeys<T> = {
-  /* tslint:disable-next-line: ban-types */
-  [P in keyof T]-?: T[P] extends Function ?
-    never : IfEquals<{[Q in P]: T[P]}, {-readonly [Q in P]: T[P]}, P>
+  [P in keyof T]-?: T[P] extends Function
+    ? never
+    : IfEquals<{[Q in P]: T[P]}, {-readonly [Q in P]: T[P]}, P>
 }[keyof T]
 
 export type Options<T, E = {}> = Expand<Partial<E & Pick<T, WritableKeys<T>>>>

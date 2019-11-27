@@ -3,7 +3,7 @@ import * as zmq from "../../src"
 import {assert} from "chai"
 import {createWorker} from "./helpers"
 
-describe(`context in thread`, function() {
+describe("context in thread", function() {
   this.slow(2000)
   this.timeout(5000)
 

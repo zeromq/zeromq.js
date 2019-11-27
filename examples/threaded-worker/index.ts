@@ -1,4 +1,3 @@
-/* tslint:disable: no-console */
 import {Processor} from "./processor"
 
 async function main() {
@@ -17,10 +16,10 @@ async function transform(processor: Processor, input: string) {
   const end = process.hrtime(start)
 
   console.log(`received output '${input}' -> '${output}' in ${end[0]}s`)
-  console.log(`---`)
+  console.log("---")
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error(err)
   process.exit(1)
 })

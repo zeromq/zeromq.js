@@ -21,7 +21,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           return sockB.receive()
         })
 
-        assert.deepEqual(["foo", "bar"], recv.map((buf) => Buffer.from(buf).toString()))
+        assert.deepEqual(
+          ["foo", "bar"],
+          recv.map(buf => Buffer.from(buf).toString()),
+        )
       })
     })
 
@@ -33,7 +36,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await sockA.bind(address)
         sockA.send(["foo", "bar"])
 
-        /* tslint:disable-next-line: no-shadowed-variable */
         await createWorker({address}, async ({address}) => {
           const sockB = new zmq.Pair({linger: 0})
           await sockB.connect(address)
@@ -45,7 +47,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         const recv = await sockA.receive()
         sockA.close()
-        assert.deepEqual(["foo", "bar"], recv.map((buf) => buf.toString()))
+        assert.deepEqual(
+          ["foo", "bar"],
+          recv.map(buf => buf.toString()),
+        )
       })
     })
 
@@ -53,7 +58,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       it("should deliver messages", async function() {
         const address = uniqAddress(proto)
 
-        /* tslint:disable-next-line: no-shadowed-variable */
         const worker1 = createWorker({address}, async ({address}) => {
           const sockA = new zmq.Pair({linger: 0})
           await sockA.bind(address)
@@ -62,7 +66,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           return sockA.receive()
         })
 
-        /* tslint:disable-next-line: no-shadowed-variable */
         const worker2 = createWorker({address}, async ({address}) => {
           const sockB = new zmq.Pair({linger: 0})
           await sockB.connect(address)
@@ -73,7 +76,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         })
 
         const [recv] = await Promise.all([worker1, worker2])
-        assert.deepEqual(["foo", "bar"], recv.map((buf) => Buffer.from(buf).toString()))
+        assert.deepEqual(
+          ["foo", "bar"],
+          recv.map(buf => Buffer.from(buf).toString()),
+        )
       })
     })
   })

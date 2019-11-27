@@ -28,29 +28,24 @@ import {
 
 import * as draft from "./draft"
 
-
 const {send, receive} = methods
 
 /**
  * A type representing the messages that are returned inside promises by
  * {@link Readable.receive}().
  */
-export type Message = (
-  Buffer
-)
+export type Message = Buffer
 
 /**
  * Union type representing all message types that are accepted by
  * {@link Writable.send}().
  */
-export type MessageLike = (
-  ArrayBufferView | /* Includes Node.js Buffer and all TypedArray types. */
-  ArrayBuffer | /* Backing buffer of TypedArrays. */
-  SharedArrayBuffer |
-  string |
-  null
-)
-
+export type MessageLike =
+  | ArrayBufferView /* Includes Node.js Buffer and all TypedArray types. */
+  | ArrayBuffer /* Backing buffer of TypedArrays. */
+  | SharedArrayBuffer
+  | string
+  | null
 
 /**
  * Describes sockets that can send messages.
@@ -61,7 +56,7 @@ export type MessageLike = (
  */
 export interface Writable<
   M extends MessageLike | MessageLike[] = MessageLike | MessageLike[],
-  O extends [...object[]] = [],
+  O extends [...object[]] = []
 > {
   /**
    * ZMQ_MULTICAST_HOPS
@@ -268,7 +263,6 @@ export interface Readable<M extends object[] = Message[]> {
   [Symbol.asyncIterator](): AsyncIterator<ReceiveType<this>, undefined>
 }
 
-
 /**
  * Represents the options that can be assigned in the constructor of a given
  * socket type, for example `new Dealer({...})`. Readonly options
@@ -277,7 +271,6 @@ export interface Readable<M extends object[] = Message[]> {
  * @typeparam S The socket type to which the options should be applied.
  */
 export type SocketOptions<S extends Socket> = Options<S, {context: Context}>
-
 
 interface SocketLikeIterable<T> {
   closed: boolean
@@ -310,7 +303,6 @@ function asyncIterator<T extends SocketLikeIterable<U>, U>(this: T) {
 
 Object.assign(Socket.prototype, {[Symbol.asyncIterator]: asyncIterator})
 Object.assign(Observer.prototype, {[Symbol.asyncIterator]: asyncIterator})
-
 
 interface EventSubscriber {
   /**
@@ -349,15 +341,13 @@ interface EventSubscriber {
 }
 
 interface EventEmitter {
-  emit<E extends EventType>(
-    type: E,
-    data: EventOfType<E>,
-  ): void
+  emit<E extends EventType>(type: E, data: EventOfType<E>): void
 }
 
 if (!Observer.prototype.hasOwnProperty("emitter")) {
   Object.defineProperty(Observer.prototype, "emitter", {
     get: function emitter(this: Observer) {
+      /* eslint-disable-next-line @typescript-eslint/no-var-requires */
       const events = require("events")
       const value: EventEmitter = new events.EventEmitter()
 
@@ -366,8 +356,8 @@ if (!Observer.prototype.hasOwnProperty("emitter")) {
         get: () => {
           throw new Error(
             "Observer is in event emitter mode. " +
-            "After a call to events.on() it is not possible to read events " +
-            "with events.receive().",
+              "After a call to events.on() it is not possible to read events " +
+              "with events.receive().",
           )
         },
       })
@@ -391,10 +381,12 @@ Observer.prototype.on = function on(this: {emitter: EventSubscriber}, ...args) {
   return this.emitter.on(...args)
 }
 
-Observer.prototype.off = function off(this: {emitter: EventSubscriber}, ...args) {
+Observer.prototype.off = function off(
+  this: {emitter: EventSubscriber},
+  ...args
+) {
   return this.emitter.off(...args)
 }
-
 
 /* Declare all additional TypeScript prototype methods that have been added
    in this file here. They will augment the native module exports. */
@@ -959,9 +951,7 @@ declare module "./native" {
   }
 }
 
-
 /* Concrete socket types. */
-
 
 /**
  * A {@link Pair} socket can only be connected to one other {@link Pair} at any
@@ -986,7 +976,6 @@ export class Pair extends Socket {
 
 export interface Pair extends Writable, Readable {}
 Object.assign(Pair.prototype, {send, receive})
-
 
 /**
  * A {@link Publisher} socket is used to distribute data to {@link Subscriber}s.
@@ -1038,7 +1027,6 @@ export class Publisher extends Socket {
 
 export interface Publisher extends Writable {}
 Object.assign(Publisher.prototype, {send})
-
 
 /**
  * A {@link Subscriber} socket is used to subscribe to data distributed by a
@@ -1139,7 +1127,6 @@ export class Subscriber extends Socket {
 export interface Subscriber extends Readable {}
 Object.assign(Subscriber.prototype, {receive})
 
-
 /**
  * A {@link Request} socket acts as a client to send requests to and receive
  * replies from a {@link Reply} socket. This socket allows only an alternating
@@ -1210,7 +1197,6 @@ export class Request extends Socket {
 export interface Request extends Readable, Writable {}
 Object.assign(Request.prototype, {send, receive})
 
-
 /**
  * A {@link Reply} socket can act as a server which receives requests from and
  * sends replies to a {@link Request} socket. This socket type allows only an
@@ -1235,7 +1221,6 @@ export class Reply extends Socket {
 
 export interface Reply extends Readable, Writable {}
 Object.assign(Reply.prototype, {send, receive})
-
 
 /**
  * A {@link Dealer} socket can be used to extend request/reply sockets. Each
@@ -1293,7 +1278,6 @@ export class Dealer extends Socket {
 
 export interface Dealer extends Readable, Writable {}
 Object.assign(Dealer.prototype, {send, receive})
-
 
 /**
  * A {@link Router} can be used to extend request/reply sockets. When receiving
@@ -1395,7 +1379,6 @@ interface RouterConnectOptions {
 export interface Router extends Readable, Writable {}
 Object.assign(Router.prototype, {send, receive})
 
-
 /**
  * A {@link Pull} socket is used by a pipeline node to receive messages from
  * upstream pipeline nodes. Messages are fair-queued from among all connected
@@ -1420,7 +1403,6 @@ export interface Pull extends Readable {
 }
 
 Object.assign(Pull.prototype, {receive})
-
 
 /**
  * A {@link Push} socket is used by a pipeline node to send messages to
@@ -1452,7 +1434,6 @@ export interface Push extends Writable {
 }
 
 Object.assign(Push.prototype, {send})
-
 
 /**
  * Same as {@link Publisher}, except that you can receive subscriptions from the
@@ -1515,11 +1496,14 @@ export class XPublisher extends Socket {
     switch (value) {
       case null:
         /* This disables ZMQ_XPUB_VERBOSE + ZMQ_XPUB_VERBOSER: */
-        this.setBoolOption(40 /* ZMQ_XPUB_VERBOSE */, false); break
+        this.setBoolOption(40 /* ZMQ_XPUB_VERBOSE */, false)
+        break
       case "allSubs":
-        this.setBoolOption(40 /* ZMQ_XPUB_VERBOSE */, true); break
+        this.setBoolOption(40 /* ZMQ_XPUB_VERBOSE */, true)
+        break
       case "allSubsUnsubs":
-        this.setBoolOption(78 /* ZMQ_XPUB_VERBOSER */, true); break
+        this.setBoolOption(78 /* ZMQ_XPUB_VERBOSER */, true)
+        break
     }
   }
 
@@ -1530,7 +1514,6 @@ export class XPublisher extends Socket {
 
 export interface XPublisher extends Readable, Writable {}
 Object.assign(XPublisher.prototype, {send, receive})
-
 
 /**
  * Same as {@link Subscriber}, except that you subscribe by sending subscription
@@ -1547,7 +1530,6 @@ export class XSubscriber extends Socket {
 
 export interface XSubscriber extends Readable, Writable {}
 Object.assign(XSubscriber.prototype, {send, receive})
-
 
 /**
  * A {@link Stream} is used to send and receive TCP data from a non-ØMQ peer
@@ -1602,10 +1584,10 @@ interface StreamConnectOptions {
   routingId?: string
 }
 
-export interface Stream extends
-  Readable<[Message, Message]>, Writable<[MessageLike, MessageLike]> {}
+export interface Stream
+  extends Readable<[Message, Message]>,
+    Writable<[MessageLike, MessageLike]> {}
 Object.assign(Stream.prototype, {send, receive})
-
 
 /* Meta functionality to define new socket/context options. */
 const enum Type {
@@ -1628,7 +1610,6 @@ const enum Acc {
   ReadWrite = 3,
 }
 
-/* tslint:disable-next-line: ban-types */
 type PrototypeOf<T> = T extends Function & {prototype: infer U} ? U : never
 
 /* Readable properties may be set as readonly. */
@@ -1653,7 +1634,10 @@ function defineOpt<T, K extends WritableKeys<PrototypeOf<T>>>(
 
 /* The default is to use R/w. The overloads above ensure the correct flag is
    set if the property has been defined as readonly in the interface/class. */
-function defineOpt<T extends {prototype: any}, K extends ReadableKeys<PrototypeOf<T>>>(
+function defineOpt<
+  T extends {prototype: any},
+  K extends ReadableKeys<PrototypeOf<T>>
+>(
   targets: T[],
   name: K,
   id: number,
@@ -1717,8 +1701,21 @@ defineOpt([Context], "blocky", 70, Type.Bool)
 
 /* Socket options. ALSO include any options in the Socket interface above. */
 const writables = [
-  Pair, Publisher, Request, Reply, Dealer, Router, Push, XPublisher, XSubscriber, Stream,
-  draft.Server, draft.Client, draft.Radio, draft.Scatter, draft.Datagram,
+  Pair,
+  Publisher,
+  Request,
+  Reply,
+  Dealer,
+  Router,
+  Push,
+  XPublisher,
+  XSubscriber,
+  Stream,
+  draft.Server,
+  draft.Client,
+  draft.Radio,
+  draft.Scatter,
+  draft.Datagram,
 ]
 
 defineOpt(writables, "sendBufferSize", 11, Type.Int32)
@@ -1727,8 +1724,21 @@ defineOpt(writables, "sendTimeout", 28, Type.Int32)
 defineOpt(writables, "multicastHops", 25, Type.Int32)
 
 const readables = [
-  Pair, Subscriber, Request, Reply, Dealer, Router, Pull, XPublisher, XSubscriber, Stream,
-  draft.Server, draft.Client, draft.Dish, draft.Gather, draft.Datagram,
+  Pair,
+  Subscriber,
+  Request,
+  Reply,
+  Dealer,
+  Router,
+  Pull,
+  XPublisher,
+  XSubscriber,
+  Stream,
+  draft.Server,
+  draft.Client,
+  draft.Dish,
+  draft.Gather,
+  draft.Datagram,
 ]
 
 defineOpt(readables, "receiveBufferSize", 12, Type.Int32)
@@ -1755,8 +1765,12 @@ defineOpt([Socket], "tcpAcceptFilter", 38, Type.String)
 defineOpt([Socket], "immediate", 39, Type.Bool)
 /* Option 'verbose' is implemented as verbosity on XPublisher. */
 defineOpt([Socket], "ipv6", 42, Type.Bool)
-defineOpt([Socket], "securityMechanism", 43, Type.Int32,
-  Acc.ReadOnly, [null, "plain", "curve", "gssapi"])
+defineOpt([Socket], "securityMechanism", 43, Type.Int32, Acc.ReadOnly, [
+  null,
+  "plain",
+  "curve",
+  "gssapi",
+])
 defineOpt([Socket], "plainServer", 44, Type.Bool)
 defineOpt([Socket], "plainUsername", 45, Type.String)
 defineOpt([Socket], "plainPassword", 46, Type.String)
@@ -1768,12 +1782,23 @@ if (capability.curve) {
   defineOpt([Socket], "curveServerKey", 50, Type.String)
 }
 
-defineOpt([Router, Dealer, Request], "probeRouter", 51, Type.Bool, Acc.WriteOnly)
+defineOpt(
+  [Router, Dealer, Request],
+  "probeRouter",
+  51,
+  Type.Bool,
+  Acc.WriteOnly,
+)
 defineOpt([Request], "correlate", 52, Type.Bool, Acc.WriteOnly)
 defineOpt([Request], "relaxed", 53, Type.Bool, Acc.WriteOnly)
 
-defineOpt([Pull, Push, Subscriber, Publisher, Dealer, draft.Scatter, draft.Gather],
-  "conflate", 54, Type.Bool, Acc.WriteOnly)
+defineOpt(
+  [Pull, Push, Subscriber, Publisher, Dealer, draft.Scatter, draft.Gather],
+  "conflate",
+  54,
+  Type.Bool,
+  Acc.WriteOnly,
+)
 
 defineOpt([Socket], "zapDomain", 55, Type.String)
 defineOpt([Router], "handover", 56, Type.Bool, Acc.WriteOnly)
@@ -1784,10 +1809,22 @@ if (capability.gssapi) {
   defineOpt([Socket], "gssapiPrincipal", 63, Type.String)
   defineOpt([Socket], "gssapiServicePrincipal", 64, Type.String)
   defineOpt([Socket], "gssapiPlainText", 65, Type.Bool)
-  defineOpt([Socket], "gssapiPrincipalNameType", 90, Type.Int32,
-    Acc.ReadWrite, ["hostBased", "userName", "krb5Principal"])
-  defineOpt([Socket], "gssapiServicePrincipalNameType", 91, Type.Int32,
-    Acc.ReadWrite, ["hostBased", "userName", "krb5Principal"])
+  defineOpt(
+    [Socket],
+    "gssapiPrincipalNameType",
+    90,
+    Type.Int32,
+    Acc.ReadWrite,
+    ["hostBased", "userName", "krb5Principal"],
+  )
+  defineOpt(
+    [Socket],
+    "gssapiServicePrincipalNameType",
+    91,
+    Type.Int32,
+    Acc.ReadWrite,
+    ["hostBased", "userName", "krb5Principal"],
+  )
 }
 
 defineOpt([Socket], "handshakeInterval", 66, Type.Int32)

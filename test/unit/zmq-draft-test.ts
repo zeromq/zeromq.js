@@ -9,7 +9,13 @@ if (zmq.capability.draft) {
       it("should include functions and constructors", function() {
         const expected = [
           /* Specific socket constructors. */
-          "Server", "Client", "Radio", "Dish", "Gather", "Scatter", "Datagram",
+          "Server",
+          "Client",
+          "Radio",
+          "Dish",
+          "Gather",
+          "Scatter",
+          "Datagram",
         ]
 
         assert.sameMembers(Object.keys(draft), expected)

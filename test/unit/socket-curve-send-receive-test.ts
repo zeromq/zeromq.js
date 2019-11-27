@@ -49,7 +49,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await sockA.send(sent)
 
         const recv = await sockB.receive()
-        assert.deepEqual([sent], recv.map((buf: Buffer) => buf.toString()))
+        assert.deepEqual(
+          [sent],
+          recv.map((buf: Buffer) => buf.toString()),
+        )
       })
     })
   })

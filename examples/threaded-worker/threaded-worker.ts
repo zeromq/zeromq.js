@@ -1,4 +1,3 @@
-/* tslint:disable: no-console */
 import {Worker} from "worker_threads"
 import * as zmq from "zeromq"
 
@@ -12,7 +11,7 @@ export class ThreadedWorker {
           new ThreadedWorker().run()
         `
 
-        new Worker(src, {eval: true}).on("exit", (code) => {
+        new Worker(src, {eval: true}).on("exit", code => {
           if (code === 0) {
             resolve()
           } else {
@@ -23,7 +22,7 @@ export class ThreadedWorker {
     })
 
     await Promise.all(workers)
-    console.log(`all workers stopped`)
+    console.log("all workers stopped")
   }
 
   /* Queue only 1 incoming message. */
@@ -81,9 +80,9 @@ export class ThreadedWorker {
 
     for (let i = 0; i < 200000001; i++) {
       if (char >= 65 && char <= 90) {
-        char = (char - 65 + this.shift) % 26 + 65
+        char = ((char - 65 + this.shift) % 26) + 65
       } else if (char >= 97 && char <= 122) {
-        char = (char - 97 + this.shift) % 26 + 97
+        char = ((char - 97 + this.shift) % 26) + 97
       }
     }
 

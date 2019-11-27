@@ -18,14 +18,17 @@ let seq = 5000
 export function uniqAddress(proto: string) {
   const id = seq++
   switch (proto) {
-  case "ipc":
-    const sock = path.resolve(__dirname, `../../tmp/${proto}-${id}`)
-    return `${proto}://${sock}`
-  case "tcp":
-  case "udp":
-    return `${proto}://127.0.0.1:${id}`
-  default:
-    return `${proto}://${proto}-${id}`
+    case "ipc": {
+      const sock = path.resolve(__dirname, `../../tmp/${proto}-${id}`)
+      return `${proto}://${sock}`
+    }
+
+    case "tcp":
+    case "udp":
+      return `${proto}://127.0.0.1:${id}`
+
+    default:
+      return `${proto}://${proto}-${id}`
   }
 }
 
@@ -67,8 +70,10 @@ export function createWorker<T, D extends {}>(
 
   return new Promise<T>((resolve, reject) => {
     let message: T
-    worker.on("message", (msg) => {message = msg})
-    worker.on("exit", (code) => {
+    worker.on("message", msg => {
+      message = msg
+    })
+    worker.on("exit", code => {
       if (code === 0) {
         resolve(message)
       } else {
@@ -112,7 +117,7 @@ export function captureEvent<E extends zmq.EventType>(
   socket: zmq.Socket,
   type: E,
 ): Promise<zmq.EventOfType<E>> {
-  return new Promise((resolve) => socket.events.on<E>(type, resolve))
+  return new Promise(resolve => socket.events.on<E>(type, resolve))
 }
 
 export async function captureEventsUntil(

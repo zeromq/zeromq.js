@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import * as zmq from "../../src"
 
 import {assert} from "chai"
@@ -8,7 +9,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     let sock: zmq.Dealer
 
     beforeEach(function() {
-      sock = new zmq.Dealer
+      sock = new zmq.Dealer()
     })
 
     afterEach(function() {
@@ -70,7 +71,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         try {
           await promise
           assert.ok(false)
-        } catch (err) { /* Ignore */ }
+        } catch (err) {
+          /* Ignore */
+        }
         assert.equal(sock.closed, true)
       })
 
@@ -92,7 +95,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         try {
           await promise
           assert.ok(false)
-        } catch (err) { /* Ignore */ }
+        } catch (err) {
+          /* Ignore */
+        }
         assert.equal(sock.closed, true)
       })
 
@@ -104,10 +109,12 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         let released = false
         const task = async () => {
-          let context: zmq.Context|undefined = new zmq.Context
+          let context: zmq.Context | undefined = new zmq.Context()
           const socket = new zmq.Dealer({context, linger: 0})
 
-          weak(context, () => {released = true})
+          weak(context, () => {
+            released = true
+          })
           context = undefined
 
           global.gc()
@@ -118,7 +125,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         await task()
         global.gc()
-        await new Promise((resolve) => setTimeout(resolve, 5))
+        await new Promise(resolve => setTimeout(resolve, 5))
         assert.equal(released, true)
       })
     })
@@ -132,19 +139,20 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         let released = false
         const task = async () => {
-          let context: zmq.Context|undefined = new zmq.Context
+          let context: zmq.Context | undefined = new zmq.Context()
 
-          /* tslint:disable-next-line: no-unused-expression */
           new zmq.Dealer({context, linger: 0})
 
-          weak(context, () => {released = true})
+          weak(context, () => {
+            released = true
+          })
           context = undefined
           global.gc()
         }
 
         await task()
         global.gc()
-        await new Promise((resolve) => setTimeout(resolve, 5))
+        await new Promise(resolve => setTimeout(resolve, 5))
         assert.equal(released, true)
       })
     })

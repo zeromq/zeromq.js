@@ -4,9 +4,9 @@ export class Queue {
   queue: any[] = []
   socket: Socket
   max: number
-  sending: boolean = false
+  sending = false
 
-  constructor(socket: Socket, max: number = 100) {
+  constructor(socket: Socket, max = 100) {
     this.socket = socket
     this.max = max
   }

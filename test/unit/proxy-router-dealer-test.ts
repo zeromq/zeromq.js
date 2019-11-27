@@ -18,13 +18,13 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       /* ZMQ < 4.0.5 has no steerable proxy support. */
       if (semver.satisfies(zmq.version, "< 4.0.5")) this.skip()
 
-      proxy = new zmq.Proxy(new zmq.Router, new zmq.Dealer)
+      proxy = new zmq.Proxy(new zmq.Router(), new zmq.Dealer())
 
       frontAddress = uniqAddress(proto)
       backAddress = uniqAddress(proto)
 
-      req = new zmq.Request
-      rep = new zmq.Reply
+      req = new zmq.Request()
+      rep = new zmq.Reply()
     })
 
     afterEach(function() {

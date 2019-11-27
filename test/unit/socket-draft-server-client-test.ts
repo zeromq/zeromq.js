@@ -12,9 +12,9 @@ if (zmq.capability.draft) {
       let clientB: draft.Client
 
       beforeEach(function() {
-        server = new draft.Server
-        clientA = new draft.Client
-        clientB = new draft.Client
+        server = new draft.Server()
+        clientA = new draft.Client()
+        clientB = new draft.Client()
       })
 
       afterEach(function() {

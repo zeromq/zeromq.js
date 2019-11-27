@@ -11,8 +11,8 @@ if (zmq.capability.draft) {
       let gather: draft.Gather
 
       beforeEach(function() {
-        scatter = new draft.Scatter
-        gather = new draft.Gather
+        scatter = new draft.Scatter()
+        gather = new draft.Gather()
       })
 
       afterEach(function() {

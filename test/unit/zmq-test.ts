@@ -8,17 +8,31 @@ describe("zmq", function() {
     it("should include functions and constructors", function() {
       const expected = [
         /* Utility functions. */
-        "version", "capability", "curveKeyPair",
+        "version",
+        "capability",
+        "curveKeyPair",
 
         /* The global/default context. */
         "context",
 
         /* Generic constructors. */
-        "Context", "Socket", "Observer", "Proxy",
+        "Context",
+        "Socket",
+        "Observer",
+        "Proxy",
 
         /* Specific socket constructors. */
-        "Pair", "Publisher", "Subscriber", "Request", "Reply",
-        "Dealer", "Router", "Pull", "Push", "XPublisher", "XSubscriber",
+        "Pair",
+        "Publisher",
+        "Subscriber",
+        "Request",
+        "Reply",
+        "Dealer",
+        "Router",
+        "Pull",
+        "Push",
+        "XPublisher",
+        "XSubscriber",
         "Stream",
       ]
 
@@ -44,7 +58,7 @@ describe("zmq", function() {
   describe("capability", function() {
     it("should return library capability booleans", function() {
       assert.equal(
-        Object.values(zmq.capability).every((c) => typeof c === "boolean"),
+        Object.values(zmq.capability).every(c => typeof c === "boolean"),
         true,
       )
     })

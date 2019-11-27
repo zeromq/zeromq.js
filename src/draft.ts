@@ -1,20 +1,8 @@
-import {
-  methods,
-  Socket,
-  SocketType,
-} from "./native"
+import {methods, Socket, SocketType} from "./native"
 
-import {
-  Message,
-  MessageLike,
-  Readable,
-  SocketOptions,
-  Writable,
-} from "."
-
+import {Message, MessageLike, Readable, SocketOptions, Writable} from "."
 
 const {send, receive, join, leave} = methods
-
 
 export class Server extends Socket {
   constructor(options?: SocketOptions<Server>) {
@@ -26,11 +14,10 @@ interface ServerRoutingOptions {
   routingId: number
 }
 
-export interface Server extends
-  Readable<[Message, ServerRoutingOptions]>,
-  Writable<MessageLike, [ServerRoutingOptions]> {}
+export interface Server
+  extends Readable<[Message, ServerRoutingOptions]>,
+    Writable<MessageLike, [ServerRoutingOptions]> {}
 Object.assign(Server.prototype, {send, receive})
-
 
 export class Client extends Socket {
   constructor(options?: SocketOptions<Client>) {
@@ -40,7 +27,6 @@ export class Client extends Socket {
 
 export interface Client extends Readable<[Message]>, Writable<MessageLike> {}
 Object.assign(Client.prototype, {send, receive})
-
 
 export class Radio extends Socket {
   constructor(options?: SocketOptions<Radio>) {
@@ -54,7 +40,6 @@ interface RadioGroupOptions {
 
 export interface Radio extends Writable<MessageLike, [RadioGroupOptions]> {}
 Object.assign(Radio.prototype, {send})
-
 
 export class Dish extends Socket {
   constructor(options?: SocketOptions<Dish>) {
@@ -80,7 +65,6 @@ interface DishGroupOptions {
 export interface Dish extends Readable<[Message, DishGroupOptions]> {}
 Object.assign(Dish.prototype, {receive})
 
-
 export class Gather extends Socket {
   constructor(options?: SocketOptions<Gather>) {
     super(SocketType.Gather, options)
@@ -92,7 +76,6 @@ export interface Gather extends Readable<[Message]> {
 }
 
 Object.assign(Gather.prototype, {receive})
-
 
 export class Scatter extends Socket {
   constructor(options?: SocketOptions<Scatter>) {
@@ -106,13 +89,13 @@ export interface Scatter extends Writable<MessageLike> {
 
 Object.assign(Scatter.prototype, {send})
 
-
 export class Datagram extends Socket {
   constructor(options?: SocketOptions<Datagram>) {
     super(SocketType.Datagram, options)
   }
 }
 
-export interface Datagram extends
-  Readable<[Message, Message]>, Writable<[MessageLike, MessageLike]> {}
+export interface Datagram
+  extends Readable<[Message, Message]>,
+    Writable<[MessageLike, MessageLike]> {}
 Object.assign(Datagram.prototype, {send, receive})

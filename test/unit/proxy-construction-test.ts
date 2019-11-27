@@ -24,7 +24,7 @@ describe("proxy construction", function() {
 
     it("should throw with too few arguments", function() {
       assert.throws(
-        () => new (zmq.Proxy as any),
+        () => new (zmq.Proxy as any)(),
         TypeError,
         "Front-end must be a socket object",
       )
@@ -32,7 +32,12 @@ describe("proxy construction", function() {
 
     it("should throw with too many arguments", function() {
       assert.throws(
-        () => new (zmq.Proxy as any)(new zmq.Dealer, new zmq.Dealer, new zmq.Dealer),
+        () =>
+          new (zmq.Proxy as any)(
+            new zmq.Dealer(),
+            new zmq.Dealer(),
+            new zmq.Dealer(),
+          ),
         TypeError,
         "Expected 2 arguments",
       )
@@ -40,14 +45,13 @@ describe("proxy construction", function() {
 
     it("should throw with invalid socket", function() {
       try {
-        /* tslint:disable-next-line: no-unused-expression */
         new (zmq.Proxy as any)({}, {})
         assert.ok(false)
       } catch (err) {
         assert.instanceOf(err, Error)
         assert.oneOf(err.message, [
-          "Invalid pointer passed as argument", /* before 8.7 */
-          "Invalid argument", /* as of 8.7 */
+          "Invalid pointer passed as argument" /* before 8.7 */,
+          "Invalid argument" /* as of 8.7 */,
         ])
       }
     })

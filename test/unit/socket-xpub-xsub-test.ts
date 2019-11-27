@@ -12,10 +12,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     let xsub: zmq.XSubscriber
 
     beforeEach(function() {
-      pub = new zmq.Publisher
-      sub = new zmq.Subscriber
-      xpub = new zmq.XPublisher
-      xsub = new zmq.XSubscriber
+      pub = new zmq.Publisher()
+      sub = new zmq.Subscriber()
+      xpub = new zmq.XPublisher()
+      xsub = new zmq.XSubscriber()
     })
 
     afterEach(function() {
@@ -50,7 +50,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         const send = async () => {
           /* Wait briefly before publishing to avoid slow joiner syndrome. */
-          await new Promise((resolve) => setTimeout(resolve, 25))
+          await new Promise(resolve => setTimeout(resolve, 25))
           for (const msg of messages) {
             await pub.send(msg)
           }
@@ -111,7 +111,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         const send = async () => {
           /* Wait briefly before publishing to avoid slow joiner syndrome. */
-          await new Promise((resolve) => setTimeout(resolve, 25))
+          await new Promise(resolve => setTimeout(resolve, 25))
 
           for (const msg of messages) {
             await pub.send(msg)
@@ -158,13 +158,13 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         xpub.verbosity = null
 
         const sub1 = sub
-        const sub2 = new zmq.Subscriber
+        const sub2 = new zmq.Subscriber()
         await xpub.bind(address)
         await sub1.connect(address)
         await sub2.connect(address)
 
         const subscribe = async () => {
-          await new Promise((resolve) => setTimeout(resolve, 25))
+          await new Promise(resolve => setTimeout(resolve, 25))
           sub1.subscribe("fo")
           sub2.subscribe("fo")
           sub2.unsubscribe("fo")
@@ -193,13 +193,13 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         xpub.verbosity = "allSubs"
 
         const sub1 = sub
-        const sub2 = new zmq.Subscriber
+        const sub2 = new zmq.Subscriber()
         await xpub.bind(address)
         await sub1.connect(address)
         await sub2.connect(address)
 
         const subscribe = async () => {
-          await new Promise((resolve) => setTimeout(resolve, 25))
+          await new Promise(resolve => setTimeout(resolve, 25))
           sub1.subscribe("fo")
           sub2.subscribe("fo")
           sub2.unsubscribe("fo")
@@ -234,13 +234,13 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         xpub.verbosity = "allSubsUnsubs"
 
         const sub1 = sub
-        const sub2 = new zmq.Subscriber
+        const sub2 = new zmq.Subscriber()
         await xpub.bind(address)
         await sub1.connect(address)
         await sub2.connect(address)
 
         const subscribe = async () => {
-          await new Promise((resolve) => setTimeout(resolve, 25))
+          await new Promise(resolve => setTimeout(resolve, 25))
           sub1.subscribe("fo")
           sub2.subscribe("fo")
           sub2.unsubscribe("fo")

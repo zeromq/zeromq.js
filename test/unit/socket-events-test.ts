@@ -1,7 +1,12 @@
 import * as zmq from "../../src"
 
 import {assert} from "chai"
-import {captureEvent, captureEventsUntil, testProtos, uniqAddress} from "./helpers"
+import {
+  captureEvent,
+  captureEventsUntil,
+  testProtos,
+  uniqAddress,
+} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} events`, function() {
@@ -9,8 +14,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     let sockB: zmq.Dealer
 
     beforeEach(function() {
-      sockA = new zmq.Dealer
-      sockB = new zmq.Dealer
+      sockA = new zmq.Dealer()
+      sockB = new zmq.Dealer()
     })
 
     afterEach(function() {
@@ -68,7 +73,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sockA.bind(address)
           const [event] = await Promise.all([
             captureEvent(sockB, "bind:error"),
-            sockB.bind(address).catch(() => {/* Ignore */}),
+            sockB.bind(address).catch(() => {
+              /* Ignore */
+            }),
           ])
 
           assert.equal("tcp://" + event.address, address)
@@ -83,19 +90,19 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const address = uniqAddress(proto)
         const events: zmq.Event[] = []
 
-        sockA.events.on("bind", (event) => {
+        sockA.events.on("bind", event => {
           events.push(event)
         })
 
-        sockA.events.on("accept", (event) => {
+        sockA.events.on("accept", event => {
           events.push(event)
         })
 
-        sockA.events.on("close", (event) => {
+        sockA.events.on("close", event => {
           events.push(event)
         })
 
-        sockA.events.on("end", (event) => {
+        sockA.events.on("end", event => {
           events.push(event)
         })
 
@@ -103,7 +110,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           () => sockA.events.receive(),
           Error,
           "Observer is in event emitter mode. After a call to events.on() it " +
-          "is not possible to read events with events.receive().",
+            "is not possible to read events with events.receive().",
         )
 
         const connected = captureEvent(sockB, "connect")

@@ -1,4 +1,3 @@
-/* tslint:disable: no-console */
 import {Router} from "zeromq"
 
 import {Service} from "./service"
@@ -10,7 +9,7 @@ export class Broker {
   services: Map<string, Service> = new Map()
   workers: Map<string, Buffer> = new Map()
 
-  constructor(address: string = "tcp://127.0.0.1:5555") {
+  constructor(address = "tcp://127.0.0.1:5555") {
     this.address = address
   }
 
@@ -21,14 +20,14 @@ export class Broker {
     const loop = async () => {
       for await (const [sender, blank, header, ...rest] of this.socket) {
         switch (header.toString()) {
-        case Header.Client:
-          this.handleClient(sender, ...rest)
-          break
-        case Header.Worker:
-          this.handleWorker(sender, ...rest)
-          break
-        default:
-          console.error(`invalid message header: ${header}`)
+          case Header.Client:
+            this.handleClient(sender, ...rest)
+            break
+          case Header.Worker:
+            this.handleWorker(sender, ...rest)
+            break
+          default:
+            console.error(`invalid message header: ${header}`)
         }
       }
     }
@@ -50,22 +49,28 @@ export class Broker {
 
   handleWorker(worker: Buffer, type?: Buffer, ...rest: Buffer[]) {
     switch (type && type.toString()) {
-    case Message.Ready:
-      const [service] = rest
-      this.register(worker, service)
-      break
-    case Message.Reply:
-      const [client, blank, ...rep] = rest
-      this.dispatchReply(worker, client, ...rep)
-      break
-    case Message.Heartbeat:
-      /* Heartbeats not implemented yet. */
-      break
-    case Message.Disconnect:
-      this.deregister(worker)
-      break
-    default:
-      console.error(`invalid worker message type: ${type}`)
+      case Message.Ready: {
+        const [service] = rest
+        this.register(worker, service)
+        break
+      }
+
+      case Message.Reply: {
+        const [client, blank, ...rep] = rest
+        this.dispatchReply(worker, client, ...rep)
+        break
+      }
+
+      case Message.Heartbeat:
+        /* Heartbeats not implemented yet. */
+        break
+
+      case Message.Disconnect:
+        this.deregister(worker)
+        break
+
+      default:
+        console.error(`invalid worker message type: ${type}`)
     }
   }
 

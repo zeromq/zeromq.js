@@ -11,8 +11,8 @@ for (const proto of testProtos("tcp", "ipc")) {
     let handler: ZapHandler
 
     beforeEach(function() {
-      sockA = new zmq.Pair
-      sockB = new zmq.Pair
+      sockA = new zmq.Pair()
+      sockB = new zmq.Pair()
     })
 
     afterEach(function() {
@@ -46,7 +46,10 @@ for (const proto of testProtos("tcp", "ipc")) {
         const sent = "foo"
         await sockA.send(sent)
         const recv = await sockB.receive()
-        assert.deepEqual([sent], recv.map((buf: Buffer) => buf.toString()))
+        assert.deepEqual(
+          [sent],
+          recv.map((buf: Buffer) => buf.toString()),
+        )
       })
 
       it("should report authentication error", async function() {
@@ -123,11 +126,9 @@ for (const proto of testProtos("tcp", "ipc")) {
         /* ZMQ < 4.3.0 does not have these event details. */
         if (semver.satisfies(zmq.version, "< 4.3.0")) this.skip()
 
-        handler = new CustomZapHandler(
-          ([path, delim, ...rest]) => {
-            return [path, delim, null, null]
-          },
-        )
+        handler = new CustomZapHandler(([path, delim, ...rest]) => {
+          return [path, delim, null, null]
+        })
 
         sockA.plainServer = true
         sockA.zapDomain = "test"
@@ -191,7 +192,7 @@ interface ZapDetails {
 }
 
 abstract class ZapHandler {
-  socket = new zmq.Router
+  socket = new zmq.Router()
 
   async run() {
     await this.socket.bind("inproc://zeromq.zap.01")
@@ -249,15 +250,7 @@ class ValidatingZapHandler extends ZapHandler {
       }
     }
 
-    return [
-      path,
-      delimiter,
-      version,
-      id,
-      ...status,
-      null,
-      null,
-    ]
+    return [path, delimiter, version, id, ...status, null, null]
   }
 }
 

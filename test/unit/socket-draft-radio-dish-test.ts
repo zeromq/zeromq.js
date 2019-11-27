@@ -11,8 +11,8 @@ if (zmq.capability.draft) {
       let dish: draft.Dish
 
       beforeEach(function() {
-        radio = new draft.Radio
-        dish = new draft.Dish
+        radio = new draft.Radio()
+        dish = new draft.Dish()
       })
 
       afterEach(function() {
@@ -35,8 +35,21 @@ if (zmq.capability.draft) {
 
           /* Max 15 non-null bytes. */
           const uuid = Buffer.from([
-            0xf6, 0x46, 0x1f, 0x03, 0xd2, 0x0d, 0xc8, 0x66,
-            0xe5, 0x5f, 0xf5, 0xa1, 0x65, 0x62, 0xb2,
+            0xf6,
+            0x46,
+            0x1f,
+            0x03,
+            0xd2,
+            0x0d,
+            0xc8,
+            0x66,
+            0xe5,
+            0x5f,
+            0xf5,
+            0xa1,
+            0x65,
+            0x62,
+            0xb2,
           ])
 
           const received: string[] = []
@@ -48,7 +61,7 @@ if (zmq.capability.draft) {
 
           const send = async () => {
             /* Wait briefly before publishing to avoid slow joiner syndrome. */
-            await new Promise((resolve) => setTimeout(resolve, 25))
+            await new Promise(resolve => setTimeout(resolve, 25))
             for (const msg of messages) {
               await radio.send(msg, {group: uuid})
             }
@@ -90,7 +103,7 @@ if (zmq.capability.draft) {
 
           const send = async () => {
             /* Wait briefly before publishing to avoid slow joiner syndrome. */
-            await new Promise((resolve) => setTimeout(resolve, 25))
+            await new Promise(resolve => setTimeout(resolve, 25))
             for (const msg of messages) {
               await radio.send(msg, {group: msg.slice(0, 2)})
             }

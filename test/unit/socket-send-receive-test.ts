@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 import * as zmq from "../../src"
 
 import {assert} from "chai"
@@ -22,7 +23,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     describe("when not applicable", function() {
       it("should fail sending", function() {
         try {
-          (new zmq.Subscriber() as any).send()
+          ;(new zmq.Subscriber() as any).send()
         } catch (err) {
           assert.instanceOf(err, Error)
           assert.include(err.message, "send is not a function")
@@ -31,7 +32,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       it("should fail receiving", function() {
         try {
-          (new zmq.Publisher() as any).receive()
+          ;(new zmq.Publisher() as any).receive()
         } catch (err) {
           assert.instanceOf(err, Error)
           assert.include(err.message, "receive is not a function")
@@ -40,8 +41,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       it("should fail iterating", async function() {
         try {
-          /* tslint:disable-next-line: no-empty */
-          for await (const msg of (new zmq.Publisher() as any)) {}
+          /* eslint-disable-next-line no-empty */
+          for await (const msg of new zmq.Publisher() as any) {
+          }
         } catch (err) {
           assert.instanceOf(err, Error)
           assert.include(err.message, "receive is not a function")
@@ -85,13 +87,15 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         sockA.connect(uniqAddress(proto))
         const send = async (size: number) => {
           const msg = Buffer.alloc(size)
-          weak(msg, () => {released = true})
+          weak(msg, () => {
+            released = true
+          })
           await sockA.send(msg)
         }
 
         await send(16)
         global.gc()
-        await new Promise((resolve) => setTimeout(resolve, 5))
+        await new Promise(resolve => setTimeout(resolve, 5))
         assert.equal(released, true)
       })
 
@@ -103,13 +107,15 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         sockA.connect(uniqAddress(proto))
         const send = async (size: number) => {
           const msg = Buffer.alloc(size)
-          weak(msg, () => {released = true})
+          weak(msg, () => {
+            released = true
+          })
           await sockA.send(msg)
         }
 
         await send(1025)
         global.gc()
-        await new Promise((resolve) => setTimeout(resolve, 5))
+        await new Promise(resolve => setTimeout(resolve, 5))
         assert.equal(released, false)
       })
     })
@@ -131,7 +137,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       it("should be readable if message is available", async function() {
         await sockB.send(Buffer.from("foo"))
-        await new Promise((resolve) => setTimeout(resolve, 15))
+        await new Promise(resolve => setTimeout(resolve, 15))
         assert.equal(sockA.readable, true)
       })
 
@@ -140,7 +146,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await sockA.send(sent)
 
         const recv = await sockB.receive()
-        assert.deepEqual([sent], recv.map((buf: Buffer) => buf.toString()))
+        assert.deepEqual(
+          [sent],
+          recv.map((buf: Buffer) => buf.toString()),
+        )
       })
 
       it("should deliver single buffer message", async function() {
@@ -156,7 +165,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await sockA.send(sent)
 
         const recv = await sockB.receive()
-        assert.deepEqual(sent, recv.map((buf: Buffer) => buf.toString()))
+        assert.deepEqual(
+          sent,
+          recv.map((buf: Buffer) => buf.toString()),
+        )
       })
 
       it("should deliver single multipart buffer message", async function() {
@@ -209,8 +221,15 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should deliver messages coercible to string", async function() {
-        /* tslint:disable-next-line: no-empty */
-        const messages = [null, function() {}, 16.19, true, {}, Promise.resolve()]
+        const messages = [
+          null,
+          /* eslint-disable-next-line @typescript-eslint/no-empty-function */
+          function() {},
+          16.19,
+          true,
+          {},
+          Promise.resolve(),
+        ]
         for (const msg of messages) {
           await sockA.send(msg as any)
         }
@@ -224,10 +243,14 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         /* Unify different output across Node/TypeScript versions. */
         received[1] = received[1].replace("function()", "function ()")
         received[1] = received[1].replace("function () { }", "function () {}")
-        assert.deepEqual(
-          received,
-          ["", "function () {}", "16.19", "true", "[object Object]", "[object Promise]"],
-        )
+        assert.deepEqual(received, [
+          "",
+          "function () {}",
+          "16.19",
+          "true",
+          "[object Object]",
+          "[object Promise]",
+        ])
       })
 
       it("should poll simultaneously", async function() {
@@ -252,7 +275,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should poll simultaneously after delay", async function() {
-        await new Promise((resolve) => setTimeout(resolve, 15))
+        await new Promise(resolve => setTimeout(resolve, 15))
         const sendReceiveA = async () => {
           const [msg1] = await Promise.all([
             sockA.receive(),
@@ -296,7 +319,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const send = async (size: number) => {
           for (let i = 0; i < n; i++) {
             const msg = Buffer.alloc(size)
-            weak(msg, () => {released++})
+            weak(msg, () => {
+              released++
+            })
             await sockA.send(msg)
           }
         }
@@ -304,19 +329,18 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const receive = async () => {
           for (let i = 0; i < n; i++) {
             const msg = await sockB.receive()
-            weak(msg, () => {released++})
+            weak(msg, () => {
+              released++
+            })
           }
         }
 
-        await Promise.all([
-          send(2048),
-          receive(),
-        ])
+        await Promise.all([send(2048), receive()])
 
         /* Repeated GC to allow inproc messages from being collected. */
         for (let i = 0; i < 5; i++) {
           global.gc()
-          await new Promise((resolve) => setTimeout(resolve, 2))
+          await new Promise(resolve => setTimeout(resolve, 2))
         }
 
         assert.equal(released, n * 2)
@@ -333,33 +357,36 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           for (let i = 0; i < n; i++) {
             const [msg] = await sockB.receive()
             await sockB.send(msg)
-            weak(msg, () => {released++})
+            weak(msg, () => {
+              released++
+            })
           }
         }
 
         const send = async (size: number) => {
           for (let i = 0; i < n; i++) {
             const msg = Buffer.alloc(size)
-            weak(msg, () => {released++})
+            weak(msg, () => {
+              released++
+            })
             await sockA.send(msg)
 
             const [rep] = await sockA.receive()
-            weak(rep, () => {released++})
+            weak(rep, () => {
+              released++
+            })
           }
 
           sockA.close()
           sockB.close()
         }
 
-        await Promise.all([
-          send(2048),
-          echo(),
-        ])
+        await Promise.all([send(2048), echo()])
 
         /* Repeated GC to allow inproc messages from being collected. */
         for (let i = 0; i < 5; i++) {
           global.gc()
-          await new Promise((resolve) => setTimeout(resolve, 2))
+          await new Promise(resolve => setTimeout(resolve, 2))
         }
 
         assert.equal(released, n * 3)
@@ -391,12 +418,14 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         const countDelays = async (fn: () => Promise<void>) => {
           let delays = 0
-          await new Promise((resolve) => setTimeout(resolve, 15))
-          const interval = setInterval(() => {delays++}, 0)
+          await new Promise(resolve => setTimeout(resolve, 15))
+          const interval = setInterval(() => {
+            delays++
+          }, 0)
           await new Promise(setImmediate) /* Move to check phase. */
           await fn()
           clearInterval(interval)
-          await new Promise((resolve) => setTimeout(resolve, 15))
+          await new Promise(resolve => setTimeout(resolve, 15))
           return delays
         }
 
@@ -426,16 +455,16 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           const address = uniqAddress(proto)
 
           const sent = "foo"
-          const promise = Promise.all([
-            sockB.receive(),
-            sockA.send(sent),
-          ])
+          const promise = Promise.all([sockB.receive(), sockA.send(sent)])
 
           await sockB.bind(address)
           await sockA.connect(address)
 
           const [recv] = await promise
-          assert.deepEqual([sent], recv.map((buf: Buffer) => buf.toString()))
+          assert.deepEqual(
+            [sent],
+            recv.map((buf: Buffer) => buf.toString()),
+          )
         })
       })
     }
@@ -482,20 +511,25 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     describe("during close", function() {
       it("should gracefully stop async iterator", async function() {
         process.nextTick(() => sockA.close())
-        /* tslint:disable-next-line: no-empty */
-        for await (const _ of sockA) {}
+        /* eslint-disable-next-line no-empty */
+        for await (const _ of sockA) {
+        }
       })
 
       it("should not mask other error type in async iterator", async function() {
-        sockA = new zmq.Request
+        sockA = new zmq.Request()
         process.nextTick(() => sockA.close())
         try {
-          /* tslint:disable-next-line: no-empty */
-          for await (const _ of sockA) {}
+          /* eslint-disable-next-line no-empty */
+          for await (const _ of sockA) {
+          }
           assert.ok(false)
         } catch (err) {
           assert.instanceOf(err, Error)
-          assert.equal(err.message, "Operation cannot be accomplished in current state")
+          assert.equal(
+            err.message,
+            "Operation cannot be accomplished in current state",
+          )
           assert.equal(err.code, "EFSM")
           assert.typeOf(err.errno, "number")
         }

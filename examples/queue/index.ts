@@ -1,4 +1,3 @@
-/* tslint:disable: no-console */
 import {Dealer} from "zeromq"
 
 import {Queue} from "./queue"
@@ -25,7 +24,7 @@ async function main() {
   }
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error(err)
   process.exit(1)
 })

@@ -9,7 +9,7 @@ for (const proto of testProtos("tcp")) {
     let stream: zmq.Stream
 
     beforeEach(function() {
-      stream = new zmq.Stream
+      stream = new zmq.Stream()
     })
 
     afterEach(function() {
@@ -28,11 +28,12 @@ for (const proto of testProtos("tcp")) {
             if (!msg.length) continue
             assert.equal(msg.toString().split("\r\n")[0], "GET /foo HTTP/1.1")
 
-            await stream.send([id,
+            await stream.send([
+              id,
               "HTTP/1.0 200 OK\r\n" +
-              "Content-Type: text/plan\r\n" +
-              "\r\n" +
-              "Hello world!",
+                "Content-Type: text/plan\r\n" +
+                "\r\n" +
+                "Hello world!",
             ])
 
             stream.close()
@@ -41,9 +42,11 @@ for (const proto of testProtos("tcp")) {
 
         let body = ""
         const request = async () => {
-          return new Promise((resolve) => {
-            get(address.replace("tcp:", "http:") + "/foo", (res) => {
-              res.on("data", (buffer) => {body += buffer.toString()})
+          return new Promise(resolve => {
+            get(address.replace("tcp:", "http:") + "/foo", res => {
+              res.on("data", buffer => {
+                body += buffer.toString()
+              })
               res.on("end", resolve)
             })
           })
@@ -59,9 +62,12 @@ for (const proto of testProtos("tcp")) {
         const address = uniqAddress(proto)
         const port = parseInt(address.split(":").pop()!, 10)
 
-        const server = await new Promise<Server>((resolve) => {
+        const server = await new Promise<Server>(resolve => {
           const http = createServer((req, res) => {
-            res.writeHead(200, {"Content-Type": "text/plain", "Content-Length": 12})
+            res.writeHead(200, {
+              "Content-Type": "text/plain",
+              "Content-Length": 12,
+            })
             res.end("Hello world!")
           })
 
@@ -76,7 +82,7 @@ for (const proto of testProtos("tcp")) {
           await stream.send([
             routingId,
             "GET /foo HTTP/1.1\r\n" +
-            `Host: ${address.replace("tcp://", "")}\r\n\r\n`,
+              `Host: ${address.replace("tcp://", "")}\r\n\r\n`,
           ])
 
           for await (const [id, data] of stream) {

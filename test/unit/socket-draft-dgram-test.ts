@@ -11,7 +11,7 @@ if (zmq.capability.draft) {
       let dgram: draft.Datagram
 
       beforeEach(function() {
-        dgram = new draft.Datagram
+        dgram = new draft.Datagram()
       })
 
       afterEach(function() {
@@ -37,8 +37,8 @@ if (zmq.capability.draft) {
           const send = async () => {
             for (const msg of messages) {
               const client = createSocket("udp4")
-              await new Promise((resolve) => {
-                client.on("message", (res) => {
+              await new Promise(resolve => {
+                client.on("message", res => {
                   received.push(res.toString())
                   client.close()
                   resolve()

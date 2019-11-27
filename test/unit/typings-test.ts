@@ -43,7 +43,7 @@ describe("typings", function() {
         routingId: "foobar",
       })
 
-      const router = new zmq.Router
+      const router = new zmq.Router()
       if (router.type !== 6) throw new Error()
 
       console.log(socket.context)
@@ -75,20 +75,20 @@ describe("typings", function() {
 
         socket.close()
 
-        socket.events.on("bind", (details) => {
+        socket.events.on("bind", details => {
           console.log(details.address)
         })
 
-        socket.events.off("bind", (details) => {
+        socket.events.off("bind", details => {
           console.log(details.address)
         })
 
-        socket.events.on("connect:retry", (details) => {
+        socket.events.on("connect:retry", details => {
           console.log(details.interval)
           console.log(details.address)
         })
 
-        socket.events.on("accept:error", (details) => {
+        socket.events.on("accept:error", details => {
           console.log(details.error.code)
           console.log(details.error.errno)
           console.log(details.address)
@@ -96,27 +96,27 @@ describe("typings", function() {
 
         for await (const event of socket.events) {
           switch (event.type) {
-          case "end":
-          case "unknown":
-            break
-          case "connect:retry":
-            console.log(event.interval)
-            console.log(event.address)
-            break
-          case "accept:error":
-          case "bind:error":
-          case "close:error":
-          case "handshake:error:other":
-            console.log(event.error.code)
-            console.log(event.error.errno)
-            console.log(event.address)
-            break
-          default:
-            console.log(event.address)
+            case "end":
+            case "unknown":
+              break
+            case "connect:retry":
+              console.log(event.interval)
+              console.log(event.address)
+              break
+            case "accept:error":
+            case "bind:error":
+            case "close:error":
+            case "handshake:error:other":
+              console.log(event.error.code)
+              console.log(event.error.errno)
+              console.log(event.address)
+              break
+            default:
+              console.log(event.address)
           }
         }
 
-        const proxy = new zmq.Proxy(new zmq.Router, new zmq.Dealer)
+        const proxy = new zmq.Proxy(new zmq.Router(), new zmq.Dealer())
         await proxy.run()
 
         proxy.pause()

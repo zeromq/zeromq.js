@@ -9,8 +9,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     let pull: zmq.Pull
 
     beforeEach(function() {
-      push = new zmq.Push
-      pull = new zmq.Pull
+      push = new zmq.Push()
+      pull = new zmq.Pull()
     })
 
     afterEach(function() {

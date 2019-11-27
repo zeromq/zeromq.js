@@ -9,8 +9,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     let rep: zmq.Reply
 
     beforeEach(function() {
-      req = new zmq.Request
-      rep = new zmq.Reply
+      req = new zmq.Request()
+      rep = new zmq.Reply()
     })
 
     afterEach(function() {
@@ -87,7 +87,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
             assert.ok(false)
           } catch (err) {
             assert.instanceOf(err, Error)
-            assert.equal(err.message, "Operation cannot be accomplished in current state")
+            assert.equal(
+              err.message,
+              "Operation cannot be accomplished in current state",
+            )
             assert.equal(err.code, "EFSM")
             assert.typeOf(err.errno, "number")
           }

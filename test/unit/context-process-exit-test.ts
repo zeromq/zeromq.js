@@ -1,4 +1,3 @@
-/* tslint:disable: no-unused-expression */
 import * as zmq from "../../src"
 
 import {assert} from "chai"
@@ -9,9 +8,9 @@ describe("context process exit", function() {
     it("should occur when sockets are closed", async function() {
       this.slow(200)
       const code = await createProcess(() => {
-        const socket1 = new zmq.Dealer
+        const socket1 = new zmq.Dealer()
         socket1.close()
-        const socket2 = new zmq.Router
+        const socket2 = new zmq.Router()
         socket2.close()
       })
 
@@ -21,8 +20,8 @@ describe("context process exit", function() {
     it("should occur when sockets are not closed", async function() {
       this.slow(200)
       const code = await createProcess(() => {
-        const socket1 = new zmq.Dealer
-        const socket2 = new zmq.Router
+        const socket1 = new zmq.Dealer()
+        const socket2 = new zmq.Router()
       })
 
       assert.equal(code, 0)
@@ -31,7 +30,7 @@ describe("context process exit", function() {
     it("should not occur when sockets are open and polling", async function() {
       this.slow(1000)
       const code = await createProcess(() => {
-        const socket1 = new zmq.Dealer
+        const socket1 = new zmq.Dealer()
         socket1.connect("inproc://foo")
         socket1.receive()
       })
@@ -44,7 +43,7 @@ describe("context process exit", function() {
     it("should occur when sockets are closed", async function() {
       this.slow(200)
       const code = await createProcess(() => {
-        const context = new zmq.Context
+        const context = new zmq.Context()
         const socket1 = new zmq.Dealer({context})
         socket1.close()
         const socket2 = new zmq.Router({context})
@@ -58,7 +57,7 @@ describe("context process exit", function() {
       this.slow(200)
       const code = await createProcess(() => {
         function run() {
-          const context = new zmq.Context
+          const context = new zmq.Context()
           const socket1 = new zmq.Dealer({context})
           socket1.close()
           const socket2 = new zmq.Router({context})
@@ -75,7 +74,7 @@ describe("context process exit", function() {
     it("should occur when sockets are not closed", async function() {
       this.slow(200)
       const code = await createProcess(() => {
-        const context = new zmq.Context
+        const context = new zmq.Context()
         const socket1 = new zmq.Dealer({context})
         const socket2 = new zmq.Router({context})
       })
@@ -86,7 +85,7 @@ describe("context process exit", function() {
     it("should not occur when sockets are open and polling", async function() {
       this.slow(1000)
       const code = await createProcess(() => {
-        const context = new zmq.Context
+        const context = new zmq.Context()
         const socket1 = new zmq.Dealer({context})
         socket1.connect("inproc://foo")
         socket1.receive()

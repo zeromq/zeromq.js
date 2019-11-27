@@ -12,7 +12,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       /* ZMQ < 4.0.5 has no steerable proxy support. */
       if (semver.satisfies(zmq.version, "< 4.0.5")) this.skip()
 
-      proxy = new zmq.Proxy(new zmq.Router, new zmq.Dealer)
+      proxy = new zmq.Proxy(new zmq.Router(), new zmq.Dealer())
     })
 
     afterEach(function() {

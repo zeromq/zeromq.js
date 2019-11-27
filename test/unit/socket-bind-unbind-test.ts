@@ -8,7 +8,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     let sock: zmq.Dealer
 
     beforeEach(function() {
-      sock = new zmq.Dealer
+      sock = new zmq.Dealer()
     })
 
     afterEach(function() {
@@ -70,7 +70,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           assert.ok(false)
         } catch (err) {
           assert.instanceOf(err, Error)
-          assert.equal(err.message,
+          assert.equal(
+            err.message,
             "Socket is blocked by async operation (e.g. bind/unbind)",
           )
           assert.equal(err.code, "EBUSY")
@@ -124,7 +125,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           assert.ok(false)
         } catch (err) {
           assert.instanceOf(err, Error)
-          assert.equal(err.message,
+          assert.equal(
+            err.message,
             "Socket is blocked by async operation (e.g. bind/unbind)",
           )
           assert.equal(err.code, "EBUSY")

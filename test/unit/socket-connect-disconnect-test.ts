@@ -9,7 +9,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     let sock: zmq.Dealer | zmq.Router
 
     beforeEach(function() {
-      sock = new zmq.Dealer
+      sock = new zmq.Dealer()
     })
 
     afterEach(function() {

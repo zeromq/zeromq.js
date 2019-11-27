@@ -11,9 +11,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     let dealerB: zmq.Dealer
 
     beforeEach(function() {
-      router = new zmq.Router
-      dealerA = new zmq.Dealer
-      dealerB = new zmq.Dealer
+      router = new zmq.Router()
+      dealerA = new zmq.Dealer()
+      dealerB = new zmq.Dealer()
     })
 
     afterEach(function() {
