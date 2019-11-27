@@ -2,9 +2,9 @@
 
 * Check if properties are defined before defining them. This ensures compatibility with alternative file loaders, notably by the Jest test framework.
 
-* Improve performance of argument validation.
+* Performance of calling methods & validating arguments has been improved.
 
-* Include bundled header files from node-addon-api to reduce runtime depedencies.
+* Header files from node-addon-api are now bundled to reduce runtime depedencies.
 
 ### v6.0.0-beta.4
 

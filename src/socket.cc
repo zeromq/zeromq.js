@@ -842,38 +842,38 @@ Napi::Value Socket::GetWritable(const Napi::CallbackInfo& info) {
 
 void Socket::Initialize(Module& module, Napi::Object& exports) {
     auto proto = {
-        InstanceMethod("bind", &Socket::Bind),
-        InstanceMethod("unbind", &Socket::Unbind),
-        InstanceMethod("connect", &Socket::Connect),
-        InstanceMethod("disconnect", &Socket::Disconnect),
-        InstanceMethod("close", &Socket::Close),
+        InstanceMethod<&Socket::Bind>("bind"),
+        InstanceMethod<&Socket::Unbind>("unbind"),
+        InstanceMethod<&Socket::Connect>("connect"),
+        InstanceMethod<&Socket::Disconnect>("disconnect"),
+        InstanceMethod<&Socket::Close>("close"),
 
         /* Marked 'configurable' so they can be removed from the base Socket
            prototype and re-assigned to the sockets to which they apply. */
-        InstanceMethod("send", &Socket::Send, napi_configurable),
-        InstanceMethod("receive", &Socket::Receive, napi_configurable),
-        InstanceMethod("join", &Socket::Join, napi_configurable),
-        InstanceMethod("leave", &Socket::Leave, napi_configurable),
+        InstanceMethod<&Socket::Send>("send", napi_configurable),
+        InstanceMethod<&Socket::Receive>("receive", napi_configurable),
+        InstanceMethod<&Socket::Join>("join", napi_configurable),
+        InstanceMethod<&Socket::Leave>("leave", napi_configurable),
 
-        InstanceMethod("getBoolOption", &Socket::GetSockOpt<bool>),
-        InstanceMethod("setBoolOption", &Socket::SetSockOpt<bool>),
-        InstanceMethod("getInt32Option", &Socket::GetSockOpt<int32_t>),
-        InstanceMethod("setInt32Option", &Socket::SetSockOpt<int32_t>),
-        InstanceMethod("getUint32Option", &Socket::GetSockOpt<uint32_t>),
-        InstanceMethod("setUint32Option", &Socket::SetSockOpt<uint32_t>),
-        InstanceMethod("getInt64Option", &Socket::GetSockOpt<int64_t>),
-        InstanceMethod("setInt64Option", &Socket::SetSockOpt<int64_t>),
-        InstanceMethod("getUint64Option", &Socket::GetSockOpt<uint64_t>),
-        InstanceMethod("setUint64Option", &Socket::SetSockOpt<uint64_t>),
-        InstanceMethod("getStringOption", &Socket::GetSockOpt<char*>),
-        InstanceMethod("setStringOption", &Socket::SetSockOpt<char*>),
+        InstanceMethod<&Socket::GetSockOpt<bool>>("getBoolOption"),
+        InstanceMethod<&Socket::SetSockOpt<bool>>("setBoolOption"),
+        InstanceMethod<&Socket::GetSockOpt<int32_t>>("getInt32Option"),
+        InstanceMethod<&Socket::SetSockOpt<int32_t>>("setInt32Option"),
+        InstanceMethod<&Socket::GetSockOpt<uint32_t>>("getUint32Option"),
+        InstanceMethod<&Socket::SetSockOpt<uint32_t>>("setUint32Option"),
+        InstanceMethod<&Socket::GetSockOpt<int64_t>>("getInt64Option"),
+        InstanceMethod<&Socket::SetSockOpt<int64_t>>("setInt64Option"),
+        InstanceMethod<&Socket::GetSockOpt<uint64_t>>("getUint64Option"),
+        InstanceMethod<&Socket::SetSockOpt<uint64_t>>("setUint64Option"),
+        InstanceMethod<&Socket::GetSockOpt<char*>>("getStringOption"),
+        InstanceMethod<&Socket::SetSockOpt<char*>>("setStringOption"),
 
-        InstanceAccessor("events", &Socket::GetEvents, nullptr),
-        InstanceAccessor("context", &Socket::GetContext, nullptr),
+        InstanceAccessor<&Socket::GetEvents>("events"),
+        InstanceAccessor<&Socket::GetContext>("context"),
 
-        InstanceAccessor("closed", &Socket::GetClosed, nullptr),
-        InstanceAccessor("readable", &Socket::GetReadable, nullptr),
-        InstanceAccessor("writable", &Socket::GetWritable, nullptr),
+        InstanceAccessor<&Socket::GetClosed>("closed"),
+        InstanceAccessor<&Socket::GetReadable>("readable"),
+        InstanceAccessor<&Socket::GetWritable>("writable"),
     };
 
     auto constructor = DefineClass(exports.Env(), "Socket", proto, &module);

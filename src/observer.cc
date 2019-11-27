@@ -339,9 +339,9 @@ Napi::Value Observer::GetClosed(const Napi::CallbackInfo& info) {
 
 void Observer::Initialize(Module& module, Napi::Object& exports) {
     auto proto = {
-        InstanceMethod("close", &Observer::Close),
-        InstanceMethod("receive", &Observer::Receive),
-        InstanceAccessor("closed", &Observer::GetClosed, nullptr),
+        InstanceMethod<&Observer::Close>("close"),
+        InstanceMethod<&Observer::Receive>("receive"),
+        InstanceAccessor<&Observer::GetClosed>("closed"),
     };
 
     auto constructor = DefineClass(exports.Env(), "Observer", proto, &module);

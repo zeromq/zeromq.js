@@ -148,10 +148,10 @@ void Context::SetCtxOpt(const Napi::CallbackInfo& info) {
 
 void Context::Initialize(Module& module, Napi::Object& exports) {
     auto proto = {
-        InstanceMethod("getBoolOption", &Context::GetCtxOpt<bool>),
-        InstanceMethod("setBoolOption", &Context::SetCtxOpt<bool>),
-        InstanceMethod("getInt32Option", &Context::GetCtxOpt<int32_t>),
-        InstanceMethod("setInt32Option", &Context::SetCtxOpt<int32_t>),
+        InstanceMethod<&Context::GetCtxOpt<bool>>("getBoolOption"),
+        InstanceMethod<&Context::SetCtxOpt<bool>>("setBoolOption"),
+        InstanceMethod<&Context::GetCtxOpt<int32_t>>("getInt32Option"),
+        InstanceMethod<&Context::SetCtxOpt<int32_t>>("setInt32Option"),
     };
 
     auto constructor = DefineClass(exports.Env(), "Context", proto, &module);

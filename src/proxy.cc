@@ -184,13 +184,13 @@ Napi::Value Proxy::GetBackEnd(const Napi::CallbackInfo& info) {
 
 void Proxy::Initialize(Module& module, Napi::Object& exports) {
     auto proto = {
-        InstanceMethod("run", &Proxy::Run),
-        InstanceMethod("pause", &Proxy::Pause),
-        InstanceMethod("resume", &Proxy::Resume),
-        InstanceMethod("terminate", &Proxy::Terminate),
+        InstanceMethod<&Proxy::Run>("run"),
+        InstanceMethod<&Proxy::Pause>("pause"),
+        InstanceMethod<&Proxy::Resume>("resume"),
+        InstanceMethod<&Proxy::Terminate>("terminate"),
 
-        InstanceAccessor("frontEnd", &Proxy::GetFrontEnd, nullptr),
-        InstanceAccessor("backEnd", &Proxy::GetBackEnd, nullptr),
+        InstanceAccessor<&Proxy::GetFrontEnd>("frontEnd"),
+        InstanceAccessor<&Proxy::GetBackEnd>("backEnd"),
     };
 
     auto constructor = DefineClass(exports.Env(), "Proxy", proto, &module);
