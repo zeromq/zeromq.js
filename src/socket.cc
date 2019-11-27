@@ -307,29 +307,28 @@ void Socket::Receive(const Napi::Promise::Deferred& res) {
         }
 
         list[i++] = part.IntoBuffer(Env());
-
-#ifdef ZMQ_HAS_POLLABLE_THREAD_SAFE
-        switch (type) {
-        case ZMQ_SERVER: {
-            auto meta = Napi::Object::New(Env());
-            meta.Set("routingId", zmq_msg_routing_id(part));
-            list[i++] = meta;
-            break;
-        }
-
-        case ZMQ_DISH: {
-            auto meta = Napi::Object::New(Env());
-            auto data = zmq_msg_group(part);
-            auto length = strnlen(data, ZMQ_GROUP_MAX_LENGTH);
-            meta.Set("group", Napi::Buffer<char>::Copy(Env(), data, length));
-            list[i++] = meta;
-            break;
-        }
-        }
-#endif
-
         if (!zmq_msg_more(part)) break;
     }
+
+#ifdef ZMQ_HAS_POLLABLE_THREAD_SAFE
+    switch (type) {
+    case ZMQ_SERVER: {
+        auto meta = Napi::Object::New(Env());
+        meta.Set("routingId", zmq_msg_routing_id(part));
+        list[i++] = meta;
+        break;
+    }
+
+    case ZMQ_DISH: {
+        auto meta = Napi::Object::New(Env());
+        auto data = zmq_msg_group(part);
+        auto length = strnlen(data, ZMQ_GROUP_MAX_LENGTH);
+        meta.Set("group", Napi::Buffer<char>::Copy(Env(), data, length));
+        list[i++] = meta;
+        break;
+    }
+    }
+#endif
 
     res.Resolve(list);
 }
