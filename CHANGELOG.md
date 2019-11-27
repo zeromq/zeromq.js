@@ -2,6 +2,10 @@
 
 * Check if properties are defined before defining them. This ensures compatibility with alternative file loaders, notably by the Jest test framework.
 
+* Improve performance of argument validation.
+
+* Include bundled header files from node-addon-api to reduce runtime depedencies.
+
 ### v6.0.0-beta.4
 
 * Break out of busy loops automatically when the number of synchronous I/O operations moves beyond a built-in threshold. This avoids the ZeroMQ background I/O process(es) starving the Node.js event loop when it can process messages faster than the application. This could have caused decreased responsiveness and/or high memory usage. This only happens when sending/receiving messages as quickly as possible, such as in a benchmark or in test code.
