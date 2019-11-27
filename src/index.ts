@@ -1618,7 +1618,7 @@ function defineOpt<T, K extends ReadableKeys<PrototypeOf<T>>>(
   name: K,
   id: number,
   type: Type,
-  acc: Acc.ReadOnly,
+  acc: Acc.Read,
   values?: Array<string | null>,
 ): void
 
@@ -1628,7 +1628,7 @@ function defineOpt<T, K extends WritableKeys<PrototypeOf<T>>>(
   name: K,
   id: number,
   type: Type,
-  acc?: Acc.ReadWrite | Acc.WriteOnly,
+  acc?: Acc.ReadWrite | Acc.Write,
   values?: Array<string | null>,
 ): void
 
@@ -1682,9 +1682,9 @@ function defineOpt<
 /* Context options. ALSO include any options in the Context interface above. */
 defineOpt([Context], "ioThreads", 1, Type.Int32)
 defineOpt([Context], "maxSockets", 2, Type.Int32)
-defineOpt([Context], "maxSocketsLimit", 3, Type.Int32, Acc.ReadOnly)
-defineOpt([Context], "threadPriority", 3, Type.Int32, Acc.WriteOnly)
-defineOpt([Context], "threadSchedulingPolicy", 4, Type.Int32, Acc.WriteOnly)
+defineOpt([Context], "maxSocketsLimit", 3, Type.Int32, Acc.Read)
+defineOpt([Context], "threadPriority", 3, Type.Int32, Acc.Write)
+defineOpt([Context], "threadSchedulingPolicy", 4, Type.Int32, Acc.Write)
 defineOpt([Context], "maxMessageSize", 5, Type.Int32)
 defineOpt([Context], "ipv6", 42, Type.Bool)
 defineOpt([Context], "blocky", 70, Type.Bool)
@@ -1749,13 +1749,13 @@ defineOpt([Socket], "affinity", 4, Type.Uint64)
 defineOpt([Request, Reply, Router, Dealer], "routingId", 5, Type.String)
 defineOpt([Socket], "rate", 8, Type.Int32)
 defineOpt([Socket], "recoveryInterval", 9, Type.Int32)
-defineOpt([Socket], "type", 16, Type.Int32, Acc.ReadOnly)
+defineOpt([Socket], "type", 16, Type.Int32, Acc.Read)
 defineOpt([Socket], "linger", 17, Type.Int32)
 defineOpt([Socket], "reconnectInterval", 18, Type.Int32)
 defineOpt([Socket], "backlog", 19, Type.Int32)
 defineOpt([Socket], "reconnectMaxInterval", 21, Type.Int32)
 defineOpt([Socket], "maxMessageSize", 22, Type.Int64)
-defineOpt([Socket], "lastEndpoint", 32, Type.String, Acc.ReadOnly)
+defineOpt([Socket], "lastEndpoint", 32, Type.String, Acc.Read)
 defineOpt([Router], "mandatory", 33, Type.Bool)
 defineOpt([Socket], "tcpKeepalive", 34, Type.Int32)
 defineOpt([Socket], "tcpKeepaliveCount", 35, Type.Int32)
@@ -1765,7 +1765,7 @@ defineOpt([Socket], "tcpAcceptFilter", 38, Type.String)
 defineOpt([Socket], "immediate", 39, Type.Bool)
 /* Option 'verbose' is implemented as verbosity on XPublisher. */
 defineOpt([Socket], "ipv6", 42, Type.Bool)
-defineOpt([Socket], "securityMechanism", 43, Type.Int32, Acc.ReadOnly, [
+defineOpt([Socket], "securityMechanism", 43, Type.Int32, Acc.Read, [
   null,
   "plain",
   "curve",
@@ -1782,26 +1782,24 @@ if (capability.curve) {
   defineOpt([Socket], "curveServerKey", 50, Type.String)
 }
 
-defineOpt(
-  [Router, Dealer, Request],
-  "probeRouter",
-  51,
-  Type.Bool,
-  Acc.WriteOnly,
-)
-defineOpt([Request], "correlate", 52, Type.Bool, Acc.WriteOnly)
-defineOpt([Request], "relaxed", 53, Type.Bool, Acc.WriteOnly)
+defineOpt([Router, Dealer, Request], "probeRouter", 51, Type.Bool, Acc.Write)
+defineOpt([Request], "correlate", 52, Type.Bool, Acc.Write)
+defineOpt([Request], "relaxed", 53, Type.Bool, Acc.Write)
 
-defineOpt(
-  [Pull, Push, Subscriber, Publisher, Dealer, draft.Scatter, draft.Gather],
-  "conflate",
-  54,
-  Type.Bool,
-  Acc.WriteOnly,
-)
+const conflatables = [
+  Pull,
+  Push,
+  Subscriber,
+  Publisher,
+  Dealer,
+  draft.Scatter,
+  draft.Gather,
+]
+
+defineOpt(conflatables, "conflate", 54, Type.Bool, Acc.Write)
 
 defineOpt([Socket], "zapDomain", 55, Type.String)
-defineOpt([Router], "handover", 56, Type.Bool, Acc.WriteOnly)
+defineOpt([Router], "handover", 56, Type.Bool, Acc.Write)
 defineOpt([Socket], "typeOfService", 57, Type.Uint32)
 
 if (capability.gssapi) {
@@ -1809,13 +1807,15 @@ if (capability.gssapi) {
   defineOpt([Socket], "gssapiPrincipal", 63, Type.String)
   defineOpt([Socket], "gssapiServicePrincipal", 64, Type.String)
   defineOpt([Socket], "gssapiPlainText", 65, Type.Bool)
+
+  const principals = ["hostBased", "userName", "krb5Principal"]
   defineOpt(
     [Socket],
     "gssapiPrincipalNameType",
     90,
     Type.Int32,
     Acc.ReadWrite,
-    ["hostBased", "userName", "krb5Principal"],
+    principals,
   )
   defineOpt(
     [Socket],
@@ -1823,16 +1823,16 @@ if (capability.gssapi) {
     91,
     Type.Int32,
     Acc.ReadWrite,
-    ["hostBased", "userName", "krb5Principal"],
+    principals,
   )
 }
 
 defineOpt([Socket], "handshakeInterval", 66, Type.Int32)
 defineOpt([Socket], "socksProxy", 68, Type.String)
-defineOpt([XPublisher, Publisher], "noDrop", 69, Type.Bool, Acc.WriteOnly)
-defineOpt([XPublisher], "manual", 71, Type.Bool, Acc.WriteOnly)
-defineOpt([XPublisher], "welcomeMessage", 72, Type.String, Acc.WriteOnly)
-defineOpt([Stream], "notify", 73, Type.Bool, Acc.WriteOnly)
+defineOpt([XPublisher, Publisher], "noDrop", 69, Type.Bool, Acc.Write)
+defineOpt([XPublisher], "manual", 71, Type.Bool, Acc.Write)
+defineOpt([XPublisher], "welcomeMessage", 72, Type.String, Acc.Write)
+defineOpt([Stream], "notify", 73, Type.Bool, Acc.Write)
 defineOpt([Publisher, Subscriber, XPublisher], "invertMatching", 74, Type.Bool)
 defineOpt([Socket], "heartbeatInterval", 75, Type.Int32)
 defineOpt([Socket], "heartbeatTimeToLive", 76, Type.Int32)
@@ -1840,7 +1840,7 @@ defineOpt([Socket], "heartbeatTimeout", 77, Type.Int32)
 /* Option 'verboser' is implemented as verbosity on XPublisher. */
 defineOpt([Socket], "connectTimeout", 79, Type.Int32)
 defineOpt([Socket], "tcpMaxRetransmitTimeout", 80, Type.Int32)
-defineOpt([Socket], "threadSafe", 81, Type.Bool, Acc.ReadOnly)
+defineOpt([Socket], "threadSafe", 81, Type.Bool, Acc.Read)
 defineOpt([Socket], "multicastMaxTransportDataUnit", 84, Type.Int32)
 defineOpt([Socket], "vmciBufferSize", 85, Type.Uint64)
 defineOpt([Socket], "vmciBufferMinSize", 86, Type.Uint64)
