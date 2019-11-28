@@ -36,15 +36,41 @@ Requirements for prebuilt binaries:
 
 * Node.js 10+ or Electron 3+ (requires a [N-API](https://nodejs.org/api/n-api.html) version 3+)
 
-The following platforms have a prebuilt binary available:
 
-* Linux on x86-64/armv7/armv8 with glibc
-* Linux on x86-64 with musl (e.g. Alpine)
-* MacOS on x86-64
-* Windows on x86 or x86-64
+## Prebuilt binaries
+
+The following platforms have a **prebuilt binary** available:
+
+* Linux on x86-64/armv7/armv8 with libstdc++.so.6.0.21+ (glibc++ 3.4.21+), for example:
+  * Debian 9+ (Stretch or later)
+  * Ubuntu 16.04+ (Xenial or later)
+  * CentOS 8+
+* Linux on x86-64 with musl, for example:
+  * Alpine 3.3+
+* MacOS 10.9+ on x86-64
+* Windows on x86/x86-64
 
 If a prebuilt binary is not available for your platform, installing will attempt to start a build from source.
-If you want to link against a shared ZeroMQ library, you can build and link with the shared library as follows:
+
+## Building from source
+
+If a prebuilt binary is unavailable or if you want to pass certain options during build, you can build this package from source.
+
+Make sure you have the following installed before attempting to build from source:
+
+* Node.js 10+ or Electron 3+
+* A working C++17 compiler toolchain with make
+* Python 2.7 (or Python 3 with Node 12.13+)
+* CMake 2.8+
+* curl
+
+To install from source
+
+```sh
+npm install zeromq@6.0.0-beta.4 --build-from-source
+```
+
+If you want to link against a shared ZeroMQ library, you can build skip downloading libzmq and link with the installed library instead as follows:
 
 ```sh
 npm install zeromq@6.0.0-beta.4 --zmq-shared
@@ -55,13 +81,6 @@ If you wish to use any DRAFT sockets then it is also necessary to compile the li
 ```sh
 npm install zeromq@6.0.0-beta.4 --zmq-draft
 ```
-
-Make sure you have the following installed before attempting to build from source:
-
-* Node.js 10+ or Electron 3+
-* A working C/C++ compiler toolchain with make
-* Python 2 (2.7 recommended, 3+ does not work)
-* ZeroMQ 4.0+ with development headers
 
 # Examples
 
@@ -191,14 +210,9 @@ pub.bind("tcp://*:3456", err => {
 
 ## Dependencies
 
-In order to develop and test the library, you'll need the following:
+In order to develop and test the library, you'll need the tools required to build from source ([see above](#building-from-source)).
 
-* Node.js 10+
-* A working C++17 compiler toolchain with make
-* Python 2.7 (or Python 3 with Node 12.13+)
-* CMake 2.8+
-* curl
-* clang-format is strongly recommended
+Additionally, having clang-format is strongly recommended.
 
 
 ## Defining new options
