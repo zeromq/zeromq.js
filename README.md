@@ -16,6 +16,8 @@ The API reference [can be found here](http://zeromq.github.io/zeromq.js/globals.
 # Table of contents
 
 * [Installation](#installation)
+   * [Prebuilt binaries](#prebuilt-binaries)
+   * [Building from source](#building-from-source)
 * [Examples](#examples)
    * [Push/Pull](#pushpull)
    * [Pub/Sub](#pubsub)
