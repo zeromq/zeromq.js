@@ -1,4 +1,4 @@
-### Unreleased
+### v6.0.0-beta.5
 
 * Check if properties are defined before defining them. This ensures compatibility with alternative file loaders, notably by the Jest test framework.
 
