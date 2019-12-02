@@ -8,7 +8,7 @@
 * Semantically similar to the [native](https://github.com/zeromq/libzmq) ØMQ library, while sticking to JavaScript idioms.
 * Use modern JavaScript and Node.js features such as `async`/`await` and async iterators.
 * High performance.
-* Fully usable with TypeScript.
+* Fully usable with TypeScript (3.6+).
 
 The API reference [can be found here](http://zeromq.github.io/zeromq.js/globals.html).
 
