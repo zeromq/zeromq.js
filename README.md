@@ -36,7 +36,7 @@ npm install zeromq@6.0.0-beta.5
 
 Requirements for prebuilt binaries:
 
-* Node.js 10+ or Electron 3+ (requires a [N-API](https://nodejs.org/api/n-api.html) version 3+)
+* Node.js 10.2+ or Electron 3+ (requires a [N-API](https://nodejs.org/api/n-api.html) version 3+)
 
 
 ## Prebuilt binaries

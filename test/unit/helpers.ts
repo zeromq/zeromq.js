@@ -2,7 +2,6 @@ import * as path from "path"
 import * as semver from "semver"
 
 import {spawn} from "child_process"
-import {Worker} from "worker_threads"
 
 import * as zmq from "../../src"
 
@@ -46,7 +45,7 @@ export function testProtos(...requested: string[]) {
   return [...set]
 }
 
-export function createWorker<T, D extends {}>(
+export async function createWorker<T, D extends {}>(
   data: D,
   fn: (data: D) => Promise<T>,
 ): Promise<T> {
@@ -63,16 +62,19 @@ export function createWorker<T, D extends {}>(
     run()
   `
 
-  const worker = new Worker(src, {
-    eval: true,
-    workerData: data,
-  })
+  const {Worker} = await import("worker_threads")
 
   return new Promise<T>((resolve, reject) => {
+    const worker = new Worker(src, {
+      eval: true,
+      workerData: data,
+    })
+
     let message: T
     worker.on("message", msg => {
       message = msg
     })
+
     worker.on("exit", code => {
       if (code === 0) {
         resolve(message)

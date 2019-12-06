@@ -8,6 +8,10 @@ jobs:
   ## TEST STAGE
 
   - os: linux
+    node_js: "10.2"
+    env: ZMQ_DRAFT=true
+
+  - os: linux
     node_js: "10.16"
     env: ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true
 

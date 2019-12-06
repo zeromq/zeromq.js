@@ -1,3 +1,4 @@
+import * as semver from "semver"
 import * as zmq from "../../src"
 
 import {assert} from "chai"
@@ -7,6 +8,11 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} in thread`, function() {
     this.slow(2000)
     this.timeout(5000)
+
+    beforeEach(function() {
+      /* Node.js worker support introduced in version 10.5. */
+      if (semver.satisfies(process.versions.node, "< 10.5")) this.skip()
+    })
 
     describe("when connected within thread", function() {
       it("should deliver messages", async function() {

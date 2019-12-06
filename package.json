@@ -39,7 +39,7 @@
     "weak-napi": ">= 1.0"
   },
   "engines": {
-    "node": ">= 10"
+    "node": ">= 10.2"
   },
   "files": [
     "CHANGELOG.md",

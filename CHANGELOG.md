@@ -1,3 +1,7 @@
+### Unreleased
+
+* Bump version requirement to Node.js 10.2, but reduce N-API version to 3 to support more 10.x Node.js versions.
+
 ### v6.0.0-beta.5
 
 * Check if properties are defined before defining them. This ensures compatibility with alternative file loaders, notably by the Jest test framework.
