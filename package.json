@@ -23,7 +23,7 @@
     "choma": ">= 1.2",
     "gunzip-maybe": "^1.4.1",
     "mocha": ">= 4.0",
-    "node-addon-api": "rolftimmermans/node-addon-api#zeromq",
+    "node-addon-api": "nodejs/node-addon-api",
     "node-fetch": "^2.6.0",
     "prebuildify": "^3.0",
     "semver": ">= 0",
