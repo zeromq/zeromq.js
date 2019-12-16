@@ -23,6 +23,7 @@
     "benchmark": ">= 0",
     "chai": ">= 4.1",
     "choma": ">= 1.2",
+    "deasync": "^0.1.16",
     "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",

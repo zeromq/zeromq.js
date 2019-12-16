@@ -32,16 +32,8 @@ if (process.env.INCLUDE_COMPAT_TESTS && process.env.INCLUDE_COMPAT_UNBIND_TEST) 
         const address2 = uniqAddress(proto)
 
         let msgCount = 0
-        sockA.bind(address1, async err => {
-          if (err) throw err
-          sockA.bind(address2, async err => {
-            if (err) throw err
-            sockB.connect(address1)
-            sockC.connect(address2)
-            sockB.send("Hello from sockB.")
-            sockC.send("Hello from sockC.")
-          })
-        })
+        sockA.bindSync(address1)
+        sockA.bindSync(address2)
 
         sockA.on("unbind", async function(addr) {
           if (addr === address1) {
@@ -54,9 +46,7 @@ if (process.env.INCLUDE_COMPAT_TESTS && process.env.INCLUDE_COMPAT_UNBIND_TEST) 
         sockA.on("message", async function(msg) {
           msgCount++
           if (msg.toString() === "Hello from sockB.") {
-            sockA.unbind(address1, err => {
-              if (err) throw err
-            })
+            sockA.unbindSync(address1)
           } else if (msg.toString() === "Final message from sockC.") {
             assert.equal(msgCount, 4)
             done()
@@ -64,6 +54,11 @@ if (process.env.INCLUDE_COMPAT_TESTS && process.env.INCLUDE_COMPAT_UNBIND_TEST) 
             throw Error("sockB should have been unbound")
           }
         })
+
+        sockB.connect(address1)
+        sockC.connect(address2)
+        sockB.send("Hello from sockB.")
+        sockC.send("Hello from sockC.")
       })
     })
   }

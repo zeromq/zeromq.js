@@ -35,13 +35,11 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           }
         })
 
-        pull.bind(address, err => {
-          if (err) throw err
-          push.connect(address)
-          push.send("string")
-          push.send(15.99)
-          push.send(Buffer.from("buffer"))
-        })
+        pull.bindSync(address)
+        push.connect(address)
+        push.send("string")
+        push.send(15.99)
+        push.send(Buffer.from("buffer"))
       })
 
       it("should support multipart messages", function(done) {
@@ -56,11 +54,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           done()
         })
 
-        pull.bind(address, err => {
-          if (err) throw err
-          push.connect(address)
-          push.send(["string", 15.99, Buffer.from("buffer")])
-        })
+        pull.bindSync(address)
+        push.connect(address)
+        push.send(["string", 15.99, Buffer.from("buffer")])
       })
 
       it("should support sndmore", function(done) {
@@ -77,13 +73,11 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           done()
         })
 
-        pull.bind(address, err => {
-          if (err) throw err
-          push.connect(address)
-          push.send(["tobi", "loki"], zmq.ZMQ_SNDMORE)
-          push.send(["jane", "luna"], zmq.ZMQ_SNDMORE)
-          push.send("manny")
-        })
+        pull.bindSync(address)
+        push.connect(address)
+        push.send(["tobi", "loki"], zmq.ZMQ_SNDMORE)
+        push.send(["jane", "luna"], zmq.ZMQ_SNDMORE)
+        push.send("manny")
       })
 
       if (proto != "inproc") {
@@ -112,13 +106,11 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           push.setsockopt(zmq.ZMQ_SNDHWM, 1)
           pull.setsockopt(zmq.ZMQ_RCVHWM, 1)
 
-          push.bind(address, err => {
-            if (err) throw err
-            push.send("string")
-            push.send(15.99)
-            push.send(Buffer.from("buffer"))
-            pull.connect(address)
-          })
+          push.bindSync(address)
+          push.send("string")
+          push.send(15.99)
+          push.send(Buffer.from("buffer"))
+          pull.connect(address)
         })
       }
 
@@ -142,15 +134,13 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           }
         })
 
-        pull.bind(address, err => {
-          if (err) throw err
-          push.connect(address)
+        pull.bindSync(address)
+        push.connect(address)
 
-          push.send("hello", null, cb)
-          push.send("hello", null, cb)
-          push.send("hello", null, cb)
-          push.send(["hello", "world"], null, cb)
-        })
+        push.send("hello", null, cb)
+        push.send("hello", null, cb)
+        push.send("hello", null, cb)
+        push.send(["hello", "world"], null, cb)
       })
     })
   }

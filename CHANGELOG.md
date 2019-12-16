@@ -4,6 +4,8 @@
 
 * Error messages for EBUSY are more specific.
 
+* Compatibility mode will now provide an implementation for bindSync()/unbindSync() if the 'deasync' package is available.
+
 * Bump version requirement to Node.js 10.2, but reduce N-API version to 3 to support more 10.x Node.js versions.
 
 ### v6.0.0-beta.5
