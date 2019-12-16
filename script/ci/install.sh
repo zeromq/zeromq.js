@@ -37,16 +37,16 @@ if [ -n "${ALPINE_CHROOT}" ]; then
   /alpine/enter-chroot yarn global add node-gyp
 
   if [ -n "${IGNORE_SCRIPTS}" ]; then
-    /alpine/enter-chroot yarn install --ignore-scripts
+    /alpine/enter-chroot yarn install --ignore-engines --ignore-scripts
   else
-    /alpine/enter-chroot yarn install
+    /alpine/enter-chroot yarn install --ignore-engines
   fi
 else
   yarn global add node-gyp
 
   if [ -n "${IGNORE_SCRIPTS}" ]; then
-    yarn install --ignore-scripts
+    yarn install --ignore-engines --ignore-scripts
   else
-    yarn install
+    yarn install --ignore-engines
   fi
 fi
