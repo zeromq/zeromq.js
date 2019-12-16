@@ -1,5 +1,9 @@
 ### Unreleased
 
+* BREAKING: When inadvertedly executing two concurrent send() or receive() operations the errno attribute of the error thrown is now EBUSY instead of EAGAIN.
+
+* Error messages for EBUSY are more specific.
+
 * Bump version requirement to Node.js 10.2, but reduce N-API version to 3 to support more 10.x Node.js versions.
 
 ### v6.0.0-beta.5
