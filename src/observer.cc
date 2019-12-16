@@ -318,7 +318,10 @@ Napi::Value Observer::Receive(const Napi::CallbackInfo& info) {
     if (!ValidateOpen()) return Env().Undefined();
 
     if (poller.Reading()) {
-        ErrnoException(Env(), EAGAIN).ThrowAsJavaScriptException();
+        ErrnoException(Env(), EBUSY,
+            "Observer is busy reading; only one receive operation may be in progress at "
+            "any time")
+            .ThrowAsJavaScriptException();
         return Env().Undefined();
     }
 

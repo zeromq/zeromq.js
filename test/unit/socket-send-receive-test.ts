@@ -73,9 +73,47 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           assert.ok(false)
         } catch (err) {
           assert.instanceOf(err, Error)
-          assert.equal(err.message, "Socket temporarily unavailable")
+          assert.equal(err.message, "Operation was not possible or timed out")
           assert.equal(err.code, "EAGAIN")
           assert.typeOf(err.errno, "number")
+        }
+      })
+
+      it("should throw error when attempting to send concurrently", async function() {
+        sockA.sendTimeout = 20
+        const done = sockA.send(null).catch(() => null)
+        try {
+          sockA.send(null)
+          assert.ok(false)
+        } catch (err) {
+          assert.instanceOf(err, Error)
+          assert.equal(
+            err.message,
+            "Socket is busy writing; only one send operation may be in progress at any time",
+          )
+          assert.equal(err.code, "EBUSY")
+          assert.typeOf(err.errno, "number")
+        } finally {
+          await done
+        }
+      })
+
+      it("should throw error when attempting to receive concurrently", async function() {
+        sockA.receiveTimeout = 20
+        const done = sockA.receive().catch(() => null)
+        try {
+          sockA.receive()
+          assert.ok(false)
+        } catch (err) {
+          assert.instanceOf(err, Error)
+          assert.equal(
+            err.message,
+            "Socket is busy reading; only one receive operation may be in progress at any time",
+          )
+          assert.equal(err.code, "EBUSY")
+          assert.typeOf(err.errno, "number")
+        } finally {
+          await done
         }
       })
 
@@ -303,7 +341,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           assert.ok(false)
         } catch (err) {
           assert.instanceOf(err, Error)
-          assert.equal(err.message, "Socket temporarily unavailable")
+          assert.equal(err.message, "Operation was not possible or timed out")
           assert.equal(err.code, "EAGAIN")
           assert.typeOf(err.errno, "number")
         }

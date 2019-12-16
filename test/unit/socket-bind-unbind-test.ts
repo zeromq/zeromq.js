@@ -72,7 +72,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           assert.instanceOf(err, Error)
           assert.equal(
             err.message,
-            "Socket is blocked by async operation (e.g. bind/unbind)",
+            "Socket is blocked by a bind or unbind operation",
           )
           assert.equal(err.code, "EBUSY")
           assert.typeOf(err.errno, "number")
@@ -127,7 +127,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           assert.instanceOf(err, Error)
           assert.equal(
             err.message,
-            "Socket is blocked by async operation (e.g. bind/unbind)",
+            "Socket is blocked by a bind or unbind operation",
           )
           assert.equal(err.code, "EBUSY")
           assert.typeOf(err.errno, "number")

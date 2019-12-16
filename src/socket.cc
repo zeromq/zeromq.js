@@ -222,7 +222,8 @@ void Socket::WarnUnlessImmediateOption(int32_t option) const {
 bool Socket::ValidateOpen() const {
     switch (state) {
     case State::Blocked:
-        ErrnoException(Env(), EBUSY).ThrowAsJavaScriptException();
+        ErrnoException(Env(), EBUSY, "Socket is blocked by a bind or unbind operation")
+            .ThrowAsJavaScriptException();
         return false;
     case State::Closed:
         ErrnoException(Env(), EBADF).ThrowAsJavaScriptException();
@@ -510,7 +511,10 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
     if (!ValidateOpen()) return Env().Undefined();
 
     if (poller.Writing()) {
-        ErrnoException(Env(), EAGAIN).ThrowAsJavaScriptException();
+        ErrnoException(Env(), EBUSY,
+            "Socket is busy writing; only one send operation may be in progress "
+            "at any time")
+            .ThrowAsJavaScriptException();
         return Env().Undefined();
     }
 
@@ -575,7 +579,10 @@ Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
     if (!ValidateOpen()) return Env().Undefined();
 
     if (poller.Reading()) {
-        ErrnoException(Env(), EAGAIN).ThrowAsJavaScriptException();
+        ErrnoException(Env(), EBUSY,
+            "Socket is busy reading; only one receive operation may be in "
+            "progress at any time")
+            .ThrowAsJavaScriptException();
         return Env().Undefined();
     }
 
