@@ -546,7 +546,7 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
            busy sending data to the I/O thread but is no longer able to respond
            to other events. */
 #ifdef ZMQ_NO_SYNC_RESOLVE
-        Warn(Env(), "Promise resolving by send() is delayed (ZMQ_NO_SYNC_RESOLVE).");
+        Warn(Env(), "Promise resolution by send() is delayed (ZMQ_NO_SYNC_RESOLVE).");
 #else
         if (sync_operations++ < max_sync_operations) {
             auto res = Napi::Promise::Deferred::New(Env());
@@ -590,7 +590,7 @@ Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
         /* We can read from the socket immediately. This is a fast path.
            Also see the related comments in Send(). */
 #ifdef ZMQ_NO_SYNC_RESOLVE
-        Warn(Env(), "Promise resolving by receive() is delayed (ZMQ_NO_SYNC_RESOLVE).");
+        Warn(Env(), "Promise resolution by receive() is delayed (ZMQ_NO_SYNC_RESOLVE).");
 #else
         if (sync_operations++ < max_sync_operations) {
             auto res = Napi::Promise::Deferred::New(Env());
