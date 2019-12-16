@@ -319,6 +319,22 @@ inline Error Env::GetAndClearPendingException() {
   return Error(_env, value);
 }
 
+inline Value Env::RunScript(const char* utf8script) {
+  String script = String::New(_env, utf8script);
+  return RunScript(script);
+}
+
+inline Value Env::RunScript(const std::string& utf8script) {
+  return RunScript(utf8script.c_str());
+}
+
+inline Value Env::RunScript(String script) {
+  napi_value result;
+  napi_status status = napi_run_script(_env, script, &result);
+  NAPI_THROW_IF_FAILED(_env, status, Undefined());
+  return Value(_env, result);
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Value class
 ////////////////////////////////////////////////////////////////////////////////
@@ -1330,7 +1346,7 @@ inline ArrayBuffer ArrayBuffer::New(napi_env env, size_t byteLength) {
   napi_status status = napi_create_arraybuffer(env, byteLength, &data, &value);
   NAPI_THROW_IF_FAILED(env, status, ArrayBuffer());
 
-  return ArrayBuffer(env, value, data, byteLength);
+  return ArrayBuffer(env, value);
 }
 
 inline ArrayBuffer ArrayBuffer::New(napi_env env,
@@ -1341,7 +1357,7 @@ inline ArrayBuffer ArrayBuffer::New(napi_env env,
     env, externalData, byteLength, nullptr, nullptr, &value);
   NAPI_THROW_IF_FAILED(env, status, ArrayBuffer());
 
-  return ArrayBuffer(env, value, externalData, byteLength);
+  return ArrayBuffer(env, value);
 }
 
 template <typename Finalizer>
@@ -1364,7 +1380,7 @@ inline ArrayBuffer ArrayBuffer::New(napi_env env,
     NAPI_THROW_IF_FAILED(env, status, ArrayBuffer());
   }
 
-  return ArrayBuffer(env, value, externalData, byteLength);
+  return ArrayBuffer(env, value);
 }
 
 template <typename Finalizer, typename Hint>
@@ -1388,38 +1404,28 @@ inline ArrayBuffer ArrayBuffer::New(napi_env env,
     NAPI_THROW_IF_FAILED(env, status, ArrayBuffer());
   }
 
-  return ArrayBuffer(env, value, externalData, byteLength);
+  return ArrayBuffer(env, value);
 }
 
-inline ArrayBuffer::ArrayBuffer() : Object(), _data(nullptr), _length(0) {
+inline ArrayBuffer::ArrayBuffer() : Object() {
 }
 
 inline ArrayBuffer::ArrayBuffer(napi_env env, napi_value value)
-  : Object(env, value), _data(nullptr), _length(0) {
-}
-
-inline ArrayBuffer::ArrayBuffer(napi_env env, napi_value value, void* data, size_t length)
-  : Object(env, value), _data(data), _length(length) {
+  : Object(env, value) {
 }
 
 inline void* ArrayBuffer::Data() {
-  EnsureInfo();
-  return _data;
+  void* data;
+  napi_status status = napi_get_arraybuffer_info(_env, _value, &data, nullptr);
+  NAPI_THROW_IF_FAILED(_env, status, nullptr);
+  return data;
 }
 
 inline size_t ArrayBuffer::ByteLength() {
-  EnsureInfo();
-  return _length;
-}
-
-inline void ArrayBuffer::EnsureInfo() const {
-  // The ArrayBuffer instance may have been constructed from a napi_value whose
-  // length/data are not yet known. Fetch and cache these values just once,
-  // since they can never change during the lifetime of the ArrayBuffer.
-  if (_data == nullptr) {
-    napi_status status = napi_get_arraybuffer_info(_env, _value, &_data, &_length);
-    NAPI_THROW_IF_FAILED_VOID(_env, status);
-  }
+  size_t length;
+  napi_status status = napi_get_arraybuffer_info(_env, _value, nullptr, &length);
+  NAPI_THROW_IF_FAILED(_env, status, 0);
+  return length;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1764,6 +1770,51 @@ CreateFunction(napi_env env,
   }
 
   return status;
+}
+
+template <Function::VoidCallback cb>
+inline Function Function::New(napi_env env, const char* utf8name, void* data) {
+  napi_value result = nullptr;
+  napi_status status = napi_create_function(
+      env, utf8name, NAPI_AUTO_LENGTH,
+      [](napi_env env, napi_callback_info info) {
+        CallbackInfo callbackInfo(env, info);
+        return details::WrapCallback([&] {
+          cb(callbackInfo);
+          return nullptr;
+        });
+      }, data, &result);
+  NAPI_THROW_IF_FAILED(env, status, Function());
+  return Function(env, result);
+}
+
+template <Function::Callback cb>
+inline Function Function::New(napi_env env, const char* utf8name, void* data) {
+  napi_value result = nullptr;
+  napi_status status = napi_create_function(
+      env, utf8name, NAPI_AUTO_LENGTH,
+      [](napi_env env, napi_callback_info info) {
+        CallbackInfo callbackInfo(env, info);
+        return details::WrapCallback([&] {
+          return cb(callbackInfo);
+        });
+      }, data, &result);
+  NAPI_THROW_IF_FAILED(env, status, Function());
+  return Function(env, result);
+}
+
+template <Function::VoidCallback cb>
+inline Function Function::New(napi_env env,
+                              const std::string& utf8name,
+                              void* data) {
+  return Function::New<cb>(env, utf8name.c_str(), data);
+}
+
+template <Function::Callback cb>
+inline Function Function::New(napi_env env,
+                              const std::string& utf8name,
+                              void* data) {
+  return Function::New<cb>(env, utf8name.c_str(), data);
 }
 
 template <typename Callable>
