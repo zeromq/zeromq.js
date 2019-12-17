@@ -51,12 +51,12 @@ describe("context process exit", function() {
       if (semver.satisfies(zmq.version, ">= 4.2")) {
         assert.match(
           stderr.toString(),
-          /\(node:\d+\) WARNING: Waiting for queued ZeroMQ messages to be delivered\. Set 'context\.blocky = false' to change this behaviour\.\n/,
+          /\(node:\d+\) WARNING: Waiting for queued ZeroMQ messages to be delivered\. Set 'context\.blocky = false' to change this behaviour\.\r?\n/,
         )
       } else {
         assert.match(
           stderr.toString(),
-          /\(node:\d+\) WARNING: Waiting for queued ZeroMQ messages to be delivered\.\n/,
+          /\(node:\d+\) WARNING: Waiting for queued ZeroMQ messages to be delivered\.\r?\n/,
         )
       }
     })
@@ -72,7 +72,7 @@ describe("context process exit", function() {
 
       assert.match(
         stderr.toString(),
-        /\(node:\d+\) WARNING: Waiting for queued ZeroMQ messages to be delivered\.\n/,
+        /\(node:\d+\) WARNING: Waiting for queued ZeroMQ messages to be delivered\.\r?\n/,
       )
     })
 
