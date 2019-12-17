@@ -7,7 +7,7 @@ describe("socket process exit", function() {
   /* Reported: https://github.com/nodejs/node-addon-api/issues/591 */
   it.skip("should occur cleanly when sending in exit hook", async function() {
     this.slow(200)
-    const code = await createProcess(async () => {
+    const {code} = await createProcess(async () => {
       const sockA = new zmq.Pair()
       const sockB = new zmq.Pair()
       await sockA.bind("inproc://test-1")
@@ -25,7 +25,7 @@ describe("socket process exit", function() {
 
   it("should occur cleanly when sending on unbound socket", async function() {
     this.slow(200)
-    const code = await createProcess(async () => {
+    const {code} = await createProcess(async () => {
       const sock = new zmq.Publisher()
       await sock.send("test")
     })
@@ -35,7 +35,7 @@ describe("socket process exit", function() {
 
   it("should not occur when sending and blocked on unbound socket", async function() {
     this.slow(1000)
-    const code = await createProcess(async () => {
+    const {code} = await createProcess(async () => {
       const sock = new zmq.Dealer()
       await sock.send("test")
     })
@@ -45,7 +45,7 @@ describe("socket process exit", function() {
 
   it("should occur cleanly on socket close when reading events", async function() {
     this.slow(200)
-    const code = await createProcess(() => {
+    const {code} = await createProcess(() => {
       const sock = new zmq.Dealer()
 
       async function readEvents() {
@@ -64,7 +64,7 @@ describe("socket process exit", function() {
 
   it("should not occur while reading events", async function() {
     this.slow(1000)
-    const code = await createProcess(async () => {
+    const {code} = await createProcess(async () => {
       const sock = new zmq.Dealer()
 
       const events = []

@@ -85,7 +85,13 @@ export async function createWorker<T, D extends {}>(
   })
 }
 
-export function createProcess(fn: () => void): Promise<number> {
+interface Result {
+  code: number
+  stdout: Buffer
+  stderr: Buffer
+}
+
+export function createProcess(fn: () => void): Promise<Result> {
   const src = `
     const zmq = require(${JSON.stringify(path.resolve(__dirname, "../.."))})
     const fn = ${fn.toString()}
@@ -96,20 +102,26 @@ export function createProcess(fn: () => void): Promise<number> {
   child.stdin.write(src)
   child.stdin.end()
 
-  child.stdout.on("data", (data: Buffer) => console.log(data.toString()))
-  child.stderr.on("data", (data: Buffer) => console.error(data.toString()))
+  let stdout: Buffer = Buffer.alloc(0)
+  let stderr: Buffer = Buffer.alloc(0)
+  child.stdout.on("data", (data: Buffer) => {
+    stdout = Buffer.concat([stdout, data])
+  })
+  child.stderr.on("data", (data: Buffer) => {
+    stderr = Buffer.concat([stderr, data])
+  })
 
   return new Promise((resolve, reject) => {
     child.on("close", (code: number, signal: string) => {
       if (signal != null) {
         reject(new Error(`Child exited with ${signal}`))
       } else {
-        resolve(code)
+        resolve({code, stdout, stderr})
       }
     })
 
     setTimeout(() => {
-      resolve(-1)
+      resolve({code: -1, stdout, stderr})
       child.kill()
     }, 750)
   })

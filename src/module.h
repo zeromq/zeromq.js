@@ -12,6 +12,11 @@
 #include "util/to_string.h"
 #include "util/trash.h"
 
+#include <chrono>
+#include <condition_variable>
+#include <cstdio>
+#include <thread>
+
 namespace zmq {
 class Context;
 class Socket;
@@ -20,8 +25,34 @@ struct Terminator {
     constexpr Terminator() noexcept = default;
     void operator()(void* context) {
         assert(context != nullptr);
-        auto err = zmq_ctx_term(context);
-        assert(err == 0);
+
+#ifdef ZMQ_BLOCKY
+        int32_t blocky = zmq_ctx_get(context, ZMQ_BLOCKY);
+#else
+        /* If the option cannot be set, don't suggest to set it. */
+        bool blocky = false;
+#endif
+
+        using namespace std::chrono_literals;
+        std::mutex mut;
+        std::condition_variable cv;
+
+        std::thread thread([&] {
+            auto err = zmq_ctx_term(context);
+            assert(err == 0);
+            cv.notify_all();
+        });
+
+        std::unique_lock<std::mutex> lock(mut);
+        if (cv.wait_for(lock, 500ms) == std::cv_status::timeout) {
+            fprintf(stderr,
+                "(node:%d) WARNING: Waiting for queued ZeroMQ messages to be "
+                "delivered.%s\n",
+                uv_os_getpid(),
+                blocky ? " Set 'context.blocky = false' to change this behaviour." : "");
+        }
+
+        thread.join();
     }
 };
 
