@@ -32,9 +32,10 @@ static inline Napi::Error CodedException(
 }
 
 /* This mostly duplicates node::ErrnoException, but it is not public. */
-static inline Napi::Error ErrnoException(const Napi::Env& env, int32_t error) {
+static inline Napi::Error ErrnoException(
+    const Napi::Env& env, int32_t error, const char* message = nullptr) {
     Napi::HandleScope scope(env);
-    auto exception = Napi::Error::New(env, ErrnoMessage(error));
+    auto exception = Napi::Error::New(env, message ? message : ErrnoMessage(error));
     exception.Set("errno", Napi::Number::New(env, error));
     exception.Set("code", Napi::String::New(env, ErrnoCode(error)));
     return exception;
@@ -54,13 +55,13 @@ static inline constexpr const char* ErrnoMessage(int32_t errorno) {
     case EFAULT:
         return "Context is closed";
     case EAGAIN:
-        return "Socket temporarily unavailable";
+        return "Operation was not possible or timed out";
     case EMFILE:
         return "Too many open file descriptors";
     case ENOENT:
         return "No such endpoint";
     case EBUSY:
-        return "Socket is blocked by async operation (e.g. bind/unbind)";
+        return "Socket is busy";
     case EBADF:
         return "Socket is closed";
     case EADDRINUSE:

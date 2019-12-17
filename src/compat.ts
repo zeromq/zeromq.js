@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/camelcase */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 /* The API of the compatibility layer and parts of the implementation has been
    adapted from the original ZeroMQ.js version (up to 5.x) for which the license
@@ -419,18 +420,34 @@ class Socket extends EventEmitter {
     )
   }
 
-  bindSync() {
-    throw new Error(
-      "bindSync() has been removed from compatibility mode; " +
-        "use bind() instead",
-    )
+  bindSync(...args: Parameters<Socket["bind"]>) {
+    try {
+      Object.defineProperty(this, "bindSync", {
+        value: require("deasync")(this.bind),
+      })
+    } catch (err) {
+      throw new Error(
+        "bindSync() has been removed from compatibility mode; " +
+          "use bind() instead, or add 'deasync' to your project dependencies",
+      )
+    }
+
+    this.bindSync(...args)
   }
 
-  unbindSync() {
-    throw new Error(
-      "unbindSync() has been removed from compatibility mode; " +
-        "use unbind() instead",
-    )
+  unbindSync(...args: Parameters<Socket["unbind"]>) {
+    try {
+      Object.defineProperty(this, "unbindSync", {
+        value: require("deasync")(this.unbind),
+      })
+    } catch (err) {
+      throw new Error(
+        "unbindSync() has been removed from compatibility mode; " +
+          "use unbind() instead, or add 'deasync' to your project dependencies",
+      )
+    }
+
+    this.unbindSync(...args)
   }
 
   pause() {

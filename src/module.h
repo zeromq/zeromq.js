@@ -12,6 +12,10 @@
 #include "util/to_string.h"
 #include "util/trash.h"
 
+#include <chrono>
+#include <future>
+#include <cstdio>
+
 namespace zmq {
 class Context;
 class Socket;
@@ -20,8 +24,33 @@ struct Terminator {
     constexpr Terminator() noexcept = default;
     void operator()(void* context) {
         assert(context != nullptr);
-        auto err = zmq_ctx_term(context);
-        assert(err == 0);
+
+#ifdef ZMQ_BLOCKY
+        bool blocky = zmq_ctx_get(context, ZMQ_BLOCKY);
+#else
+        /* If the option cannot be set, don't suggest to set it. */
+        bool blocky = false;
+#endif
+
+        /* Start termination asynchronously so we can detect if it takes long
+           and should warn the user about this default blocking behaviour. */
+        auto terminate = std::async(std::launch::async, [&] {
+            auto err = zmq_ctx_term(context);
+            assert(err == 0);
+        });
+
+        using namespace std::chrono_literals;
+        if (terminate.wait_for(500ms) == std::future_status::timeout) {
+            /* We can't use process.emitWarning, because the Node.js runtime
+               has already shut down. So we mimic it instead. */
+            fprintf(stderr,
+                "(node:%d) WARNING: Waiting for queued ZeroMQ messages to be "
+                "delivered.%s\n",
+                uv_os_getpid(),
+                blocky ? " Set 'context.blocky = false' to change this behaviour." : "");
+        }
+
+        terminate.wait();
     }
 };
 

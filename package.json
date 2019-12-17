@@ -1,6 +1,6 @@
 {
   "name": "zeromq",
-  "version": "6.0.0-beta.5",
+  "version": "6.0.0-beta.6",
   "description": "Next-generation ZeroMQ bindings for Node.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -18,27 +18,26 @@
     "@types/mocha": ">= 5.2",
     "@types/node": ">= 8.0",
     "@types/semver": ">= 0",
+    "@typescript-eslint/eslint-plugin": "^2.9.0",
+    "@typescript-eslint/parser": "^2.9.0",
     "benchmark": ">= 0",
     "chai": ">= 4.1",
     "choma": ">= 1.2",
+    "deasync": "^0.1.16",
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
     "gunzip-maybe": "^1.4.1",
     "mocha": ">= 4.0",
-    "node-addon-api": "rolftimmermans/node-addon-api#zeromq",
+    "node-addon-api": "nodejs/node-addon-api",
     "node-fetch": "^2.6.0",
     "prebuildify": "^3.0",
+    "prettier": "^1.19.1",
     "semver": ">= 0",
     "tar-fs": "^2.0.0",
     "ts-node": ">= 7",
     "typescript": ">= 3.6",
     "weak-napi": ">= 1.0"
-  },
-  "optionalDevDependencies": {
-    "@typescript-eslint/eslint-plugin": "^2.9.0",
-    "@typescript-eslint/parser": "^2.9.0",
-    "eslint": "^6.7.1",
-    "eslint-config-prettier": "^6.7.0",
-    "eslint-plugin-prettier": "^3.1.1",
-    "prettier": "^1.19.1"
   },
   "engines": {
     "node": ">= 10.2"

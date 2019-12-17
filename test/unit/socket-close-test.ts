@@ -33,7 +33,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await promise
         } catch (err) {
           assert.instanceOf(err, Error)
-          assert.equal(err.message, "Socket temporarily unavailable")
+          assert.equal(err.message, "Operation was not possible or timed out")
           assert.equal(err.code, "EAGAIN")
           assert.typeOf(err.errno, "number")
         }
@@ -48,7 +48,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await promise
         } catch (err) {
           assert.instanceOf(err, Error)
-          assert.equal(err.message, "Socket temporarily unavailable")
+          assert.equal(err.message, "Operation was not possible or timed out")
           assert.equal(err.code, "EAGAIN")
           assert.typeOf(err.errno, "number")
         }

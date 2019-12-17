@@ -119,7 +119,7 @@ export interface Writable<
    *
    * Only **one** asynchronously blocking call to {@link send}() may be executed
    * simultaneously. If you call {@link send}() again on a socket that is in the
-   * mute state it will return a rejected promise with an `EAGAIN` error.
+   * mute state it will return a rejected promise with an `EBUSY` error.
    *
    * The reason for disallowing multiple {@link send}() calls simultaneously is
    * that it could create an implicit queue of unsendable outgoing messages.
@@ -229,12 +229,12 @@ export interface Readable<M extends object[] = Message[]> {
    *
    * Only **one** asynchronously blocking call to {@link receive}() can be in
    * progress simultaneously. If you call {@link receive}() again on the same
-   * socket it will return a rejected promise with an `EAGAIN` error. For
+   * socket it will return a rejected promise with an `EBUSY` error. For
    * example, if no messages can be read and no `await` is used:
    *
    * ```typescript
    * socket.receive() // -> pending promise until read is possible
-   * socket.receive() // -> promise rejection with `EAGAIN` error
+   * socket.receive() // -> promise rejection with `EBUSY` error
    * ```
    *
    * **Note:** Due to the nature of Node.js and to avoid blocking the main

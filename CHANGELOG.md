@@ -1,4 +1,12 @@
-### Unreleased
+### v6.0.0-beta.6
+
+* BREAKING: When inadvertedly executing two concurrent send() or receive() operations the errno attribute of the error thrown is now EBUSY instead of EAGAIN.
+
+* Error messages for EBUSY are more specific.
+
+* Compatibility mode will now provide an implementation for bindSync()/unbindSync() if the 'deasync' package is available.
+
+* Produce a warning when messages are still queued at process exit and context termination takes more than 500ms.
 
 * Bump version requirement to Node.js 10.2, but reduce N-API version to 3 to support more 10.x Node.js versions.
 

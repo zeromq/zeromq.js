@@ -73,7 +73,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           assert.ok(false)
         } catch (err) {
           assert.instanceOf(err, Error)
-          assert.equal(err.message, "Socket temporarily unavailable")
+          assert.equal(err.message, "Operation was not possible or timed out")
           assert.equal(err.code, "EAGAIN")
           assert.typeOf(err.errno, "number")
         }
@@ -303,7 +303,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           assert.ok(false)
         } catch (err) {
           assert.instanceOf(err, Error)
-          assert.equal(err.message, "Socket temporarily unavailable")
+          assert.equal(err.message, "Operation was not possible or timed out")
           assert.equal(err.code, "EAGAIN")
           assert.typeOf(err.errno, "number")
         }
@@ -532,6 +532,46 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           )
           assert.equal(err.code, "EFSM")
           assert.typeOf(err.errno, "number")
+        }
+      })
+    })
+
+    describe("concurrently", function() {
+      it("should throw error on concurrent send", async function() {
+        sockA.sendTimeout = 20
+        const done = sockA.send(null).catch(() => null)
+        try {
+          sockA.send(null).catch(() => null)
+          assert.ok(false)
+        } catch (err) {
+          assert.instanceOf(err, Error)
+          assert.equal(
+            err.message,
+            "Socket is busy writing; only one send operation may be in progress at any time",
+          )
+          assert.equal(err.code, "EBUSY")
+          assert.typeOf(err.errno, "number")
+        } finally {
+          await done
+        }
+      })
+
+      it("should throw error on concurrent receive", async function() {
+        sockA.receiveTimeout = 20
+        const done = sockA.receive().catch(() => null)
+        try {
+          sockA.receive().catch(() => null)
+          assert.ok(false)
+        } catch (err) {
+          assert.instanceOf(err, Error)
+          assert.equal(
+            err.message,
+            "Socket is busy reading; only one receive operation may be in progress at any time",
+          )
+          assert.equal(err.code, "EBUSY")
+          assert.typeOf(err.errno, "number")
+        } finally {
+          await done
         }
       })
     })

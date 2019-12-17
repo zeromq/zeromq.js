@@ -124,6 +124,7 @@ namespace Napi {
   class String;
   class Object;
   class Array;
+  class ArrayBuffer;
   class Function;
   template <typename T> class Buffer;
   class Error;
@@ -177,6 +178,10 @@ namespace Napi {
 
     bool IsExceptionPending() const;
     Error GetAndClearPendingException();
+
+    Value RunScript(const char* utf8script);
+    Value RunScript(const std::string& utf8script);
+    Value RunScript(String script);
 
   private:
     napi_env _env;
@@ -802,13 +807,6 @@ namespace Napi {
 
     void* Data();        ///< Gets a pointer to the data buffer.
     size_t ByteLength(); ///< Gets the length of the array buffer in bytes.
-
-  private:
-    mutable void* _data;
-    mutable size_t _length;
-
-    ArrayBuffer(napi_env env, napi_value value, void* data, size_t length);
-    void EnsureInfo() const;
   };
 
   /// A JavaScript typed-array value with unknown array type.
@@ -993,6 +991,29 @@ namespace Napi {
 
   class Function : public Object {
   public:
+    typedef void (*VoidCallback)(const CallbackInfo& info);
+    typedef Value (*Callback)(const CallbackInfo& info);
+
+    template <VoidCallback cb>
+    static Function New(napi_env env,
+                        const char* utf8name = nullptr,
+                        void* data = nullptr);
+
+    template <Callback cb>
+    static Function New(napi_env env,
+                        const char* utf8name = nullptr,
+                        void* data = nullptr);
+
+    template <VoidCallback cb>
+    static Function New(napi_env env,
+                        const std::string& utf8name,
+                        void* data = nullptr);
+
+    template <Callback cb>
+    static Function New(napi_env env,
+                        const std::string& utf8name,
+                        void* data = nullptr);
+
     /// Callable must implement operator() accepting a const CallbackInfo&
     /// and return either void or Value.
     template <typename Callable>
@@ -1407,6 +1428,9 @@ namespace Napi {
 
   class PropertyDescriptor {
   public:
+    typedef Napi::Value (*GetterCallback)(const Napi::CallbackInfo& info);
+    typedef void (*SetterCallback)(const Napi::CallbackInfo& info);
+
 #ifndef NODE_ADDON_API_DISABLE_DEPRECATED
     template <typename Getter>
     static PropertyDescriptor Accessor(const char* utf8name,
@@ -1473,6 +1497,36 @@ namespace Napi {
                                        napi_property_attributes attributes = napi_default,
                                        void* data = nullptr);
 #endif // !NODE_ADDON_API_DISABLE_DEPRECATED
+
+    template <GetterCallback Getter>
+    static PropertyDescriptor Accessor(const char* utf8name,
+                                       napi_property_attributes attributes = napi_default,
+                                       void* data = nullptr);
+
+    template <GetterCallback Getter>
+    static PropertyDescriptor Accessor(const std::string& utf8name,
+                                       napi_property_attributes attributes = napi_default,
+                                       void* data = nullptr);
+
+    template <GetterCallback Getter>
+    static PropertyDescriptor Accessor(Name name,
+                                       napi_property_attributes attributes = napi_default,
+                                       void* data = nullptr);
+
+    template <GetterCallback Getter, SetterCallback Setter>
+    static PropertyDescriptor Accessor(const char* utf8name,
+                                       napi_property_attributes attributes = napi_default,
+                                       void* data = nullptr);
+
+    template <GetterCallback Getter, SetterCallback Setter>
+    static PropertyDescriptor Accessor(const std::string& utf8name,
+                                       napi_property_attributes attributes = napi_default,
+                                       void* data = nullptr);
+
+    template <GetterCallback Getter, SetterCallback Setter>
+    static PropertyDescriptor Accessor(Name name,
+                                       napi_property_attributes attributes = napi_default,
+                                       void* data = nullptr);
 
     template <typename Getter>
     static PropertyDescriptor Accessor(Napi::Env env,
@@ -1559,6 +1613,10 @@ namespace Napi {
     operator const napi_property_descriptor&() const;
 
   private:
+    template <GetterCallback Getter>
+    static napi_value GetterCallbackWrapper(napi_env env, napi_callback_info info);
+    template <SetterCallback Setter>
+    static napi_value SetterCallbackWrapper(napi_env env, napi_callback_info info);
     napi_property_descriptor _desc;
   };
 

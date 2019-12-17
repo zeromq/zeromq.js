@@ -86,6 +86,7 @@ npm install zeromq@6.0.0-beta.5 --zmq-draft
 
 # Examples
 
+**Note:** The examples assume the reader is familiar with ZeroMQ. If you are new to ZeroMQ, please start with the [ZeroMQ documentation](https://zeromq.org/get-started/).
 
 More examples can be found in the [examples directory](examples).
 
