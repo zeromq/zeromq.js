@@ -10,7 +10,11 @@
 * High performance.
 * Fully usable with TypeScript (3.6+).
 
-The API reference [can be found here](http://zeromq.github.io/zeromq.js/globals.html).
+### Useful links
+
+* [ZeroMQ.js API reference](http://zeromq.github.io/zeromq.js/globals.html).
+* [ZeroMQ project documentation](https://zeromq.org/get-started/).
+  * **Note:** The Node.js examples on zeromq.org do not yet reflect the new API, but [the Guide](http://zguide.zeromq.org) in particular is still a good introduction to ZeroMQ for new users.
 
 
 # Table of contents
