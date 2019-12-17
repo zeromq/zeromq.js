@@ -4,6 +4,13 @@
   "description": "Next-generation ZeroMQ bindings for Node.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
+  "typesVersions": {
+    ">=3.6": {
+      "lib/*": [
+        "lib/ts3.6/*"
+      ]
+    }
+  },
   "gypfile": true,
   "repository": {
     "type": "git",
@@ -35,6 +42,7 @@
     "prettier": "^1.19.1",
     "semver": ">= 0",
     "tar-fs": "^2.0.0",
+    "ts-morph": "^6.0.2",
     "ts-node": ">= 7",
     "typescript": ">= 3.6",
     "weak-napi": ">= 1.0"
@@ -63,7 +71,7 @@
   ],
   "scripts": {
     "install": "node-gyp-build",
-    "ci:compile": "tsc --project tsconfig-build.json",
+    "ci:compile": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js",
     "ci:doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
     "ci:prebuild": "prebuildify --napi --strip",
     "dev:build": "rm -f vendor/* && touch vendor/.gitkeep && cp node_modules/node-addon-api/{*.h,LICENSE.md} vendor && prebuildify --napi --build-from-source --debug",
