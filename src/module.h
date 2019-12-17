@@ -32,6 +32,8 @@ struct Terminator {
         bool blocky = false;
 #endif
 
+        /* Start termination asynchronously so we can detect if it takes long
+           and should warn the user about this default blocking behaviour. */
         auto terminate = std::async(std::launch::async, [&] {
             auto err = zmq_ctx_term(context);
             assert(err == 0);
@@ -39,6 +41,8 @@ struct Terminator {
 
         using namespace std::chrono_literals;
         if (terminate.wait_for(500ms) == std::future_status::timeout) {
+            /* We can't use process.emitWarning, because the Node.js runtime
+               has already shut down. So we mimic it instead. */
             fprintf(stderr,
                 "(node:%d) WARNING: Waiting for queued ZeroMQ messages to be "
                 "delivered.%s\n",
