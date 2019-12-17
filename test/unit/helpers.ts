@@ -14,7 +14,9 @@ if (semver.satisfies(zmq.version, ">= 4.2")) {
 /* Windows cannot bind on a ports just above 1014; start higher to be safe. */
 let seq = 5000
 
-export function uniqAddress(proto: string) {
+type Proto = "ipc" | "tcp" | "udp" | "inproc"
+
+export function uniqAddress(proto: Proto) {
   const id = seq++
   switch (proto) {
     case "ipc": {
@@ -31,7 +33,7 @@ export function uniqAddress(proto: string) {
   }
 }
 
-export function testProtos(...requested: string[]) {
+export function testProtos(...requested: Proto[]) {
   const set = new Set(requested)
 
   /* Do not test with ipc if unsupported. */
