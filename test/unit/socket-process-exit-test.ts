@@ -1,7 +1,7 @@
 import * as zmq from "../../src"
 
 import {assert} from "chai"
-import {createProcess, uniqAddress} from "./helpers"
+import {createProcess} from "./helpers"
 
 describe("socket process exit", function() {
   /* Reported: https://github.com/nodejs/node-addon-api/issues/591 */
