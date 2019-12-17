@@ -21,6 +21,7 @@ The API reference [can be found here](http://zeromq.github.io/zeromq.js/globals.
 * [Examples](#examples)
    * [Push/Pull](#pushpull)
    * [Pub/Sub](#pubsub)
+   * [More examples](#more-examples)
    * [Compatibility layer for version 4/5](#compatibility-layer-for-version-45)
 * [Contribution](#contribution)
 * [History](#history)
@@ -180,6 +181,13 @@ async function run() {
 
 run()
 ```
+
+
+## More examples
+
+More advanced examples can be found in the [examples](examples) directory of this repository.
+
+Or you can [browse the API reference documentation](http://zeromq.github.io/zeromq.js/globals.html) to see all socket types, methods & options as well as more detailed information about how to apply them.
 
 
 ## Compatibility layer for version 4/5
