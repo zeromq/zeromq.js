@@ -43,7 +43,7 @@ describe("context process exit", function() {
       this.slow(1000)
       const {stderr} = await createProcess(() => {
         zmq.context.blocky = true
-        const socket1 = new zmq.Dealer({linger: 750})
+        const socket1 = new zmq.Dealer({linger: 600})
         socket1.connect("tcp://127.0.0.1:4567")
         socket1.send(null)
       })
@@ -65,7 +65,7 @@ describe("context process exit", function() {
       this.slow(1000)
       const {stderr} = await createProcess(() => {
         zmq.context.blocky = false
-        const socket1 = new zmq.Dealer({linger: 750})
+        const socket1 = new zmq.Dealer({linger: 600})
         socket1.connect("tcp://127.0.0.1:4567")
         socket1.send(null)
       })
@@ -80,7 +80,7 @@ describe("context process exit", function() {
       this.slow(1000)
       const {stderr} = await createProcess(() => {
         zmq.context.blocky = true
-        const socket1 = new zmq.Dealer({linger: 100})
+        const socket1 = new zmq.Dealer({linger: 50})
         socket1.connect("tcp://127.0.0.1:4567")
         socket1.send(null)
       })
