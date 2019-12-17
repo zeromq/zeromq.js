@@ -40,10 +40,10 @@ describe("context process exit", function() {
     })
 
     it("should produce warning when messages are queued with blocky", async function() {
-      this.slow(1000)
+      this.slow(2000)
       const {stderr} = await createProcess(() => {
         zmq.context.blocky = true
-        const socket1 = new zmq.Dealer({linger: 600})
+        const socket1 = new zmq.Dealer({linger: 1000})
         socket1.connect("tcp://127.0.0.1:4567")
         socket1.send(null)
       })
@@ -62,10 +62,10 @@ describe("context process exit", function() {
     })
 
     it("should produce warning when messages are queued without blocky", async function() {
-      this.slow(1000)
+      this.slow(2000)
       const {stderr} = await createProcess(() => {
         zmq.context.blocky = false
-        const socket1 = new zmq.Dealer({linger: 600})
+        const socket1 = new zmq.Dealer({linger: 1000})
         socket1.connect("tcp://127.0.0.1:4567")
         socket1.send(null)
       })
