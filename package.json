@@ -29,7 +29,7 @@
     "semver": ">= 0",
     "tar-fs": "^2.0.0",
     "ts-node": ">= 7",
-    "typescript": "3.6.x",
+    "typescript": ">= 3.6",
     "weak-napi": ">= 1.0"
   },
   "optionalDevDependencies": {
