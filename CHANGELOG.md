@@ -1,4 +1,4 @@
-### Unreleased
+### v6.0.0-beta.6
 
 * BREAKING: When inadvertedly executing two concurrent send() or receive() operations the errno attribute of the error thrown is now EBUSY instead of EAGAIN.
 
