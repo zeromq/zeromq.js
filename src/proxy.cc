@@ -52,13 +52,13 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
     if (Env().IsExceptionPending()) return Env().Undefined();
 
     if (front->endpoints == 0) {
-        Napi::Error::New(Env(), "Front-end socket must be bound or connected")
+        ErrnoException(Env(), EINVAL, "Front-end socket must be bound or connected")
             .ThrowAsJavaScriptException();
         return Env().Undefined();
     }
 
     if (back->endpoints == 0) {
-        Napi::Error::New(Env(), "Back-end socket must be bound or connected")
+        ErrnoException(Env(), EINVAL, "Back-end socket must be bound or connected")
             .ThrowAsJavaScriptException();
         return Env().Undefined();
     }
