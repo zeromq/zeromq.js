@@ -25,6 +25,7 @@
 * [Examples](#examples)
    * [Push/Pull](#pushpull)
    * [Pub/Sub](#pubsub)
+   * [Req/Rep](#reqrep)
    * [More examples](#more-examples)
    * [Compatibility layer for version 4/5](#compatibility-layer-for-version-45)
 * [Contribution](#contribution)
