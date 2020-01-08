@@ -187,6 +187,47 @@ run()
 ```
 
 
+## Req/Rep
+
+### client.js
+
+```js
+const zmq = require("zeromq")
+
+async function run() {
+  const sock = new zmq.Request
+
+  sock.connect("tcp://127.0.0.1:3000")
+  console.log("Producer bound to port 3000")
+
+  await sock.send("4")
+  const [result] = await sock.receive()
+
+  console.log(result)
+}
+
+run()
+```
+
+### server.js
+
+```js
+const zmq = require("zeromq")
+
+async function run() {
+  const sock = new zmq.Reply
+
+  await sock.bind("tcp://127.0.0.1:3000")
+
+  for await (const [msg] of sock) {
+    await sock.send(2 * parseInt(msg, 10))
+  }
+}
+
+run()
+```
+
+
 ## More examples
 
 More advanced examples can be found in the [examples](examples) directory of this repository.
