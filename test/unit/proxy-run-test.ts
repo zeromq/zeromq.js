@@ -56,6 +56,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       } catch (err) {
         assert.instanceOf(err, Error)
         assert.equal(err.message, "Back-end socket must be bound or connected")
+        assert.equal(err.code, "EINVAL")
+        assert.typeOf(err.errno, "number")
       }
     })
 
@@ -70,6 +72,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       } catch (err) {
         assert.instanceOf(err, Error)
         assert.equal(err.message, "Back-end socket must be bound or connected")
+        assert.equal(err.code, "EINVAL")
+        assert.typeOf(err.errno, "number")
       }
     })
   })

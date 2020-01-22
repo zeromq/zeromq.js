@@ -10,7 +10,11 @@
 * High performance.
 * Fully usable with TypeScript (3.6+).
 
-The API reference [can be found here](http://zeromq.github.io/zeromq.js/globals.html).
+### Useful links
+
+* [ZeroMQ.js API reference](http://zeromq.github.io/zeromq.js/globals.html).
+* [ZeroMQ project documentation](https://zeromq.org/get-started/).
+  * **Note:** The Node.js examples on zeromq.org do not yet reflect the new API, but [the Guide](http://zguide.zeromq.org) in particular is still a good introduction to ZeroMQ for new users.
 
 
 # Table of contents
@@ -21,6 +25,8 @@ The API reference [can be found here](http://zeromq.github.io/zeromq.js/globals.
 * [Examples](#examples)
    * [Push/Pull](#pushpull)
    * [Pub/Sub](#pubsub)
+   * [Req/Rep](#reqrep)
+   * [More examples](#more-examples)
    * [Compatibility layer for version 4/5](#compatibility-layer-for-version-45)
 * [Contribution](#contribution)
 * [History](#history)
@@ -31,7 +37,7 @@ The API reference [can be found here](http://zeromq.github.io/zeromq.js/globals.
 Install ZeroMQ.js with prebuilt binaries:
 
 ```sh
-npm install zeromq@6.0.0-beta.5
+npm install zeromq@6.0.0-beta.6
 ```
 
 Requirements for prebuilt binaries:
@@ -69,19 +75,19 @@ Make sure you have the following installed before attempting to build from sourc
 To install from source
 
 ```sh
-npm install zeromq@6.0.0-beta.5 --build-from-source
+npm install zeromq@6.0.0-beta.6 --build-from-source
 ```
 
 If you want to link against a shared ZeroMQ library, you can build skip downloading libzmq and link with the installed library instead as follows:
 
 ```sh
-npm install zeromq@6.0.0-beta.5 --zmq-shared
+npm install zeromq@6.0.0-beta.6 --zmq-shared
 ```
 
 If you wish to use any DRAFT sockets then it is also necessary to compile the library from source:
 
 ```sh
-npm install zeromq@6.0.0-beta.5 --zmq-draft
+npm install zeromq@6.0.0-beta.6 --zmq-draft
 ```
 
 # Examples
@@ -180,6 +186,54 @@ async function run() {
 
 run()
 ```
+
+
+## Req/Rep
+
+### client.js
+
+```js
+const zmq = require("zeromq")
+
+async function run() {
+  const sock = new zmq.Request
+
+  sock.connect("tcp://127.0.0.1:3000")
+  console.log("Producer bound to port 3000")
+
+  await sock.send("4")
+  const [result] = await sock.receive()
+
+  console.log(result)
+}
+
+run()
+```
+
+### server.js
+
+```js
+const zmq = require("zeromq")
+
+async function run() {
+  const sock = new zmq.Reply
+
+  await sock.bind("tcp://127.0.0.1:3000")
+
+  for await (const [msg] of sock) {
+    await sock.send(2 * parseInt(msg, 10))
+  }
+}
+
+run()
+```
+
+
+## More examples
+
+More advanced examples can be found in the [examples](examples) directory of this repository.
+
+Or you can [browse the API reference documentation](http://zeromq.github.io/zeromq.js/globals.html) to see all socket types, methods & options as well as more detailed information about how to apply them.
 
 
 ## Compatibility layer for version 4/5

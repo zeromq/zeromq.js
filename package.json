@@ -96,5 +96,32 @@
     "napi"
   ],
   "license": "MIT",
-  "author": "Rolf Timmermans <rolf@zxcv.nl>"
+  "author": "Rolf Timmermans <rolf@zxcv.nl>",
+  "greenkeeper": {
+    "ignore": [
+      "@gnd/typedoc",
+      "@types/chai",
+      "@types/mocha",
+      "@types/node",
+      "@types/semver",
+      "@typescript-eslint/eslint-plugin",
+      "@typescript-eslint/parser",
+      "benchmark",
+      "chai",
+      "choma",
+      "eslint",
+      "eslint-config-prettier",
+      "eslint-plugin-prettier",
+      "gunzip-maybe",
+      "mocha",
+      "node-addon-api",
+      "node-fetch",
+      "prebuildify",
+      "prettier",
+      "semver",
+      "tar-fs",
+      "ts-node",
+      "weak-napi"
+    ]
+  }
 }
