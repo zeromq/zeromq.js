@@ -47,7 +47,7 @@ const srcStr = readFile(srcFile, "utf8").then(content => {
     `$1"${zmqImportLoc}"`,
   )
 })
-const tscTestBasePath = path.resolve(__dirname, "..", "tsc-versions")
+const tscTestBasePath = path.resolve(__dirname, "..", "typings-compatibility")
 const templateSrcPath = path.resolve(tscTestBasePath, "template")
 
 function addLibs(libs: string[], targetList: string[]): string[] {
