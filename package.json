@@ -77,7 +77,7 @@
     "ci:doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
     "ci:prebuild": "prebuildify --napi --strip",
     "dev:build": "rm -f vendor/* && touch vendor/.gitkeep && cp node_modules/node-addon-api/{*.h,LICENSE.md} vendor && prebuildify --napi --build-from-source --debug",
-    "dev:test": "tsc --project tsconfig-build.json && mocha && script/format.sh && rm -f tmp/*",
+    "dev:test": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js && mocha && script/format.sh && rm -f tmp/*",
     "dev:bench": "node --expose-gc test/bench"
   },
   "keywords": [
