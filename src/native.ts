@@ -546,8 +546,14 @@ export declare abstract class Socket {
    * cannot be used. Do not call any other methods until the returned promise
    * resolves. Make sure to use `await`.
    *
+   * You can use `*` in place of a hostname to bind on all interfaces/addresses,
+   * and you can use `*` in place of a port to bind to a random port (which can
+   * be retrieved with {@link lastEndpoint} later).
+   *
    * ```typescript
-   * await socket.bind("tcp://*:3456")
+   * await socket.bind("tcp://127.0.0.1:3456")
+   * await socket.bind("tcp://*:3456")         // binds on all interfaces
+   * await socket.bind("tcp://127.0.0.1:*")    // binds on random port
    * ```
    *
    * @param address Address to bind this socket to.
