@@ -260,7 +260,7 @@ export interface Readable<M extends object[] = Message[]> {
    * }
    * ```
    */
-  [Symbol.asyncIterator](): AsyncIterator<ReceiveType<this>>
+  [Symbol.asyncIterator](): AsyncIterator<ReceiveType<this>, undefined>
 }
 
 /**
@@ -947,7 +947,7 @@ declare module "./native" {
      * }
      * ```
      */
-    [Symbol.asyncIterator](): AsyncIterator<ReceiveType<this>>
+    [Symbol.asyncIterator](): AsyncIterator<ReceiveType<this>, undefined>
   }
 }
 
