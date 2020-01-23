@@ -1,0 +1,9 @@
+{
+  "exclude": ["*.d.ts"],
+  "compilerOptions": {
+    "target": "esXXX",
+    "noEmit": true,
+    "module": "commonjs",
+    "types": ["node", "mocha"]
+  }
+}

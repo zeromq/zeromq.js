@@ -1,0 +1,13 @@
+{
+  "name": "test-typings-ts-x.x.x",
+  "version": "0.0.0",
+  "description": "template for testing typings in ts projects with specific ts version",
+  "main": "test/typings-test.ts",
+  "scripts": {
+    "test": "echo TypeScript && tsc --version && tsc"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "x.x.x"
+  }
+}
