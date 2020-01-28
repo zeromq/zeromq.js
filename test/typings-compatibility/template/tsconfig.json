@@ -3,6 +3,7 @@
   "compilerOptions": {
     "target": "esXXX",
     "noEmit": true,
+    "strict": true,
     "module": "commonjs",
     "types": ["node", "mocha"]
   }
