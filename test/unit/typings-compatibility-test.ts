@@ -15,7 +15,6 @@ type TestDef = {version: string; minTarget: string; requiredLibs?: string[]}
 
 // NOTE tsc version 2.9.x (and lower) will not work with current typings!
 const tsVersions: TestDef[] = [
-
   // typescript 3.0.x - 3.4.x:
   //  must either have a target that supports AsyncIterators,
   //  or include a typings library that supports AsyncIterator
@@ -85,11 +84,13 @@ function addLibs(libs: string[], targetList: string[]): string[] {
 }
 
 function getItLabelDetails(tsVer: TestDef): string {
-  const lbl = `v${tsVer.version} for (minimal) compile target "${tsVer.minTarget}"`
+  const lbl = `v${tsVer.version} for (minimal) compile target ${JSON.stringify(
+    tsVer.minTarget,
+  )}`
   if (!tsVer.requiredLibs || tsVer.requiredLibs.length === 0) return lbl
-  return `${lbl}, and required compile lib(s): "${tsVer.requiredLibs.join(
-    '", "',
-  )}"`
+  return `${lbl}, and required compile lib: ${JSON.stringify(
+    tsVer.requiredLibs,
+  )}`
 }
 
 for (const tsVer of tsVersions) {
