@@ -15,6 +15,10 @@ type TestDef = {version: string; minTarget: string; requiredLibs?: string[]}
 
 // NOTE tsc version 2.9.x (and lower) will not work with current typings!
 const tsVersions: TestDef[] = [
+
+  // typescript 3.0.x - 3.4.x:
+  //  must either have a target that supports AsyncIterators,
+  //  or include a typings library that supports AsyncIterator
   {
     version: "3.0.x",
     minTarget: "es3",
@@ -25,12 +29,29 @@ const tsVersions: TestDef[] = [
     minTarget: "es3",
     requiredLibs: ["es2015", "ESNext.AsyncIterable"],
   },
+  {
+    version: "3.2.x",
+    minTarget: "es3",
+    requiredLibs: ["es2015", "ESNext.AsyncIterable"],
+  },
+  {
+    version: "3.3.x",
+    minTarget: "es3",
+    requiredLibs: ["es2015", "ESNext.AsyncIterable"],
+  },
+  {
+    version: "3.4.x",
+    minTarget: "es3",
+    requiredLibs: ["es2015", "ESNext.AsyncIterable"],
+  },
   {version: "3.0.x", minTarget: "esnext"},
   {version: "3.1.x", minTarget: "esnext"},
+  {version: "3.2.x", minTarget: "esnext"},
+  {version: "3.3.x", minTarget: "esnext"},
+  {version: "3.4.x", minTarget: "esnext"},
 
-  {version: "3.2.x", minTarget: "es3"},
-  {version: "3.3.x", minTarget: "es3"},
-  {version: "3.4.x", minTarget: "es3"},
+  // typescript 3.5.x - 3.7.x:
+  //  include typings for AsyncIterator by default
   {version: "3.5.x", minTarget: "es3"},
   {version: "3.6.x", minTarget: "es3"},
   {version: "3.7.x", minTarget: "es3"},
@@ -73,6 +94,8 @@ function getItLabelDetails(tsVer: TestDef): string {
 
 for (const tsVer of tsVersions) {
   describe(`when used in a project with typescript version ${tsVer.version}`, function() {
+    // must increase timeout for allowing `npm install`'ing the version of the
+    // typescript package to complete
     this.timeout(30000)
 
     const tscTargetPath = path.resolve(tscTestBasePath, `ts-${tsVer.version}`)
