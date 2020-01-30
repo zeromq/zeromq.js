@@ -16,7 +16,7 @@ jobs:
     env: ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true
 
   - os: linux
-    env: ALPINE_CHROOT=3.10 ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true EXCLUDE_TYPINGS_COMPAT_TESTS=true
+    env: ALPINE_CHROOT=3.10 ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true
     sudo: required
 
   - os: osx
