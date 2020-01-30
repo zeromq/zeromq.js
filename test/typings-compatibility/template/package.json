@@ -2,7 +2,7 @@
   "name": "test-typings-ts-x.x.x",
   "version": "0.0.0",
   "description": "template for testing typings in ts projects with specific ts version",
-  "main": "test/typings-test.ts",
+  "main": "typings-test.ts",
   "scripts": {
     "test": "echo TypeScript && tsc --version && tsc --project tsconfig.json"
   },

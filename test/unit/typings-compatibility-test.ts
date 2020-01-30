@@ -12,8 +12,8 @@ import {
 import {assert} from "chai"
 
 /**
- * Testing typings compatibility for TypeScript versions, i.e. zeromq.js is
- * used in projects using a certain TypeScript version.
+ * Testing typings compatibility for TypeScript versions, i.e. when zeromq.js is
+ * used in projects that use a certain TypeScript version.
  *
  * NOTE: Disable (skip) test by setting environment variable
  *       EXCLUDE_TYPINGS_COMPAT_TESTS=true
@@ -65,7 +65,7 @@ const tsVersions: TestDef[] = [
 ]
 
 // use ./typings-test.ts for tsc test, but change the import location for zmq
-// to be used from templatePath+`/ts-x.x.x/test/typings-test.ts`:
+// to be used from `test/typings-compatibility/ts-x.x.x/typings-test.ts`:
 const zmqImportLoc = "../../../"
 const srcFile = path.resolve(__dirname, "typings-test.ts")
 const srcStr = readFile(srcFile, "utf8").then(content => {
@@ -141,7 +141,8 @@ describe("compatibility of typings for typescript versions", function() {
           }
         }
         done(
-          "Cannot run typings compatibility test, because neither npm nor yarn are available.",
+          "Cannot run typings compatibility test," +
+            " because neither npm nor yarn are available.",
         )
       })
     }
@@ -149,8 +150,8 @@ describe("compatibility of typings for typescript versions", function() {
 
   for (const tsVer of tsVersions) {
     describe(`when used in a project with typescript version ${tsVer.version}`, function() {
-      // must increase timeout for allowing `npm install`'ing the version of the
-      // typescript package to complete
+      // must increase timeout for allowing `npm install`'ing the version of
+      // the typescript package to complete
       this.timeout(30000)
 
       const tscTargetPath = path.resolve(tscTestBasePath, `ts-${tsVer.version}`)
