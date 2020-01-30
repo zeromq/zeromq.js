@@ -11,6 +11,14 @@ import {
 
 import {assert} from "chai"
 
+/**
+ * Testing typings compatibility for TypeScript versions, i.e. zeromq.js is
+ * used in projects using a certain TypeScript version.
+ *
+ * NOTE: Disable (skip) test by setting environment variable
+ *       EXCLUDE_TYPINGS_COMPAT_TESTS=true
+ */
+
 type TestDef = {version: string; minTarget: string; requiredLibs?: string[]}
 
 // NOTE tsc version 2.9.x (and lower) will not work with current typings!
@@ -50,7 +58,7 @@ const tsVersions: TestDef[] = [
   {version: "3.4.x", minTarget: "esnext"},
 
   // typescript 3.5.x - 3.7.x:
-  //  include typings for AsyncIterator by default
+  //  these include typings for AsyncIterator by default
   {version: "3.5.x", minTarget: "es3"},
   {version: "3.6.x", minTarget: "es3"},
   {version: "3.7.x", minTarget: "es3"},
@@ -100,6 +108,12 @@ for (const tsVer of tsVersions) {
     this.timeout(30000)
 
     const tscTargetPath = path.resolve(tscTestBasePath, `ts-${tsVer.version}`)
+
+    before(function() {
+      if (/^true$/.test(process.env.EXCLUDE_TYPINGS_COMPAT_TESTS as string)) {
+        this.skip()
+      }
+    })
 
     beforeEach(done => {
       emptyDir(tscTargetPath).then(() => {
