@@ -110,6 +110,10 @@ for (const tsVer of tsVersions) {
     const tscTargetPath = path.resolve(tscTestBasePath, `ts-${tsVer.version}`)
 
     before(function() {
+      console.log(
+        "process.env.EXCLUDE_TYPINGS_COMPAT_TESTS=",
+        process.env.EXCLUDE_TYPINGS_COMPAT_TESTS,
+      )
       if (/^true$/.test(process.env.EXCLUDE_TYPINGS_COMPAT_TESTS as string)) {
         this.skip()
       }
