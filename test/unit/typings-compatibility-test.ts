@@ -136,7 +136,7 @@ describe("compatibility of typings for typescript versions", function() {
           } else if (!results[1]) {
             execCmd = "yarn"
           }
-          if(execCmd){
+          if (execCmd) {
             return done()
           }
         }
