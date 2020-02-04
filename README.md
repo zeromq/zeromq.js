@@ -8,7 +8,7 @@
 * Semantically similar to the [native](https://github.com/zeromq/libzmq) ØMQ library, while sticking to JavaScript idioms.
 * Use modern JavaScript and Node.js features such as `async`/`await` and async iterators.
 * High performance.
-* Fully usable with TypeScript (3.6+).
+* Fully usable with TypeScript (3+).
 
 ### Useful links
 
@@ -26,6 +26,7 @@
    * [Push/Pull](#pushpull)
    * [Pub/Sub](#pubsub)
    * [Req/Rep](#reqrep)
+   * [TypeScript](#typescript)
    * [More examples](#more-examples)
    * [Compatibility layer for version 4/5](#compatibility-layer-for-version-45)
 * [Contribution](#contribution)
@@ -228,6 +229,29 @@ async function run() {
 run()
 ```
 
+## TypeScript
+
+The library provides typings for TypeScript version 3.0.x and later.
+
+
+ * _Requirements_
+  * TypeScript version >= 3
+  * [compilerOptions](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
+    for TypeScript version < 3.6:
+    * either set `compilerOptions.target` to `esnext` or later (e.g. `es2018`)
+    * or add the following, or similar, libraries to `compilerOptions.lib`
+      (and include their corresponding polyfills if needed):
+      `es2015`, `ESNext.AsyncIterable`
+ * _Example Usage_
+  ```typescript
+  import { Request } from "zeromq"
+  // or as namespace
+  import * as zmq from "zeromq"
+
+  const reqSock = new Request()
+  //...
+  const repSock = new zmq.Reply()
+  ```
 
 ## More examples
 
