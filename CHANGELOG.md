@@ -1,3 +1,7 @@
+## Unreleased
+
+* Improved TypeScript compatibility by supplying version-specific types for situations where generated TypeScript typings are not backwards compatible. This reduces the minimum required TypeScript version to 3.0.
+
 ### v6.0.0-beta.6
 
 * BREAKING: When inadvertedly executing two concurrent send() or receive() operations the errno attribute of the error thrown is now EBUSY instead of EAGAIN.
