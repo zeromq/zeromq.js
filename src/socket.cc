@@ -548,7 +548,7 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
 #ifdef ZMQ_NO_SYNC_RESOLVE
         Warn(Env(), "Promise resolution by send() is delayed (ZMQ_NO_SYNC_RESOLVE).");
 #else
-        if (sync_operations++ < max_sync_operations) {
+        if (send_timeout == 0 || sync_operations++ < max_sync_operations) {
             auto res = Napi::Promise::Deferred::New(Env());
             Send(res, parts);
 
@@ -592,7 +592,7 @@ Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
 #ifdef ZMQ_NO_SYNC_RESOLVE
         Warn(Env(), "Promise resolution by receive() is delayed (ZMQ_NO_SYNC_RESOLVE).");
 #else
-        if (sync_operations++ < max_sync_operations) {
+        if (receive_timeout == 0 || sync_operations++ < max_sync_operations) {
             auto res = Napi::Promise::Deferred::New(Env());
             Receive(res);
 

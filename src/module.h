@@ -13,8 +13,8 @@
 #include "util/trash.h"
 
 #include <chrono>
-#include <future>
 #include <cstdio>
+#include <future>
 
 namespace zmq {
 class Context;
