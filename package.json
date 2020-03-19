@@ -35,7 +35,7 @@
     "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-prettier": "^3.1.1",
-    "fs-extra": "^8.1.0",
+    "fs-extra": "^9.0.0",
     "gunzip-maybe": "^1.4.1",
     "mocha": ">= 4.0",
     "node-addon-api": "nodejs/node-addon-api",
