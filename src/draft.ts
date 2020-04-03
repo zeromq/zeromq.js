@@ -1,8 +1,7 @@
-import {methods, Socket, SocketType} from "./native"
+import {Socket, SocketType} from "./native"
 
 import {Message, MessageLike, Readable, SocketOptions, Writable} from "."
-
-const {send, receive, join, leave} = methods
+import {allowMethods} from "./util"
 
 export class Server extends Socket {
   constructor(options?: SocketOptions<Server>) {
@@ -17,7 +16,7 @@ interface ServerRoutingOptions {
 export interface Server
   extends Readable<[Message, ServerRoutingOptions]>,
     Writable<MessageLike, [ServerRoutingOptions]> {}
-Object.assign(Server.prototype, {send, receive})
+allowMethods(Server.prototype, ["send", "receive"])
 
 export class Client extends Socket {
   constructor(options?: SocketOptions<Client>) {
@@ -26,7 +25,7 @@ export class Client extends Socket {
 }
 
 export interface Client extends Readable<[Message]>, Writable<MessageLike> {}
-Object.assign(Client.prototype, {send, receive})
+allowMethods(Client.prototype, ["send", "receive"])
 
 export class Radio extends Socket {
   constructor(options?: SocketOptions<Radio>) {
@@ -39,7 +38,10 @@ interface RadioGroupOptions {
 }
 
 export interface Radio extends Writable<MessageLike, [RadioGroupOptions]> {}
-Object.assign(Radio.prototype, {send})
+allowMethods(Radio.prototype, ["send"])
+
+const join = (Socket.prototype as any)["join"]
+const leave = (Socket.prototype as any)["leave"]
 
 export class Dish extends Socket {
   constructor(options?: SocketOptions<Dish>) {
@@ -50,11 +52,11 @@ export class Dish extends Socket {
      the sake of simplicity. */
 
   join(...values: Array<Buffer | string>): void {
-    for (const value of values) join.call(this, value)
+    for (const value of values) join(value)
   }
 
   leave(...values: Array<Buffer | string>): void {
-    for (const value of values) leave.call(this, value)
+    for (const value of values) leave(value)
   }
 }
 
@@ -63,7 +65,7 @@ interface DishGroupOptions {
 }
 
 export interface Dish extends Readable<[Message, DishGroupOptions]> {}
-Object.assign(Dish.prototype, {receive})
+allowMethods(Dish.prototype, ["receive", "join", "leave"])
 
 export class Gather extends Socket {
   constructor(options?: SocketOptions<Gather>) {
@@ -75,7 +77,7 @@ export interface Gather extends Readable<[Message]> {
   conflate: boolean
 }
 
-Object.assign(Gather.prototype, {receive})
+allowMethods(Gather.prototype, ["receive"])
 
 export class Scatter extends Socket {
   constructor(options?: SocketOptions<Scatter>) {
@@ -87,7 +89,7 @@ export interface Scatter extends Writable<MessageLike> {
   conflate: boolean
 }
 
-Object.assign(Scatter.prototype, {send})
+allowMethods(Scatter.prototype, ["send"])
 
 export class Datagram extends Socket {
   constructor(options?: SocketOptions<Datagram>) {
@@ -98,4 +100,4 @@ export class Datagram extends Socket {
 export interface Datagram
   extends Readable<[Message, Message]>,
     Writable<[MessageLike, MessageLike]> {}
-Object.assign(Datagram.prototype, {send, receive})
+allowMethods(Datagram.prototype, ["send", "receive"])
