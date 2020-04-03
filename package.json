@@ -1,6 +1,6 @@
 {
   "name": "zeromq",
-  "version": "6.0.0-beta.6",
+  "version": "6.0.0-beta.7",
   "description": "Next-generation ZeroMQ bindings for Node.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
