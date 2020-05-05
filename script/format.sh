@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 if [ -z "$CI" ]; then
   if command -v clang-format >/dev/null; then
     echo "Formatting C++ source files..."

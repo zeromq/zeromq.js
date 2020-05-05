@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # https://github.com/alpinelinux/alpine-chroot-install/blob/master/alpine-chroot-install
 # vim: set ts=4:
 #---help---
