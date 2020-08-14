@@ -88,7 +88,7 @@ npm install zeromq@6.0.0-beta.6 --zmq-shared
 If you wish to use any DRAFT sockets then it is also necessary to compile the library from source:
 
 ```sh
-npm install zeromq@6.0.0-beta.6 --zmq-draft
+npm install zeromq@6.0.0-beta.6 --build-from-source --zmq-draft
 ```
 
 # Examples
