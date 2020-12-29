@@ -18,7 +18,7 @@ if [ -n "${WINDIR}" ]; then
   # In Travis CI, Node paths are:
   # - C:\ProgramData\nvs\node\<version>\x64\node.exe
   # - C:\ProgramData\nvs\node\<version>\x86\node.exe
-  if [[ "${NODE}" != *"x86"* ]]; then
+  if [[ "${NODE}" != *"x86"* ]] && [[ "$1" != *"ia32"* ]]; then
     # Target Windows x64 platform.
     CMAKE_GENERATOR="${CMAKE_GENERATOR} Win64"
   fi
