@@ -8,6 +8,7 @@
     "module": "commonjs",
     "types": ["node", "mocha"],
     "strict": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "lib": ["es2018", "dom"]
   }
 }
