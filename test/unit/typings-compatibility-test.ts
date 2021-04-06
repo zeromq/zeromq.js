@@ -101,7 +101,7 @@ async function run(
       if (error) {
         resolve(errorAsString ? stdout + "\n" + stderr : error)
       } else {
-        resolve()
+        resolve(undefined)
       }
     })
   })
