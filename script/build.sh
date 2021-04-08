@@ -58,7 +58,7 @@ else
   if [ -n "${WINDIR}" ]; then
     cmake \
       --build . \
-      --config Release \
+      --config $1 \
       --target install \
       -- -verbosity:Minimal -maxcpucount
 
@@ -68,7 +68,7 @@ else
   else
     cmake \
       --build .\
-      --config Release \
+      --config $1 \
       --target install \
       -- -j5
   fi

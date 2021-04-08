@@ -16,7 +16,7 @@
             'action_name': 'build_libzmq',
             'inputs': ['package.json'],
             'outputs': ['libzmq/lib'],
-            'action': ['sh', '<(PRODUCT_DIR)/../../script/build.sh'],
+            'action': ['sh', '<(PRODUCT_DIR)/../../script/build.sh', '<(CONFIGURATION_NAME)'],
           }],
         }],
       ],
