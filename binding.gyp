@@ -122,6 +122,14 @@
                   'AdditionalOptions': [
                     '-std:c++17',
                     "/DEBUG",
+
+                    # Uncomment to enable address sanitizer
+                    # Make sure to add the followings (or what your MSVC use) to the PATH and run `refreshenv`.
+                    # # C:/Program Files (x86)/Microsoft Visual Studio/2019/Preview/VC/Tools/MSVC/14.29.29917/lib/x64/
+                    # # C:/Program Files (x86)/Microsoft Visual Studio/2019/Preview/VC/Tools/MSVC/14.29.29917/bin/Hostx64/x64/
+                    # "/fsanitize=address",
+                    # "/Zi",
+                    # "/INCREMENTAL:NO",
                   ],
                 },
                 'VCLinkerTool': {
