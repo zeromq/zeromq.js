@@ -42,7 +42,6 @@
 
       'defines': [
         'NAPI_VERSION=3',
-        'NAPI_DISABLE_CPP_EXCEPTIONS',
         'ZMQ_STATIC',
       ],
 
@@ -84,6 +83,7 @@
 
       'configurations': {
         'Debug': {
+          'defines': ['NAPI_CPP_EXCEPTIONS', 'DEBUG', '_DEBUG'],
           'conditions': [
             ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
               'cflags_cc!': [
@@ -113,6 +113,7 @@
             ['OS == "win"', {
               'msvs_settings': {
                 'VCCLCompilerTool': {
+                  'ExceptionHandling': 2,       # /EHsc
                   # 0 - MultiThreaded (/MT)
                   # 1 - MultiThreadedDebug (/MTd)
                   # 2 - MultiThreadedDLL (/MD)
@@ -120,7 +121,11 @@
                   'RuntimeLibrary': 3,
                   'AdditionalOptions': [
                     '-std:c++17',
+                    "/DEBUG",
                   ],
+                },
+                'VCLinkerTool': {
+                  'BasicRuntimeChecks': 3,        # /RTC1
                 },
               },
             }],
@@ -128,6 +133,9 @@
         },
 
         'Release': {
+          'defines': [
+            'NAPI_DISABLE_CPP_EXCEPTIONS',
+          ],
           'conditions': [
             ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
               'cflags_cc!': [
