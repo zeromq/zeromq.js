@@ -17,7 +17,6 @@
         }, {
           'conditions': [
             ['OS=="win"', {
-              'msbuild_toolset': 'v140',
               'defines': ['ZMQ_STATIC'],
               'include_dirs': ['windows/include'],
               'libraries': [
