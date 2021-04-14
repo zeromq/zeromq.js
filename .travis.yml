@@ -16,13 +16,13 @@ matrix:
         - DEPLOY="true"
         - MAIN="true"
     - os: linux
-      dist: bionic
+      dist: trusty
       node_js: 12
       env:
         - DEPLOY="true"
         - ARCH="armv7"
     - os: linux
-      dist: bionic
+      dist: trusty
       node_js: 12
       env:
         - DEPLOY="true"
