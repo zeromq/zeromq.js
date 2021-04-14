@@ -8,6 +8,8 @@ environment:
       electron: "9.4.4"
       deploy: "true"
 
+image: Visual Studio 2017
+
 platform:
   - x64
   - x86
