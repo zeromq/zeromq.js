@@ -1,6 +1,6 @@
 {
   "name": "zeromq",
-  "version": "5.2.1",
+  "version": "5.2.2",
   "description": "ZeroMQ for node.js",
   "main": "index",
   "gypfile": true,
