@@ -26,6 +26,7 @@
     "@types/mocha": ">= 5.2",
     "@types/node": ">= 8.0",
     "@types/semver": ">= 0",
+    "@types/weak-napi": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
     "@typescript-eslint/parser": "^2.9.0",
     "benchmark": ">= 0",
@@ -47,7 +48,7 @@
     "ts-morph": "^7.0.0",
     "ts-node": ">= 7",
     "typescript": ">= 3.6",
-    "weak-napi": ">= 1.0"
+    "weak-napi": "^2.0.2"
   },
   "engines": {
     "node": ">= 10.2"
