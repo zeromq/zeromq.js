@@ -16,6 +16,7 @@
     "electron-mocha": "^6.0.0",
     "jsdoc": "^3.5.4",
     "mocha": "^5.0.0",
+    "node-abi": "^2.21.0",
     "nyc": "^12.0.2",
     "prebuild": "^10.0.1",
     "semver": "^5.4.1",
