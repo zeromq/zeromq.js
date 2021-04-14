@@ -10,27 +10,38 @@ sudo: required
 matrix:
   include:
     - os: linux
-      dist: trusty
+      dist: bionic
+      node_js: 12
       env:
         - DEPLOY="true"
         - MAIN="true"
     - os: linux
-      dist: trusty
+      dist: bionic
+      node_js: 12
       env:
         - DEPLOY="true"
         - ARCH="armv7"
     - os: linux
-      dist: trusty
+      dist: bionic
+      node_js: 12
       env:
         - DEPLOY="true"
         - ARCH="armv8"
     - os: linux
-      dist: trusty
-      env:
-        - ELECTRON="3.0.0"
-    - os: osx
+      dist: bionic
+      node_js: 12
       env:
         - DEPLOY="true"
+        - ELECTRON="9.4.4"
+    - os: osx
+      node_js: 12
+      env:
+        - DEPLOY="true"
+    - os: osx
+      node_js: 12
+      env:
+        - DEPLOY="true"
+        - ELECTRON="9.4.4"
 
 env:
   global:
