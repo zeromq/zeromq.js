@@ -8,52 +8,53 @@ jobs:
   ## TEST STAGE
 
   - os: linux
-    node_js: "10.2"
+    node_js: "14"
     env: ZMQ_DRAFT=true
 
   - os: linux
-    node_js: "10.16"
+    node_js: "14"
     env: ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true
 
   - os: linux
     env: ALPINE_CHROOT=3.10 ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true
     sudo: required
+    node_js: "14"
 
   - os: osx
     osx_image: xcode10
     env: ZMQ_DRAFT=true
-    node_js: "10.16"
+    node_js: "14"
 
   - os: windows
-    node_js: "10.16"
+    node_js: "14"
     # https://travis-ci.community/t/build-doesnt-finish-after-completing-tests/288
     env: ZMQ_DRAFT=true YARN_GPG=no
 
   - os: windows
-    node_js: "10.16/x86"
+    node_js: "14/x86"
     # https://travis-ci.community/t/build-doesnt-finish-after-completing-tests/288
     env: ZMQ_DRAFT=true YARN_GPG=no
 
   # Test shared libraries on Linux and macOS.
   - os: linux
-    node_js: "10.16"
+    node_js: "14"
     env: ZMQ_SHARED=true
     addons: {apt: {packages: libzmq3-dev}}
 
   - os: osx
     osx_image: xcode10
-    node_js: "10.16"
+    node_js: "14"
     env: ZMQ_SHARED=true
     addons: {homebrew: {packages: zeromq, update: true}}
 
   # Test older versions of ZMQ.
   - os: linux
-    node_js: "10.16"
+    node_js: "14"
     env: ZMQ_VERSION=4.2.4
 
   # Test recent Node versions.
   - os: linux
-    node_js: "12"
+    node_js: "14"
     # Skip GC tests due to https://github.com/node-ffi-napi/weak-napi/issues/16
     env: ZMQ_DRAFT=true SKIP_GC_TESTS=true INCLUDE_COMPAT_TESTS=true
 
@@ -67,7 +68,7 @@ jobs:
   # This test ensures the delayed resolution of read/write promises is correct
   # by disabling immediate resolution (which happens 99% of the time) entirely.
   - os: linux
-    node_js: "10.16"
+    node_js: "14"
     env: ZMQ_NO_SYNC_RESOLVE=true ZMQ_DRAFT=true INCLUDE_COMPAT_TESTS=true NODE_NO_WARNINGS=1
 
   ## PREBUILD STAGE
@@ -75,7 +76,7 @@ jobs:
   - stage: prebuild
     os: linux
     env: ARCHIVE_SUFFIX=-x64
-    node_js: "10.16"
+    node_js: "14"
     script: script/ci/prebuild.sh
 
   - stage: prebuild
@@ -86,14 +87,14 @@ jobs:
 
   - stage: prebuild
     os: linux
-    node_js: "10.16"
+    node_js: "14"
     env: ARCH=arm TRIPLE=arm-linux-gnueabihf GCC=8 ARCHIVE_SUFFIX=-armv7
     addons: {apt: {packages: [gcc-8-arm-linux-gnueabihf, g++-8-arm-linux-gnueabihf]}}
     script: script/ci/prebuild.sh
 
   - stage: prebuild
     os: linux
-    node_js: "10.16"
+    node_js: "14"
     env: ARCH=arm64 TRIPLE=aarch64-linux-gnu GCC=8 ARCHIVE_SUFFIX=-armv8
     addons: {apt: {packages: [gcc-8-aarch64-linux-gnu, g++-8-aarch64-linux-gnu]}}
     script: script/ci/prebuild.sh
@@ -101,19 +102,19 @@ jobs:
   - stage: prebuild
     os: osx
     osx_image: xcode10
-    node_js: "10.16"
+    node_js: "14"
     script: script/ci/prebuild.sh
 
   - stage: prebuild
     os: windows
-    node_js: "10.16"
+    node_js: "14"
     # https://travis-ci.community/t/build-doesnt-finish-after-completing-tests/288
     env: YARN_GPG=no ARCHIVE_SUFFIX=-x64
     script: script/ci/prebuild.sh
 
   - stage: prebuild
     os: windows
-    node_js: "10.16/x86"
+    node_js: "14/x86"
     # https://travis-ci.community/t/build-doesnt-finish-after-completing-tests/288
     env: YARN_GPG=no ARCHIVE_SUFFIX=-x86
     script: script/ci/prebuild.sh
@@ -122,7 +123,7 @@ jobs:
 
   - stage: publish
     os: linux
-    node_js: "10.16"
+    node_js: "14"
     env: IGNORE_SCRIPTS=true
     script: script/ci/package.sh
 
