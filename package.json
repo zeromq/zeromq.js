@@ -25,9 +25,8 @@
     "node": ">=6.0"
   },
   "scripts": {
-    "prepare": "node scripts/prepare.js",
     "install": "node-gyp-build || npm run build:libzmq",
-    "build:libzmq": "npm run prepare && node-gyp rebuild",
+    "build:libzmq": "node-gyp rebuild",
     "prebuildify": "prebuildify -t 15.0.0 -t 14.0.0 -t 12.0.0 -t electron@6.0.0 -t electron@9.4.4 --strip",
     "prebuildify-ia32": "prebuildify --arch=ia32 -t 15.0.0 -t 14.0.0 -t 12.0.0 -t electron@6.0.0 -t electron@9.4.4 --strip",
     "build:docs": "jsdoc -R README.md -d docs lib/*.js",
