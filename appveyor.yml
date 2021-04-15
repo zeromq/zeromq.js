@@ -24,9 +24,9 @@ install:
 
 test_script:
   - IF DEFINED ELECTRON (appveyor-retry call npm run test:electron) ELSE (appveyor-retry call npm test)
-
-deploy_script:
-  - IF "%deploy%;%appveyor_repo_tag%"=="true;true" (node_modules\.bin\prebuild --all --strip -u %GITHUB_TOKEN%)
+ 
+# deploy_script:
+#   - IF "%deploy%;%appveyor_repo_tag%"=="true;true" (node_modules\.bin\prebuild --all --strip -u %GITHUB_TOKEN%)
 
 notifications:
   - provider: Slack
