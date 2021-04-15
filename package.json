@@ -26,7 +26,7 @@
   },
   "scripts": {
     "prepare": "npm run build:libzmq",
-    "postinstall": "node-gyp-build || npm run build:libzmq",
+    "install": "node-gyp-build || npm run build:libzmq",
     "build:libzmq": "node scripts/preinstall.js && node-gyp rebuild",
     "prebuildify": "prebuildify -t 15.0.0 -t 14.0.0 -t 12.0.0 -t electron@6.0.0 -t electron@9.4.4 --strip",
     "prebuildify-ia32": "prebuildify --arch=ia32 -t 15.0.0 -t 14.0.0 -t 12.0.0 -t electron@6.0.0 -t electron@9.4.4 --strip",
