@@ -38,11 +38,16 @@ jobs:
           node-version: ${{ matrix.node_version }}
           architecture: ${{ matrix.node_arch }}
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Install Dependencies and Build
+        run: npm run prepare && npm install
 
-      - name: Prebuild
-        run: npm run prebuild
+      - name: Prebuildify x64
+        if: ${{ contains(matrix.node_arch, 'x64') }}
+        run: npm run prebuildify
+
+      - name: Prebuildify x86
+        if: ${{ contains(matrix.node_arch, 'x86') }}
+        run: npm run prebuildify-ia32
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2.0.1

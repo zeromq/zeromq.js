@@ -10,15 +10,14 @@
   },
   "dependencies": {
     "nan": "2.14.0",
-    "prebuild-install": "^6.1.1"
+    "node-gyp-build": "^4.2.3"
   },
   "devDependencies": {
     "electron-mocha": "^6.0.0",
     "jsdoc": "^3.5.4",
     "mocha": "^5.0.0",
-    "node-abi": "^2.21.0",
     "nyc": "^12.0.2",
-    "prebuild": "^10.0.1",
+    "prebuildify": "^4.1.2",
     "semver": "^5.4.1",
     "should": "^13.0.0"
   },
@@ -26,9 +25,11 @@
     "node": ">=6.0"
   },
   "scripts": {
+    "prepare": "node scripts/preinstall.js",
+    "postinstall": "node-gyp-build",
     "build:libzmq": "node scripts/preinstall.js",
-    "install": "prebuild-install || (node scripts/preinstall.js && node-gyp rebuild)",
-    "prebuild": "prebuild --all --strip",
+    "prebuildify": "prebuildify -t 15.0.0 -t 14.0.0 -t 12.0.0 -t electron@6.0.0 -t electron@9.4.4 --strip",
+    "prebuildify-ia32": "prebuildify --arch=ia32 -t 15.0.0 -t 14.0.0 -t 12.0.0 -t electron@6.0.0 -t electron@9.4.4 --strip",
     "build:docs": "jsdoc -R README.md -d docs lib/*.js",
     "test": "mocha --expose-gc --slow 300",
     "test:electron": "electron-mocha --slow 300",
