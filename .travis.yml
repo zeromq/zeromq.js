@@ -66,14 +66,14 @@ after_success:
   - if [ "$MAIN" = "true" ]; then bash <(curl -s https://codecov.io/bash); fi
   - if [ "$MAIN" = "true" ]; then bash ./scripts/publish_docs.sh; fi
 
-deploy:
-  provider: script
-  skip_cleanup: true
-  script:
-    - if [ -z "$ARCH" ]; then ./node_modules/prebuild/bin.js --all --strip -u ${GH_TOKEN}; else bash ./scripts/cross_compile.sh ${ARCH} ${GH_TOKEN}; fi
-  on:
-    condition: $DEPLOY = "true"
-    tags: true
+# deploy:
+#   provider: script
+#   skip_cleanup: true
+#   script:
+#     - if [ -z "$ARCH" ]; then ./node_modules/prebuild/bin.js --all --strip -u ${GH_TOKEN}; else bash ./scripts/cross_compile.sh ${ARCH} ${GH_TOKEN}; fi
+#   on:
+#     condition: $DEPLOY = "true"
+#     tags: true
 
 notifications:
   slack:
