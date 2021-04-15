@@ -3,42 +3,42 @@ node_js:
 - "6"
 - "8"
 - "10"
-- "11"
-- "13"
+- "12"
+- "14"
 sudo: required
 
 matrix:
   include:
     - os: linux
       dist: bionic
-      node_js: 12
+      node_js: 14
       env:
         - DEPLOY="true"
         - MAIN="true"
     - os: linux
       dist: trusty
-      node_js: 12
+      node_js: 14
       env:
         - DEPLOY="true"
         - ARCH="armv7"
     - os: linux
       dist: trusty
-      node_js: 12
+      node_js: 14
       env:
         - DEPLOY="true"
         - ARCH="armv8"
     - os: linux
       dist: bionic
-      node_js: 12
+      node_js: 14
       env:
         - DEPLOY="true"
         - ELECTRON="9.4.4"
     - os: osx
-      node_js: 12
+      node_js: 14
       env:
         - DEPLOY="true"
     - os: osx
-      node_js: 12
+      node_js: 14
       env:
         - DEPLOY="true"
         - ELECTRON="9.4.4"
