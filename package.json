@@ -27,7 +27,7 @@
   },
   "scripts": {
     "build:libzmq": "node scripts/preinstall.js",
-    "install": "node scripts/prebuild-install.js || (node scripts/preinstall.js && node-gyp rebuild)",
+    "install": "prebuild-install || (node scripts/preinstall.js && node-gyp rebuild)",
     "prebuild": "prebuild --all --strip",
     "build:docs": "jsdoc -R README.md -d docs lib/*.js",
     "test": "mocha --expose-gc --slow 300",
