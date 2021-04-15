@@ -72,7 +72,6 @@
             }],
 
             ['OS == "win"', {
-              'msbuild_toolset': 'v141',
               'libraries': [
                 '<(PRODUCT_DIR)/../libzmq/lib/libzmq',
                 'ws2_32.lib',
