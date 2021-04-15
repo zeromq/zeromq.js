@@ -38,7 +38,7 @@
     "fs-extra": "^8.1.0",
     "gunzip-maybe": "^1.4.1",
     "mocha": ">= 4.0",
-    "node-addon-api": "nodejs/node-addon-api",
+    "node-addon-api": "^3.1.0",
     "node-fetch": "^2.6.0",
     "prebuildify": "^3.0",
     "prettier": "^1.19.1",
