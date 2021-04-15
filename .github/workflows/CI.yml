@@ -39,7 +39,7 @@ jobs:
           architecture: ${{ matrix.node_arch }}
 
       - name: Install Dependencies and Build
-        run: npm run prepare && npm install
+        run: npm install
 
       - name: Prebuildify x64
         if: ${{ contains(matrix.node_arch, 'x64') }}

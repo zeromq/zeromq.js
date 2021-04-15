@@ -4,7 +4,18 @@
   },
   'targets': [
     {
+      'target_name': 'libzmq',
+      'type': 'none',
+      'actions': [{
+        'action_name': 'prepare-build',
+        'inputs': ['package.json'],
+        'outputs': ['libzmq/lib'],
+        'action': ['node', '<(PRODUCT_DIR)/../../scripts/prepare.js'],
+      }],
+    },
+    {
       'target_name': 'zmq',
+      'dependencies': ['libzmq'],
       'sources': ['binding.cc'],
       'include_dirs' : ["<!(node -e \"require('nan')\")"],
       'cflags!': ['-fno-exceptions'],
