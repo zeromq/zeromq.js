@@ -23,42 +23,14 @@ type TestDef = {version: string; minTarget: string; requiredLibs?: string[]}
 
 // NOTE tsc version 2.9.x (and lower) will not work with current typings!
 const tsVersions: TestDef[] = [
-  // typescript 3.0.x - 3.4.x:
+  // typescript 3.0.x - 3.3.x:
   //  must either have a target that supports AsyncIterators,
   //  or include a typings library that supports AsyncIterator
-  {
-    version: "3.0.x",
-    minTarget: "es3",
-    requiredLibs: ["es2015", "ESNext.AsyncIterable"],
-  },
-  {
-    version: "3.1.x",
-    minTarget: "es3",
-    requiredLibs: ["es2015", "ESNext.AsyncIterable"],
-  },
-  {
-    version: "3.2.x",
-    minTarget: "es3",
-    requiredLibs: ["es2015", "ESNext.AsyncIterable"],
-  },
-  {
-    version: "3.3.x",
-    minTarget: "es3",
-    requiredLibs: ["es2015", "ESNext.AsyncIterable"],
-  },
-  {
-    version: "3.4.x",
-    minTarget: "es3",
-    requiredLibs: ["es2015", "ESNext.AsyncIterable"],
-  },
-  {version: "3.0.x", minTarget: "esnext"},
-  {version: "3.1.x", minTarget: "esnext"},
-  {version: "3.2.x", minTarget: "esnext"},
-  {version: "3.3.x", minTarget: "esnext"},
-  {version: "3.4.x", minTarget: "esnext"},
+  // TODO might support older TypeScript
 
-  // typescript 3.5.x - 3.7.x:
+  // typescript 3.4.x - 3.7.x:
   //  these include typings for AsyncIterator by default
+  {version: "3.4.x", minTarget: "es3"},
   {version: "3.5.x", minTarget: "es3"},
   {version: "3.6.x", minTarget: "es3"},
   {version: "3.7.x", minTarget: "es3"},
