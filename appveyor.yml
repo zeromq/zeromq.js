@@ -1,6 +1,6 @@
 environment:
   GITHUB_TOKEN:
-    secure: E1HpiZf9OJuc8XPGA57hJbCQlMWVCPVBePHiWF/BgmJ/+e/2OplyifiS/x8CJtcw
+    secure: mU56kNQaCjjhGLerLuOtOv26Ez0wL4lTR8aK6FazFyYcmLU/qhM/iAZdHmJWgovp
   matrix:
     - nodejs_version: "14"
       deploy: "true"
