@@ -23,7 +23,7 @@ jobs:
         node_arch:
           - x64
         include:
-          - os: windows-2016
+          - os: windows-latest
             node_version: 14
             node_arch: x86
           # - os: macos-11.0
