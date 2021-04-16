@@ -8,8 +8,14 @@
       'type': 'none',
       'actions': [{
         'action_name': 'prepare-build',
-        'inputs': ['package.json'],
-        'outputs': ['libzmq/lib'],
+        'inputs': [],
+        'conditions': [
+          ['OS=="win"', {
+            'outputs': ['windows/lib/libzmq.lib'],
+          }, {
+            'outputs': ['zmq/BUILD_SUCCESS'],
+          }],
+        ],
         'action': ['node', '<(PRODUCT_DIR)/../../scripts/prepare.js'],
       }],
     },
