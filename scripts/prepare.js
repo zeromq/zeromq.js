@@ -22,7 +22,7 @@ function buildZMQ(scriptPath, zmqDir) {
       encoding: 'utf-8',
     });
     if (child.stderr) {
-      return console.log(Error(spawn.stderr))
+      return console.log(Error(child.stderr))
     }
     if (child.status !== 0) {
       return console.error("child process exited with code " + child.status);
