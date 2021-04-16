@@ -9,7 +9,7 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "nan": "2.14.0",
+    "nan": "2.14.2",
     "node-gyp-build": "^4.2.3"
   },
   "devDependencies": {
