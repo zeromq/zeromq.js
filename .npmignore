@@ -1,0 +1,7 @@
+build
+node_modules
+examples
+test
+.github
+windows/lib
+zmq
