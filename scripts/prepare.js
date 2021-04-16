@@ -1,5 +1,5 @@
 var download = require("./download").download;
-var spawn = require("child_process").spawn;
+var spawnSync = require("child_process").spawnSync;
 var path = require("path");
 var fs = require("fs");
 
@@ -14,26 +14,28 @@ if (process.env.npm_config_zmq_external == "true") {
 
 function buildZMQ(scriptPath, zmqDir) {
   console.log("Building libzmq for " + process.platform);
-
-  var child = spawn(scriptPath, [ZMQ, ARCH]);
-
-  child.stdout.pipe(process.stdout);
-  child.stderr.pipe(process.stderr);
-  child.on("error", function(err) {
-    console.error("Failed to start child process.");
-  });
-  child.on("close", function(code) {
-    if (code !== 0) {
-      return console.error("child process exited with code " + code);
-    }
-    var message = "Succesfully build libzmq on " + Date();
-    fs.writeFile(path.join(zmqDir, "BUILD_SUCCESS"), message, function(err) {
-      if (err) {
-        return console.error(err.message);
-      }
-      console.log(message);
+  try {
+    const child = spawnSync(scriptPath, [ZMQ, ARCH], {
+      cwd: process.cwd(),
+      env: process.env,
+      stdio: ['inherit', 'inherit', 'pipe'],
+      encoding: 'utf-8',
     });
-  });
+    if (child.stderr) {
+      return console.log(Error(spawn.stderr))
+    }
+    if (child.status !== 0) {
+      return console.error("child process exited with code " + child.status);
+    }
+  } catch(e) {
+    return console.error(e)
+  }
+  const message = "Succesfully build libzmq on " + Date();
+  try {
+    fs.writeFileSync(path.join(zmqDir, "BUILD_SUCCESS"), message)
+  } catch(err) {
+    console.error(err.message);
+  };
 }
 
 function handleError(err) {
