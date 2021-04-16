@@ -27,8 +27,8 @@
   "scripts": {
     "install": "node-gyp-build || npm run build:libzmq",
     "build:libzmq": "node-gyp rebuild",
-    "prebuildify": "prebuildify -t 15.0.0 -t 14.0.0 -t 12.0.0 -t electron@6.0.0 -t electron@9.4.4 --strip",
-    "prebuildify-ia32": "prebuildify --arch=ia32 -t 15.0.0 -t 14.0.0 -t 12.0.0 -t electron@6.0.0 -t electron@9.4.4 --strip",
+    "prebuildify": "prebuildify --all --strip",
+    "prebuildify-ia32": "prebuildify --arch=ia32 --all --strip",
     "build:docs": "jsdoc -R README.md -d docs lib/*.js",
     "test": "mocha --expose-gc --slow 300",
     "test:electron": "electron-mocha --slow 300",
