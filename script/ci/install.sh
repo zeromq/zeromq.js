@@ -29,6 +29,10 @@ if [ -n "${ZMQ_NO_SYNC_RESOLVE}" ]; then
   export npm_config_zmq_no_sync_resolve=true
 fi
 
+if [ -n "${ZMQ_SANITIZERS}" ]; then
+  export npm_config_sanitizers=true
+fi
+
 export npm_config_build_from_source=true
 
 # Installing node-gyp globally facilitates calling it in various ways, not just

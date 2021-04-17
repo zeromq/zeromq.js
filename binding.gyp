@@ -113,29 +113,46 @@
 
             ['OS == "win"', {
               'msvs_settings': {
-                'VCCLCompilerTool': {
-                  'ExceptionHandling': 2,       # /EHsc
-                  # 0 - MultiThreaded (/MT)
-                  # 1 - MultiThreadedDebug (/MTd)
-                  # 2 - MultiThreadedDLL (/MD)
-                  # 3 - MultiThreadedDebugDLL (/MDd)
-                  'RuntimeLibrary': 3,
-                  'AdditionalOptions': [
-                    '-std:c++17',
-                    "/DEBUG",
-
-                    # Uncomment to enable address sanitizer
+                'conditions': [
+                  ['"<@(sanitizers)" != "true"', {
+                    # without sanitizer
+                    'VCCLCompilerTool': {
+                      'ExceptionHandling': 2,       # /EHsc
+                      # 0 - MultiThreaded (/MT)
+                      # 1 - MultiThreadedDebug (/MTd)
+                      # 2 - MultiThreadedDLL (/MD)
+                      # 3 - MultiThreadedDebugDLL (/MDd)
+                      'RuntimeLibrary': 3,
+                      'AdditionalOptions': [
+                        '-std:c++17',
+                        "/DEBUG",
+                      ],
+                    },
+                    'VCLinkerTool': {
+                      'BasicRuntimeChecks': 3,        # /RTC1
+                    },
+                  }, {
+                    # with sanitizer
+                    # Build with `node-gyp rebuild --debug --sanitizers='true'`
                     # Make sure to add the followings (or what your MSVC use) to the PATH and run `refreshenv`.
                     # # C:/Program Files (x86)/Microsoft Visual Studio/2019/Preview/VC/Tools/MSVC/14.29.29917/lib/x64/
                     # # C:/Program Files (x86)/Microsoft Visual Studio/2019/Preview/VC/Tools/MSVC/14.29.29917/bin/Hostx64/x64/
-                    # "/fsanitize=address",
-                    # "/Zi",
-                    # "/INCREMENTAL:NO",
-                  ],
-                },
-                'VCLinkerTool': {
-                  'BasicRuntimeChecks': 3,        # /RTC1
-                },
+                    'VCCLCompilerTool': {
+                      'ExceptionHandling': 2,       # /EHsc
+                      'RuntimeLibrary': 3,
+                      "DebugInformationFormat": "ProgramDatabase", # /Zi
+                      'AdditionalOptions': [
+                        '-std:c++17',
+                        "/DEBUG",
+                        "/fsanitize=address",
+                      ],
+                    },
+                    'VCLinkerTool': {
+                      'BasicRuntimeChecks': 0, # not supported with fsanitize
+                      "LinkIncremental": "NO", # /INCREMENTAL:NO
+                    },
+                  }],
+                ],
               },
             }],
           ],
