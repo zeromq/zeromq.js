@@ -14,28 +14,15 @@ if (process.env.npm_config_zmq_external == "true") {
 
 function buildZMQ(scriptPath, zmqDir) {
   console.log("Building libzmq for " + process.platform);
-  try {
-    const child = spawnSync(scriptPath, [ZMQ, ARCH], {
-      cwd: process.cwd(),
-      env: process.env,
-      stdio: ['inherit', 'inherit', 'pipe'],
-      encoding: 'utf-8',
-    });
-    if (child.stderr) {
-      return console.log(Error(child.stderr))
-    }
-    if (child.status !== 0) {
-      return console.error("child process exited with code " + child.status);
-    }
-  } catch(e) {
-    return console.error(e)
+  const child = spawnSync("/bin/sh", [scriptPath, ZMQ, ARCH], {
+    stdio: ['inherit', 'inherit', 'inherit'],
+  });
+  if (!child.status) {
+    return console.error("child process exited with code " + child.status);
   }
+
   const message = "Succesfully build libzmq on " + Date();
-  try {
-    fs.writeFileSync(path.join(zmqDir, "BUILD_SUCCESS"), message)
-  } catch(err) {
-    console.error(err.message);
-  };
+  fs.writeFileSync(path.join(zmqDir, "BUILD_SUCCESS"), message)
 }
 
 function handleError(err) {
@@ -106,6 +93,10 @@ if (process.platform === "win32") {
     if (err) {
       handleError(err);
     }
-    buildZMQ(SCRIPT_PATH, DIR_NAME);
+    try {
+      buildZMQ(SCRIPT_PATH, DIR_NAME);
+    } catch (err) {
+      handleError(err);
+    }
   });
 }
