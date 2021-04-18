@@ -14,8 +14,7 @@ if (process.env.npm_config_zmq_external == "true") {
 
 function buildZMQ(scriptPath, zmqDir) {
   console.log("Building libzmq for " + process.platform);
-  const child = spawnSync(scriptPath, [ZMQ, ARCH], {
-    shell: true,
+  const child = spawnSync("/bin/sh", [scriptPath, ZMQ, ARCH], {
     stdio: ['inherit', 'inherit', 'inherit'],
   });
   if (!child.status) {
