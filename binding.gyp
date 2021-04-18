@@ -16,7 +16,7 @@
             'action_name': 'build_libzmq',
             'inputs': ['package.json'],
             'outputs': ['libzmq/lib'],
-            'action': ['sh', '<(PRODUCT_DIR)/../../script/build.sh'],
+            'action': ['sh', '<(PRODUCT_DIR)/../../script/build.sh', '<(CONFIGURATION_NAME)'],
           }],
         }],
       ],
@@ -38,11 +38,11 @@
       'include_dirs': [
         "vendor",
         '<(PRODUCT_DIR)/../libzmq/include',
+        "<!@(node -p \"require('node-addon-api').include\")"
       ],
 
       'defines': [
         'NAPI_VERSION=3',
-        'NAPI_DISABLE_CPP_EXCEPTIONS',
         'ZMQ_STATIC',
       ],
 
@@ -72,7 +72,6 @@
             }],
 
             ['OS == "win"', {
-              'msbuild_toolset': 'v141',
               'libraries': [
                 '<(PRODUCT_DIR)/../libzmq/lib/libzmq',
                 'ws2_32.lib',
@@ -85,6 +84,7 @@
 
       'configurations': {
         'Debug': {
+          'defines': ['NAPI_CPP_EXCEPTIONS', 'DEBUG', '_DEBUG'],
           'conditions': [
             ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
               'cflags_cc!': [
@@ -113,22 +113,55 @@
 
             ['OS == "win"', {
               'msvs_settings': {
-                'VCCLCompilerTool': {
-                  # 0 - MultiThreaded (/MT)
-                  # 1 - MultiThreadedDebug (/MTd)
-                  # 2 - MultiThreadedDLL (/MD)
-                  # 3 - MultiThreadedDebugDLL (/MDd)
-                  'RuntimeLibrary': 3,
-                  'AdditionalOptions': [
-                    '-std:c++17',
-                  ],
-                },
+                'conditions': [
+                  ['"<@(sanitizers)" != "true"', {
+                    # without sanitizer
+                    'VCCLCompilerTool': {
+                      'ExceptionHandling': 2,       # /EHsc
+                      # 0 - MultiThreaded (/MT)
+                      # 1 - MultiThreadedDebug (/MTd)
+                      # 2 - MultiThreadedDLL (/MD)
+                      # 3 - MultiThreadedDebugDLL (/MDd)
+                      'RuntimeLibrary': 3,
+                      'AdditionalOptions': [
+                        '-std:c++17',
+                        "/DEBUG",
+                      ],
+                    },
+                    'VCLinkerTool': {
+                      'BasicRuntimeChecks': 3,        # /RTC1
+                    },
+                  }, {
+                    # with sanitizer
+                    # Build with `node-gyp rebuild --debug --sanitizers='true'`
+                    # Make sure to add the followings (or what your MSVC use) to the PATH and run `refreshenv`.
+                    # # C:/Program Files (x86)/Microsoft Visual Studio/2019/Preview/VC/Tools/MSVC/14.29.29917/lib/x64/
+                    # # C:/Program Files (x86)/Microsoft Visual Studio/2019/Preview/VC/Tools/MSVC/14.29.29917/bin/Hostx64/x64/
+                    'VCCLCompilerTool': {
+                      'ExceptionHandling': 2,       # /EHsc
+                      'RuntimeLibrary': 3,
+                      "DebugInformationFormat": "ProgramDatabase", # /Zi
+                      'AdditionalOptions': [
+                        '-std:c++17',
+                        "/DEBUG",
+                        "/fsanitize=address",
+                      ],
+                    },
+                    'VCLinkerTool': {
+                      'BasicRuntimeChecks': 0, # not supported with fsanitize
+                      "LinkIncremental": "NO", # /INCREMENTAL:NO
+                    },
+                  }],
+                ],
               },
             }],
           ],
         },
 
         'Release': {
+          'defines': [
+            'NAPI_DISABLE_CPP_EXCEPTIONS',
+          ],
           'conditions': [
             ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
               'cflags_cc!': [
