@@ -26,6 +26,7 @@
     "@types/mocha": ">= 5.2",
     "@types/node": ">= 8.0",
     "@types/semver": ">= 0",
+    "@types/weak-napi": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^2.9.0",
     "@typescript-eslint/parser": "^2.9.0",
     "benchmark": ">= 0",
@@ -38,16 +39,16 @@
     "fs-extra": "^8.1.0",
     "gunzip-maybe": "^1.4.1",
     "mocha": ">= 4.0",
-    "node-addon-api": "nodejs/node-addon-api",
+    "node-addon-api": "^3.1.0",
     "node-fetch": "^2.6.0",
-    "prebuildify": "^3.0",
+    "prebuildify": "^4.1.2",
     "prettier": "^1.19.1",
     "semver": ">= 0",
     "tar-fs": "^2.0.0",
-    "ts-morph": "^6.0.2",
+    "ts-morph": "^7.0.0",
     "ts-node": ">= 7",
     "typescript": ">= 3.6",
-    "weak-napi": ">= 1.0"
+    "weak-napi": "^2.0.2"
   },
   "engines": {
     "node": ">= 10.2"
@@ -59,7 +60,7 @@
     "binding.gyp",
     "draft.d.ts",
     "draft.js",
-    "lib/*",
+    "lib",
     "src/util/*.h",
     "src/*.cc",
     "src/*.h",
@@ -74,7 +75,8 @@
     "install": "node-gyp-build",
     "ci:compile": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js",
     "ci:doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
-    "ci:prebuild": "prebuildify --napi --strip",
+    "ci:prebuild": "npm run prebuildify",
+    "prebuildify": "prebuildify --napi -t 12.0.0 -t electron@9.4.4 --strip",
     "dev:build": "rm -f vendor/* && touch vendor/.gitkeep && cp node_modules/node-addon-api/{*.h,LICENSE.md} vendor && prebuildify --napi --build-from-source --debug",
     "dev:test": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js && mocha && script/format.sh && rm -f tmp/*",
     "dev:bench": "node --expose-gc test/bench"

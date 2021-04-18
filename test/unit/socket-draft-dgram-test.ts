@@ -41,7 +41,7 @@ if (zmq.capability.draft) {
                 client.on("message", res => {
                   received.push(res.toString())
                   client.close()
-                  resolve()
+                  resolve(undefined)
                 })
 
                 client.send(msg, port, "localhost")

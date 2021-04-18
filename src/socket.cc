@@ -1,4 +1,6 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
+
+#define NOMINMAX  // prevent minwindef.h from defining max macro in the debug build
 #include "socket.h"
 #include "context.h"
 #include "incoming_msg.h"
@@ -548,7 +550,7 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
 #ifdef ZMQ_NO_SYNC_RESOLVE
         Warn(Env(), "Promise resolution by send() is delayed (ZMQ_NO_SYNC_RESOLVE).");
 #else
-        if (sync_operations++ < max_sync_operations) {
+        if (send_timeout == 0 || sync_operations++ < max_sync_operations) {
             auto res = Napi::Promise::Deferred::New(Env());
             Send(res, parts);
 
@@ -592,7 +594,7 @@ Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
 #ifdef ZMQ_NO_SYNC_RESOLVE
         Warn(Env(), "Promise resolution by receive() is delayed (ZMQ_NO_SYNC_RESOLVE).");
 #else
-        if (sync_operations++ < max_sync_operations) {
+        if (receive_timeout == 0 || sync_operations++ < max_sync_operations) {
             auto res = Napi::Promise::Deferred::New(Env());
             Receive(res);
 
