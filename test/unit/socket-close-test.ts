@@ -105,7 +105,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         if (process.env.SKIP_GC_TESTS) this.skip()
         this.slow(200)
 
-        const weak = require("weak-napi")
+        const weak = require("weak-napi") as typeof import("weak-napi")
 
         let released = false
         const task = async () => {
@@ -135,7 +135,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         if (process.env.SKIP_GC_TESTS) this.skip()
         this.slow(200)
 
-        const weak = require("weak-napi")
+        const weak = require("weak-napi") as typeof import("weak-napi")
 
         let released = false
         const task = async () => {
