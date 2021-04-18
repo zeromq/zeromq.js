@@ -4,7 +4,7 @@ set -e
 if [ "$1" != "" ]; then
   ZMQ=$1
 else
-  echo "No ZMQ version given"
+  echo "build_libzmq.sh: No ZMQ version given"
   exit 1
 fi
 
@@ -16,11 +16,14 @@ else
   export CXXFLAGS=-fPIC
 fi
 
+echo "build_libzmq.sh: Building version $1 for architecture $2"
+
 export MACOSX_DEPLOYMENT_TARGET=10.9
 export BASE=$(dirname "$0")
-export ZMQ_PREFIX="${BASE}/../zmq"
+
+cd "${BASE}/../zmq"
+export ZMQ_PREFIX=$(pwd -P)
 export ZMQ_SRC_DIR=zeromq-$ZMQ
-cd "${ZMQ_PREFIX}"
 
 export PKG_CONFIG_PATH="${ZMQ_PREFIX}/lib/pkgconfig"
 
