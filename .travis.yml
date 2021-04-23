@@ -77,12 +77,6 @@ jobs:
 
   - stage: prebuild
     os: linux
-    env: ARCHIVE_SUFFIX=-x64
-    node_js: "14"
-    script: script/ci/prebuild.sh
-
-  - stage: prebuild
-    os: linux
     env: ALPINE_CHROOT=3.10 ARCHIVE_SUFFIX=-x64-musl
     sudo: required
     script: script/ci/prebuild.sh
@@ -101,41 +95,11 @@ jobs:
     addons: {apt: {packages: [gcc-8-aarch64-linux-gnu, g++-8-aarch64-linux-gnu]}}
     script: script/ci/prebuild.sh
 
-  - stage: prebuild
-    os: osx
-    osx_image: xcode10
-    node_js: "14"
-    script: script/ci/prebuild.sh
-
-  - stage: prebuild
-    os: windows
-    node_js: "14"
-    # https://travis-ci.community/t/build-doesnt-finish-after-completing-tests/288
-    env: YARN_GPG=no ARCHIVE_SUFFIX=-x64
-    script: script/ci/prebuild.sh
-
-  - stage: prebuild
-    os: windows
-    node_js: "14/x86"
-    # https://travis-ci.community/t/build-doesnt-finish-after-completing-tests/288
-    env: YARN_GPG=no ARCHIVE_SUFFIX=-x86
-    script: script/ci/prebuild.sh
-
-  ## PUBLISH STAGE
-
-  - stage: publish
-    os: linux
-    node_js: "14"
-    env: IGNORE_SCRIPTS=true
-    script: script/ci/package.sh
-
   fast_finish: true
 
 stages:
 - name: test
 - name: prebuild
-  if: tag IS present
-- name: publish
   if: tag IS present
 
 install:
@@ -143,32 +107,3 @@ install:
 
 script:
 - travis_retry script/ci/test.sh
-
-deploy:
-# Deploy prebuilds to Github releases.
-- provider: releases
-  draft: false
-  file: "${TRAVIS_TAG:-latest}-${TRAVIS_OS_NAME}${ARCHIVE_SUFFIX}.tar.gz"
-  skip_cleanup: true
-  on:
-    tags: true
-    condition: "$TRAVIS_BUILD_STAGE_NAME = Prebuild"
-  api_key:
-    # Github API token for @zeromqjs-integration
-    secure: CvjUt3eRB1J6H9vxx/WrI4jOMX+jjgUSuC3z0r1tEfTKsrkt0Eoovn22tWP45aYeZd0clbV0aIhi3jvkZVAXvQ6y+WPdY9ZsQ1AJtZkVyT3qOdxeybcM0x5NY0q6dnROOwJ8O8Y6FeOrNdEuSImrCrCcPaPv9ZIM9Dv8jto5d5VypFtF5GaZ0nZPRuUgKVXDEKcHVZPgDhgHmjPzVAO0XXdHbgQtUlGYvhQmNhSE5njGFg1lm4+CWkDdpWAiehv0kwtCSx3pn3WtfO4Romt9fk662ykRYDSve0TryR2HBvISqmM64E2NU1VjqGy0nSdyVD7s9gV2hE+FG/N3/n4lYUH3UtaIwjqNmlgQpl/mDz/y5W0nTscigWkzPuk0HqiEHQ0Wk6jZLvw3cUD5YXBgESg0nbBIt+TIaCp2/Z+vENtD3blaXH0n4vXJhRDAlbQ/E7CvIWOUTaSuXfK3ugGoifzc78MyAK0TdYCX+EJoIWe5l+o8TExrWdSp4485dcsex1vOo5Wd7bPIvfsDzfNjmraanoFxUCfU+lrxuQqPN4Ot/MoltThhMJwTZJCdnZsZPYR3oznI7Dn5gLyijpNwLWTlHDsSTcZuronE8WEFHUiNwsVnt29tvp6m6OBin6gZUCXoR78c0DQoyTpS8Nc2zKbK1ps6pelKhs39K1n+d+U=
-
-# Deploy package including all generated prebuilds to NPM.
-- provider: npm
-  email: rolftimmermans+zeromqjs@voormedia.com
-  skip_cleanup: true
-  on:
-    tags: true
-    condition: "$TRAVIS_BUILD_STAGE_NAME = Publish"
-  api_key:
-    # NPM API token for @zeromqjs-integration
-    secure: 2dWaYpf8DDmfD0zoDLs2QFhE+vNT9vq2UOb6A+SHnsqkxfTh3xkkT0EyKEjAF7vQ03QKI6cYMcz9YVr7pwfoN1xWS1JA78YcZ9aG2+De1HW2tbi0SsDJgMzMv+OejloH9T0Mzth5k45ehRkXjijkBnTGT1j1AdXvTg0+MAOxEO0Q30aMUMBQ4y+0JB9S9UCE6Cs/BWt0mdoKXsb4pL+gJBSbE4wzrkthIkvG8Am6EybztLOjyGlWdvtDQeNe0JwMjeHMlmp/k4auXS+3x+JBcjCqxXxGQnDUHaZ31nFGVx6ns9rmsupe9FzWqOBYBwWRO0G0+Ku17gjluQLvqalib9SEcZiLv+nCpWlHoQNBuAoVz+CoCkfWCp6OUkJ5NpAkQRDSF/7s4A1gzzT7Ne+Ux670PhkvHLJpH4Pt08QqtRsSdjuj566DbYqdEmdW8SwOnRzigs4eVY6m+O6PDD6j4vBzeoE0zIDsCfCEsk6CaErdMQhQOb+wZTL1DRz49YgwUTZym9ekgf/hNrDqMkVuM1RT8L2CUqBHhmqAq6yJ4c11C1O2DEWC4MgIqw7/sfrsFtZlauaU/NyUDf2q6NXnPLISp8M+06ES+eNynyM1w8F+6bBebAe6GN4+DAUlt+VKtREIzxqKRG/2PZ7aYYbt2nlmTa4e/Lp7/MLqoZEOvPw=
-
-env:
-  global:
-    # GITHUB_TOKEN=<Github API token for @zeromqjs-integration>
-    secure: x3reA0+odqmuxZbUfQCbT/bXI4pBC2VDidUyt2kn0BFmEWI5J8dXV0rXM0Ai/iCh5ESm6mIbzAjw1mOBgke6OET9gbZbAdMMqX30abAEBsvBu+z/t/cpXmTEOPCTjBIvJhmJxOZxjyR3iG+lI9L8DdheWt0sS/ucD3w1Qd0eoD8wo2+ynWxdeeC0ZZLdO94UM/1QJMDqsShLQBu9tvhDWgmxjzyENC6vhXKuesLV4lwqZTCw4Kqp4SeWml5R1sY7PZWCj0EoxIskSK8KDCHHrvNWcXCB5gTIbmpcpnHZyci6gi3Tl5FhRVXUrYwfm87hPrqrqBOMeCcEmrEHz7AfwgrPpunneq8cCd4JJp9LHQMGurUy5eX9ArJFGiLS1PkygOu6N7Ob3nzUxIQp5psO9u0aMLWOAWmlgFLi5VRdDGiKIBIdy0uwKB1Cxk1R4ULjgBvAVhCmikuOd48H4a6cUmblOFoapWeVYX/p34L62sJEXLSYUENiCJ3hFV3Yq3YiozkcyGAbnmrqfXPT1fSJa21AMyn0D2x+I4/BDvMGOnoX9yVxJPqwNP4C7adevsYod4Z6x6dhhHfYFyP8kKMLzydXdK9tkPi20VNvpQYHBoQCRKO4Rk+VDzBnhqSowYJqiOu2Wp6v+MaaJhmWMWOZKC/9hww7PA9DMIULQmXT3Do=

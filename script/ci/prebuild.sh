@@ -17,14 +17,11 @@ if [ -n "${TRIPLE}" ]; then
 fi
 
 if [ -n "${ALPINE_CHROOT}" ]; then
-  /alpine/enter-chroot yarn ci:prebuild --tag-libc
+  /alpine/enter-chroot npm run ci:prebuild --tag-libc
 else
   if [ "${TRAVIS_OS_NAME}" = "linux" ]; then
-    yarn ci:prebuild --tag-libc
+    npm run ci:prebuild -- --tag-libc --arch="${ARCH}"
   else
-    yarn ci:prebuild
+    npm run ci:prebuild -- --arch="${ARCH}"
   fi
 fi
-
-ARCHIVE_NAME="${TRAVIS_TAG:-latest}-${TRAVIS_OS_NAME}${ARCHIVE_SUFFIX}.tar.gz"
-tar -zcvf "${ARCHIVE_NAME}" -C "${TRAVIS_BUILD_DIR}" prebuilds
