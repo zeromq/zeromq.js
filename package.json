@@ -75,8 +75,7 @@
     "install": "node-gyp-build",
     "ci:compile": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js",
     "ci:doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
-    "ci:prebuild": "npm run prebuildify",
-    "prebuildify": "prebuildify --napi -t 12.0.0 -t electron@9.4.4 --strip",
+    "prebuild": "ts-node -P ./tsconfig.json ./script/prebuild.ts",
     "dev:build": "rm -f vendor/* && touch vendor/.gitkeep && cp node_modules/node-addon-api/{*.h,LICENSE.md} vendor && prebuildify --napi --build-from-source --debug",
     "dev:test": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js && mocha && script/format.sh && rm -f tmp/*",
     "dev:bench": "node --expose-gc test/bench"

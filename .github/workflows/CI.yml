@@ -25,7 +25,7 @@ jobs:
         include:
           - os: windows-latest
             node_version: 14
-            node_arch: ia32
+            node_arch: x86
           # - os: macos-11.0
           #   node_version: 15
           #   node_arch: arm64
@@ -41,8 +41,8 @@ jobs:
       - name: Install Dependencies and Build
         run: npm install
 
-      - name: Prebuildify
-        run: sh script/ci/prebuild.sh
+      - name: Prebuild
+        run: npm run prebuild
         env:
           ARCH: ${{ matrix.node_arch }}
 

@@ -79,21 +79,21 @@ jobs:
     os: linux
     env: ALPINE_CHROOT=3.10 ARCHIVE_SUFFIX=-x64-musl
     sudo: required
-    script: script/ci/prebuild.sh
+    script: npm run prebuild
 
   - stage: prebuild
     os: linux
     node_js: "14"
     env: ARCH=arm TRIPLE=arm-linux-gnueabihf GCC=8 ARCHIVE_SUFFIX=-armv7
     addons: {apt: {packages: [gcc-8-arm-linux-gnueabihf, g++-8-arm-linux-gnueabihf]}}
-    script: script/ci/prebuild.sh
+    script: npm run prebuild
 
   - stage: prebuild
     os: linux
     node_js: "14"
     env: ARCH=arm64 TRIPLE=aarch64-linux-gnu GCC=8 ARCHIVE_SUFFIX=-armv8
     addons: {apt: {packages: [gcc-8-aarch64-linux-gnu, g++-8-aarch64-linux-gnu]}}
-    script: script/ci/prebuild.sh
+    script: npm run prebuild
 
   fast_finish: true
 
