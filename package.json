@@ -44,6 +44,7 @@
     "prebuildify": "^4.1.2",
     "prettier": "^1.19.1",
     "semver": ">= 0",
+    "shx": "^0.3.3",
     "tar-fs": "^2.0.0",
     "ts-morph": "^7.0.0",
     "ts-node": ">= 7",
@@ -76,8 +77,8 @@
     "ci:compile": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js",
     "ci:doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
     "prebuild": "ts-node -P ./tsconfig.json ./script/prebuild.ts",
-    "dev:build": "rm -f vendor/* && touch vendor/.gitkeep && cp node_modules/node-addon-api/{*.h,LICENSE.md} vendor && prebuildify --napi --build-from-source --debug",
-    "dev:test": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js && mocha && script/format.sh && rm -f tmp/*",
+    "dev:build": "prebuildify --napi --build-from-source --debug",
+    "dev:test": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js && mocha && script/format.sh && shx rm -f tmp/*",
     "dev:bench": "node --expose-gc test/bench"
   },
   "keywords": [
