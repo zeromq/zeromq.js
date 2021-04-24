@@ -84,7 +84,7 @@ declare interface Socket extends EventEmitter, SocketAccessors {
   read: () => null | Buffer[];
   setsockopt: (opt: keyof SocketOptions, value: unknown) => this;
   getsockopt: (opt: keyof SocketOptions) => unknown;
-  readonly closed: boolean,
+  readonly closed: boolean;
   bind: (addr: string, cb?: UnaryCallback) => this;
   bindSync: (addr: string) => this;
   unbind: (addr: string, cb?: UnaryCallback) => this;
