@@ -10,6 +10,8 @@ type SocketMethods = "send" | "receive" | "join" | "leave"
 export function allowMethods(socketPrototype: any, methods: SocketMethods[]) {
   const toDelete = ["send", "receive", "join", "leave"] as SocketMethods[]
   for (const method of toDelete) {
-    if (methods.indexOf(method) != -1) delete socketPrototype[method]
+    if (methods.indexOf(method) !== -1) { 
+      delete socketPrototype[method]
+    }
   }
 }
