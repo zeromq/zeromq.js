@@ -12,6 +12,11 @@ if [ -n "${WINDIR}" ]; then
   # Working directory is NAPI temporary build directory.
   PATH_PREFIX="${PWD}/libzmq"
   ARTIFACT="${PATH_PREFIX}/lib/libzmq.lib"
+
+  # Handle x86 or x64 build
+  if [ "${ARCH}" = "x86" ]; then
+    BUILD_OPTIONS="-DCMAKE_GENERATOR_PLATFORM=x86 ${BUILD_OPTIONS}"
+  fi
 else
   # Working directory is project root.
   PATH_PREFIX="${PWD}/build/libzmq"
