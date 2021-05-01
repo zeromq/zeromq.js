@@ -6,7 +6,7 @@ yarn build.js
 node script/ci/download.js
 
 # Generate & publish documentation.
-yarn ci:doc
+yarn build.doc
 cd docs
 git init
 git add .
