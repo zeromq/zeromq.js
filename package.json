@@ -80,7 +80,7 @@
     "prebuild": "ts-node -P ./tsconfig.json ./script/prebuild.ts",
     "build.native.debug": "prebuildify --napi --build-from-source --debug",
     "test": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js && mocha && script/format.sh && shx rm -f tmp/*",
-    "dev:bench": "node --expose-gc test/bench"
+    "bench": "node --expose-gc test/bench"
   },
   "keywords": [
     "zeromq",
