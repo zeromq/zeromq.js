@@ -73,6 +73,7 @@
     "vendor/LICENSE.md"
   ],
   "scripts": {
+    "clean": "shx rm -rf build lib libzmq tmp zmq && shx mkdir -p tmp && shx touch tmp/.gitkeep",
     "install": "node-gyp-build",
     "ci:compile": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js",
     "ci:doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
