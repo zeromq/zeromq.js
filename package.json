@@ -79,7 +79,7 @@
     "build.doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
     "prebuild": "ts-node -P ./tsconfig.json ./script/prebuild.ts",
     "build.native.debug": "prebuildify --napi --build-from-source --debug",
-    "dev:test": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js && mocha && script/format.sh && shx rm -f tmp/*",
+    "test": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js && mocha && script/format.sh && shx rm -f tmp/*",
     "dev:bench": "node --expose-gc test/bench"
   },
   "keywords": [
