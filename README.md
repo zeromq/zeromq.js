@@ -357,7 +357,7 @@ The test suite can be run with:
 
 ```sh
 npm install
-npm run dev:build
+npm run build.native.debug
 npm run dev:test
 ```
 
@@ -365,7 +365,7 @@ Or, if you prefer:
 
 ```sh
 yarn
-yarn run dev:build
+yarn run build.native.debug
 yarn run dev:test
 ```
 
