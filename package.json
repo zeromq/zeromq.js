@@ -77,6 +77,7 @@
     "prebuild": "ts-node -P ./tsconfig.json ./script/prebuild.ts",
     "build.native": "prebuildify --napi --build-from-source --debug",
     "build.native.debug": "npm run build.native -- --debug",
+    "build": "npm run build.js && npm run build.native",
     "test": "npm run build.js && mocha && npm run lint",
     "lint": "sh script/lint.sh",
     "bench": "node --expose-gc test/bench"
