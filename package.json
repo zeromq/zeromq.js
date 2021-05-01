@@ -80,7 +80,8 @@
     "prebuild": "ts-node -P ./tsconfig.json ./script/prebuild.ts",
     "build.native": "prebuildify --napi --build-from-source --debug",
     "build.native.debug": "npm run build.native -- --debug",
-    "test": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js && mocha && script/format.sh && shx rm -f tmp/*",
+    "test": "npm run build.js && mocha && npm run format",
+    "format": "sh script/format.sh",
     "bench": "node --expose-gc test/bench"
   },
   "keywords": [
