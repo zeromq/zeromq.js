@@ -2,7 +2,7 @@
 set -e
 
 # Prepare for packaging.
-yarn ci:compile
+yarn build.js
 node script/ci/download.js
 
 # Generate & publish documentation.
