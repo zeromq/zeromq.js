@@ -1,0 +1,6 @@
+{
+  "extends": [
+    "../.eslintrc",
+    "eslint-config-atomic/strict",
+  ]
+}
