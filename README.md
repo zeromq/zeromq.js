@@ -254,7 +254,7 @@ _Requirements_
   * or add the following, or similar, libraries to `compilerOptions.lib`
       (and include their corresponding polyfills if needed):
       `es2015`, `ESNext.AsyncIterable`
-      
+
 
 _Example Usage_
 
@@ -357,16 +357,8 @@ The test suite can be run with:
 
 ```sh
 npm install
-npm run dev:build
-npm run dev:test
-```
-
-Or, if you prefer:
-
-```sh
-yarn
-yarn run dev:build
-yarn run dev:test
+npm run build
+npm run test
 ```
 
 The test suite will validate and fix the coding style, run all unit tests and verify the validity of the included
@@ -375,10 +367,10 @@ TypeScript type definitions.
 Some tests are not enabled by default:
 
 * API Compatibility tests from ZeroMQ 5.x have been disabled by default. You can include the tests with
-  `INCLUDE_COMPAT_TESTS=1 npm run dev:test`
+  `INCLUDE_COMPAT_TESTS=1 npm run test`
 * Some transports are not reliable on some older versions of ZeroMQ, the relevant tests will be skipped for those
   versions automatically.
-  
+
 ### Publishing
 
 To publish a new version, run:
