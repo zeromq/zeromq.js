@@ -38,6 +38,10 @@ jobs:
           node-version: ${{ matrix.node_version }}
           architecture: ${{ matrix.node_arch }}
 
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.node_arch }}
+
       - name: Install Dependencies and Build
         run: npm install
 
