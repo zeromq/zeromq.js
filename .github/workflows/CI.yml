@@ -72,7 +72,13 @@ jobs:
           node-version: ${{ matrix.node_version }}
           architecture: ${{ matrix.node_arch }}
 
+      - name: Install Mac-OS Dependencies
+        if: contains(matrix.os, 'macos')
+        run: |
+          brew install libsodium
+
       - uses: ilammy/msvc-dev-cmd@v1
+        if: contains(matrix.os, 'windows')
         with:
           arch: ${{ matrix.node_arch }}
 
