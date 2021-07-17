@@ -30,7 +30,7 @@
     "benchmark": ">= 0",
     "chai": ">= 4.1",
     "choma": ">= 1.2",
-    "deasync": "^0.1.16",
+    "deasync": "^0.1.21",
     "eslint-config-atomic": "^1.14.2",
     "eslint-plugin-prettier": "^3.1.1",
     "fs-extra": "^8.1.0",
