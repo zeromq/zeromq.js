@@ -96,4 +96,8 @@ jobs:
           path: ./prebuilds
 
       - name: Test
-        run: npm run test
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 4
+          max_attempts: 3
+          command: npm run test
