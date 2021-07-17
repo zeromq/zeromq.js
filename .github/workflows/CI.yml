@@ -22,10 +22,11 @@ jobs:
           - 14
         node_arch:
           - x64
-        include:
-          - os: windows-latest
-            node_version: 14
-            node_arch: x86
+        # include:
+          # - os: windows-latest
+          #   node_version: 14
+          #   node_arch: x86
+
           # - os: macos-11.0
           #   node_version: 15
           #   node_arch: arm64
