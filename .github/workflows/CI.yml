@@ -5,10 +5,6 @@ on:
     branches:
       - master
 
-defaults:
-  run:
-    shell: bash
-
 jobs:
   Build:
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
