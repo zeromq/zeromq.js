@@ -28,6 +28,8 @@ jobs:
           - false
         zmq_shared:
           - false
+        zmq_version:
+          - 4.3.4
         skip_gc_finalizer_tests:
           - true
 
@@ -46,6 +48,7 @@ jobs:
           #   zmq_shared: false
 
     env:
+      ZMQ_VERSION: ${{ matrix.zmq_version }}
       ZMQ_DRAFT: ${{ matrix.zmq_draft }}
       ZMQ_SHARED: ${{ matrix.zmq_shared }}
       SKIP_GC_FINALIZER_TESTS: ${{ matrix.skip_gc_finalizer_tests }}
