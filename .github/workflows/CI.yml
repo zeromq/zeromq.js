@@ -56,9 +56,5 @@ jobs:
         with:
           path: ./prebuilds
 
-  Skip:
-    if: contains(github.event.head_commit.message, '[skip ci]')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skip CI 🚫
-        run: echo skip ci
+      - name: Test
+        run: npm run test
