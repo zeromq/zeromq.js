@@ -17,7 +17,7 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "node-gyp-build": "^4.1.0"
+    "node-gyp-build": "^4.2.3"
   },
   "devDependencies": {
     "@gnd/typedoc": "^0.15.0-0",
