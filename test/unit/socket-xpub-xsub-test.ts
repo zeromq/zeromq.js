@@ -23,7 +23,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       sub.close()
       xpub.close()
       xsub.close()
-      global.gc()
+      global.gc?.()
     })
 
     describe("send/receive", function() {

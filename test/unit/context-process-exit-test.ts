@@ -115,7 +115,7 @@ describe("context process exit", function() {
         }
 
         run()
-        global.gc()
+        global.gc?.()
       })
 
       assert.equal(code, 0)

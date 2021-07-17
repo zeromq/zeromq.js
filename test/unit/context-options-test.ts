@@ -4,7 +4,7 @@ import {assert} from "chai"
 
 describe("context options", function() {
   afterEach(function() {
-    global.gc()
+    global.gc?.()
   })
 
   it("should set and get bool socket option", function() {

@@ -19,7 +19,7 @@ for (const proto of testProtos("tcp", "ipc")) {
       if (handler) handler.stop()
       sockA.close()
       sockB.close()
-      global.gc()
+      global.gc?.()
     })
 
     describe("with plain mechanism", function() {

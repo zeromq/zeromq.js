@@ -20,7 +20,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       router.close()
       dealerA.close()
       dealerB.close()
-      global.gc()
+      global.gc?.()
     })
 
     describe("send/receive", function() {

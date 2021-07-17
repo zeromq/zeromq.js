@@ -16,7 +16,7 @@ if (zmq.capability.draft) {
 
       afterEach(function() {
         dgram.close()
-        global.gc()
+        global.gc?.()
       })
 
       describe("send/receive", function() {

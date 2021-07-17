@@ -16,10 +16,10 @@ if (zmq.capability.draft) {
       })
 
       afterEach(function() {
-        global.gc()
+        global.gc?.()
         radio.close()
         dish.close()
-        global.gc()
+        global.gc?.()
       })
 
       describe("send/receive", function() {

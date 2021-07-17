@@ -4,7 +4,7 @@ import {assert} from "chai"
 
 describe("socket construction", function() {
   afterEach(function() {
-    global.gc()
+    global.gc?.()
   })
 
   describe("with constructor", function() {

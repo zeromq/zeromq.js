@@ -17,7 +17,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     afterEach(function() {
       sockA.close()
       sockB.close()
-      global.gc()
+      global.gc?.()
     })
 
     describe("when not applicable", function() {
@@ -94,7 +94,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
 
         await send(16)
-        global.gc()
+        global.gc?.()
         await new Promise(resolve => setTimeout(resolve, 5))
         assert.equal(released, true)
       })
@@ -114,7 +114,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
 
         await send(1025)
-        global.gc()
+        global.gc?.()
         await new Promise(resolve => setTimeout(resolve, 5))
         assert.equal(released, false)
       })
@@ -339,7 +339,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         /* Repeated GC to allow inproc messages from being collected. */
         for (let i = 0; i < 5; i++) {
-          global.gc()
+          global.gc?.()
           await new Promise(resolve => setTimeout(resolve, 2))
         }
 
@@ -385,7 +385,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         /* Repeated GC to allow inproc messages from being collected. */
         for (let i = 0; i < 5; i++) {
-          global.gc()
+          global.gc?.()
           await new Promise(resolve => setTimeout(resolve, 2))
         }
 

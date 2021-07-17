@@ -14,7 +14,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     afterEach(function() {
       sock.close()
-      global.gc()
+      global.gc?.()
     })
 
     describe("with explicit call", function() {
@@ -117,14 +117,14 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           })
           context = undefined
 
-          global.gc()
+          global.gc?.()
           socket.connect(uniqAddress(proto))
           await socket.send(Buffer.from("foo"))
           socket.close()
         }
 
         await task()
-        global.gc()
+        global.gc?.()
         await new Promise(resolve => setTimeout(resolve, 5))
         assert.equal(released, true)
       })
@@ -147,11 +147,11 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
             released = true
           })
           context = undefined
-          global.gc()
+          global.gc?.()
         }
 
         await task()
-        global.gc()
+        global.gc?.()
         await new Promise(resolve => setTimeout(resolve, 5))
         assert.equal(released, true)
       })

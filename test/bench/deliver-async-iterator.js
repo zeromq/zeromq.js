@@ -7,7 +7,7 @@ if (zmq.ng) {
       await server.bind(address)
       client.connect(address)
 
-      global.gc()
+      global.gc?.()
 
       const send = async () => {
         for (let i = 0; i < n; i++) {
@@ -24,12 +24,12 @@ if (zmq.ng) {
 
       await Promise.all([send(), receive()])
 
-      global.gc()
+      global.gc?.()
 
       server.close()
       client.close()
 
-      global.gc()
+      global.gc?.()
 
       deferred.resolve()
     }

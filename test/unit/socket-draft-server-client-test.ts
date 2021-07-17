@@ -21,7 +21,7 @@ if (zmq.capability.draft) {
         server.close()
         clientA.close()
         clientB.close()
-        global.gc()
+        global.gc?.()
       })
 
       describe("send/receive", function() {

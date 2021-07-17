@@ -34,7 +34,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       req.close()
       rep.close()
-      global.gc()
+      global.gc?.()
     })
 
     describe("run", function() {

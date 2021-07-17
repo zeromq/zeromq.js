@@ -14,7 +14,7 @@ for (const proto of testProtos("tcp")) {
 
     afterEach(function() {
       stream.close()
-      global.gc()
+      global.gc?.()
     })
 
     describe("send/receive as server", function() {

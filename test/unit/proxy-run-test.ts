@@ -18,7 +18,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     afterEach(function() {
       proxy.frontEnd.close()
       proxy.backEnd.close()
-      global.gc()
+      global.gc?.()
     })
 
     it("should fail if front end is not bound or connected", async function() {

@@ -4,7 +4,7 @@ import {assert} from "chai"
 
 describe("context construction", function() {
   afterEach(function() {
-    global.gc()
+    global.gc?.()
   })
 
   it("should throw if called as function", function() {

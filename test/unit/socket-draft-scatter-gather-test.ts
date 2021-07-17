@@ -18,7 +18,7 @@ if (zmq.capability.draft) {
       afterEach(function() {
         scatter.close()
         gather.close()
-        global.gc()
+        global.gc?.()
       })
 
       describe("send/receive", function() {

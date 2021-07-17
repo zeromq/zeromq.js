@@ -8,12 +8,12 @@ if (zmq.cur) {
       server.on("message", (msg1, msg2, mgs3) => {
         j++
         if (j == n - 1) {
-          global.gc()
+          global.gc?.()
 
           server.close()
           client.close()
 
-          global.gc()
+          global.gc?.()
 
           deferred.resolve()
         }
@@ -22,7 +22,7 @@ if (zmq.cur) {
       server.bind(address, () => {
         client.connect(address)
 
-        global.gc()
+        global.gc?.()
 
         for (let i = 0; i < n; i++) {
           client.send([Buffer.alloc(msgsize), Buffer.alloc(msgsize), Buffer.alloc(msgsize)])
@@ -41,7 +41,7 @@ if (zmq.ng) {
       await server.bind(address)
       client.connect(address)
 
-      global.gc()
+      global.gc?.()
 
       const send = async () => {
         for (let i = 0; i < n; i++) {
@@ -58,12 +58,12 @@ if (zmq.ng) {
 
       await Promise.all([send(), receive()])
 
-      global.gc()
+      global.gc?.()
 
       server.close()
       client.close()
 
-      global.gc()
+      global.gc?.()
 
       deferred.resolve()
     }
