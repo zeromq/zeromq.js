@@ -24,14 +24,31 @@ jobs:
           - 14
         node_arch:
           - x64
+        zmq_draft:
+          - false
+        zmq_shared:
+          - false
+        skip_gc_finalizer_tests:
+          - true
+
         # include:
           # - os: windows-latest
           #   node_version: 14
           #   node_arch: x86
+          #   zmq_draft: false
+          #   zmq_shared: false
+          #   skip_gc_finalizer_tests: true
 
           # - os: macos-11.0
           #   node_version: 15
           #   node_arch: arm64
+          #   zmq_draft: false
+          #   zmq_shared: false
+
+    env:
+      ZMQ_DRAFT: ${{ matrix.zmq_draft }}
+      ZMQ_SHARED: ${{ matrix.zmq_shared }}
+      SKIP_GC_FINALIZER_TESTS: ${{ matrix.skip_gc_finalizer_tests }}
     steps:
       - uses: actions/checkout@v2
 

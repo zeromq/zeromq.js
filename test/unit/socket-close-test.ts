@@ -133,6 +133,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     describe("in gc finalizer", function() {
       it("should release reference to context", async function() {
         if (process.env.SKIP_GC_TESTS) this.skip()
+        if (process.env.SKIP_GC_FINALIZER_TESTS) this.skip()
         this.slow(200)
 
         const weak = require("weak-napi") as typeof import("weak-napi")
