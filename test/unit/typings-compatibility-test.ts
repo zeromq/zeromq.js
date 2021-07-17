@@ -34,6 +34,9 @@ const tsVersions: TestDef[] = [
   {version: "3.5.x", minTarget: "es3"},
   {version: "3.6.x", minTarget: "es3"},
   {version: "3.7.x", minTarget: "es3"},
+
+  // 4.x
+  {version: "4.x", minTarget: "es3"},
 ]
 
 // use ./typings-test.ts for tsc test, but change the import location for zmq
