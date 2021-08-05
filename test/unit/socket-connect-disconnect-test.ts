@@ -14,7 +14,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     afterEach(function() {
       sock.close()
-      global.gc()
+      global.gc?.()
     })
 
     describe("connect", function() {

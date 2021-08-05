@@ -10,7 +10,7 @@ describe("proxy construction", function() {
   })
 
   afterEach(function() {
-    global.gc()
+    global.gc?.()
   })
 
   describe("with constructor", function() {

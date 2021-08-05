@@ -21,7 +21,7 @@ if (zmq.capability.draft) {
         server.close()
         clientA.close()
         clientB.close()
-        global.gc()
+        global.gc?.()
       })
 
       describe("send/receive", function() {
@@ -82,7 +82,7 @@ if (zmq.capability.draft) {
     })
   }
 } else {
-  if (process.env.ZMQ_DRAFT) {
+  if (process.env.ZMQ_DRAFT === "true") {
     throw new Error("Draft API requested but not available at runtime.")
   }
 }

@@ -16,7 +16,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     afterEach(function() {
       push.close()
       pull.close()
-      global.gc()
+      global.gc?.()
     })
 
     describe("send/receive", function() {

@@ -5,13 +5,13 @@ if (zmq.cur) {
       client.linger = 0
       client.connect(address)
 
-      global.gc()
+      global.gc?.()
 
       for (let i = 0; i < n; i++) {
         client.send(Buffer.alloc(msgsize))
       }
 
-      global.gc()
+      global.gc?.()
 
       client.close()
 
@@ -28,13 +28,13 @@ if (zmq.ng) {
       client.sendHighWaterMark = n * 2
       client.connect(address)
 
-      global.gc()
+      global.gc?.()
 
       for (let i = 0; i < n; i++) {
         await client.send(Buffer.alloc(msgsize))
       }
 
-      global.gc()
+      global.gc?.()
 
       client.close()
 

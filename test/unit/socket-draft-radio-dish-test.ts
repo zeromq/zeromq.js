@@ -16,10 +16,10 @@ if (zmq.capability.draft) {
       })
 
       afterEach(function() {
-        global.gc()
+        global.gc?.()
         radio.close()
         dish.close()
-        global.gc()
+        global.gc?.()
       })
 
       describe("send/receive", function() {
@@ -125,7 +125,7 @@ if (zmq.capability.draft) {
     })
   }
 } else {
-  if (process.env.ZMQ_DRAFT) {
+  if (process.env.ZMQ_DRAFT === "true") {
     throw new Error("Draft API requested but not available at runtime.")
   }
 }

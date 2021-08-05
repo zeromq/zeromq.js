@@ -17,7 +17,7 @@ describe("socket options", function() {
       process.on("warning", listener as (warning: Error) => void)
     }
 
-    global.gc()
+    global.gc?.()
   })
 
   it("should set and get bool socket option", function() {

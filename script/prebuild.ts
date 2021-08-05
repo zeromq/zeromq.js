@@ -28,11 +28,8 @@ async function main() {
     process.env.ZMQ_BUILD_OPTIONS = `--host=${TRIPLE}`
   }
 
-  let prebuildScript = `prebuildify --napi --arch=${prebuildArch} -t 12.0.0 -t electron@9.4.4 --strip`
+  let prebuildScript = `prebuildify --napi --arch=${prebuildArch} -t 12.0.0 -t electron@9.4.4 --strip --tag-libc`
 
-  if (process.platform == "linux") {
-    prebuildScript = `${prebuildScript} --tag-libc`
-  }
   if (process.env.ALPINE_CHROOT) {
     prebuildScript = `/alpine/enter-chroot ${prebuildScript}`
   }
