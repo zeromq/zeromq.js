@@ -72,9 +72,9 @@ async function run(
   errorAsString: boolean,
 ): Promise<string | Error | undefined> {
   return new Promise(resolve => {
-    exec(cmd, {cwd: cwd}, (error, stdout, stderr) => {
+    exec(cmd, {cwd}, (error, stdout, stderr) => {
       if (error) {
-        resolve(errorAsString ? stdout + "\n" + stderr : error)
+        resolve(errorAsString ? `${stdout}\n${stderr}` : error)
       } else {
         resolve(undefined)
       }
@@ -86,16 +86,18 @@ function getItLabelDetails(tsVer: TestDef): string {
   const lbl = `v${tsVer.version} for (minimal) compile target ${JSON.stringify(
     tsVer.minTarget,
   )}`
-  if (!tsVer.requiredLibs || tsVer.requiredLibs.length === 0) return lbl
+  if (!tsVer.requiredLibs || tsVer.requiredLibs.length === 0) {
+    return lbl
+  }
   return `${lbl}, and required compile lib: ${JSON.stringify(
     tsVer.requiredLibs,
   )}`
 }
 
-describe("compatibility of typings for typescript versions", function() {
+describe("compatibility of typings for typescript versions", function () {
   let execCmd: "npm" | "yarn"
 
-  before(function(done) {
+  before(function (done) {
     this.timeout(10000)
     if (/^true$/.test(process.env.EXCLUDE_TYPINGS_COMPAT_TESTS as string)) {
       this.skip()
@@ -124,7 +126,7 @@ describe("compatibility of typings for typescript versions", function() {
   })
 
   for (const tsVer of tsVersions) {
-    describe(`when used in a project with typescript version ${tsVer.version}`, function() {
+    describe(`when used in a project with typescript version ${tsVer.version}`, function () {
       // must increase timeout for allowing `npm install`'ing the version of
       // the typescript package to complete
       this.timeout(30000)
@@ -167,9 +169,11 @@ describe("compatibility of typings for typescript versions", function() {
               ),
             ),
           ])
-            .then(() => run(execCmd + " install", tscTargetPath, false))
+            .then(() => run(`${execCmd} install`, tscTargetPath, false))
             .catch(err => {
-              if (err) done(err)
+              if (err) {
+                done(err)
+              }
             })
             .then(() => done())
         })
@@ -177,16 +181,18 @@ describe("compatibility of typings for typescript versions", function() {
 
       afterEach(done => {
         remove(tscTargetPath, err => {
-          if (err) return done(err)
+          if (err) {
+            return done(err)
+          }
           done()
         })
       })
 
       it(`it should compile successfully with tsc ${getItLabelDetails(
         tsVer,
-      )}`, async function() {
-        const cmd = execCmd === "npm" ? execCmd + " run" : execCmd
-        const errMsg = (await run(cmd + " test", tscTargetPath, true)) as
+      )}`, async function () {
+        const cmd = execCmd === "npm" ? `${execCmd} run` : execCmd
+        const errMsg = (await run(`${cmd} test`, tscTargetPath, true)) as
           | string
           | undefined
         assert.isUndefined(errMsg, errMsg)

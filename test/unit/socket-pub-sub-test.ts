@@ -4,23 +4,23 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`socket with ${proto} pub/sub`, function() {
+  describe(`socket with ${proto} pub/sub`, function () {
     let pub: zmq.Publisher
     let sub: zmq.Subscriber
 
-    beforeEach(function() {
+    beforeEach(function () {
       pub = new zmq.Publisher()
       sub = new zmq.Subscriber()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       pub.close()
       sub.close()
       global.gc?.()
     })
 
-    describe("send/receive", function() {
-      it("should deliver messages", async function() {
+    describe("send/receive", function () {
+      it("should deliver messages", async function () {
         /* PUB  -> foo ->  SUB
                 -> bar ->  subscribed to all
                 -> baz ->
@@ -49,7 +49,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           for await (const [msg] of sub) {
             assert.instanceOf(msg, Buffer)
             received.push(msg.toString())
-            if (received.length === messages.length) break
+            if (received.length === messages.length) {
+              break
+            }
           }
         }
 
@@ -58,8 +60,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    describe("subscribe/unsubscribe", function() {
-      it("should filter messages", async function() {
+    describe("subscribe/unsubscribe", function () {
+      it("should filter messages", async function () {
         /* PUB  -> foo -X  SUB
                 -> bar ->  subscribed to "ba"
                 -> baz ->
@@ -88,7 +90,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           for await (const [msg] of sub) {
             assert.instanceOf(msg, Buffer)
             received.push(msg.toString())
-            if (received.length === 2) break
+            if (received.length === 2) {
+              break
+            }
           }
         }
 

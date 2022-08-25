@@ -4,15 +4,15 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const {testProtos, uniqAddress} = require("../helpers")
 
   for (const proto of testProtos("tcp", "inproc")) {
-    describe(`compat socket with ${proto} push-pull`, function() {
-      it("should support push-pull", function(done) {
+    describe(`compat socket with ${proto} push-pull`, function () {
+      it("should support push-pull", function (done) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
 
         const address = uniqAddress(proto)
 
         let n = 0
-        pull.on("message", function(msg) {
+        pull.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)
           switch (n++) {
             case 0:
@@ -31,7 +31,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
 
         pull.bind(address, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
           push.connect(address)
 
           push.send("foo")
@@ -40,8 +42,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       })
 
-
-      it("should not emit messages after pause", function(done) {
+      it("should not emit messages after pause", function (done) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
 
@@ -49,7 +50,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
         let n = 0
 
-        pull.on("message", function(msg) {
+        pull.on("message", function (msg) {
           if (n++ === 0) {
             assert.equal(msg.toString(), "foo")
           } else {
@@ -58,7 +59,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
 
         pull.bind(address, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
           push.connect(address)
 
           push.send("foo")
@@ -74,7 +77,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         }, 15)
       })
 
-      it("should be able to read messages after pause", function(done) {
+      it("should be able to read messages after pause", function (done) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
 
@@ -82,11 +85,13 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
         const messages = ["bar", "foo"]
         pull.bind(address, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
           push.connect(address)
 
           pull.pause()
-          messages.forEach(function(message) {
+          messages.forEach(function (message) {
             push.send(message)
           })
 
@@ -103,8 +108,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         }, 15)
       })
 
-
-      it("should emit messages after resume", function(done) {
+      it("should emit messages after resume", function (done) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
 
@@ -137,7 +141,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         pull.on("message", checkNoMessages)
 
         pull.bind(address, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
           push.connect(address)
           pull.pause()
 

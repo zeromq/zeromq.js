@@ -5,7 +5,7 @@ if (require(".").capability.draft) {
 } else {
   throw new Error(
     "ZeroMQ draft features are not enabled in this build. " +
-    "To enable support, (re)compile this library with --zmq-draft.",
+      "To enable support, (re)compile this library with --zmq-draft.",
   )
 }
 

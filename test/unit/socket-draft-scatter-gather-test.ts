@@ -6,23 +6,23 @@ import {testProtos, uniqAddress} from "./helpers"
 
 if (zmq.capability.draft) {
   for (const proto of testProtos("tcp", "ipc", "inproc")) {
-    describe(`socket with ${proto} scatter/gather`, function() {
+    describe(`socket with ${proto} scatter/gather`, function () {
       let scatter: draft.Scatter
       let gather: draft.Gather
 
-      beforeEach(function() {
+      beforeEach(function () {
         scatter = new draft.Scatter()
         gather = new draft.Gather()
       })
 
-      afterEach(function() {
+      afterEach(function () {
         scatter.close()
         gather.close()
         global.gc?.()
       })
 
-      describe("send/receive", function() {
-        it("should deliver messages", async function() {
+      describe("send/receive", function () {
+        it("should deliver messages", async function () {
           /* SCATTER -> foo ->  GATHER
                      -> bar ->
                      -> baz ->
@@ -43,14 +43,16 @@ if (zmq.capability.draft) {
           for await (const [msg] of gather) {
             assert.instanceOf(msg, Buffer)
             received.push(msg.toString())
-            if (received.length === messages.length) break
+            if (received.length === messages.length) {
+              break
+            }
           }
 
           assert.deepEqual(received, messages)
         })
 
         if (proto !== "inproc") {
-          it("should deliver messages with immediate", async function() {
+          it("should deliver messages with immediate", async function () {
             const address = uniqAddress(proto)
             const messages = ["foo", "bar", "baz", "qux"]
             const received: string[] = []
@@ -70,7 +72,9 @@ if (zmq.capability.draft) {
             for await (const [msg] of gather) {
               assert.instanceOf(msg, Buffer)
               received.push(msg.toString())
-              if (received.length === messages.length) break
+              if (received.length === messages.length) {
+                break
+              }
             }
 
             assert.deepEqual(received, messages)

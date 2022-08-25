@@ -4,12 +4,14 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`socket with ${proto} curve send/receive`, function() {
+  describe(`socket with ${proto} curve send/receive`, function () {
     let sockA: zmq.Pair
     let sockB: zmq.Pair
 
-    beforeEach(function() {
-      if (!zmq.capability.curve) this.skip()
+    beforeEach(function () {
+      if (!zmq.capability.curve) {
+        this.skip()
+      }
 
       const serverKeypair = zmq.curveKeyPair()
       const clientKeypair = zmq.curveKeyPair()
@@ -29,22 +31,24 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    afterEach(function() {
+    afterEach(function () {
       sockA.close()
       sockB.close()
       global.gc?.()
     })
 
-    describe("when connected", function() {
-      beforeEach(async function() {
-        if (!zmq.capability.curve) this.skip()
+    describe("when connected", function () {
+      beforeEach(async function () {
+        if (!zmq.capability.curve) {
+          this.skip()
+        }
 
         const address = uniqAddress(proto)
         await sockB.bind(address)
         await sockA.connect(address)
       })
 
-      it("should deliver single string message", async function() {
+      it("should deliver single string message", async function () {
         const sent = "foo"
         await sockA.send(sent)
 

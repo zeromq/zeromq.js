@@ -49,7 +49,9 @@ async function request(
 }
 
 async function main() {
-  for (const worker of workers) worker.start()
+  for (const worker of workers) {
+    worker.start()
+  }
   broker.start()
 
   /* Requests are issued in parallel. */
@@ -65,7 +67,9 @@ async function main() {
     request("coffee", "irish coffee"),
   ])
 
-  for (const worker of workers) worker.stop()
+  for (const worker of workers) {
+    worker.stop()
+  }
   broker.stop()
 }
 

@@ -3,18 +3,20 @@ import * as zmq from "../../src"
 
 import {assert} from "chai"
 
-describe("proxy construction", function() {
-  beforeEach(function() {
+describe("proxy construction", function () {
+  beforeEach(function () {
     /* ZMQ < 4.0.5 has no steerable proxy support. */
-    if (semver.satisfies(zmq.version, "< 4.0.5")) this.skip()
+    if (semver.satisfies(zmq.version, "< 4.0.5")) {
+      this.skip()
+    }
   })
 
-  afterEach(function() {
+  afterEach(function () {
     global.gc?.()
   })
 
-  describe("with constructor", function() {
-    it("should throw if called as function", function() {
+  describe("with constructor", function () {
+    it("should throw if called as function", function () {
       assert.throws(
         () => (zmq.Proxy as any)(),
         TypeError,
@@ -22,7 +24,7 @@ describe("proxy construction", function() {
       )
     })
 
-    it("should throw with too few arguments", function() {
+    it("should throw with too few arguments", function () {
       assert.throws(
         () => new (zmq.Proxy as any)(),
         TypeError,
@@ -30,7 +32,7 @@ describe("proxy construction", function() {
       )
     })
 
-    it("should throw with too many arguments", function() {
+    it("should throw with too many arguments", function () {
       assert.throws(
         () =>
           new (zmq.Proxy as any)(
@@ -43,7 +45,7 @@ describe("proxy construction", function() {
       )
     })
 
-    it("should throw with invalid socket", function() {
+    it("should throw with invalid socket", function () {
       try {
         new (zmq.Proxy as any)({}, {})
         assert.ok(false)

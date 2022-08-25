@@ -22,8 +22,8 @@ const msgsizes = [
 /* Which benchmarks to run. */
 const benchmarks = {
   // "create-socket": {n, options: {delay: 0.5}},
-  "queue": {n, msgsizes},
-  "deliver": {n, protos, msgsizes},
+  queue: {n, msgsizes},
+  deliver: {n, protos, msgsizes},
   "deliver-multipart": {n, protos, msgsizes},
   "deliver-async-iterator": {n, protos, msgsizes},
 }
@@ -41,20 +41,20 @@ let seq = 5000
 function uniqAddress(proto) {
   const id = seq++
   switch (proto) {
-  case "ipc":
-    return `${proto}://${__dirname}/../../tmp/${proto}-${id}`
-  case "tcp":
-  case "udp":
-    return `${proto}://127.0.0.1:${id}`
-  default:
-    return `${proto}://${proto}-${id}`
+    case "ipc":
+      return `${proto}://${__dirname}/../../tmp/${proto}-${id}`
+    case "tcp":
+    case "udp":
+      return `${proto}://127.0.0.1:${id}`
+    default:
+      return `${proto}://${proto}-${id}`
   }
 }
 
 /* Continue to load and execute benchmarks. */
 const fs = require("fs")
 const bench = require("benchmark")
-const suite = new bench.Suite
+const suite = new bench.Suite()
 
 const defaultOptions = {
   defer: true,
@@ -62,8 +62,10 @@ const defaultOptions = {
   onError: console.error,
 }
 
-for (const [benchmark, {n, protos, msgsizes, options}] of Object.entries(benchmarks)) {
-  let load = ({n, proto, msgsize, address}) => {
+for (const [benchmark, {n, protos, msgsizes, options}] of Object.entries(
+  benchmarks,
+)) {
+  const load = ({n, proto, msgsize, address}) => {
     const benchOptions = Object.assign({}, defaultOptions, options)
     eval(fs.readFileSync(`${__dirname}/${benchmark}.js`).toString())
   }

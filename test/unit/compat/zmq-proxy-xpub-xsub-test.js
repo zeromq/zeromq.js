@@ -4,16 +4,16 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const {testProtos, uniqAddress} = require("../helpers")
 
   for (const proto of testProtos("tcp")) {
-    describe(`compat proxy with ${proto} xpub-xsub`, function() {
+    describe(`compat proxy with ${proto} xpub-xsub`, function () {
       const sockets = []
 
-      afterEach(function() {
+      afterEach(function () {
         while (sockets.length) {
           sockets.pop().close()
         }
       })
 
-      it("should proxy pub-sub connected to xpub-xsub", function(done) {
+      it("should proxy pub-sub connected to xpub-xsub", function (done) {
         const frontendAddr = uniqAddress(proto)
         const backendAddr = uniqAddress(proto)
 
@@ -25,16 +25,20 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         sockets.push(frontend, backend, sub, pub)
 
         sub.subscribe("")
-        sub.on("message", function(msg) {
+        sub.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)
           assert.equal(msg.toString(), "foo")
           done()
         })
 
         frontend.bind(frontendAddr, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
           backend.bind(backendAddr, err => {
-            if (err) throw err
+            if (err) {
+              throw err
+            }
 
             sub.connect(frontendAddr)
             pub.connect(backendAddr)
@@ -45,7 +49,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       })
 
-      it("should proxy connections with capture", function(done) {
+      it("should proxy connections with capture", function (done) {
         const frontendAddr = uniqAddress(proto)
         const backendAddr = uniqAddress(proto)
         const captureAddr = uniqAddress(proto)
@@ -63,27 +67,37 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         let counter = 2
 
         sub.subscribe("")
-        sub.on("message", function(msg) {
+        sub.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)
           assert.equal(msg.toString(), "foo")
 
-          if (--counter == 0) done()
+          if (--counter == 0) {
+            done()
+          }
         })
 
         capSub.subscribe("")
-        capSub.on("message", function(msg) {
+        capSub.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)
           assert.equal(msg.toString(), "foo")
 
-          if (--counter == 0) done()
+          if (--counter == 0) {
+            done()
+          }
         })
 
         capture.bind(captureAddr, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
           frontend.bind(frontendAddr, err => {
-            if (err) throw err
+            if (err) {
+              throw err
+            }
             backend.bind(backendAddr, err => {
-              if (err) throw err
+              if (err) {
+                throw err
+              }
 
               pub.connect(backendAddr)
               sub.connect(frontendAddr)
@@ -96,7 +110,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       })
 
-      it("should throw an error if the order is wrong", function() {
+      it("should throw an error if the order is wrong", function () {
         const frontend = zmq.socket("xpub")
         const backend = zmq.socket("xsub")
 
@@ -105,10 +119,13 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         try {
           zmq.proxy(backend, frontend)
         } catch (err) {
-          assert.include([
-            "wrong socket order to proxy",
-            "This socket type order is not supported in compatibility mode",
-          ], err.message)
+          assert.include(
+            [
+              "wrong socket order to proxy",
+              "This socket type order is not supported in compatibility mode",
+            ],
+            err.message,
+          )
         }
       })
     })

@@ -5,20 +5,20 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`socket with ${proto} xpub/xsub`, function() {
+  describe(`socket with ${proto} xpub/xsub`, function () {
     let pub: zmq.Publisher
     let sub: zmq.Subscriber
     let xpub: zmq.XPublisher
     let xsub: zmq.XSubscriber
 
-    beforeEach(function() {
+    beforeEach(function () {
       pub = new zmq.Publisher()
       sub = new zmq.Subscriber()
       xpub = new zmq.XPublisher()
       xsub = new zmq.XSubscriber()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       pub.close()
       sub.close()
       xpub.close()
@@ -26,8 +26,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       global.gc?.()
     })
 
-    describe("send/receive", function() {
-      it("should deliver messages", async function() {
+    describe("send/receive", function () {
+      it("should deliver messages", async function () {
         /* PUB  -> foo ->  XSUB -> XPUB -> SUB
                 -> bar ->                  subscribed to all
                 -> baz ->
@@ -61,7 +61,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           for await (const [msg] of xpub) {
             assert.instanceOf(msg, Buffer)
             await xsub.send(msg)
-            if (++subbed === 1) break
+            if (++subbed === 1) {
+              break
+            }
           }
         }
 
@@ -70,7 +72,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           for await (const [msg] of xsub) {
             assert.instanceOf(msg, Buffer)
             await xpub.send(msg)
-            if (++pubbed === messages.length) break
+            if (++pubbed === messages.length) {
+              break
+            }
           }
         }
 
@@ -78,7 +82,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           for await (const [msg] of sub) {
             assert.instanceOf(msg, Buffer)
             received.push(msg.toString())
-            if (received.length === messages.length) break
+            if (received.length === messages.length) {
+              break
+            }
           }
         }
 
@@ -87,8 +93,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    describe("subscribe/unsubscribe", function() {
-      it("should filter messages", async function() {
+    describe("subscribe/unsubscribe", function () {
+      it("should filter messages", async function () {
         /* PUB  -> foo -X  XSUB -> XPUB -> SUB
                 -> bar ->                  subscribed to "ba"
                 -> baz ->
@@ -123,7 +129,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           for await (const [msg] of xpub) {
             assert.instanceOf(msg, Buffer)
             await xsub.send(msg)
-            if (++subbed === 1) break
+            if (++subbed === 1) {
+              break
+            }
           }
         }
 
@@ -132,7 +140,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           for await (const [msg] of xsub) {
             assert.instanceOf(msg, Buffer)
             await xpub.send(msg)
-            if (++pubbed === 2) break
+            if (++pubbed === 2) {
+              break
+            }
           }
         }
 
@@ -140,7 +150,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           for await (const [msg] of sub) {
             assert.instanceOf(msg, Buffer)
             received.push(msg.toString())
-            if (received.length === 2) break
+            if (received.length === 2) {
+              break
+            }
           }
         }
 
@@ -149,8 +161,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    describe("verbosity", function() {
-      it("should deduplicate subscriptions/unsubscriptions", async function() {
+    describe("verbosity", function () {
+      it("should deduplicate subscriptions/unsubscriptions", async function () {
         const address = uniqAddress(proto)
 
         const subs: Buffer[] = []
@@ -175,7 +187,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
             assert.instanceOf(msg, Buffer)
             await xsub.send(msg)
             subs.push(msg)
-            if (subs.length === 1) break
+            if (subs.length === 1) {
+              break
+            }
           }
         }
 
@@ -185,7 +199,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         sub2.close()
       })
 
-      it("should forward all subscriptions", async function() {
+      it("should forward all subscriptions", async function () {
         const address = uniqAddress(proto)
 
         const subs: Buffer[] = []
@@ -210,7 +224,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
             assert.instanceOf(msg, Buffer)
             await xsub.send(msg)
             subs.push(msg)
-            if (subs.length === 2) break
+            if (subs.length === 2) {
+              break
+            }
           }
         }
 
@@ -223,9 +239,11 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         sub2.close()
       })
 
-      it("should forward all subscriptions/unsubscriptions", async function() {
+      it("should forward all subscriptions/unsubscriptions", async function () {
         /* ZMQ 4.2 first introduced ZMQ_XPUB_VERBOSER. */
-        if (semver.satisfies(zmq.version, "< 4.2")) this.skip()
+        if (semver.satisfies(zmq.version, "< 4.2")) {
+          this.skip()
+        }
 
         const address = uniqAddress(proto)
 
@@ -251,7 +269,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
             assert.instanceOf(msg, Buffer)
             await xsub.send(msg)
             subs.push(msg)
-            if (subs.length === 3) break
+            if (subs.length === 3) {
+              break
+            }
           }
         }
 

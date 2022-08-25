@@ -9,23 +9,23 @@ import {
 } from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`socket with ${proto} events`, function() {
+  describe(`socket with ${proto} events`, function () {
     let sockA: zmq.Dealer
     let sockB: zmq.Dealer
 
-    beforeEach(function() {
+    beforeEach(function () {
       sockA = new zmq.Dealer()
       sockB = new zmq.Dealer()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       sockA.close()
       sockB.close()
       global.gc?.()
     })
 
-    describe("when not connected", function() {
-      it("should receive events", async function() {
+    describe("when not connected", function () {
+      it("should receive events", async function () {
         const done = captureEventsUntil(sockA, "end")
         sockA.close()
 
@@ -34,13 +34,13 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    describe("when connected", function() {
-      it("should return same object", function() {
+    describe("when connected", function () {
+      it("should return same object", function () {
         assert.equal(sockA.events, sockA.events)
       })
 
       if (proto !== "inproc") {
-        it("should receive bind events", async function() {
+        it("should receive bind events", async function () {
           const address = uniqAddress(proto)
 
           const [event] = await Promise.all([
@@ -52,7 +52,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           assert.deepEqual(event, {type: "bind", address})
         })
 
-        it("should receive connect events", async function() {
+        it("should receive connect events", async function () {
           this.slow(250)
           const address = uniqAddress(proto)
 
@@ -67,7 +67,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       }
 
       if (proto === "tcp") {
-        it("should receive error events", async function() {
+        it("should receive error events", async function () {
           const address = uniqAddress(proto)
 
           await sockA.bind(address)
@@ -78,7 +78,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
             }),
           ])
 
-          assert.equal("tcp://" + event.address, address)
+          assert.equal(`tcp://${event.address}`, address)
           assert.instanceOf(event.error, Error)
           assert.equal(event.error.message, "Address already in use")
           assert.equal(event.error.code, "EADDRINUSE")
@@ -86,7 +86,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         })
       }
 
-      it("should receive events with emitter", async function() {
+      it("should receive events with emitter", async function () {
         const address = uniqAddress(proto)
         const events: zmq.Event[] = []
 
@@ -120,7 +120,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           sockB.connect(address),
         ])
 
-        if (proto !== "inproc") await connected
+        if (proto !== "inproc") {
+          await connected
+        }
         sockA.close()
         sockB.close()
 
@@ -136,8 +138,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    describe("when closed automatically", function() {
-      it("should not be able to receive", async function() {
+    describe("when closed automatically", function () {
+      it("should not be able to receive", async function () {
         const events = sockA.events
         sockA.close()
 
@@ -155,7 +157,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should be closed", async function() {
+      it("should be closed", async function () {
         const events = sockA.events
         sockA.close()
         await events.receive()

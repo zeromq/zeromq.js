@@ -5,23 +5,23 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`socket with ${proto} send/receive`, function() {
+  describe(`socket with ${proto} send/receive`, function () {
     let sockA: zmq.Pair
     let sockB: zmq.Pair
 
-    beforeEach(function() {
+    beforeEach(function () {
       sockA = new zmq.Pair({linger: 0})
       sockB = new zmq.Pair({linger: 0})
     })
 
-    afterEach(function() {
+    afterEach(function () {
       sockA.close()
       sockB.close()
       global.gc?.()
     })
 
-    describe("when not applicable", function() {
-      it("should fail sending", function() {
+    describe("when not applicable", function () {
+      it("should fail sending", function () {
         try {
           ;(new zmq.Subscriber() as any).send()
         } catch (err) {
@@ -30,7 +30,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should fail receiving", function() {
+      it("should fail receiving", function () {
         try {
           ;(new zmq.Publisher() as any).receive()
         } catch (err) {
@@ -39,7 +39,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should fail iterating", async function() {
+      it("should fail iterating", async function () {
         try {
           /* eslint-disable-next-line no-empty */
           for await (const msg of new zmq.Publisher() as any) {
@@ -51,21 +51,21 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    describe("when not connected", function() {
-      beforeEach(async function() {
+    describe("when not connected", function () {
+      beforeEach(async function () {
         sockA.sendHighWaterMark = 1
         await sockA.connect(uniqAddress(proto))
       })
 
-      it("should be writable", async function() {
+      it("should be writable", async function () {
         assert.equal(sockA.writable, true)
       })
 
-      it("should not be readable", async function() {
+      it("should not be readable", async function () {
         assert.equal(sockA.readable, false)
       })
 
-      it("should honor send high water mark and timeout", async function() {
+      it("should honor send high water mark and timeout", async function () {
         sockA.sendTimeout = 2
         await sockA.send(Buffer.alloc(8192))
         try {
@@ -79,8 +79,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should copy and release small buffers", async function() {
-        if (process.env.SKIP_GC_TESTS) this.skip()
+      it("should copy and release small buffers", async function () {
+        if (process.env.SKIP_GC_TESTS) {
+          this.skip()
+        }
         const weak = require("weak-napi")
 
         let released = false
@@ -99,8 +101,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.equal(released, true)
       })
 
-      it("should retain large buffers", async function() {
-        if (process.env.SKIP_GC_TESTS) this.skip()
+      it("should retain large buffers", async function () {
+        if (process.env.SKIP_GC_TESTS) {
+          this.skip()
+        }
         const weak = require("weak-napi")
 
         let released = false
@@ -120,28 +124,28 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    describe("when connected", function() {
-      beforeEach(async function() {
+    describe("when connected", function () {
+      beforeEach(async function () {
         const address = uniqAddress(proto)
         await sockB.bind(address)
         await sockA.connect(address)
       })
 
-      it("should be writable", async function() {
+      it("should be writable", async function () {
         assert.equal(sockA.writable, true)
       })
 
-      it("should not be readable", async function() {
+      it("should not be readable", async function () {
         assert.equal(sockA.readable, false)
       })
 
-      it("should be readable if message is available", async function() {
+      it("should be readable if message is available", async function () {
         await sockB.send(Buffer.from("foo"))
         await new Promise(resolve => setTimeout(resolve, 15))
         assert.equal(sockA.readable, true)
       })
 
-      it("should deliver single string message", async function() {
+      it("should deliver single string message", async function () {
         const sent = "foo"
         await sockA.send(sent)
 
@@ -152,7 +156,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         )
       })
 
-      it("should deliver single buffer message", async function() {
+      it("should deliver single buffer message", async function () {
         const sent = Buffer.from("foo")
         await sockA.send(sent)
 
@@ -160,7 +164,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.deepEqual([sent], recv)
       })
 
-      it("should deliver single multipart string message", async function() {
+      it("should deliver single multipart string message", async function () {
         const sent = ["foo", "bar"]
         await sockA.send(sent)
 
@@ -171,7 +175,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         )
       })
 
-      it("should deliver single multipart buffer message", async function() {
+      it("should deliver single multipart buffer message", async function () {
         const sent = [Buffer.from("foo"), Buffer.from("bar")]
         await sockA.send(sent)
 
@@ -179,7 +183,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.deepEqual(sent, recv)
       })
 
-      it("should deliver multiple messages", async function() {
+      it("should deliver multiple messages", async function () {
         const messages = ["foo", "bar", "baz", "qux"]
         for (const msg of messages) {
           await sockA.send(msg)
@@ -188,13 +192,15 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const received: string[] = []
         for await (const msg of sockB) {
           received.push(msg.toString())
-          if (received.length === messages.length) break
+          if (received.length === messages.length) {
+            break
+          }
         }
 
         assert.deepEqual(received, messages)
       })
 
-      it("should deliver typed array and array buffer messages", async function() {
+      it("should deliver typed array and array buffer messages", async function () {
         const messages = [
           Uint8Array.from([0x66, 0x6f, 0x6f]),
           Uint8Array.from([0x66, 0x6f, 0x6f]).buffer,
@@ -209,7 +215,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const received: string[] = []
         for await (const msg of sockB) {
           received.push(msg.toString())
-          if (received.length === messages.length) break
+          if (received.length === messages.length) {
+            break
+          }
         }
 
         assert.deepEqual(received, [
@@ -220,11 +228,11 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         ])
       })
 
-      it("should deliver messages coercible to string", async function() {
+      it("should deliver messages coercible to string", async function () {
         const messages = [
           null,
           /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-          function() {},
+          function () {},
           16.19,
           true,
           {},
@@ -237,7 +245,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const received: string[] = []
         for await (const msg of sockB) {
           received.push(msg.toString())
-          if (received.length === messages.length) break
+          if (received.length === messages.length) {
+            break
+          }
         }
 
         /* Unify different output across Node/TypeScript versions. */
@@ -253,7 +263,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         ])
       })
 
-      it("should poll simultaneously", async function() {
+      it("should poll simultaneously", async function () {
         const sendReceiveA = async () => {
           const [msg1] = await Promise.all([
             sockA.receive(),
@@ -274,7 +284,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.deepEqual(msgs, ["bar", "foo"])
       })
 
-      it("should poll simultaneously after delay", async function() {
+      it("should poll simultaneously after delay", async function () {
         await new Promise(resolve => setTimeout(resolve, 15))
         const sendReceiveA = async () => {
           const [msg1] = await Promise.all([
@@ -296,7 +306,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.deepEqual(msgs, ["bar", "foo"])
       })
 
-      it("should honor receive timeout", async function() {
+      it("should honor receive timeout", async function () {
         sockA.receiveTimeout = 2
         try {
           await sockA.receive()
@@ -309,8 +319,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should release buffers", async function() {
-        if (process.env.SKIP_GC_TESTS) this.skip()
+      it("should release buffers", async function () {
+        if (process.env.SKIP_GC_TESTS) {
+          this.skip()
+        }
         const weak = require("weak-napi")
 
         const n = 10
@@ -346,8 +358,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.equal(released, n * 2)
       })
 
-      it("should release buffers after echo", async function() {
-        if (process.env.SKIP_GC_TESTS) this.skip()
+      it("should release buffers after echo", async function () {
+        if (process.env.SKIP_GC_TESTS) {
+          this.skip()
+        }
         const weak = require("weak-napi")
 
         const n = 10
@@ -393,7 +407,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       if (proto === "inproc") {
-        it("should share memory of large buffers", async function() {
+        it("should share memory of large buffers", async function () {
           const orig = Buffer.alloc(2048)
           await sockA.send(orig)
 
@@ -410,7 +424,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         })
       }
 
-      it("should not starve event loop", async function() {
+      it("should not starve event loop", async function () {
         this.slow(250)
 
         sockA.sendHighWaterMark = 5000
@@ -450,8 +464,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     })
 
     if (proto !== "inproc") {
-      describe("when connected after send/receive", function() {
-        it("should deliver message", async function() {
+      describe("when connected after send/receive", function () {
+        it("should deliver message", async function () {
           const address = uniqAddress(proto)
 
           const sent = "foo"
@@ -469,21 +483,21 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     }
 
-    describe("when closed", function() {
-      beforeEach(function() {
+    describe("when closed", function () {
+      beforeEach(function () {
         sockA.close()
         sockB.close()
       })
 
-      it("should not be writable", async function() {
+      it("should not be writable", async function () {
         assert.equal(sockA.writable, false)
       })
 
-      it("should not be readable", async function() {
+      it("should not be readable", async function () {
         assert.equal(sockA.readable, false)
       })
 
-      it("should not be able to send", async function() {
+      it("should not be able to send", async function () {
         try {
           await sockA.send(Buffer.alloc(8192))
           assert.ok(false)
@@ -495,7 +509,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should not be able to receive", async function() {
+      it("should not be able to receive", async function () {
         try {
           await sockA.receive()
           assert.ok(false)
@@ -508,15 +522,15 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    describe("during close", function() {
-      it("should gracefully stop async iterator", async function() {
+    describe("during close", function () {
+      it("should gracefully stop async iterator", async function () {
         process.nextTick(() => sockA.close())
         /* eslint-disable-next-line no-empty */
         for await (const _ of sockA) {
         }
       })
 
-      it("should not mask other error type in async iterator", async function() {
+      it("should not mask other error type in async iterator", async function () {
         sockA = new zmq.Request()
         process.nextTick(() => sockA.close())
         try {
@@ -536,8 +550,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    describe("concurrently", function() {
-      it("should throw error on concurrent send", async function() {
+    describe("concurrently", function () {
+      it("should throw error on concurrent send", async function () {
         sockA.sendTimeout = 20
         const done = sockA.send(null).catch(() => null)
         try {
@@ -556,7 +570,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should throw error on concurrent receive", async function() {
+      it("should throw error on concurrent receive", async function () {
         sockA.receiveTimeout = 20
         const done = sockA.receive().catch(() => null)
         try {

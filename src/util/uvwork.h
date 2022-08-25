@@ -21,7 +21,8 @@ public:
     }
 
     inline int32_t Schedule(uv_loop_t* loop) {
-        auto err = uv_queue_work(loop, work.get(),
+        auto err = uv_queue_work(
+            loop, work.get(),
             [](uv_work_t* req) {
                 auto& work = *reinterpret_cast<UvWork*>(req->data);
                 work.execute_callback();

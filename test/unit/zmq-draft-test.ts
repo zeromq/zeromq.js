@@ -4,9 +4,9 @@ import * as draft from "../../src/draft"
 import {assert} from "chai"
 
 if (zmq.capability.draft) {
-  describe("zmq draft", function() {
-    describe("exports", function() {
-      it("should include functions and constructors", function() {
+  describe("zmq draft", function () {
+    describe("exports", function () {
+      it("should include functions and constructors", function () {
         const expected = [
           /* Specific socket constructors. */
           "Server",

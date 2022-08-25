@@ -4,23 +4,23 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`socket with ${proto} push/pull`, function() {
+  describe(`socket with ${proto} push/pull`, function () {
     let push: zmq.Push
     let pull: zmq.Pull
 
-    beforeEach(function() {
+    beforeEach(function () {
       push = new zmq.Push()
       pull = new zmq.Pull()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       push.close()
       pull.close()
       global.gc?.()
     })
 
-    describe("send/receive", function() {
-      it("should deliver messages", async function() {
+    describe("send/receive", function () {
+      it("should deliver messages", async function () {
         /* PUSH  -> foo ->  PULL
                  -> bar ->
                  -> baz ->
@@ -41,14 +41,16 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         for await (const [msg] of pull) {
           assert.instanceOf(msg, Buffer)
           received.push(msg.toString())
-          if (received.length === messages.length) break
+          if (received.length === messages.length) {
+            break
+          }
         }
 
         assert.deepEqual(received, messages)
       })
 
       if (proto !== "inproc") {
-        it("should deliver messages with immediate", async function() {
+        it("should deliver messages with immediate", async function () {
           const address = uniqAddress(proto)
           const messages = ["foo", "bar", "baz", "qux"]
           const received: string[] = []
@@ -68,7 +70,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           for await (const [msg] of pull) {
             assert.instanceOf(msg, Buffer)
             received.push(msg.toString())
-            if (received.length === messages.length) break
+            if (received.length === messages.length) {
+              break
+            }
           }
 
           assert.deepEqual(received, messages)

@@ -5,26 +5,26 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`socket with ${proto} close`, function() {
+  describe(`socket with ${proto} close`, function () {
     let sock: zmq.Dealer
 
-    beforeEach(function() {
+    beforeEach(function () {
       sock = new zmq.Dealer()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       sock.close()
       global.gc?.()
     })
 
-    describe("with explicit call", function() {
-      it("should close socket", function() {
+    describe("with explicit call", function () {
+      it("should close socket", function () {
         assert.equal(sock.closed, false)
         sock.close()
         assert.equal(sock.closed, true)
       })
 
-      it("should close socket and cancel send", async function() {
+      it("should close socket and cancel send", async function () {
         assert.equal(sock.closed, false)
         const promise = sock.send(Buffer.from("foo"))
         sock.close()
@@ -39,7 +39,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should close socket and cancel receive", async function() {
+      it("should close socket and cancel receive", async function () {
         assert.equal(sock.closed, false)
         const promise = sock.receive()
         sock.close()
@@ -54,7 +54,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should close after successful bind", async function() {
+      it("should close after successful bind", async function () {
         const promise = sock.bind(uniqAddress(proto))
         sock.close()
         assert.equal(sock.closed, false)
@@ -62,7 +62,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.equal(sock.closed, true)
       })
 
-      it("should close after unsuccessful bind", async function() {
+      it("should close after unsuccessful bind", async function () {
         const address = uniqAddress(proto)
         await sock.bind(address)
         const promise = sock.bind(address)
@@ -77,7 +77,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.equal(sock.closed, true)
       })
 
-      it("should close after successful unbind", async function() {
+      it("should close after successful unbind", async function () {
         const address = uniqAddress(proto)
         await sock.bind(address)
         const promise = sock.unbind(address)
@@ -87,7 +87,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.equal(sock.closed, true)
       })
 
-      it("should close after unsuccessful unbind", async function() {
+      it("should close after unsuccessful unbind", async function () {
         const address = uniqAddress(proto)
         const promise = sock.unbind(address)
         sock.close()
@@ -101,8 +101,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.equal(sock.closed, true)
       })
 
-      it("should release reference to context", async function() {
-        if (process.env.SKIP_GC_TESTS) this.skip()
+      it("should release reference to context", async function () {
+        if (process.env.SKIP_GC_TESTS) {
+          this.skip()
+        }
         this.slow(200)
 
         const weak = require("weak-napi") as typeof import("weak-napi")
@@ -130,10 +132,14 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    describe("in gc finalizer", function() {
-      it("should release reference to context", async function() {
-        if (process.env.SKIP_GC_TESTS) this.skip()
-        if (process.env.SKIP_GC_FINALIZER_TESTS) this.skip()
+    describe("in gc finalizer", function () {
+      it("should release reference to context", async function () {
+        if (process.env.SKIP_GC_TESTS) {
+          this.skip()
+        }
+        if (process.env.SKIP_GC_FINALIZER_TESTS) {
+          this.skip()
+        }
         this.slow(200)
 
         const weak = require("weak-napi") as typeof import("weak-napi")

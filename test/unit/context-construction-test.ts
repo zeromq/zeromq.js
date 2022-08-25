@@ -2,12 +2,12 @@ import * as zmq from "../../src"
 
 import {assert} from "chai"
 
-describe("context construction", function() {
-  afterEach(function() {
+describe("context construction", function () {
+  afterEach(function () {
     global.gc?.()
   })
 
-  it("should throw if called as function", function() {
+  it("should throw if called as function", function () {
     assert.throws(
       () => (zmq.Context as any)(),
       TypeError,
@@ -15,7 +15,7 @@ describe("context construction", function() {
     )
   })
 
-  it("should throw with wrong options argument", function() {
+  it("should throw with wrong options argument", function () {
     assert.throws(
       () => new (zmq.Context as any)(1),
       TypeError,
@@ -23,7 +23,7 @@ describe("context construction", function() {
     )
   })
 
-  it("should throw with too many arguments", function() {
+  it("should throw with too many arguments", function () {
     assert.throws(
       () => new (zmq.Context as any)({}, 2),
       TypeError,
@@ -31,12 +31,12 @@ describe("context construction", function() {
     )
   })
 
-  it("should set option", function() {
+  it("should set option", function () {
     const context = new zmq.Context({ioThreads: 5})
     assert.equal(context.ioThreads, 5)
   })
 
-  it("should throw with invalid option value", function() {
+  it("should throw with invalid option value", function () {
     assert.throws(
       () => new (zmq.Context as any)({ioThreads: "hello"}),
       TypeError,
@@ -44,7 +44,7 @@ describe("context construction", function() {
     )
   })
 
-  it("should throw with readonly option", function() {
+  it("should throw with readonly option", function () {
     assert.throws(
       () => new (zmq.Context as any)({maxSocketsLimit: 1}),
       TypeError,
@@ -52,7 +52,7 @@ describe("context construction", function() {
     )
   })
 
-  it("should throw with unknown option", function() {
+  it("should throw with unknown option", function () {
     assert.throws(
       () => new (zmq.Context as any)({doesNotExist: 1}),
       TypeError,

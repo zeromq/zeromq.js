@@ -4,25 +4,25 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`socket with ${proto} bind/unbind`, function() {
+  describe(`socket with ${proto} bind/unbind`, function () {
     let sock: zmq.Dealer
 
-    beforeEach(function() {
+    beforeEach(function () {
       sock = new zmq.Dealer()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       sock.close()
       global.gc?.()
     })
 
-    describe("bind", function() {
-      it("should resolve", async function() {
+    describe("bind", function () {
+      it("should resolve", async function () {
         await sock.bind(uniqAddress(proto))
         assert.ok(true)
       })
 
-      it("should throw error if not bound to endpoint", async function() {
+      it("should throw error if not bound to endpoint", async function () {
         const address = uniqAddress(proto)
         try {
           await sock.unbind(address)
@@ -36,7 +36,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should throw error for invalid uri", async function() {
+      it("should throw error for invalid uri", async function () {
         try {
           await sock.bind("foo-bar")
           assert.ok(false)
@@ -49,7 +49,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should throw error for invalid protocol", async function() {
+      it("should throw error for invalid protocol", async function () {
         try {
           await sock.bind("foo://bar")
           assert.ok(false)
@@ -62,7 +62,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should fail during other bind", async function() {
+      it("should fail during other bind", async function () {
         let promise
         try {
           promise = sock.bind(uniqAddress(proto))
@@ -81,15 +81,15 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
     })
 
-    describe("unbind", function() {
-      it("should unbind", async function() {
+    describe("unbind", function () {
+      it("should unbind", async function () {
         const address = uniqAddress(proto)
         await sock.bind(address)
         await sock.unbind(address)
         assert.ok(true)
       })
 
-      it("should throw error for invalid uri", async function() {
+      it("should throw error for invalid uri", async function () {
         try {
           await sock.unbind("foo-bar")
           assert.ok(false)
@@ -102,7 +102,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should throw error for invalid protocol", async function() {
+      it("should throw error for invalid protocol", async function () {
         try {
           await sock.unbind("foo://bar")
           assert.ok(false)
@@ -115,7 +115,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should fail during other unbind", async function() {
+      it("should fail during other unbind", async function () {
         let promise
         const address = uniqAddress(proto)
         await sock.bind(address)
