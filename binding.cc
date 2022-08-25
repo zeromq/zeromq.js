@@ -1555,4 +1555,4 @@ extern "C" NAN_MODULE_INIT(init) {
   zmq::Initialize(target);
 }
 
-NODE_MODULE(zmq, init)
+NAN_MODULE_WORKER_ENABLED(zmq, init)
