@@ -325,7 +325,7 @@ class Socket extends EventEmitter {
         }
       }
     } catch (err) {
-      if (!this._socket.closed && err.code !== "EBUSY") {
+      if (!this._socket.closed && (err as {code?: string}).code !== "EBUSY") {
         process.nextTick(() => this.emit("error", err))
       }
     }
@@ -348,7 +348,7 @@ class Socket extends EventEmitter {
         }
       } catch (err) {
         if (cb) {
-          cb(err)
+          cb(err as Error)
         } else {
           this.emit("error", err)
         }
