@@ -97,7 +97,8 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
     auto front_ptr = front->socket;
     auto back_ptr = back->socket;
 
-    auto status = UvQueue(Env(),
+    auto status = UvQueue(
+        Env(),
         [=]() {
             /* Don't access V8 internals here! Executed in worker thread. */
             if (zmq_bind(control_sub, run_ctx->address.c_str()) < 0) {

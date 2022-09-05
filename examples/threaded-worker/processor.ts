@@ -39,7 +39,9 @@ export class Processor {
     const output: string[] = Array.from({length: input.length})
     for await (const [pos, res] of this.output) {
       output[parseInt(pos.toString(), 10)] = res.toString()
-      if (output.every(el => el !== undefined)) break
+      if (output.every(el => el !== undefined)) {
+        break
+      }
     }
 
     return output.join("")

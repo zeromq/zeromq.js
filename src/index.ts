@@ -56,7 +56,7 @@ export type MessageLike =
  */
 export interface Writable<
   M extends MessageLike | MessageLike[] = MessageLike | MessageLike[],
-  O extends [...object[]] = []
+  O extends [...object[]] = [],
 > {
   /**
    * ZMQ_MULTICAST_HOPS
@@ -1636,7 +1636,7 @@ function defineOpt<T, K extends WritableKeys<PrototypeOf<T>>>(
    set if the property has been defined as readonly in the interface/class. */
 function defineOpt<
   T extends {prototype: any},
-  K extends ReadableKeys<PrototypeOf<T>>
+  K extends ReadableKeys<PrototypeOf<T>>,
 >(
   targets: T[],
   name: K,
@@ -1674,7 +1674,9 @@ function defineOpt<
   }
 
   for (const target of targets) {
-    if (target.prototype.hasOwnProperty(name)) continue
+    if (target.prototype.hasOwnProperty(name)) {
+      continue
+    }
     Object.defineProperty(target.prototype, name, desc)
   }
 }

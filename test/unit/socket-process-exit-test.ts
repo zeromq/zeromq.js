@@ -3,9 +3,9 @@ import * as zmq from "../../src"
 import {assert} from "chai"
 import {createProcess} from "./helpers"
 
-describe("socket process exit", function() {
+describe("socket process exit", function () {
   /* Reported: https://github.com/nodejs/node-addon-api/issues/591 */
-  it.skip("should occur cleanly when sending in exit hook", async function() {
+  it.skip("should occur cleanly when sending in exit hook", async function () {
     this.slow(200)
     const {code} = await createProcess(async () => {
       const sockA = new zmq.Pair()
@@ -23,7 +23,7 @@ describe("socket process exit", function() {
     assert.equal(code, 0)
   })
 
-  it("should occur cleanly when sending on unbound socket", async function() {
+  it("should occur cleanly when sending on unbound socket", async function () {
     this.slow(200)
     const {code} = await createProcess(async () => {
       const sock = new zmq.Publisher()
@@ -33,7 +33,7 @@ describe("socket process exit", function() {
     assert.equal(code, 0)
   })
 
-  it("should not occur when sending and blocked on unbound socket", async function() {
+  it("should not occur when sending and blocked on unbound socket", async function () {
     this.slow(1000)
     const {code} = await createProcess(async () => {
       const sock = new zmq.Dealer()
@@ -43,7 +43,7 @@ describe("socket process exit", function() {
     assert.equal(code, -1)
   })
 
-  it("should occur cleanly on socket close when reading events", async function() {
+  it("should occur cleanly on socket close when reading events", async function () {
     this.slow(200)
     const {code} = await createProcess(() => {
       const sock = new zmq.Dealer()
@@ -62,7 +62,7 @@ describe("socket process exit", function() {
     assert.equal(code, 0)
   })
 
-  it("should not occur while reading events", async function() {
+  it("should not occur while reading events", async function () {
     this.slow(1000)
     const {code} = await createProcess(async () => {
       const sock = new zmq.Dealer()

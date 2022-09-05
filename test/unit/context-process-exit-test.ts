@@ -4,9 +4,9 @@ import * as zmq from "../../src"
 import {assert} from "chai"
 import {createProcess} from "./helpers"
 
-describe("context process exit", function() {
-  describe("with default context", function() {
-    it("should occur when sockets are closed", async function() {
+describe("context process exit", function () {
+  describe("with default context", function () {
+    it("should occur when sockets are closed", async function () {
       this.slow(200)
       const {code} = await createProcess(() => {
         const socket1 = new zmq.Dealer()
@@ -18,7 +18,7 @@ describe("context process exit", function() {
       assert.equal(code, 0)
     })
 
-    it("should occur when sockets are not closed", async function() {
+    it("should occur when sockets are not closed", async function () {
       this.slow(200)
       const {code} = await createProcess(() => {
         const socket1 = new zmq.Dealer()
@@ -28,7 +28,7 @@ describe("context process exit", function() {
       assert.equal(code, 0)
     })
 
-    it("should not occur when sockets are open and polling", async function() {
+    it("should not occur when sockets are open and polling", async function () {
       this.slow(1000)
       const {code} = await createProcess(() => {
         const socket1 = new zmq.Dealer()
@@ -39,7 +39,7 @@ describe("context process exit", function() {
       assert.equal(code, -1)
     })
 
-    it("should produce warning when messages are queued with blocky", async function() {
+    it("should produce warning when messages are queued with blocky", async function () {
       this.slow(2000)
       const {stderr} = await createProcess(() => {
         zmq.context.blocky = true
@@ -61,7 +61,7 @@ describe("context process exit", function() {
       }
     })
 
-    it("should produce warning when messages are queued without blocky", async function() {
+    it("should produce warning when messages are queued without blocky", async function () {
       this.slow(2000)
       const {stderr} = await createProcess(() => {
         zmq.context.blocky = false
@@ -76,7 +76,7 @@ describe("context process exit", function() {
       )
     })
 
-    it("should not produce warning when messages are queued for a short time", async function() {
+    it("should not produce warning when messages are queued for a short time", async function () {
       this.slow(1000)
       const {stderr} = await createProcess(() => {
         zmq.context.blocky = true
@@ -89,8 +89,8 @@ describe("context process exit", function() {
     })
   })
 
-  describe("with custom context", function() {
-    it("should occur when sockets are closed", async function() {
+  describe("with custom context", function () {
+    it("should occur when sockets are closed", async function () {
       this.slow(200)
       const {code} = await createProcess(() => {
         const context = new zmq.Context()
@@ -103,7 +103,7 @@ describe("context process exit", function() {
       assert.equal(code, 0)
     })
 
-    it("should occur when sockets are closed and context is gced", async function() {
+    it("should occur when sockets are closed and context is gced", async function () {
       this.slow(200)
       const {code} = await createProcess(() => {
         function run() {
@@ -121,7 +121,7 @@ describe("context process exit", function() {
       assert.equal(code, 0)
     })
 
-    it("should occur when sockets are not closed", async function() {
+    it("should occur when sockets are not closed", async function () {
       this.slow(200)
       const {code} = await createProcess(() => {
         const context = new zmq.Context()
@@ -132,7 +132,7 @@ describe("context process exit", function() {
       assert.equal(code, 0)
     })
 
-    it("should not occur when sockets are open and polling", async function() {
+    it("should not occur when sockets are open and polling", async function () {
       this.slow(1000)
       const {code} = await createProcess(() => {
         const context = new zmq.Context()

@@ -4,13 +4,14 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const {testProtos, uniqAddress} = require("../helpers")
 
   for (const proto of testProtos("tcp", "inproc")) {
-    describe(`compat socket with ${proto} router`, function() {
-      it("should handle unroutable messages", function(done) {
+    describe(`compat socket with ${proto} router`, function () {
+      it("should handle unroutable messages", function (done) {
         let complete = 0
 
         const envelope = "12384982398293"
 
-        const errMsgs = require("os").platform() === "win32" ? ["Unknown error"] : []
+        const errMsgs =
+          require("os").platform() === "win32" ? ["Unknown error"] : []
         errMsgs.push("No route to host")
         errMsgs.push("Resource temporarily unavailable")
         errMsgs.push("Host unreachable")
@@ -27,7 +28,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         sockA.on("error", err => {
           sockA.close()
           assertRouteError(err)
-          if (++complete === 2) done()
+          if (++complete === 2) {
+            done()
+          }
         })
 
         sockA.setsockopt(zmq.ZMQ_ROUTER_MANDATORY, 1)
@@ -63,10 +66,12 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         sockC.send([envelope, ""])
         sockC.close()
 
-        if (++complete === 2) done()
+        if (++complete === 2) {
+          done()
+        }
       })
 
-      it("should handle router-dealer message bursts", function(done) {
+      it("should handle router-dealer message bursts", function (done) {
         this.slow(150)
         // tests https://github.com/JustinTulloss/zeromq.node/issues/523
         // based on https://gist.github.com/messa/862638ab44ca65f712fe4d6ef79aeb67
@@ -80,13 +85,15 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         let counted = 0
 
         router.bind(address, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
 
-          router.on("message", function(...msg) {
+          router.on("message", function (...msg) {
             router.send(msg)
           })
 
-          dealer.on("message", function(part1, part2, part3, part4, part5) {
+          dealer.on("message", function (part1, part2, part3, part4, part5) {
             assert.equal(part1.toString(), "Hello")
             assert.equal(part2.toString(), "world")
             assert.equal(part3.toString(), "part3")

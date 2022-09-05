@@ -392,7 +392,7 @@ export declare class Observer {
  */
 export declare class Proxy<
   F extends Socket = Socket,
-  B extends Socket = Socket
+  B extends Socket = Socket,
 > {
   /**
    * Returns the original front-end socket.
@@ -646,7 +646,7 @@ export const enum SocketType {
 
 /* https://stackoverflow.com/questions/49579094 */
 type IfEquals<X, Y, A, B = never> = (<T>() => T extends X ? 1 : 2) extends <
-  T
+  T,
 >() => T extends Y ? 1 : 2
   ? A
   : B

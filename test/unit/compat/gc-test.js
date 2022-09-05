@@ -4,8 +4,8 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const {testProtos, uniqAddress} = require("../helpers")
 
   for (const proto of testProtos("tcp", "inproc")) {
-    describe(`compat socket with ${proto}`, function() {
-      it("should cooperate with gc", function(done) {
+    describe(`compat socket with ${proto}`, function () {
+      it("should cooperate with gc", function (done) {
         const sockA = zmq.socket("dealer")
         const sockB = zmq.socket("dealer")
 
@@ -18,7 +18,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
          * If a message is delivered, than everything is ok. Otherwise the guard
          * timeout will make the test fail.
          */
-        sockA.on("message", function(msg) {
+        sockA.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)
           assert.equal(msg.toString(), "hello")
           sockA.close()
@@ -38,7 +38,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           }
         })
 
-        let interval = setInterval(function() {
+        const interval = setInterval(function () {
           global.gc?.()
           if (bound) {
             clearInterval(interval)

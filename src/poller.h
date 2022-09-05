@@ -67,7 +67,8 @@ public:
         assert((events & UV_READABLE) == 0);
 
         if (timeout > 0) {
-            auto err = uv_timer_start(readable_timer,
+            auto err = uv_timer_start(
+                readable_timer,
                 [](uv_timer_t* timer) {
                     auto& poller = *reinterpret_cast<Poller*>(timer->data);
                     poller.Trigger(UV_READABLE);
@@ -90,7 +91,8 @@ public:
         assert((events & UV_WRITABLE) == 0);
 
         if (timeout > 0) {
-            auto err = uv_timer_start(writable_timer,
+            auto err = uv_timer_start(
+                writable_timer,
                 [](uv_timer_t* timer) {
                     auto& poller = *reinterpret_cast<Poller*>(timer->data);
                     poller.Trigger(UV_WRITABLE);

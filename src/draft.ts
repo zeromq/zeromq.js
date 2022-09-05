@@ -50,11 +50,15 @@ export class Dish extends Socket {
      the sake of simplicity. */
 
   join(...values: Array<Buffer | string>): void {
-    for (const value of values) join.call(this, value)
+    for (const value of values) {
+      join.call(this, value)
+    }
   }
 
   leave(...values: Array<Buffer | string>): void {
-    for (const value of values) leave.call(this, value)
+    for (const value of values) {
+      leave.call(this, value)
+    }
   }
 }
 

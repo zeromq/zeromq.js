@@ -350,7 +350,8 @@ Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
     auto res = Napi::Promise::Deferred::New(Env());
     auto run_ctx = std::make_shared<AddressContext>(info[0].As<Napi::String>());
 
-    auto status = UvQueue(Env(),
+    auto status = UvQueue(
+        Env(),
         [=]() {
             /* Don't access V8 internals here! Executed in worker thread. */
             while (zmq_bind(socket, run_ctx->address.c_str()) < 0) {
@@ -400,7 +401,8 @@ Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
     auto res = Napi::Promise::Deferred::New(Env());
     auto run_ctx = std::make_shared<AddressContext>(info[0].As<Napi::String>());
 
-    auto status = UvQueue(Env(),
+    auto status = UvQueue(
+        Env(),
         [=]() {
             /* Don't access V8 internals here! Executed in worker thread. */
             while (zmq_unbind(socket, run_ctx->address.c_str()) < 0) {

@@ -4,14 +4,14 @@ import * as zmq from "../../src"
 import {assert} from "chai"
 import {uniqAddress} from "./helpers"
 
-describe("socket options", function() {
+describe("socket options", function () {
   let warningListeners: NodeJS.WarningListener[]
 
-  beforeEach(function() {
+  beforeEach(function () {
     warningListeners = process.listeners("warning")
   })
 
-  afterEach(function() {
+  afterEach(function () {
     process.removeAllListeners("warning")
     for (const listener of warningListeners) {
       process.on("warning", listener as (warning: Error) => void)
@@ -20,42 +20,42 @@ describe("socket options", function() {
     global.gc?.()
   })
 
-  it("should set and get bool socket option", function() {
+  it("should set and get bool socket option", function () {
     const sock = new zmq.Dealer()
     assert.equal(sock.immediate, false)
     sock.immediate = true
     assert.equal(sock.immediate, true)
   })
 
-  it("should set and get int32 socket option", function() {
+  it("should set and get int32 socket option", function () {
     const sock = new zmq.Dealer()
     assert.equal(sock.backlog, 100)
     sock.backlog = 75
     assert.equal(sock.backlog, 75)
   })
 
-  it("should set and get int64 socket option", function() {
+  it("should set and get int64 socket option", function () {
     const sock = new zmq.Dealer()
     assert.equal(sock.maxMessageSize, -1)
     sock.maxMessageSize = 0xffffffff
     assert.equal(sock.maxMessageSize, 0xffffffff)
   })
 
-  it("should set and get string socket option", function() {
+  it("should set and get string socket option", function () {
     const sock = new zmq.Dealer()
     assert.equal(sock.routingId, null)
     sock.routingId = "åbçdéfghïjk"
     assert.equal(sock.routingId, "åbçdéfghïjk")
   })
 
-  it("should set and get string socket option as buffer", function() {
+  it("should set and get string socket option as buffer", function () {
     const sock = new zmq.Dealer()
     assert.equal(sock.routingId, null)
     ;(sock as any).routingId = Buffer.from("åbçdéfghïjk")
     assert.equal(sock.routingId, "åbçdéfghïjk")
   })
 
-  it("should set and get string socket option to undefined", function() {
+  it("should set and get string socket option to undefined", function () {
     if (semver.satisfies(zmq.version, "> 4.2.3")) {
       /* As of ZMQ 4.2.4, zap domain can no longer be reset to null. */
       const sock = new zmq.Dealer()
@@ -75,28 +75,28 @@ describe("socket options", function() {
     }
   })
 
-  it("should set and get bool socket option", function() {
+  it("should set and get bool socket option", function () {
     const sock = new zmq.Dealer()
     assert.equal((sock as any).getBoolOption(39), false)
     ;(sock as any).setBoolOption(39, true)
     assert.equal((sock as any).getBoolOption(39), true)
   })
 
-  it("should set and get int32 socket option", function() {
+  it("should set and get int32 socket option", function () {
     const sock = new zmq.Dealer()
     assert.equal((sock as any).getInt32Option(19), 100)
     ;(sock as any).setInt32Option(19, 75)
     assert.equal((sock as any).getInt32Option(19), 75)
   })
 
-  it("should set and get int64 socket option", function() {
+  it("should set and get int64 socket option", function () {
     const sock = new zmq.Dealer()
     assert.equal((sock as any).getInt64Option(22), -1)
     ;(sock as any).setInt64Option(22, 0xffffffffffff)
     assert.equal((sock as any).getInt64Option(22), 0xffffffffffff)
   })
 
-  it("should set and get uint64 socket option", function() {
+  it("should set and get uint64 socket option", function () {
     process.removeAllListeners("warning")
 
     const sock = new zmq.Dealer()
@@ -105,21 +105,21 @@ describe("socket options", function() {
     assert.equal((sock as any).getUint64Option(4), 0xffffffffffffffff)
   })
 
-  it("should set and get string socket option", function() {
+  it("should set and get string socket option", function () {
     const sock = new zmq.Dealer()
     assert.equal((sock as any).getStringOption(5), null)
     ;(sock as any).setStringOption(5, "åbçdéfghïjk")
     assert.equal((sock as any).getStringOption(5), "åbçdéfghïjk")
   })
 
-  it("should set and get string socket option as buffer", function() {
+  it("should set and get string socket option as buffer", function () {
     const sock = new zmq.Dealer()
     assert.equal((sock as any).getStringOption(5), null)
     ;(sock as any).setStringOption(5, Buffer.from("åbçdéfghïjk"))
     assert.equal((sock as any).getStringOption(5), "åbçdéfghïjk")
   })
 
-  it("should set and get string socket option to null", function() {
+  it("should set and get string socket option to null", function () {
     if (semver.satisfies(zmq.version, "> 4.2.3")) {
       /* As of ZMQ 4.2.4, zap domain can no longer be reset to null. */
       const sock = new zmq.Dealer()
@@ -145,7 +145,7 @@ describe("socket options", function() {
     }
   })
 
-  it("should throw for readonly option", function() {
+  it("should throw for readonly option", function () {
     const sock = new zmq.Dealer()
     assert.throws(
       () => ((sock as any).securityMechanism = 1),
@@ -154,7 +154,7 @@ describe("socket options", function() {
     )
   })
 
-  it("should throw for unknown option", function() {
+  it("should throw for unknown option", function () {
     const sock = new zmq.Dealer()
     assert.throws(
       () => ((sock as any).doesNotExist = 1),
@@ -163,30 +163,32 @@ describe("socket options", function() {
     )
   })
 
-  it("should get mechanism", function() {
+  it("should get mechanism", function () {
     const sock = new zmq.Dealer()
     assert.equal(sock.securityMechanism, null)
     sock.plainServer = true
     assert.equal(sock.securityMechanism, "plain")
   })
 
-  describe("warnings", function() {
-    beforeEach(function() {
+  describe("warnings", function () {
+    beforeEach(function () {
       /* ZMQ < 4.2 fails with assertion errors with inproc.
          See: https://github.com/zeromq/libzmq/pull/2123/files */
-      if (semver.satisfies(zmq.version, "< 4.2")) this.skip()
+      if (semver.satisfies(zmq.version, "< 4.2")) {
+        this.skip()
+      }
 
       warningListeners = process.listeners("warning")
     })
 
-    afterEach(function() {
+    afterEach(function () {
       process.removeAllListeners("warning")
       for (const listener of warningListeners) {
         process.on("warning", listener as (warning: Error) => void)
       }
     })
 
-    it("should be emitted for set after connect", async function() {
+    it("should be emitted for set after connect", async function () {
       const warnings: Error[] = []
       process.removeAllListeners("warning")
       process.on("warning", warning => warnings.push(warning))
@@ -204,7 +206,7 @@ describe("socket options", function() {
       sock.close()
     })
 
-    it("should be emitted for set during bind", async function() {
+    it("should be emitted for set during bind", async function () {
       const warnings: Error[] = []
       process.removeAllListeners("warning")
       process.on("warning", warning => warnings.push(warning))
@@ -223,7 +225,7 @@ describe("socket options", function() {
       sock.close()
     })
 
-    it("should be emitted for set after bind", async function() {
+    it("should be emitted for set after bind", async function () {
       const warnings: Error[] = []
       process.removeAllListeners("warning")
       process.on("warning", warning => warnings.push(warning))
@@ -241,7 +243,7 @@ describe("socket options", function() {
       sock.close()
     })
 
-    it("should be emitted when setting large uint64 socket option", async function() {
+    it("should be emitted when setting large uint64 socket option", async function () {
       const warnings: Error[] = []
       process.removeAllListeners("warning")
       process.on("warning", warning => warnings.push(warning))

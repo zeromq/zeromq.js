@@ -2,13 +2,13 @@ import * as zmq from "../../src"
 
 import {assert} from "chai"
 
-describe("socket construction", function() {
-  afterEach(function() {
+describe("socket construction", function () {
+  afterEach(function () {
     global.gc?.()
   })
 
-  describe("with constructor", function() {
-    it("should throw if called as function", function() {
+  describe("with constructor", function () {
+    it("should throw if called as function", function () {
       assert.throws(
         () => (zmq.Socket as any)(1, new zmq.Context()),
         TypeError,
@@ -16,7 +16,7 @@ describe("socket construction", function() {
       )
     })
 
-    it("should throw with too few arguments", function() {
+    it("should throw with too few arguments", function () {
       assert.throws(
         () => new (zmq.Socket as any)(),
         TypeError,
@@ -24,7 +24,7 @@ describe("socket construction", function() {
       )
     })
 
-    it("should throw with too many arguments", function() {
+    it("should throw with too many arguments", function () {
       assert.throws(
         () => new (zmq.Socket as any)(1, new zmq.Context(), 2),
         TypeError,
@@ -32,7 +32,7 @@ describe("socket construction", function() {
       )
     })
 
-    it("should throw with wrong options argument", function() {
+    it("should throw with wrong options argument", function () {
       assert.throws(
         () => new (zmq.Socket as any)(3, 1),
         TypeError,
@@ -40,7 +40,7 @@ describe("socket construction", function() {
       )
     })
 
-    it("should throw with wrong type argument", function() {
+    it("should throw with wrong type argument", function () {
       assert.throws(
         () => new (zmq.Socket as any)("foo", new zmq.Context()),
         TypeError,
@@ -48,7 +48,7 @@ describe("socket construction", function() {
       )
     })
 
-    it("should throw with wrong type id", function() {
+    it("should throw with wrong type id", function () {
       try {
         new (zmq.Socket as any)(37, new zmq.Context())
         assert.ok(false)
@@ -60,7 +60,7 @@ describe("socket construction", function() {
       }
     })
 
-    it("should throw with invalid context", function() {
+    it("should throw with invalid context", function () {
       try {
         new (zmq.Socket as any)(1, {context: {}})
         assert.ok(false)
@@ -73,7 +73,7 @@ describe("socket construction", function() {
       }
     })
 
-    it("should create socket with default context", function() {
+    it("should create socket with default context", function () {
       class MySocket extends zmq.Socket {
         constructor() {
           super(1)
@@ -85,7 +85,7 @@ describe("socket construction", function() {
       assert.equal(sock1.context, sock2.context)
     })
 
-    it("should create socket with given context", function() {
+    it("should create socket with given context", function () {
       class MySocket extends zmq.Socket {
         constructor(opts: zmq.SocketOptions<MySocket>) {
           super(1, opts)
@@ -98,8 +98,8 @@ describe("socket construction", function() {
     })
   })
 
-  describe("with child constructor", function() {
-    it("should throw if called as function", function() {
+  describe("with child constructor", function () {
+    it("should throw if called as function", function () {
       assert.throws(
         () => (zmq.Dealer as any)(),
         TypeError,
@@ -107,25 +107,25 @@ describe("socket construction", function() {
       )
     })
 
-    it("should create socket with default context", function() {
+    it("should create socket with default context", function () {
       const sock = new zmq.Dealer()
       assert.instanceOf(sock, zmq.Dealer)
       assert.equal(sock.context, zmq.context)
     })
 
-    it("should create socket with given context", function() {
+    it("should create socket with given context", function () {
       const ctxt = new zmq.Context()
       const sock = new zmq.Dealer({context: ctxt})
       assert.instanceOf(sock, zmq.Socket)
       assert.equal(sock.context, ctxt)
     })
 
-    it("should set option", function() {
+    it("should set option", function () {
       const sock = new zmq.Dealer({recoveryInterval: 5})
       assert.equal(sock.recoveryInterval, 5)
     })
 
-    it("should throw with invalid option value", function() {
+    it("should throw with invalid option value", function () {
       assert.throws(
         () => new (zmq.Dealer as any)({recoveryInterval: "hello"}),
         TypeError,
@@ -133,7 +133,7 @@ describe("socket construction", function() {
       )
     })
 
-    it("should throw with readonly option", function() {
+    it("should throw with readonly option", function () {
       assert.throws(
         () => new (zmq.Dealer as any)({securityMechanism: 1}),
         TypeError,
@@ -141,7 +141,7 @@ describe("socket construction", function() {
       )
     })
 
-    it("should throw with unknown option", function() {
+    it("should throw with unknown option", function () {
       assert.throws(
         () => new (zmq.Dealer as any)({doesNotExist: 1}),
         TypeError,
@@ -149,7 +149,7 @@ describe("socket construction", function() {
       )
     })
 
-    it("should throw with invalid type", function() {
+    it("should throw with invalid type", function () {
       assert.throws(
         () => new (zmq.Socket as any)(4591),
         Error,
@@ -158,7 +158,7 @@ describe("socket construction", function() {
     })
 
     if (!zmq.capability.draft) {
-      it("should throw with draft type", function() {
+      it("should throw with draft type", function () {
         assert.throws(
           () => new (zmq.Socket as any)(14),
           Error,
@@ -167,7 +167,7 @@ describe("socket construction", function() {
       })
     }
 
-    it("should throw error on file descriptor limit", async function() {
+    it("should throw error on file descriptor limit", async function () {
       const context = new zmq.Context({maxSockets: 10})
       const sockets = []
       const n = 10
