@@ -181,7 +181,7 @@
               'xcode_settings': {
                 'CLANG_CXX_LIBRARY': 'libc++',
                 'CLANG_CXX_LANGUAGE_STANDARD': 'c++17',
-                'MACOSX_DEPLOYMENT_TARGET': '10.9',
+                'MACOSX_DEPLOYMENT_TARGET': '10.15',
                 # 'LLVM_LTO': 'YES',
                 'GCC_OPTIMIZATION_LEVEL': '3',
                 'DEPLOYMENT_POSTPROCESSING': 'YES',
