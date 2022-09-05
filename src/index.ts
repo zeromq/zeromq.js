@@ -30,7 +30,6 @@ import {
 import * as draft from "./draft"
 import {FullError} from "./errors"
 
-
 /**
  * A type representing the messages that are returned inside promises by
  * {@link Readable.receive}().
