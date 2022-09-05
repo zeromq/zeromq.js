@@ -4,23 +4,23 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`socket with ${proto} pair/pair`, function() {
+  describe(`socket with ${proto} pair/pair`, function () {
     let sockA: zmq.Pair
     let sockB: zmq.Pair
 
-    beforeEach(function() {
+    beforeEach(function () {
       sockA = new zmq.Pair()
       sockB = new zmq.Pair()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       sockA.close()
       sockB.close()
-      global.gc()
+      global.gc?.()
     })
 
-    describe("send/receive", function() {
-      it("should deliver messages", async function() {
+    describe("send/receive", function () {
+      it("should deliver messages", async function () {
         /* PAIR  -> foo ->  PAIR
            [A]   -> bar ->  [B]
                  -> baz ->  responds when received
@@ -51,7 +51,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
           for await (const msg of sockA) {
             received.push(msg.toString())
-            if (received.length === messages.length) break
+            if (received.length === messages.length) {
+              break
+            }
           }
 
           sockB.close()

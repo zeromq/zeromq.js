@@ -7,20 +7,20 @@ import {testProtos, uniqAddress} from "./helpers"
 
 if (zmq.capability.draft) {
   for (const proto of testProtos("udp")) {
-    describe(`draft socket with ${proto} dgram`, function() {
+    describe(`draft socket with ${proto} dgram`, function () {
       let dgram: draft.Datagram
 
-      beforeEach(function() {
+      beforeEach(function () {
         dgram = new draft.Datagram()
       })
 
-      afterEach(function() {
+      afterEach(function () {
         dgram.close()
-        global.gc()
+        global.gc?.()
       })
 
-      describe("send/receive", function() {
-        it("should deliver messages", async function() {
+      describe("send/receive", function () {
+        it("should deliver messages", async function () {
           const messages = ["foo", "bar", "baz", "qux"]
           const address = uniqAddress(proto)
           const port = parseInt(address.split(":").pop()!, 10)
@@ -58,7 +58,7 @@ if (zmq.capability.draft) {
     })
   }
 } else {
-  if (process.env.ZMQ_DRAFT) {
+  if (process.env.ZMQ_DRAFT === "true") {
     throw new Error("Draft API requested but not available at runtime.")
   }
 }

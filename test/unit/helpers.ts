@@ -37,12 +37,18 @@ export function testProtos(...requested: Proto[]) {
   const set = new Set(requested)
 
   /* Do not test with ipc if unsupported. */
-  if (!zmq.capability.ipc) set.delete("ipc")
+  if (!zmq.capability.ipc) {
+    set.delete("ipc")
+  }
 
   /* Only test inproc with version 4.2+, earlier versions are unreliable. */
-  if (semver.satisfies(zmq.version, "< 4.2")) set.delete("inproc")
+  if (semver.satisfies(zmq.version, "< 4.2")) {
+    set.delete("inproc")
+  }
 
-  if (!set.size) console.error("Warning: test protocol set is empty")
+  if (!set.size) {
+    console.error("Warning: test protocol set is empty")
+  }
 
   return [...set]
 }
@@ -144,7 +150,9 @@ export async function captureEventsUntil(
 
   for await (const event of socket.events) {
     events.push(event)
-    if (event.type === type) break
+    if (event.type === type) {
+      break
+    }
   }
 
   return events

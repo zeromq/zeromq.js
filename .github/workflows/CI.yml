@@ -2,10 +2,8 @@ name: CI
 on:
   pull_request:
   push:
-
-defaults:
-  run:
-    shell: bash
+    branches:
+      - master
 
 jobs:
   Build:
@@ -16,27 +14,76 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - macos-latest
-          - windows-latest
+          - macos-11
+          - windows-2019
         node_version:
           - 14
         node_arch:
           - x64
-        include:
-          - os: windows-latest
-            node_version: 14
-            node_arch: x86
-          # - os: macos-11.0
-          #   node_version: 15
-          #   node_arch: arm64
+        zmq_draft:
+          - false
+        zmq_shared:
+          - false
+        zmq_version:
+          - 4.3.4
+        skip_gc_finalizer_tests:
+          - true
+
+        # include:
+        # - os: windows-latest
+        #   node_version: 14
+        #   node_arch: x86
+        #   zmq_draft: false
+        #   zmq_shared: false
+        #   skip_gc_finalizer_tests: true
+
+        # - os: macos-11.0
+        #   node_version: 15
+        #   node_arch: arm64
+        #   zmq_draft: false
+        #   zmq_shared: false
+
+    env:
+      ZMQ_VERSION: ${{ matrix.zmq_version }}
+      ZMQ_DRAFT: ${{ matrix.zmq_draft }}
+      ZMQ_SHARED: ${{ matrix.zmq_shared }}
+      SKIP_GC_FINALIZER_TESTS: ${{ matrix.skip_gc_finalizer_tests }}
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./node_modules/
+            ~/.npm
+            ~/AppData/Roaming/npm-cache
+            ./build/zeromq-${{ matrix.zmq_version }}.tar.gz
+            ./zeromq-${{ matrix.zmq_version }}.tar.gz
+            ./libzmq
+            ./build/libzmq
+          key: "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-ZMQ_VERSION:${{ matrix.zmq_version }}-Node:${{ matrix.node_version }}-${{ hashFiles('./package.json') }}"
+          restore-keys: |
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-ZMQ_VERSION:${{ matrix.zmq_version }}-Node:${{ matrix.node_version }}"
+
+      - name: Setup Cpp
+        uses: aminya/setup-cpp@v1
+        with:
+          vcvarsall: ${{ contains(matrix.os, 'windows') }}
+          cmake: true
+          ninja: true
+          architecture: ${{ matrix.node_arch }}
 
       - name: Install Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node_version }}
           architecture: ${{ matrix.node_arch }}
+
+      - name: Install Mac-OS Dependencies
+        if: contains(matrix.os, 'macos')
+        run: |
+          brew install libsodium
 
       - name: Install Dependencies and Build
         run: npm install
@@ -51,9 +98,13 @@ jobs:
         with:
           path: ./prebuilds
 
-  Skip:
-    if: contains(github.event.head_commit.message, '[skip ci]')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skip CI 🚫
-        run: echo skip ci
+      - name: Test
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 4
+          max_attempts: 3
+          command: npm run test
+
+      - name: Lint
+        if: contains(matrix.os, 'ubuntu')
+        run: npm run lint

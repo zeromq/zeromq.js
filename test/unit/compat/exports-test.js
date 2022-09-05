@@ -3,13 +3,15 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const semver = require("semver")
   const {assert} = require("chai")
 
-  describe("compat exports", function() {
-    it("should export a valid version", function(){
+  describe("compat exports", function () {
+    it("should export a valid version", function () {
       assert.ok(semver.valid(zmq.version))
     })
 
-    it("should generate valid curve keypair", function() {
-      if (!zmq.capability.curve) this.skip()
+    it("should generate valid curve keypair", function () {
+      if (!zmq.capability.curve) {
+        this.skip()
+      }
 
       const curve = zmq.curveKeypair()
       assert.typeOf(curve.public, "string")
@@ -18,7 +20,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       assert.equal(curve.secret.length, 40)
     })
 
-    it("should export socket types and options", function() {
+    it("should export socket types and options", function () {
       const constants = [
         "PUB",
         "SUB",
@@ -76,23 +78,23 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         "ROUTER_RAW",
       ]
 
-      constants.forEach(function(typeOrProp) {
-        assert.typeOf(zmq["ZMQ_" + typeOrProp], "number")
+      constants.forEach(function (typeOrProp) {
+        assert.typeOf(zmq[`ZMQ_${typeOrProp}`], "number")
       })
     })
 
-    it("should export states", function(){
-      ["STATE_READY", "STATE_BUSY", "STATE_CLOSED"].forEach(function(state) {
+    it("should export states", function () {
+      ;["STATE_READY", "STATE_BUSY", "STATE_CLOSED"].forEach(function (state) {
         assert.typeOf(zmq[state], "number")
       })
     })
 
-    it("should export constructors", function(){
+    it("should export constructors", function () {
       assert.typeOf(zmq.Context, "function")
       assert.typeOf(zmq.Socket, "function")
     })
 
-    it("should export methods", function(){
+    it("should export methods", function () {
       assert.typeOf(zmq.socket, "function")
     })
   })

@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import {EventEmitter} from "events"
 import * as zmq from "."
+import {FullError} from "./errors"
 
 type AnySocket =
   | zmq.Pair
@@ -272,7 +273,9 @@ class Socket extends EventEmitter {
           await this._recv()
         }
 
-        if (!this._socket.closed) recv()
+        if (!this._socket.closed) {
+          recv()
+        }
       })
     }
 
@@ -286,11 +289,15 @@ class Socket extends EventEmitter {
           await this._send()
         }
 
-        if (!this._socket.closed) send()
+        if (!this._socket.closed) {
+          send()
+        }
       })
     }
 
-    if (type !== "push" && type !== "pub") recv()
+    if (type !== "push" && type !== "pub") {
+      recv()
+    }
     send()
 
     this.emit("_flushRecv")
@@ -319,7 +326,7 @@ class Socket extends EventEmitter {
         }
       }
     } catch (err) {
-      if (!this._socket.closed && err.code !== "EBUSY") {
+      if (!this._socket.closed && (err as FullError).code !== "EBUSY") {
         process.nextTick(() => this.emit("error", err))
       }
     }
@@ -337,10 +344,12 @@ class Socket extends EventEmitter {
       const [msg, cb] = this._sendQueue.shift()!
       try {
         await (this._socket as zmq.Writable).send(msg)
-        if (cb) cb()
+        if (cb) {
+          cb()
+        }
       } catch (err) {
         if (cb) {
-          cb(err)
+          cb(err as Error)
         } else {
           this.emit("error", err)
         }
@@ -354,7 +363,9 @@ class Socket extends EventEmitter {
       .then(() => {
         process.nextTick(() => {
           this.emit("bind", address)
-          if (cb) cb()
+          if (cb) {
+            cb()
+          }
         })
       })
       .catch(err => {
@@ -376,7 +387,9 @@ class Socket extends EventEmitter {
       .then(() => {
         process.nextTick(() => {
           this.emit("unbind", address)
-          if (cb) cb()
+          if (cb) {
+            cb()
+          }
         })
       })
       .catch(err => {
@@ -408,7 +421,9 @@ class Socket extends EventEmitter {
     if ((flags & sendOptions.ZMQ_SNDMORE) === 0) {
       this._sendQueue.push([this._msg, cb])
       this._msg = []
-      if (!this._paused) this.emit("_flushSend")
+      if (!this._paused) {
+        this.emit("_flushSend")
+      }
     }
     return this
   }
@@ -634,7 +649,7 @@ class Socket extends EventEmitter {
         this._socket.ipv6 = !value
         break
       case longOptions.ZMQ_ROUTER_MANDATORY:
-        ;(this._socket as zmq.Router).mandatory = !!value
+        ;(this._socket as zmq.Router).mandatory = Boolean(value)
         break
       case longOptions.ZMQ_TCP_KEEPALIVE:
         this._socket.tcpKeepalive = value
@@ -652,7 +667,7 @@ class Socket extends EventEmitter {
         this._socket.tcpAcceptFilter = value
         break
       case longOptions.ZMQ_DELAY_ATTACH_ON_CONNECT:
-        this._socket.immediate = !!value
+        this._socket.immediate = Boolean(value)
         break
       case longOptions.ZMQ_XPUB_VERBOSE:
         ;(this._socket as zmq.XPublisher).verbosity = value ? "allSubs" : null
@@ -660,10 +675,10 @@ class Socket extends EventEmitter {
       case longOptions.ZMQ_ROUTER_RAW:
         throw new Error("ZMQ_ROUTER_RAW is not supported in compatibility mode")
       case longOptions.ZMQ_IPV6:
-        this._socket.ipv6 = !!value
+        this._socket.ipv6 = Boolean(value)
         break
       case longOptions.ZMQ_PLAIN_SERVER:
-        this._socket.plainServer = !!value
+        this._socket.plainServer = Boolean(value)
         break
       case longOptions.ZMQ_PLAIN_USERNAME:
         this._socket.plainUsername = value
@@ -672,7 +687,7 @@ class Socket extends EventEmitter {
         this._socket.plainPassword = value
         break
       case longOptions.ZMQ_CURVE_SERVER:
-        this._socket.curveServer = !!value
+        this._socket.curveServer = Boolean(value)
         break
       case longOptions.ZMQ_CURVE_PUBLICKEY:
         this._socket.curvePublicKey = value
@@ -699,7 +714,7 @@ class Socket extends EventEmitter {
         this._socket.connectTimeout = value
         break
       case longOptions.ZMQ_ROUTER_HANDOVER:
-        ;(this._socket as zmq.Router).handover = !!value
+        ;(this._socket as zmq.Router).handover = Boolean(value)
         break
       default:
         throw new Error("Unknown option")
@@ -821,14 +836,20 @@ class Socket extends EventEmitter {
 }
 
 for (const key in shortOptions) {
-  if (!shortOptions.hasOwnProperty(key)) continue
-  if (Socket.prototype.hasOwnProperty(key)) continue
+  if (!shortOptions.hasOwnProperty(key)) {
+    continue
+  }
+  if (Socket.prototype.hasOwnProperty(key)) {
+    continue
+  }
   Object.defineProperty(Socket.prototype, key, {
     get(this: Socket) {
       return this.getsockopt(shortOptions[key as keyof typeof shortOptions])
     },
     set(this: Socket, val: string | Buffer) {
-      if ("string" === typeof val) val = Buffer.from(val, "utf8")
+      if ("string" === typeof val) {
+        val = Buffer.from(val, "utf8")
+      }
       return this.setsockopt(
         shortOptions[key as keyof typeof shortOptions],
         val,
@@ -853,7 +874,7 @@ function curveKeypair() {
 }
 
 function proxy(frontend: Socket, backend: Socket, capture?: Socket) {
-  switch (frontend.type + "/" + backend.type) {
+  switch (`${frontend.type}/${backend.type}`) {
     case "push/pull":
     case "pull/push":
     case "xpub/xsub":

@@ -3,29 +3,30 @@ import * as draft from "../../src/draft"
 
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
+import {isFullError} from "../../src/errors"
 
 if (zmq.capability.draft) {
   for (const proto of testProtos("tcp", "ipc", "inproc")) {
-    describe(`draft socket with ${proto} server/client`, function() {
+    describe(`draft socket with ${proto} server/client`, function () {
       let server: draft.Server
       let clientA: draft.Client
       let clientB: draft.Client
 
-      beforeEach(function() {
+      beforeEach(function () {
         server = new draft.Server()
         clientA = new draft.Client()
         clientB = new draft.Client()
       })
 
-      afterEach(function() {
+      afterEach(function () {
         server.close()
         clientA.close()
         clientB.close()
-        global.gc()
+        global.gc?.()
       })
 
-      describe("send/receive", function() {
-        it("should deliver messages", async function() {
+      describe("send/receive", function () {
+        it("should deliver messages", async function () {
           const address = uniqAddress(proto)
           const messages = ["foo", "bar", "baz", "qux"]
           const receivedA: string[] = []
@@ -50,12 +51,16 @@ if (zmq.capability.draft) {
 
             for await (const msg of clientA) {
               receivedA.push(msg.toString())
-              if (receivedA.length === messages.length) break
+              if (receivedA.length === messages.length) {
+                break
+              }
             }
 
             for await (const msg of clientB) {
               receivedB.push(msg.toString())
-              if (receivedB.length === messages.length) break
+              if (receivedB.length === messages.length) {
+                break
+              }
             }
 
             server.close()
@@ -66,12 +71,14 @@ if (zmq.capability.draft) {
           assert.deepEqual(receivedB, messages)
         })
 
-        it("should fail with unroutable message", async function() {
+        it("should fail with unroutable message", async function () {
           try {
             await server.send("foo", {routingId: 12345})
             assert.ok(false)
           } catch (err) {
-            assert.instanceOf(err, Error)
+            if (!isFullError(err)) {
+              throw err
+            }
 
             assert.equal(err.message, "Host unreachable")
             assert.equal(err.code, "EHOSTUNREACH")
@@ -82,7 +89,7 @@ if (zmq.capability.draft) {
     })
   }
 } else {
-  if (process.env.ZMQ_DRAFT) {
+  if (process.env.ZMQ_DRAFT === "true") {
     throw new Error("Draft API requested but not available at runtime.")
   }
 }

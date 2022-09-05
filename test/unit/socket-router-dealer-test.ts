@@ -3,28 +3,29 @@ import * as zmq from "../../src"
 
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
+import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`socket with ${proto} router/dealer`, function() {
+  describe(`socket with ${proto} router/dealer`, function () {
     let router: zmq.Router
     let dealerA: zmq.Dealer
     let dealerB: zmq.Dealer
 
-    beforeEach(function() {
+    beforeEach(function () {
       router = new zmq.Router()
       dealerA = new zmq.Dealer()
       dealerB = new zmq.Dealer()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       router.close()
       dealerA.close()
       dealerB.close()
-      global.gc()
+      global.gc?.()
     })
 
-    describe("send/receive", function() {
-      it("should deliver messages", async function() {
+    describe("send/receive", function () {
+      it("should deliver messages", async function () {
         const address = uniqAddress(proto)
         const messages = ["foo", "bar", "baz", "qux"]
         const receivedA: string[] = []
@@ -48,12 +49,16 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
           for await (const msg of dealerA) {
             receivedA.push(msg.toString())
-            if (receivedA.length === messages.length) break
+            if (receivedA.length === messages.length) {
+              break
+            }
           }
 
           for await (const msg of dealerB) {
             receivedB.push(msg.toString())
-            if (receivedB.length === messages.length) break
+            if (receivedB.length === messages.length) {
+              break
+            }
           }
 
           router.close()
@@ -66,14 +71,16 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       /* This only works reliably with ZMQ 4.2.3+ */
       if (semver.satisfies(zmq.version, ">= 4.2.3")) {
-        it("should fail with unroutable message if mandatory", async function() {
+        it("should fail with unroutable message if mandatory", async function () {
           router.mandatory = true
           router.sendTimeout = 0
           try {
             await router.send(["fooId", "foo"])
             assert.ok(false)
           } catch (err) {
-            assert.instanceOf(err, Error)
+            if (!isFullError(err)) {
+              throw err
+            }
 
             assert.equal(err.message, "Host unreachable")
             assert.equal(err.code, "EHOSTUNREACH")

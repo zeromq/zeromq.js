@@ -2,34 +2,34 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const zmq = require("./load")
   const {assert} = require("chai")
 
-  describe("compat socket", function() {
+  describe("compat socket", function () {
     let sock
 
-    beforeEach(function() {
+    beforeEach(function () {
       sock = zmq.socket("req")
     })
 
-    afterEach(function() {
+    afterEach(function () {
       sock.close()
     })
 
-    it("should alias socket", function() {
+    it("should alias socket", function () {
       assert.equal(zmq.createSocket, zmq.socket)
     })
 
-    it("should include type and close", function() {
+    it("should include type and close", function () {
       assert.equal(sock.type, "req")
       assert.typeOf(sock.close, "function")
     })
 
-    it("should use socketopt", function() {
+    it("should use socketopt", function () {
       assert.notEqual(sock.getsockopt(zmq.ZMQ_BACKLOG), 75)
       assert.equal(sock.setsockopt(zmq.ZMQ_BACKLOG, 75), sock)
       assert.equal(sock.getsockopt(zmq.ZMQ_BACKLOG), 75)
       sock.setsockopt(zmq.ZMQ_BACKLOG, 100)
     })
 
-    it("should use socketopt with sugar", function() {
+    it("should use socketopt with sugar", function () {
       assert.notEqual(sock.getsockopt("backlog"), 75)
       assert.equal(sock.setsockopt("backlog", 75), sock)
       assert.equal(sock.getsockopt("backlog"), 75)
@@ -40,12 +40,12 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       assert.equal(sock.backlog, 50)
     })
 
-    it("should close", function() {
+    it("should close", function () {
       sock.close()
       assert.equal(sock.closed, true)
     })
 
-    it("should support options", function() {
+    it("should support options", function () {
       sock.close()
       sock = zmq.socket("req", {backlog: 30})
       assert.equal(sock.getsockopt("backlog"), 30)

@@ -4,8 +4,8 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const {testProtos, uniqAddress} = require("../helpers")
 
   for (const proto of testProtos("tcp", "inproc")) {
-    describe(`compat socket with ${proto} xpub-xsub`, function() {
-      it("should support pub-sub tracing and filtering", function(done) {
+    describe(`compat socket with ${proto} xpub-xsub`, function () {
+      it("should support pub-sub tracing and filtering", function (done) {
         let n = 0
         let m = 0
         const pub = zmq.socket("pub")
@@ -17,18 +17,22 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         const address2 = uniqAddress(proto)
 
         pub.bind(address1, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
           xsub.connect(address1)
 
           xpub.bind(address2, err => {
-            if (err) throw err
+            if (err) {
+              throw err
+            }
             sub.connect(address2)
 
-            xsub.on("message", function(msg) {
+            xsub.on("message", function (msg) {
               xpub.send(msg) // Forward message using the xpub so subscribers can receive it
             })
 
-            xpub.on("message", function(msg) {
+            xpub.on("message", function (msg) {
               assert.instanceOf(msg, Buffer)
 
               const type = msg[0] === 0 ? "unsubscribe" : "subscribe"
@@ -62,7 +66,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
               xsub.send(msg) // Forward message using the xsub so the publisher knows it has a subscriber
             })
 
-            sub.on("message", function(msg) {
+            sub.on("message", function (msg) {
               assert.instanceOf(msg, Buffer)
               switch (n++) {
                 case 0:

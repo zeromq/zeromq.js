@@ -171,7 +171,7 @@
               ],
               'cflags_cc+': [
                 '-std=c++17',
-                '-flto',
+                # '-flto',
                 '-Wno-missing-field-initializers',
               ],
             }],
@@ -181,8 +181,8 @@
               'xcode_settings': {
                 'CLANG_CXX_LIBRARY': 'libc++',
                 'CLANG_CXX_LANGUAGE_STANDARD': 'c++17',
-                'MACOSX_DEPLOYMENT_TARGET': '10.9',
-                'LLVM_LTO': 'YES',
+                'MACOSX_DEPLOYMENT_TARGET': '10.15',
+                # 'LLVM_LTO': 'YES',
                 'GCC_OPTIMIZATION_LEVEL': '3',
                 'DEPLOYMENT_POSTPROCESSING': 'YES',
                 'GCC_SYMBOLS_PRIVATE_EXTERN': 'YES',

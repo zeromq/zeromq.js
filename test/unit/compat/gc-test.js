@@ -4,8 +4,8 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const {testProtos, uniqAddress} = require("../helpers")
 
   for (const proto of testProtos("tcp", "inproc")) {
-    describe(`compat socket with ${proto}`, function() {
-      it("should cooperate with gc", function(done) {
+    describe(`compat socket with ${proto}`, function () {
+      it("should cooperate with gc", function (done) {
         const sockA = zmq.socket("dealer")
         const sockB = zmq.socket("dealer")
 
@@ -13,12 +13,12 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
          * We create 2 dealer sockets.
          * One of them (`a`) is not referenced explicitly after the main loop
          * finishes so it"s a pretender for garbage collection.
-         * This test performs global.gc() explicitly and then tries to send a message
+         * This test performs global.gc?.() explicitly and then tries to send a message
          * to a dealer socket that could be destroyed and collected.
          * If a message is delivered, than everything is ok. Otherwise the guard
          * timeout will make the test fail.
          */
-        sockA.on("message", function(msg) {
+        sockA.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)
           assert.equal(msg.toString(), "hello")
           sockA.close()
@@ -38,8 +38,8 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           }
         })
 
-        let interval = setInterval(function() {
-          global.gc()
+        const interval = setInterval(function () {
+          global.gc?.()
           if (bound) {
             clearInterval(interval)
             sockB.connect(address)

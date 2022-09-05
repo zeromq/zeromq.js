@@ -4,20 +4,21 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const {testProtos, uniqAddress} = require("../helpers")
 
   for (const proto of testProtos("tcp", "inproc")) {
-    describe(`compat socket with ${proto} messages`, function() {
-      let push, pull
+    describe(`compat socket with ${proto} messages`, function () {
+      let push
+      let pull
 
-      beforeEach(function() {
+      beforeEach(function () {
         push = zmq.socket("push")
         pull = zmq.socket("pull")
       })
 
-      it("should support messages", function(done) {
+      it("should support messages", function (done) {
         const address = uniqAddress(proto)
 
         let n = 0
 
-        pull.on("message", function(msg) {
+        pull.on("message", function (msg) {
           msg = msg.toString()
           switch (n++) {
             case 0:
@@ -42,10 +43,10 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         push.send(Buffer.from("buffer"))
       })
 
-      it("should support multipart messages", function(done) {
+      it("should support multipart messages", function (done) {
         const address = uniqAddress(proto)
 
-        pull.on("message", function(msg1, msg2, msg3) {
+        pull.on("message", function (msg1, msg2, msg3) {
           assert.equal(msg1.toString(), "string")
           assert.equal(msg2.toString(), "15.99")
           assert.equal(msg3.toString(), "buffer")
@@ -59,10 +60,10 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         push.send(["string", 15.99, Buffer.from("buffer")])
       })
 
-      it("should support sndmore", function(done) {
+      it("should support sndmore", function (done) {
         const address = uniqAddress(proto)
 
-        pull.on("message", function(a, b, c, d, e) {
+        pull.on("message", function (a, b, c, d, e) {
           assert.equal(a.toString(), "tobi")
           assert.equal(b.toString(), "loki")
           assert.equal(c.toString(), "jane")
@@ -81,11 +82,11 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       })
 
       if (proto != "inproc") {
-        it("should handle late connect", function(done) {
+        it("should handle late connect", function (done) {
           const address = uniqAddress(proto)
           let n = 0
 
-          pull.on("message", function(msg) {
+          pull.on("message", function (msg) {
             msg = msg.toString()
             switch (n++) {
               case 0:
@@ -114,7 +115,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       }
 
-      it("should call send callbacks", function(done) {
+      it("should call send callbacks", function (done) {
         const address = uniqAddress(proto)
         let received = 0
         let callbacks = 0
@@ -123,7 +124,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           callbacks += 1
         }
 
-        pull.on("message", function() {
+        pull.on("message", function () {
           received += 1
 
           if (received === 4) {

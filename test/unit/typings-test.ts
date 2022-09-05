@@ -1,7 +1,7 @@
 import * as zmq from "../../src"
 
-describe("typings", function() {
-  it("should compile successfully", function() {
+describe("typings", function () {
+  it("should compile successfully", function () {
     /* To test the TypeScript typings this file should compile successfully.
        We don't actually execute the code in this function. */
 
@@ -11,13 +11,27 @@ describe("typings", function() {
       console.log(version)
 
       const capability = zmq.capability
-      if (capability.ipc) console.log("ipc")
-      if (capability.pgm) console.log("pgm")
-      if (capability.tipc) console.log("tipc")
-      if (capability.norm) console.log("norm")
-      if (capability.curve) console.log("curve")
-      if (capability.gssapi) console.log("gssapi")
-      if (capability.draft) console.log("draft")
+      if (capability.ipc) {
+        console.log("ipc")
+      }
+      if (capability.pgm) {
+        console.log("pgm")
+      }
+      if (capability.tipc) {
+        console.log("tipc")
+      }
+      if (capability.norm) {
+        console.log("norm")
+      }
+      if (capability.curve) {
+        console.log("curve")
+      }
+      if (capability.gssapi) {
+        console.log("gssapi")
+      }
+      if (capability.draft) {
+        console.log("draft")
+      }
 
       const keypair = zmq.curveKeyPair()
       console.log(keypair.publicKey)
@@ -44,7 +58,9 @@ describe("typings", function() {
       })
 
       const router = new zmq.Router()
-      if (router.type !== 6) throw new Error()
+      if (router.type !== 6) {
+        throw new Error()
+      }
 
       console.log(socket.context)
       console.log(socket.sendTimeout)

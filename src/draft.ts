@@ -37,11 +37,12 @@ interface RadioGroupOptions {
   group: Buffer | string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Radio extends Writable<MessageLike, [RadioGroupOptions]> {}
 allowMethods(Radio.prototype, ["send"])
 
-const join = (Socket.prototype as any)["join"]
-const leave = (Socket.prototype as any)["leave"]
+const join = (Socket.prototype as any).join
+const leave = (Socket.prototype as any).leave
 
 export class Dish extends Socket {
   constructor(options?: SocketOptions<Dish>) {
@@ -52,11 +53,15 @@ export class Dish extends Socket {
      the sake of simplicity. */
 
   join(...values: Array<Buffer | string>): void {
-    for (const value of values) join(value)
+    for (const value of values) {
+      join(value)
+    }
   }
 
   leave(...values: Array<Buffer | string>): void {
-    for (const value of values) leave(value)
+    for (const value of values) {
+      leave(value)
+    }
   }
 }
 
@@ -64,6 +69,7 @@ interface DishGroupOptions {
   group: Buffer
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Dish extends Readable<[Message, DishGroupOptions]> {}
 allowMethods(Dish.prototype, ["receive", "join", "leave"])
 

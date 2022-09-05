@@ -5,25 +5,27 @@ import {assert} from "chai"
 import {captureEvent, testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc")) {
-  describe(`socket with ${proto} zap`, function() {
+  describe(`socket with ${proto} zap`, function () {
     let sockA: zmq.Pair
     let sockB: zmq.Pair
     let handler: ZapHandler
 
-    beforeEach(function() {
+    beforeEach(function () {
       sockA = new zmq.Pair()
       sockB = new zmq.Pair()
     })
 
-    afterEach(function() {
-      if (handler) handler.stop()
+    afterEach(function () {
+      if (handler) {
+        handler.stop()
+      }
       sockA.close()
       sockB.close()
-      global.gc()
+      global.gc?.()
     })
 
-    describe("with plain mechanism", function() {
-      it("should deliver message", async function() {
+    describe("with plain mechanism", function () {
+      it("should deliver message", async function () {
         handler = new ValidatingZapHandler({
           domain: "test",
           mechanism: "PLAIN",
@@ -52,9 +54,11 @@ for (const proto of testProtos("tcp", "ipc")) {
         )
       })
 
-      it("should report authentication error", async function() {
+      it("should report authentication error", async function () {
         /* ZMQ < 4.3.0 does not have these event details. */
-        if (semver.satisfies(zmq.version, "< 4.3.0")) this.skip()
+        if (semver.satisfies(zmq.version, "< 4.3.0")) {
+          this.skip()
+        }
 
         handler = new ValidatingZapHandler({
           domain: "test",
@@ -93,9 +97,11 @@ for (const proto of testProtos("tcp", "ipc")) {
         assert.equal(eventB.error.status, 400)
       })
 
-      it("should report protocol version error", async function() {
+      it("should report protocol version error", async function () {
         /* ZMQ < 4.3.0 does not have these event details. */
-        if (semver.satisfies(zmq.version, "< 4.3.0")) this.skip()
+        if (semver.satisfies(zmq.version, "< 4.3.0")) {
+          this.skip()
+        }
 
         handler = new CustomZapHandler(
           ([path, delim, version, id, ...rest]) => {
@@ -122,9 +128,11 @@ for (const proto of testProtos("tcp", "ipc")) {
         assert.equal(eventA.error.code, "ERR_ZAP_BAD_VERSION")
       })
 
-      it("should report protocol format error", async function() {
+      it("should report protocol format error", async function () {
         /* ZMQ < 4.3.0 does not have these event details. */
-        if (semver.satisfies(zmq.version, "< 4.3.0")) this.skip()
+        if (semver.satisfies(zmq.version, "< 4.3.0")) {
+          this.skip()
+        }
 
         handler = new CustomZapHandler(([path, delim, ...rest]) => {
           return [path, delim, null, null]
@@ -149,9 +157,11 @@ for (const proto of testProtos("tcp", "ipc")) {
         assert.equal(eventA.error.code, "ERR_ZAP_MALFORMED_REPLY")
       })
 
-      it("should report mechanism mismatch error", async function() {
+      it("should report mechanism mismatch error", async function () {
         /* ZMQ < 4.3.0 does not have these event details. */
-        if (semver.satisfies(zmq.version, "< 4.3.0")) this.skip()
+        if (semver.satisfies(zmq.version, "< 4.3.0")) {
+          this.skip()
+        }
 
         this.slow(250)
 

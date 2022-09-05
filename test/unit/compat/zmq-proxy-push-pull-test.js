@@ -4,16 +4,16 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const {testProtos, uniqAddress} = require("../helpers")
 
   for (const proto of testProtos("tcp")) {
-    describe(`compat proxy with ${proto} push-pull`, function() {
+    describe(`compat proxy with ${proto} push-pull`, function () {
       const sockets = []
 
-      afterEach(function() {
+      afterEach(function () {
         while (sockets.length) {
           sockets.pop().close()
         }
       })
 
-      it("should proxy push-pull connected to pull-push", function(done) {
+      it("should proxy push-pull connected to pull-push", function (done) {
         const frontendAddr = uniqAddress(proto)
         const backendAddr = uniqAddress(proto)
 
@@ -24,9 +24,13 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         const push = zmq.socket("push")
 
         frontend.bind(frontendAddr, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
           backend.bind(backendAddr, err => {
-            if (err) throw err
+            if (err) {
+              throw err
+            }
             push.connect(frontendAddr)
             pull.connect(backendAddr)
             sockets.push(frontend, backend, push, pull)
@@ -43,7 +47,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       })
 
-      it("should proxy pull-push connected to push-pull with capture", function(done) {
+      it("should proxy pull-push connected to push-pull with capture", function (done) {
         const frontendAddr = uniqAddress(proto)
         const backendAddr = uniqAddress(proto)
         const captureAddr = uniqAddress(proto)
@@ -59,30 +63,40 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         sockets.push(frontend, backend, push, pull, capture, capSub)
 
         frontend.bind(frontendAddr, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
           backend.bind(backendAddr, err => {
-            if (err) throw err
+            if (err) {
+              throw err
+            }
             capture.bind(captureAddr, err => {
-              if (err) throw err
+              if (err) {
+                throw err
+              }
               pull.connect(frontendAddr)
               push.connect(backendAddr)
               capSub.connect(captureAddr)
 
               let counter = 2
 
-              pull.on("message", function(msg) {
+              pull.on("message", function (msg) {
                 assert.instanceOf(msg, Buffer)
                 assert.equal(msg.toString(), "foo")
 
-                if (--counter == 0) done()
+                if (--counter == 0) {
+                  done()
+                }
               })
 
               capSub.subscribe("")
-              capSub.on("message", function(msg) {
+              capSub.on("message", function (msg) {
                 assert.instanceOf(msg, Buffer)
                 assert.equal(msg.toString(), "foo")
 
-                if (--counter == 0) done()
+                if (--counter == 0) {
+                  done()
+                }
               })
 
               setTimeout(() => push.send("foo"), 15)

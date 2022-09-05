@@ -20,7 +20,9 @@ export class Queue {
   }
 
   async trySend() {
-    if (this.sending) return
+    if (this.sending) {
+      return
+    }
     this.sending = true
 
     while (this.queue.length) {

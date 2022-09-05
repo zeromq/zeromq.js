@@ -2,13 +2,13 @@
   "exclude": ["*.d.ts"],
   "compilerOptions": {
     "allowJs": false,
-    "target": "es2018",
+    "target": "ES2020",
     "outDir": "lib",
     "declaration": true,
     "module": "commonjs",
     "types": ["node", "mocha"],
     "strict": true,
     "strictPropertyInitialization": false,
-    "lib": ["es2018", "dom"]
+    "lib": ["ES2020", "dom"]
   }
 }

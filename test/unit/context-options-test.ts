@@ -2,26 +2,26 @@ import * as zmq from "../../src"
 
 import {assert} from "chai"
 
-describe("context options", function() {
-  afterEach(function() {
-    global.gc()
+describe("context options", function () {
+  afterEach(function () {
+    global.gc?.()
   })
 
-  it("should set and get bool socket option", function() {
+  it("should set and get bool socket option", function () {
     const context = new zmq.Context()
     assert.equal(context.ipv6, false)
     context.ipv6 = true
     assert.equal(context.ipv6, true)
   })
 
-  it("should set and get int socket option", function() {
+  it("should set and get int socket option", function () {
     const context = new zmq.Context()
     assert.equal(context.ioThreads, 1)
     context.ioThreads = 75
     assert.equal(context.ioThreads, 75)
   })
 
-  it("should throw for readonly option", function() {
+  it("should throw for readonly option", function () {
     const context = new zmq.Context()
     assert.throws(
       () => ((context as any).maxSocketsLimit = 1),
@@ -30,7 +30,7 @@ describe("context options", function() {
     )
   })
 
-  it("should throw for unknown option", function() {
+  it("should throw for unknown option", function () {
     const context = new zmq.Context()
     assert.throws(
       () => ((context as any).doesNotExist = 1),

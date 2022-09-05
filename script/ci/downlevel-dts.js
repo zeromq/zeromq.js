@@ -142,7 +142,7 @@ function getModifiersText(node) {
     .getModifiers()
     .map(m => m.getText())
     .join(" ")
-  return modifiersText.length > 0 ? modifiersText + " " : ""
+  return modifiersText.length > 0 ? `${modifiersText} ` : ""
 }
 
 function getLeadingComments(node) {
@@ -174,7 +174,7 @@ function relativeModulePath(fromAbsModulePath, toAbsTargetDir) {
     path.join(revertedPath, path.basename(fromAbsModulePath)),
   )
   if (!/^\./.test(relMod)) {
-    relMod = "./" + relMod
+    relMod = `./${relMod}`
   }
   if (path.sep === "/") {
     return relMod

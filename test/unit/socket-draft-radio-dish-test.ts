@@ -6,24 +6,24 @@ import {testProtos, uniqAddress} from "./helpers"
 
 if (zmq.capability.draft) {
   for (const proto of testProtos("tcp", "ipc", "inproc", "udp")) {
-    describe(`draft socket with ${proto} radio/dish`, function() {
+    describe(`draft socket with ${proto} radio/dish`, function () {
       let radio: draft.Radio
       let dish: draft.Dish
 
-      beforeEach(function() {
+      beforeEach(function () {
         radio = new draft.Radio()
         dish = new draft.Dish()
       })
 
-      afterEach(function() {
-        global.gc()
+      afterEach(function () {
+        global.gc?.()
         radio.close()
         dish.close()
-        global.gc()
+        global.gc?.()
       })
 
-      describe("send/receive", function() {
-        it("should deliver messages", async function() {
+      describe("send/receive", function () {
+        it("should deliver messages", async function () {
           /* RADIO -> foo -> DISH
                    -> bar -> joined all
                    -> baz ->
@@ -35,21 +35,8 @@ if (zmq.capability.draft) {
 
           /* Max 15 non-null bytes. */
           const uuid = Buffer.from([
-            0xf6,
-            0x46,
-            0x1f,
-            0x03,
-            0xd2,
-            0x0d,
-            0xc8,
-            0x66,
-            0xe5,
-            0x5f,
-            0xf5,
-            0xa1,
-            0x65,
-            0x62,
-            0xb2,
+            0xf6, 0x46, 0x1f, 0x03, 0xd2, 0x0d, 0xc8, 0x66, 0xe5, 0x5f, 0xf5,
+            0xa1, 0x65, 0x62, 0xb2,
           ])
 
           const received: string[] = []
@@ -73,7 +60,9 @@ if (zmq.capability.draft) {
               assert.instanceOf(group, Buffer)
               assert.deepEqual(group, uuid)
               received.push(msg.toString())
-              if (received.length === messages.length) break
+              if (received.length === messages.length) {
+                break
+              }
             }
           }
 
@@ -82,8 +71,8 @@ if (zmq.capability.draft) {
         })
       })
 
-      describe("join/leave", function() {
-        it("should filter messages", async function() {
+      describe("join/leave", function () {
+        it("should filter messages", async function () {
           /* RADIO -> foo -X  DISH
                    -> bar ->  joined "ba"
                    -> baz ->
@@ -114,7 +103,9 @@ if (zmq.capability.draft) {
               assert.instanceOf(msg, Buffer)
               assert.deepEqual(group, msg.slice(0, 2))
               received.push(msg.toString())
-              if (received.length === 2) break
+              if (received.length === 2) {
+                break
+              }
             }
           }
 
@@ -125,7 +116,7 @@ if (zmq.capability.draft) {
     })
   }
 } else {
-  if (process.env.ZMQ_DRAFT) {
+  if (process.env.ZMQ_DRAFT === "true") {
     throw new Error("Draft API requested but not available at runtime.")
   }
 }

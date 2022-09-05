@@ -4,20 +4,21 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const {testProtos, uniqAddress} = require("../helpers")
 
   for (const proto of testProtos("tcp", "inproc")) {
-    describe(`compat socket with ${proto} pub-sub`, function() {
-      let pub, sub
+    describe(`compat socket with ${proto} pub-sub`, function () {
+      let pub
+      let sub
 
-      beforeEach(function() {
+      beforeEach(function () {
         pub = zmq.socket("pub")
         sub = zmq.socket("sub")
       })
 
-      it("should support pub-sub", function(done) {
+      it("should support pub-sub", function (done) {
         const address = uniqAddress(proto)
         let n = 0
 
         sub.subscribe("")
-        sub.on("message", function(msg) {
+        sub.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)
           switch (n++) {
             case 0:
@@ -36,7 +37,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
 
         sub.bind(address, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
           pub.connect(address)
 
           // The connect is asynchronous, and messages published to a non-
@@ -56,14 +59,14 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       })
 
-      it("should support pub-sub filter", function(done) {
+      it("should support pub-sub filter", function (done) {
         const address = uniqAddress(proto)
         let n = 0
 
         sub.subscribe("js")
         sub.subscribe("luna")
 
-        sub.on("message", function(msg) {
+        sub.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)
           switch (n++) {
             case 0:
@@ -79,7 +82,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
 
         sub.bind(address, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
           pub.connect(address)
 
           // See comments on pub-sub test.
@@ -93,28 +98,31 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       })
 
-      describe("with errors", function() {
-        before(function() {
-          this.uncaughtExceptionListeners = process.listeners("uncaughtException")
+      describe("with errors", function () {
+        before(function () {
+          this.uncaughtExceptionListeners =
+            process.listeners("uncaughtException")
           process.removeAllListeners("uncaughtException")
         })
 
-        after(function() {
+        after(function () {
           process.removeAllListeners("uncaughtException")
           for (const listener of this.uncaughtExceptionListeners) {
             process.on("uncaughtException", listener)
           }
         })
 
-        it("should continue to deliver messages in message handler", function(done) {
+        it("should continue to deliver messages in message handler", function (done) {
           let error
-          process.once("uncaughtException", err => {error = err})
+          process.once("uncaughtException", err => {
+            error = err
+          })
 
           const address = uniqAddress(proto)
           let n = 0
 
           sub.subscribe("")
-          sub.on("message", function(msg) {
+          sub.on("message", function (msg) {
             assert.instanceOf(msg, Buffer)
             switch (n++) {
               case 0:
@@ -132,7 +140,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           })
 
           sub.bind(address, err => {
-            if (err) throw err
+            if (err) {
+              throw err
+            }
             pub.connect(address)
 
             setTimeout(() => {

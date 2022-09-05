@@ -6,36 +6,38 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
   /* This test case only seems to work reliably with TCP. */
   for (const proto of testProtos("tcp")) {
-    describe(`compat socket with ${proto} monitor`, function() {
-      beforeEach(function() {
+    describe(`compat socket with ${proto} monitor`, function () {
+      beforeEach(function () {
         /* ZMQ < 4.2 occasionally fails with assertion errors. */
-        if (semver.satisfies(zmq.version, "< 4.2")) this.skip()
+        if (semver.satisfies(zmq.version, "< 4.2")) {
+          this.skip()
+        }
 
         this.warningListeners = process.listeners("warning")
       })
 
-      afterEach(function() {
+      afterEach(function () {
         process.removeAllListeners("warning")
         for (const listener of this.warningListeners) {
           process.on("warning", listener)
         }
       })
 
-      it("should be able to monitor the socket", function(done) {
+      it("should be able to monitor the socket", function (done) {
         const rep = zmq.socket("rep")
         const req = zmq.socket("req")
 
         const address = uniqAddress(proto)
 
-        rep.on("message", function(msg) {
+        rep.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)
           assert.equal(msg.toString(), "hello")
           rep.send("world")
         })
 
         const testedEvents = ["listen", "accept", "disconnect"]
-        testedEvents.forEach(function(e) {
-          rep.on(e, function(event_value, event_endpoint_addr) {
+        testedEvents.forEach(function (e) {
+          rep.on(e, function (event_value, event_endpoint_addr) {
             assert.equal(event_endpoint_addr.toString(), address)
 
             testedEvents.pop()
@@ -51,13 +53,15 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         rep.monitor()
 
         rep.bind(address, err => {
-          if (err) throw err
+          if (err) {
+            throw err
+          }
         })
 
-        rep.on("bind", function() {
+        rep.on("bind", function () {
           req.connect(address)
           req.send("hello")
-          req.on("message", function(msg) {
+          req.on("message", function (msg) {
             assert.instanceOf(msg, Buffer)
             assert.equal(msg.toString(), "world")
             req.close()
@@ -67,13 +71,15 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           // and to the monitor event
           const doubleRep = zmq.socket("rep")
           doubleRep.monitor()
-          doubleRep.on("bind_error", function(errno, bindAddr, ex) {
+          doubleRep.on("bind_error", function (errno, bindAddr, ex) {
             assert.instanceOf(ex, Error)
             doubleRep.close()
           })
 
           doubleRep.bind(address, err => {
-            assert.instanceOf(err, Error)
+            if (!isFullError(err)) {
+              throw err
+            }
           })
         })
       })

@@ -2,25 +2,26 @@ import * as zmq from "../../src"
 
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
+import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`socket with ${proto} req/rep`, function() {
+  describe(`socket with ${proto} req/rep`, function () {
     let req: zmq.Request
     let rep: zmq.Reply
 
-    beforeEach(function() {
+    beforeEach(function () {
       req = new zmq.Request()
       rep = new zmq.Reply()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       req.close()
       rep.close()
-      global.gc()
+      global.gc?.()
     })
 
-    describe("send/receive", function() {
-      it("should deliver messages", async function() {
+    describe("send/receive", function () {
+      it("should deliver messages", async function () {
         /* REQ  -> foo ->  REP
                 <- foo <-
                 -> bar ->
@@ -50,7 +51,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
             const [res] = await req.receive()
             received.push(res.toString())
-            if (received.length === messages.length) break
+            if (received.length === messages.length) {
+              break
+            }
           }
 
           rep.close()
@@ -60,7 +63,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.deepEqual(received, messages)
       })
 
-      it("should throw when waiting for a response", async function() {
+      it("should throw when waiting for a response", async function () {
         /* REQ  -> foo ->  REP
                 -X foo
                 <- foo <-
@@ -86,7 +89,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
             await req.send(Buffer.from("bar"))
             assert.ok(false)
           } catch (err) {
-            assert.instanceOf(err, Error)
+            if (!isFullError(err)) {
+              throw err
+            }
             assert.equal(
               err.message,
               "Operation cannot be accomplished in current state",

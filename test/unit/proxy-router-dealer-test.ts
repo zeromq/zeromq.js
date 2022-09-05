@@ -5,7 +5,7 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
-  describe(`proxy with ${proto} router/dealer`, function() {
+  describe(`proxy with ${proto} router/dealer`, function () {
     let proxy: zmq.Proxy
 
     let frontAddress: string
@@ -14,9 +14,11 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     let req: zmq.Request
     let rep: zmq.Reply
 
-    beforeEach(async function() {
+    beforeEach(async function () {
       /* ZMQ < 4.0.5 has no steerable proxy support. */
-      if (semver.satisfies(zmq.version, "< 4.0.5")) this.skip()
+      if (semver.satisfies(zmq.version, "< 4.0.5")) {
+        this.skip()
+      }
 
       proxy = new zmq.Proxy(new zmq.Router(), new zmq.Dealer())
 
@@ -27,18 +29,18 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       rep = new zmq.Reply()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       /* Closing proxy sockets is only necessary if run() fails. */
       proxy.frontEnd.close()
       proxy.backEnd.close()
 
       req.close()
       rep.close()
-      global.gc()
+      global.gc?.()
     })
 
-    describe("run", function() {
-      it("should proxy messages", async function() {
+    describe("run", function () {
+      it("should proxy messages", async function () {
         /* REQ  -> foo ->  ROUTER <-> DEALER  -> foo ->  REP
                 <- foo <-                     <- foo <-
                 -> bar ->                     -> bar ->
@@ -79,7 +81,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
             const [res] = await req.receive()
             received.push(res.toString())
-            if (received.length === messages.length) break
+            if (received.length === messages.length) {
+              break
+            }
           }
 
           rep.close()

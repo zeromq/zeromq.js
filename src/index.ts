@@ -28,6 +28,7 @@ import {
 } from "./native"
 
 import * as draft from "./draft"
+import {FullError} from "./errors"
 
 
 /**
@@ -56,7 +57,7 @@ export type MessageLike =
  */
 export interface Writable<
   M extends MessageLike | MessageLike[] = MessageLike | MessageLike[],
-  O extends [...object[]] = []
+  O extends [...object[]] = [],
 > {
   /**
    * ZMQ_MULTICAST_HOPS
@@ -290,7 +291,7 @@ function asyncIterator<T extends SocketLikeIterable<U>, U>(this: T) {
       try {
         return {value: await this.receive(), done: false}
       } catch (err) {
-        if (this.closed && err.code === "EAGAIN") {
+        if (this.closed && (err as FullError).code === "EAGAIN") {
           /* Cast so we can omit 'value: undefined'. */
           return {done: true} as IteratorReturnResult<undefined>
         } else {
@@ -1025,6 +1026,7 @@ export class Publisher extends Socket {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Publisher extends Writable {}
 allowMethods(Publisher.prototype, ["send"])
 
@@ -1124,6 +1126,7 @@ export class Subscriber extends Socket {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Subscriber extends Readable {}
 allowMethods(Subscriber.prototype, ["receive"])
 
@@ -1636,7 +1639,7 @@ function defineOpt<T, K extends WritableKeys<PrototypeOf<T>>>(
    set if the property has been defined as readonly in the interface/class. */
 function defineOpt<
   T extends {prototype: any},
-  K extends ReadableKeys<PrototypeOf<T>>
+  K extends ReadableKeys<PrototypeOf<T>>,
 >(
   targets: T[],
   name: K,
@@ -1674,7 +1677,9 @@ function defineOpt<
   }
 
   for (const target of targets) {
-    if (target.prototype.hasOwnProperty(name)) continue
+    if (target.prototype.hasOwnProperty(name)) {
+      continue
+    }
     Object.defineProperty(target.prototype, name, desc)
   }
 }

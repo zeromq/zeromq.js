@@ -2,7 +2,7 @@
 set -e
 
 if [ -n "${ALPINE_CHROOT}" ]; then
-  /alpine/enter-chroot yarn dev:test
+  /alpine/enter-chroot yarn test
 else
-  yarn dev:test
+  yarn test
 fi

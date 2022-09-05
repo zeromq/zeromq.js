@@ -42,7 +42,9 @@ export class ThreadedWorker {
 
     const listen = async () => {
       for await (const [sig] of this.signal) {
-        if (sig.toString() === "stop") this.stop()
+        if (sig.toString() === "stop") {
+          this.stop()
+        }
       }
     }
 

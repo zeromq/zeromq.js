@@ -5,27 +5,29 @@ import {createServer, get, Server} from "http"
 import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp")) {
-  describe(`socket with ${proto} stream`, function() {
+  describe(`socket with ${proto} stream`, function () {
     let stream: zmq.Stream
 
-    beforeEach(function() {
+    beforeEach(function () {
       stream = new zmq.Stream()
     })
 
-    afterEach(function() {
+    afterEach(function () {
       stream.close()
-      global.gc()
+      global.gc?.()
     })
 
-    describe("send/receive as server", function() {
-      it("should deliver messages", async function() {
+    describe("send/receive as server", function () {
+      it("should deliver messages", async function () {
         const address = uniqAddress(proto)
 
         await stream.bind(address)
 
         const serve = async () => {
           for await (const [id, msg] of stream) {
-            if (!msg.length) continue
+            if (!msg.length) {
+              continue
+            }
             assert.equal(msg.toString().split("\r\n")[0], "GET /foo HTTP/1.1")
 
             await stream.send([
@@ -43,7 +45,7 @@ for (const proto of testProtos("tcp")) {
         let body = ""
         const request = async () => {
           return new Promise(resolve => {
-            get(address.replace("tcp:", "http:") + "/foo", res => {
+            get(`${address.replace("tcp:", "http:")}/foo`, res => {
               res.on("data", buffer => {
                 body += buffer.toString()
               })
@@ -57,8 +59,8 @@ for (const proto of testProtos("tcp")) {
       })
     })
 
-    describe("send/receive as client", function() {
-      it("should deliver messages", async function() {
+    describe("send/receive as client", function () {
+      it("should deliver messages", async function () {
         const address = uniqAddress(proto)
         const port = parseInt(address.split(":").pop()!, 10)
 
