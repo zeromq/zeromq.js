@@ -85,7 +85,7 @@
 
       'configurations': {
         'Debug': {
-          'defines': ['NAPI_CPP_EXCEPTIONS', 'DEBUG', '_DEBUG'],
+          'defines': ['NAPI_CPP_EXCEPTIONS', "-fexceptions", 'DEBUG', '_DEBUG'],
           'conditions': [
             ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
               'cflags_cc!': [
@@ -161,7 +161,8 @@
 
         'Release': {
           'defines': [
-            'NAPI_DISABLE_CPP_EXCEPTIONS',
+            'NAPI_CPP_EXCEPTIONS',
+            "-fexceptions"
           ],
           'conditions': [
             ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
@@ -200,6 +201,7 @@
                   'RuntimeLibrary': 2,
                   'AdditionalOptions': [
                     '-std:c++17',
+                    '/EHsc'
                   ],
                 },
                 'VCLinkerTool': {
