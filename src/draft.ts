@@ -38,6 +38,7 @@ interface RadioGroupOptions {
   group: Buffer | string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Radio extends Writable<MessageLike, [RadioGroupOptions]> {}
 Object.assign(Radio.prototype, {send})
 
@@ -66,6 +67,7 @@ interface DishGroupOptions {
   group: Buffer
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Dish extends Readable<[Message, DishGroupOptions]> {}
 Object.assign(Dish.prototype, {receive})
 

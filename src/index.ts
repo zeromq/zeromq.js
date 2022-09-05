@@ -1026,6 +1026,7 @@ export class Publisher extends Socket {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Publisher extends Writable {}
 Object.assign(Publisher.prototype, {send})
 
@@ -1125,6 +1126,7 @@ export class Subscriber extends Socket {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Subscriber extends Readable {}
 Object.assign(Subscriber.prototype, {receive})
 
