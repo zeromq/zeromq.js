@@ -218,7 +218,7 @@ void Socket::WarnUnlessImmediateOption(int32_t option) const {
 
     if (immediate.count(option) != 0) return;
     if (endpoints == 0 && state == State::Open) return;
-    // Warn(Env(), "Socket option will not take effect until next connect/bind.");
+    Warn(Env(), "Socket option will not take effect until next connect/bind.");
 }
 
 bool Socket::ValidateOpen() const {
