@@ -85,7 +85,10 @@
 
       'configurations': {
         'Debug': {
-          'defines': ['NAPI_CPP_EXCEPTIONS', "-fexceptions", 'DEBUG', '_DEBUG'],
+          'defines': ['NAPI_CPP_EXCEPTIONS', 'DEBUG', '_DEBUG'],
+          "cflags_cc": [
+            "-fexceptions"
+          ],
           'conditions': [
             ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
               'cflags_cc!': [
@@ -162,6 +165,8 @@
         'Release': {
           'defines': [
             'NAPI_CPP_EXCEPTIONS',
+          ],
+          "cflags_cc": [
             "-fexceptions"
           ],
           'conditions': [
