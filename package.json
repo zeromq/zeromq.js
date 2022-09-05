@@ -45,7 +45,7 @@
     "tar-fs": "^2.1.1",
     "ts-morph": "^11.0.3",
     "ts-node": ">=10",
-    "typescript": ">=4.3",
+    "typescript": "4.3",
     "weak-napi": "^2.0.2"
   },
   "engines": {
