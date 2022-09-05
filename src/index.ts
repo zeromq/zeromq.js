@@ -27,6 +27,7 @@ import {
 } from "./native"
 
 import * as draft from "./draft"
+import {FullError} from "./errors"
 
 const {send, receive} = methods
 
@@ -290,7 +291,7 @@ function asyncIterator<T extends SocketLikeIterable<U>, U>(this: T) {
       try {
         return {value: await this.receive(), done: false}
       } catch (err) {
-        if (this.closed && (err as {code?: string}).code === "EAGAIN") {
+        if (this.closed && (err as FullError).code === "EAGAIN") {
           /* Cast so we can omit 'value: undefined'. */
           return {done: true} as IteratorReturnResult<undefined>
         } else {

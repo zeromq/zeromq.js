@@ -29,6 +29,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import {EventEmitter} from "events"
 import * as zmq from "."
+import {FullError} from "./errors"
 
 type AnySocket =
   | zmq.Pair
@@ -325,7 +326,7 @@ class Socket extends EventEmitter {
         }
       }
     } catch (err) {
-      if (!this._socket.closed && (err as {code?: string}).code !== "EBUSY") {
+      if (!this._socket.closed && (err as FullError).code !== "EBUSY") {
         process.nextTick(() => this.emit("error", err))
       }
     }
