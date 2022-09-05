@@ -3,6 +3,7 @@ import * as zmq from "../../src"
 
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
+import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} close`, function () {
@@ -32,7 +33,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         try {
           await promise
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "Operation was not possible or timed out")
           assert.equal(err.code, "EAGAIN")
           assert.typeOf(err.errno, "number")
@@ -47,7 +50,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         try {
           await promise
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "Operation was not possible or timed out")
           assert.equal(err.code, "EAGAIN")
           assert.typeOf(err.errno, "number")

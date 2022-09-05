@@ -3,6 +3,7 @@ import * as zmq from "../../src"
 
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
+import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} connect/disconnect`, function () {
@@ -23,7 +24,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sock.connect("foo-bar")
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "Invalid argument")
           assert.equal(err.code, "EINVAL")
           assert.typeOf(err.errno, "number")
@@ -36,7 +39,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sock.connect("foo://bar")
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "Protocol not supported")
           assert.equal(err.code, "EPROTONOSUPPORT")
           assert.typeOf(err.errno, "number")
@@ -60,7 +65,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sock.disconnect(address)
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "No such endpoint")
           assert.equal(err.code, "ENOENT")
           assert.typeOf(err.errno, "number")
@@ -73,7 +80,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sock.disconnect("foo-bar")
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "Invalid argument")
           assert.equal(err.code, "EINVAL")
           assert.typeOf(err.errno, "number")
@@ -86,7 +95,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sock.disconnect("foo://bar")
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "Protocol not supported")
           assert.equal(err.code, "EPROTONOSUPPORT")
           assert.typeOf(err.errno, "number")

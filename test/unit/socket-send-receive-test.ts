@@ -3,6 +3,7 @@ import * as zmq from "../../src"
 
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
+import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} send/receive`, function () {
@@ -25,7 +26,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         try {
           ;(new zmq.Subscriber() as any).send()
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.include(err.message, "send is not a function")
         }
       })
@@ -34,7 +37,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         try {
           ;(new zmq.Publisher() as any).receive()
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.include(err.message, "receive is not a function")
         }
       })
@@ -45,7 +50,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           for await (const msg of new zmq.Publisher() as any) {
           }
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.include(err.message, "receive is not a function")
         }
       })
@@ -72,7 +79,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sockA.send(Buffer.alloc(8192))
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "Operation was not possible or timed out")
           assert.equal(err.code, "EAGAIN")
           assert.typeOf(err.errno, "number")
@@ -312,7 +321,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sockA.receive()
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "Operation was not possible or timed out")
           assert.equal(err.code, "EAGAIN")
           assert.typeOf(err.errno, "number")
@@ -502,7 +513,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sockA.send(Buffer.alloc(8192))
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "Socket is closed")
           assert.equal(err.code, "EBADF")
           assert.typeOf(err.errno, "number")
@@ -514,7 +527,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await sockA.receive()
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "Socket is closed")
           assert.equal(err.code, "EBADF")
           assert.typeOf(err.errno, "number")
@@ -539,7 +554,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           }
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(
             err.message,
             "Operation cannot be accomplished in current state",
@@ -558,7 +575,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           sockA.send(null).catch(() => null)
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(
             err.message,
             "Socket is busy writing; only one send operation may be in progress at any time",
@@ -577,7 +596,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           sockA.receive().catch(() => null)
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(
             err.message,
             "Socket is busy reading; only one receive operation may be in progress at any time",
