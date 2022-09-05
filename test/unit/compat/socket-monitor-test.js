@@ -77,7 +77,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           })
 
           doubleRep.bind(address, err => {
-            assert.instanceOf(err, Error)
+            if (!isFullError(err)) {
+              throw err
+            }
           })
         })
       })

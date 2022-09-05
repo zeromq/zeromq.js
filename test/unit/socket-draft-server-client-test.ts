@@ -3,6 +3,7 @@ import * as draft from "../../src/draft"
 
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
+import {isFullError} from "../../src/errors"
 
 if (zmq.capability.draft) {
   for (const proto of testProtos("tcp", "ipc", "inproc")) {
@@ -75,7 +76,9 @@ if (zmq.capability.draft) {
             await server.send("foo", {routingId: 12345})
             assert.ok(false)
           } catch (err) {
-            assert.instanceOf(err, Error)
+            if (!isFullError(err)) {
+              throw err
+            }
 
             assert.equal(err.message, "Host unreachable")
             assert.equal(err.code, "EHOSTUNREACH")

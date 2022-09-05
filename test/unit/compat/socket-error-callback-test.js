@@ -20,7 +20,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
     it("should callback with error when not connected", function (done) {
       sock.send(["foo", "bar"], null, err => {
-        assert.instanceOf(err, Error)
+        if (!isFullError(err)) {
+          throw err
+        }
         sock.close()
         done()
       })

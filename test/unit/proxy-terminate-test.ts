@@ -3,6 +3,7 @@ import * as zmq from "../../src"
 
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
+import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`proxy with ${proto} terminate`, function () {
@@ -34,7 +35,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await proxy.terminate()
         assert.ok(false)
       } catch (err) {
-        assert.instanceOf(err, Error)
+        if (!isFullError(err)) {
+          throw err
+        }
         assert.equal(err.message, "Socket is closed")
         assert.equal(err.code, "EBADF")
         assert.typeOf(err.errno, "number")

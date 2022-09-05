@@ -27,6 +27,7 @@ import {
 } from "./native"
 
 import * as draft from "./draft"
+import {FullError} from "./errors"
 
 const {send, receive} = methods
 
@@ -290,7 +291,7 @@ function asyncIterator<T extends SocketLikeIterable<U>, U>(this: T) {
       try {
         return {value: await this.receive(), done: false}
       } catch (err) {
-        if (this.closed && err.code === "EAGAIN") {
+        if (this.closed && (err as FullError).code === "EAGAIN") {
           /* Cast so we can omit 'value: undefined'. */
           return {done: true} as IteratorReturnResult<undefined>
         } else {
@@ -1025,6 +1026,7 @@ export class Publisher extends Socket {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Publisher extends Writable {}
 Object.assign(Publisher.prototype, {send})
 
@@ -1124,6 +1126,7 @@ export class Subscriber extends Socket {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Subscriber extends Readable {}
 Object.assign(Subscriber.prototype, {receive})
 

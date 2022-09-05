@@ -2,6 +2,7 @@ import * as semver from "semver"
 import * as zmq from "../../src"
 
 import {assert} from "chai"
+import {isFullError} from "../../src/errors"
 
 describe("proxy construction", function () {
   beforeEach(function () {
@@ -50,8 +51,10 @@ describe("proxy construction", function () {
         new (zmq.Proxy as any)({}, {})
         assert.ok(false)
       } catch (err) {
-        assert.instanceOf(err, Error)
-        assert.oneOf(err.message, [
+        if (!isFullError(err)) {
+          throw err
+        }
+        assert.oneOf((err as Error).message, [
           "Invalid pointer passed as argument" /* before 8.7 */,
           "Invalid argument" /* as of 8.7 */,
         ])

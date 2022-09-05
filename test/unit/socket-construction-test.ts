@@ -1,6 +1,7 @@
 import * as zmq from "../../src"
 
 import {assert} from "chai"
+import {isFullError} from "../../src/errors"
 
 describe("socket construction", function () {
   afterEach(function () {
@@ -53,7 +54,9 @@ describe("socket construction", function () {
         new (zmq.Socket as any)(37, new zmq.Context())
         assert.ok(false)
       } catch (err) {
-        assert.instanceOf(err, Error)
+        if (!isFullError(err)) {
+          throw err
+        }
         assert.equal(err.message, "Invalid argument")
         assert.equal(err.code, "EINVAL")
         assert.typeOf(err.errno, "number")
@@ -65,7 +68,9 @@ describe("socket construction", function () {
         new (zmq.Socket as any)(1, {context: {}})
         assert.ok(false)
       } catch (err) {
-        assert.instanceOf(err, Error)
+        if (!isFullError(err)) {
+          throw err
+        }
         assert.oneOf(err.message, [
           "Invalid pointer passed as argument" /* before 8.7 */,
           "Invalid argument" /* as of 8.7 */,
@@ -177,7 +182,9 @@ describe("socket construction", function () {
           sockets.push(new zmq.Dealer({context}))
         }
       } catch (err) {
-        assert.instanceOf(err, Error)
+        if (!isFullError(err)) {
+          throw err
+        }
         assert.equal(err.message, "Too many open file descriptors")
         assert.equal(err.code, "EMFILE")
         assert.typeOf(err.errno, "number")

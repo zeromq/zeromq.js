@@ -7,6 +7,7 @@ import {
   testProtos,
   uniqAddress,
 } from "./helpers"
+import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} events`, function () {
@@ -150,7 +151,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await events.receive()
           assert.ok(false)
         } catch (err) {
-          assert.instanceOf(err, Error)
+          if (!isFullError(err)) {
+            throw err
+          }
           assert.equal(err.message, "Socket is closed")
           assert.equal(err.code, "EBADF")
           assert.typeOf(err.errno, "number")

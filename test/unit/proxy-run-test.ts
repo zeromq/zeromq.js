@@ -3,6 +3,7 @@ import * as zmq from "../../src"
 
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
+import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`proxy with ${proto} run`, function () {
@@ -30,7 +31,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await proxy.run()
         assert.ok(false)
       } catch (err) {
-        assert.instanceOf(err, Error)
+        if (!isFullError(err)) {
+          throw err
+        }
         assert.equal(err.message, "Front-end socket must be bound or connected")
       }
     })
@@ -44,7 +47,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await proxy.run()
         assert.ok(false)
       } catch (err) {
-        assert.instanceOf(err, Error)
+        if (!isFullError(err)) {
+          throw err
+        }
         assert.equal(err.message, "Front-end socket must be bound or connected")
       }
     })
@@ -56,7 +61,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await proxy.run()
         assert.ok(false)
       } catch (err) {
-        assert.instanceOf(err, Error)
+        if (!isFullError(err)) {
+          throw err
+        }
         assert.equal(err.message, "Back-end socket must be bound or connected")
         assert.equal(err.code, "EINVAL")
         assert.typeOf(err.errno, "number")
@@ -72,7 +79,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await proxy.run()
         assert.ok(false)
       } catch (err) {
-        assert.instanceOf(err, Error)
+        if (!isFullError(err)) {
+          throw err
+        }
         assert.equal(err.message, "Back-end socket must be bound or connected")
         assert.equal(err.code, "EINVAL")
         assert.typeOf(err.errno, "number")
