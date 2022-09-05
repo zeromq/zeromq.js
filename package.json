@@ -71,14 +71,15 @@
   ],
   "scripts": {
     "install": "node-gyp-build",
-    "clean": "shx rm -rf build lib libzmq tmp zmq && shx mkdir -p tmp && shx touch tmp/.gitkeep",
+    "clean": "shx rm -rf build lib libzmq tmp zmq prebuilds && shx mkdir -p tmp && shx touch tmp/.gitkeep",
     "build.js": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js",
     "build.doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
     "prebuild": "ts-node -P ./tsconfig.json ./script/prebuild.ts",
-    "build.native": "prebuildify --napi --build-from-source --debug",
+    "build.native": "prebuildify --napi --build-from-source",
     "build.native.debug": "npm run build.native -- --debug",
     "build": "npm run build.js && npm run build.native",
-    "test": "npm run build.js && mocha",
+    "build.debug": "npm run build.js && npm run build.native.debug",
+    "test": "npm run build.debug && mocha",
     "lint": "sh script/lint.sh",
     "bench": "node --expose-gc test/bench"
   },
