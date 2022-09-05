@@ -86,6 +86,9 @@
       'configurations': {
         'Debug': {
           'defines': ['NAPI_CPP_EXCEPTIONS', 'DEBUG', '_DEBUG'],
+          'cflags_cc!': [
+            "-fno-exceptions",
+          ],
           "cflags_cc": [
             "-fexceptions"
           ],
@@ -166,8 +169,11 @@
           'defines': [
             'NAPI_CPP_EXCEPTIONS',
           ],
+          'cflags_cc!': [
+            "-fno-exceptions",
+          ],
           "cflags_cc": [
-            "-fexceptions"
+            "-fexceptions",
           ],
           'conditions': [
             ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
