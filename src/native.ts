@@ -4,28 +4,6 @@
 const path = require("path")
 module.exports = require("node-gyp-build")(path.join(__dirname, ".."))
 
-/* We are removing public methods from the Socket prototype that do not apply
-   to all socket types. We will re-assign them to the prototypes of the
-   relevant sockets later. For send/receive it is important that they are not
-   wrapped in JS methods later, to ensure best performance. Any changes to
-   their signatures should be handled in C++ exclusively. */
-interface SpecializedMethods {
-  send: Function
-  receive: Function
-  join: Function
-  leave: Function
-}
-
-const sack: Partial<SpecializedMethods> = {}
-const target: SpecializedMethods = module.exports.Socket.prototype
-for (const key of ["send", "receive", "join", "leave"] as const) {
-  sack[key] = target[key]
-  delete target[key]
-}
-
-module.exports.methods = sack
-export declare const methods: SpecializedMethods
-
 /**
  * The version of the ØMQ library the bindings were built with. Formatted as
  * `(major).(minor).(patch)`. For example: `"4.3.2"`.

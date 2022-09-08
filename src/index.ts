@@ -1,3 +1,5 @@
+import {allowMethods} from "./util"
+
 export {
   capability,
   context,
@@ -14,7 +16,6 @@ export {
 
 import {
   capability,
-  methods,
   Context,
   EventOfType,
   EventType,
@@ -28,8 +29,6 @@ import {
 
 import * as draft from "./draft"
 import {FullError} from "./errors"
-
-const {send, receive} = methods
 
 /**
  * A type representing the messages that are returned inside promises by
@@ -976,7 +975,7 @@ export class Pair extends Socket {
 }
 
 export interface Pair extends Writable, Readable {}
-Object.assign(Pair.prototype, {send, receive})
+allowMethods(Pair.prototype, ["send", "receive"])
 
 /**
  * A {@link Publisher} socket is used to distribute data to {@link Subscriber}s.
@@ -1028,7 +1027,7 @@ export class Publisher extends Socket {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Publisher extends Writable {}
-Object.assign(Publisher.prototype, {send})
+allowMethods(Publisher.prototype, ["send"])
 
 /**
  * A {@link Subscriber} socket is used to subscribe to data distributed by a
@@ -1128,7 +1127,7 @@ export class Subscriber extends Socket {
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface Subscriber extends Readable {}
-Object.assign(Subscriber.prototype, {receive})
+allowMethods(Subscriber.prototype, ["receive"])
 
 /**
  * A {@link Request} socket acts as a client to send requests to and receive
@@ -1198,7 +1197,7 @@ export class Request extends Socket {
 }
 
 export interface Request extends Readable, Writable {}
-Object.assign(Request.prototype, {send, receive})
+allowMethods(Request.prototype, ["send", "receive"])
 
 /**
  * A {@link Reply} socket can act as a server which receives requests from and
@@ -1223,7 +1222,7 @@ export class Reply extends Socket {
 }
 
 export interface Reply extends Readable, Writable {}
-Object.assign(Reply.prototype, {send, receive})
+allowMethods(Reply.prototype, ["send", "receive"])
 
 /**
  * A {@link Dealer} socket can be used to extend request/reply sockets. Each
@@ -1280,7 +1279,7 @@ export class Dealer extends Socket {
 }
 
 export interface Dealer extends Readable, Writable {}
-Object.assign(Dealer.prototype, {send, receive})
+allowMethods(Dealer.prototype, ["send", "receive"])
 
 /**
  * A {@link Router} can be used to extend request/reply sockets. When receiving
@@ -1380,7 +1379,7 @@ interface RouterConnectOptions {
 }
 
 export interface Router extends Readable, Writable {}
-Object.assign(Router.prototype, {send, receive})
+allowMethods(Router.prototype, ["send", "receive"])
 
 /**
  * A {@link Pull} socket is used by a pipeline node to receive messages from
@@ -1405,7 +1404,7 @@ export interface Pull extends Readable {
   conflate: boolean
 }
 
-Object.assign(Pull.prototype, {receive})
+allowMethods(Pull.prototype, ["receive"])
 
 /**
  * A {@link Push} socket is used by a pipeline node to send messages to
@@ -1436,7 +1435,7 @@ export interface Push extends Writable {
   conflate: boolean
 }
 
-Object.assign(Push.prototype, {send})
+allowMethods(Push.prototype, ["send"])
 
 /**
  * Same as {@link Publisher}, except that you can receive subscriptions from the
@@ -1516,7 +1515,7 @@ export class XPublisher extends Socket {
 }
 
 export interface XPublisher extends Readable, Writable {}
-Object.assign(XPublisher.prototype, {send, receive})
+allowMethods(XPublisher.prototype, ["send", "receive"])
 
 /**
  * Same as {@link Subscriber}, except that you subscribe by sending subscription
@@ -1532,7 +1531,7 @@ export class XSubscriber extends Socket {
 }
 
 export interface XSubscriber extends Readable, Writable {}
-Object.assign(XSubscriber.prototype, {send, receive})
+allowMethods(XSubscriber.prototype, ["send", "receive"])
 
 /**
  * A {@link Stream} is used to send and receive TCP data from a non-ØMQ peer
@@ -1590,7 +1589,7 @@ interface StreamConnectOptions {
 export interface Stream
   extends Readable<[Message, Message]>,
     Writable<[MessageLike, MessageLike]> {}
-Object.assign(Stream.prototype, {send, receive})
+allowMethods(Stream.prototype, ["send", "receive"])
 
 /* Meta functionality to define new socket/context options. */
 const enum Type {

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 ZMQ_VERSION=${ZMQ_VERSION:-"4.3.4"}
