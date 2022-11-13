@@ -9,17 +9,17 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "nan": "2.14.2",
-    "node-gyp-build": "^4.2.3"
+    "nan": "2.17.0",
+    "node-gyp-build": "^4.5.0"
   },
   "devDependencies": {
     "electron-mocha": "^6.0.0",
-    "jsdoc": "^3.5.4",
     "mocha": "^5.0.0",
-    "nyc": "^12.0.2",
-    "prebuildify": "^4.1.2",
-    "semver": "^5.4.1",
-    "should": "^13.0.0"
+    "jsdoc": "^4.0.0",
+    "nyc": "^15.1.0",
+    "prebuildify": "^5.0.1",
+    "semver": "^7.3.8",
+    "should": "^13.2.3"
   },
   "engines": {
     "node": ">=6.0"
@@ -27,8 +27,8 @@
   "scripts": {
     "install": "node-gyp-build || npm run build:libzmq",
     "build:libzmq": "node-gyp rebuild",
-    "prebuildify": "prebuildify -t 15.7.0 -t 14.16.1 -t 12.4.0 -t electron@5.0.13 -t electron@6.1.12 -t electron@7.3.3 -t electron@8.5.5 -t electron@9.4.4 -t electron@10.4.3 -t electron@11.4.3 --strip",
-    "prebuildify-ia32": "prebuildify --arch=ia32 -t 15.7.0 -t 14.16.1 -t 12.4.0 -t electron@5.0.13 -t electron@6.1.12 -t electron@7.3.3 -t electron@8.5.5 -t electron@9.4.4 -t electron@10.4.3 -t electron@11.4.3  --strip",
+    "prebuildify": "prebuildify -t 18.12.1 -t 16.18.1 -t 14.21.1 -t 12.22.12 -t electron@11.5.0 --strip",
+    "prebuildify-ia32": "prebuildify --arch=ia32 -t 18.12.1 -t 16.18.1 -t 14.21.1 -t 12.22.12 -t electron@11.5.0 --strip",
     "build:docs": "jsdoc -R README.md -d docs lib/*.js",
     "test": "mocha --expose-gc --slow 300",
     "test:electron": "electron-mocha --slow 300",
