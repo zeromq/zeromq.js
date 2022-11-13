@@ -1,6 +1,7 @@
 {
   'variables': {
     'zmq_external%': 'false',
+    'openssl_fips': '',
   },
   'targets': [
     {
