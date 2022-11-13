@@ -4,6 +4,7 @@
     'zmq_draft%': 'false',
     'zmq_no_sync_resolve%': 'false',
     'sanitizers%': 'false',
+    'openssl_fips': '',
   },
 
   'targets': [
@@ -115,6 +116,8 @@
                   '-Wno-unused-parameter',
                   '-Wno-missing-field-initializers',
                 ],
+                'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
+                'GCC_ENABLE_EXCEPTIONS': 'YES'
               },
             }],
 
@@ -199,6 +202,8 @@
                 'DEPLOYMENT_POSTPROCESSING': 'YES',
                 'GCC_SYMBOLS_PRIVATE_EXTERN': 'YES',
                 'DEAD_CODE_STRIPPING': 'YES',
+                'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
+                'GCC_ENABLE_EXCEPTIONS': 'YES'
               },
             }],
 
