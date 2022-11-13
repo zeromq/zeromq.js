@@ -21,3 +21,4 @@ tsconfig.*.tsbuildinfo
 /doc-unminified
 .DS_Store
 .idea
+/staging
