@@ -19,12 +19,12 @@ jobs:
           - macos-latest
           - windows-latest
         node_version:
-          - 14
+          - 18
         node_arch:
           - x64
         include:
           - os: windows-latest
-            node_version: 14
+            node_version: 18
             node_arch: x86
           # - os: macos-11.0
           #   node_version: 15
@@ -53,10 +53,3 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           path: ./prebuilds
-
-  Skip:
-    if: contains(github.event.head_commit.message, '[skip ci]')
-    runs-on: ubuntu-latest
-    steps:
-      - name: Skip CI 🚫
-        run: echo skip ci
