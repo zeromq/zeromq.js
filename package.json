@@ -9,17 +9,17 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "nan": "2.14.2",
-    "node-gyp-build": "^4.2.3"
+    "nan": "2.17.0",
+    "node-gyp-build": "^4.5.0"
   },
   "devDependencies": {
     "electron-mocha": "^6.0.0",
-    "jsdoc": "^3.5.4",
     "mocha": "^5.0.0",
-    "nyc": "^12.0.2",
-    "prebuildify": "^4.1.2",
-    "semver": "^5.4.1",
-    "should": "^13.0.0"
+    "jsdoc": "^4.0.0",
+    "nyc": "^15.1.0",
+    "prebuildify": "^5.0.1",
+    "semver": "^7.3.8",
+    "should": "^13.2.3"
   },
   "engines": {
     "node": ">=6.0"
