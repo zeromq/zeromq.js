@@ -4,6 +4,7 @@
     'zmq_draft%': 'false',
     'zmq_no_sync_resolve%': 'false',
     'sanitizers%': 'false',
+    'openssl_fips': '',
   },
 
   'targets': [
