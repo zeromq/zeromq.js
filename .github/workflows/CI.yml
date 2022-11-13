@@ -15,25 +15,25 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-20.04
-          - macos-latest
-          - windows-latest
+          - ubuntu-22.04
+          - macos-11
+          - windows-2022
         node_version:
           - 18
         node_arch:
           - x64
         include:
-          - os: windows-latest
+          - os: windows-2022
             node_version: 18
             node_arch: x86
-          # - os: macos-11.0
-          #   node_version: 15
+          # - os: macos-11
+          #   node_version: 18
           #   node_arch: arm64
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Install Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node_version }}
           architecture: ${{ matrix.node_arch }}
