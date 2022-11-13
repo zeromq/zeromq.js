@@ -13,11 +13,11 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-20.04
+          - ubuntu-22.04
           - macos-11
-          - windows-2019
+          - windows-2022
         node_version:
-          - 14
+          - 18
         node_arch:
           - x64
         zmq_draft:
@@ -31,7 +31,7 @@ jobs:
 
         # include:
         # - os: windows-latest
-        #   node_version: 14
+        #   node_version: 18
         #   node_arch: x86
         #   zmq_draft: false
         #   zmq_shared: false
