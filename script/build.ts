@@ -18,8 +18,18 @@ function main() {
   const src_dir = `zeromq-${zmq_version}`
   const tarball = `zeromq-${zmq_version}.tar.gz`
 
-  const CMAKE_BUILD_TYPE = process.argv[3] || "Release"
+  const CMAKE_BUILD_TYPE = process.env.CMAKE_BUILD_TYPE ?? "Release"
+
   let build_options: string = ""
+
+  // https://cmake.org/cmake/help/latest/variable/CMAKE_MSVC_RUNTIME_LIBRARY.html
+  if (process.platform === "win32") {
+    if (CMAKE_BUILD_TYPE !== "Debug") {
+      build_options += " -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL"
+    } else {
+      build_options += " -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebugDLL"
+    }
+  }
 
   // Handle x86
   if (process.arch === "ia32" || process.env.ARCH === "x86") {
@@ -35,42 +45,43 @@ function main() {
 
   if (existsSync(artifact)) {
     console.log("Found previously built libzmq; skipping rebuild...")
+    return
+  }
+
+  if (existsSync(tarball)) {
+    console.log("Found libzmq source; skipping download...")
   } else {
-    if (existsSync(tarball)) {
-      console.log("Found libzmq source; skipping download...")
-    } else {
-      console.log("Downloading libzmq source...")
-      exec(`curl "${src_url}" -fsSL -o "${tarball}"`)
-    }
+    console.log("Downloading libzmq source...")
+    exec(`curl "${src_url}" -fsSL -o "${tarball}"`)
+  }
 
-    if (!existsSync(src_dir)) {
-      exec(`tar xzf "${tarball}"`)
-    }
+  if (!existsSync(src_dir)) {
+    exec(`tar xzf "${tarball}"`)
+  }
 
-    if (process.env.npm_config_zmq_draft === "true") {
-      console.log("Building libzmq (with draft support)...")
-      build_options += " -DENABLE_DRAFTS=ON"
-    } else {
-      console.log("Building libzmq...")
-    }
+  if (process.env.npm_config_zmq_draft === "true") {
+    console.log("Enabling draft support")
+    build_options += " -DENABLE_DRAFTS=ON"
+  }
 
-    // ClangFormat include causes issues but is not required to build.
-    const clang_format_file = `${src_dir}/builds/cmake/Modules/ClangFormat.cmake`
-    if (existsSync(clang_format_file)) {
-      writeFileSync(clang_format_file, "")
-    }
+  console.log(`Building libzmq ${CMAKE_BUILD_TYPE}`)
 
-    exec(
-      `cmake -S "${src_dir}" -B ./build ${build_options} -DCMAKE_INSTALL_PREFIX="${libzmq_install_prefix}" -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_STATIC=ON -DBUILD_TESTS=OFF -DBUILD_SHARED=OFF -DWITH_DOCS=OFF`,
-    )
+  // ClangFormat include causes issues but is not required to build.
+  const clang_format_file = `${src_dir}/builds/cmake/Modules/ClangFormat.cmake`
+  if (existsSync(clang_format_file)) {
+    writeFileSync(clang_format_file, "")
+  }
 
-    exec(`cmake --build ./build --config ${CMAKE_BUILD_TYPE} --target install`)
+  exec(
+    `cmake -S "${src_dir}" -B ./build ${build_options} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX="${libzmq_install_prefix}" -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_STATIC=ON -DBUILD_TESTS=OFF -DBUILD_SHARED=OFF -DWITH_DOCS=OFF`,
+  )
 
-    if (process.platform === "win32") {
-      // rename libzmq-v143-mt-s-4_3_4.lib to libzmq.lib
-      const build_file = find(`${libzmq_install_prefix}/lib/*.lib`)[0]
-      mv(build_file, `${libzmq_install_prefix}/lib/libzmq.lib`)
-    }
+  exec(`cmake --build ./build --config ${CMAKE_BUILD_TYPE} --target install`)
+
+  if (process.platform === "win32") {
+    // rename libzmq-v143-mt-s-4_3_4.lib to libzmq.lib
+    const build_file = find(`${libzmq_install_prefix}/lib/*.lib`)[0]
+    mv(build_file, `${libzmq_install_prefix}/lib/libzmq.lib`)
   }
 }
 

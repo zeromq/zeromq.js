@@ -17,8 +17,9 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "@types/shelljs": "^0.8.11",
     "@types/node": "^18.11.9",
+    "@types/shelljs": "^0.8.11",
+    "cross-env": "^7.0.3",
     "node-gyp-build": "^4.5.0",
     "shelljs": "^0.8.5",
     "ts-node": "10.9"
@@ -41,6 +42,7 @@
     "mocha": ">=10.1",
     "node-addon-api": "^5.0.0",
     "node-fetch": "^3.3.0",
+    "node-gyp": "^9.3.0",
     "npm-run-all2": "^6.0.4",
     "prebuildify": "^5.0.1",
     "prettier": "^2.7.1",
@@ -78,8 +80,8 @@
     "build.js": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js",
     "build.doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
     "prebuild": "ts-node -P ./tsconfig.json ./script/prebuild.ts",
-    "build.native": "prebuildify --napi --build-from-source",
-    "build.native.debug": "run-s build.native -- --debug",
+    "build.native": "node-gyp configure --release && node-gyp build --release",
+    "build.native.debug": "cross-env CMAKE_BUILD_TYPE=Debug node-gyp configure --debug && cross-env CMAKE_BUILD_TYPE=Debug node-gyp build --debug",
     "build": "run-p build.js build.native",
     "build.debug": "run-p build.js build.native.debug",
     "test": "run-s build.debug && mocha",

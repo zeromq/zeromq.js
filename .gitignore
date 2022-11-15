@@ -12,3 +12,4 @@ build-tmp-napi-v*
 prebuilds
 test.js
 .cache/
+test/typings-compatibility/

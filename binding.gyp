@@ -25,7 +25,7 @@
                 'outputs': ['build/libzmq/lib/libzmq.lib', 'build/libzmq/include/zmq.h', 'build/libzmq/include/zmq_utils.h'],
               }],
             ],
-            'action': ['ts-node', '<(PRODUCT_DIR)/../../script/build.ts', '<(CONFIGURATION_NAME)'],
+            'action': ['ts-node', '<(PRODUCT_DIR)/../../script/build.ts'],
           }],
         }],
       ],
