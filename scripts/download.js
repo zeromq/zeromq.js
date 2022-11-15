@@ -3,7 +3,7 @@ var fs = require("fs");
 var url = require("url");
 
 function writeToFile(filename, response, callback) {
-  var writeStream = fs.createWriteStream(filename)
+  var writeStream = fs.createWriteStream(filename);
   response.pipe(writeStream);
   writeStream.on("finish", callback);
 }
