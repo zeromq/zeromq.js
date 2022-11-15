@@ -95,6 +95,7 @@
           ],
           'conditions': [
             ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
+              # flag removal
               'cflags_cc!': [
                 '-std=gnu++0x',
                 '-std=gnu++1y'
@@ -172,6 +173,7 @@
           'defines': [
             'NAPI_CPP_EXCEPTIONS',
           ],
+          # flag removal
           'cflags_cc!': [
             "-fno-exceptions",
           ],
