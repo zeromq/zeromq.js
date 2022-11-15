@@ -36,7 +36,7 @@ describe("context process exit", function () {
         socket1.receive()
       })
 
-      assert.equal(code, -1)
+      assert.equal(code, 1)
     })
 
     it("should produce warning when messages are queued with blocky", async function () {
@@ -141,7 +141,7 @@ describe("context process exit", function () {
         socket1.receive()
       })
 
-      assert.equal(code, -1)
+      assert.equal(code, 1)
     })
   })
 })
