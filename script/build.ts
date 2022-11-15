@@ -1,7 +1,8 @@
 import {dirname} from "path"
-import {mkdir, cd, echo, test, exec, find, mv} from "shelljs"
+import {existsSync, writeFileSync} from "fs"
+import {mkdir, cd, exec, find, mv} from "shelljs"
 
-const root = dirname(dirname(__dirname))
+const root = dirname(__dirname)
 
 function main() {
   const zmq_version = process.env.ZMQ_VERSION ?? "4.3.4"
@@ -34,30 +35,31 @@ function main() {
   mkdir("-p", path_prefix)
   cd(path_prefix)
 
-  if (test("-f", artifact)) {
-    echo("Found previously built libzmq; skipping rebuild...")
+  if (existsSync(artifact)) {
+    console.log("Found previously built libzmq; skipping rebuild...")
   } else {
-    if (test("-f", tarball)) {
-      echo("Found libzmq source; skipping download...")
+    if (existsSync(tarball)) {
+      console.log("Found libzmq source; skipping download...")
     } else {
-      echo("Downloading libzmq source...")
+      console.log("Downloading libzmq source...")
       exec(`curl "${src_url}" -fsSL -o "${tarball}"`)
     }
 
-    if (!test("-d", src_dir)) {
+    if (!existsSync(src_dir)) {
       exec(`tar xzf "${tarball}"`)
     }
 
     if (process.env.npm_config_zmq_draft === "true") {
-      echo("Building libzmq (with draft support)...")
+      console.log("Building libzmq (with draft support)...")
       build_options += " -DENABLE_DRAFTS=ON"
     } else {
-      echo("Building libzmq...")
+      console.log("Building libzmq...")
     }
 
     // ClangFormat include causes issues but is not required to build.
-    if (test("-f", `${src_dir}/builds/cmake/Modules/ClangFormat.cmake`)) {
-      echo().to(`${src_dir}/builds/cmake/Modules/ClangFormat.cmake`)
+    const clang_format_file = `${src_dir}/builds/cmake/Modules/ClangFormat.cmake`
+    if (existsSync(clang_format_file)) {
+      writeFileSync(clang_format_file, "")
     }
 
     exec(

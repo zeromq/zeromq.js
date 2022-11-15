@@ -5,7 +5,7 @@ specifiers:
   '@types/chai': '>=4.3'
   '@types/fs-extra': ^9.0.13
   '@types/mocha': '>=10.0'
-  '@types/node': '>=18.11'
+  '@types/node': ^18.11.9
   '@types/semver': '>=7'
   '@types/shelljs': ^0.8.11
   '@types/weak-napi': ^2.0.1
@@ -34,6 +34,7 @@ specifiers:
   weak-napi: ^2.0.2
 
 dependencies:
+  '@types/node': 18.11.9
   '@types/shelljs': 0.8.11
   node-gyp-build: 4.5.0
   shelljs: 0.8.5
@@ -44,7 +45,6 @@ devDependencies:
   '@types/chai': 4.3.3
   '@types/fs-extra': 9.0.13
   '@types/mocha': 10.0.0
-  '@types/node': 18.11.9
   '@types/semver': 7.3.12
   '@types/weak-napi': 2.0.1
   benchmark: 2.1.4

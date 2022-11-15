@@ -17,17 +17,17 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
+    "@types/shelljs": "^0.8.11",
+    "@types/node": "^18.11.9",
     "node-gyp-build": "^4.5.0",
-    "ts-node": "10.9",
     "shelljs": "^0.8.5",
-    "@types/shelljs": "^0.8.11"
+    "ts-node": "10.9"
   },
   "devDependencies": {
     "@gnd/typedoc": "^0.15.0-0",
     "@types/chai": ">=4.3",
     "@types/fs-extra": "^9.0.13",
     "@types/mocha": ">=10.0",
-    "@types/node": ">=18.11",
     "@types/semver": ">=7",
     "@types/weak-napi": "^2.0.1",
     "benchmark": ">=2",
