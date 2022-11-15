@@ -107,4 +107,4 @@ jobs:
 
       - name: Lint
         if: contains(matrix.os, 'ubuntu')
-        run: npm run lint
+        run: npm run lint-test
