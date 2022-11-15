@@ -104,7 +104,7 @@ jobs:
 
       - name: Test (Debug)
         run: |
-          npm run test.nogc
+          npm run test.skip_gc_tests
 
       - name: Tests + GC Tests (Release)
         run: |
