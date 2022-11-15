@@ -21,6 +21,7 @@
     "@types/shelljs": "^0.8.11",
     "cross-env": "^7.0.3",
     "node-gyp-build": "^4.5.0",
+    "node-addon-api": "^5.0.0",
     "shelljs": "^0.8.5",
     "ts-node": "10.9"
   },
@@ -40,7 +41,6 @@
     "fs-extra": "^10.1.0",
     "gunzip-maybe": "^1.4.2",
     "mocha": ">=10.1",
-    "node-addon-api": "^5.0.0",
     "node-fetch": "^3.3.0",
     "node-gyp": "^9.3.0",
     "npm-run-all2": "^6.0.4",
