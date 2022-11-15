@@ -17,7 +17,10 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "node-gyp-build": "^4.5.0"
+    "node-gyp-build": "^4.5.0",
+    "ts-node": "10.9",
+    "shelljs": "^0.8.5",
+    "@types/shelljs": "^0.8.11"
   },
   "devDependencies": {
     "@gnd/typedoc": "^0.15.0-0",
@@ -45,7 +48,6 @@
     "shx": "^0.3.4",
     "tar-fs": "^2.1.1",
     "ts-morph": "^16.0.0",
-    "ts-node": ">=10",
     "typescript": "4.8",
     "weak-napi": "^2.0.2"
   },

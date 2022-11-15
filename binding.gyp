@@ -18,7 +18,7 @@
             'action_name': 'build_libzmq',
             'inputs': ['package.json'],
             'outputs': ['libzmq/lib'],
-            'action': ['sh', '<(PRODUCT_DIR)/../../script/build.sh', '<(CONFIGURATION_NAME)'],
+            'action': ['ts-node', '<(PRODUCT_DIR)/../../script/build.ts', '<(CONFIGURATION_NAME)'],
           }],
         }],
       ],
