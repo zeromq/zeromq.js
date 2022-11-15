@@ -47,6 +47,7 @@
               'xcode_settings': {
                 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
                 'MACOSX_DEPLOYMENT_TARGET': '10.15',
+                'CLANG_CXX_LANGUAGE_STANDARD': 'c++17',
               },
               'libraries': ['<(PRODUCT_DIR)/../../zmq/lib/libzmq.a'],
               'include_dirs': ['<(PRODUCT_DIR)/../../zmq/include'],
@@ -56,6 +57,7 @@
             ['OS=="linux"', {
               'libraries': ['<(PRODUCT_DIR)/../../zmq/lib/libzmq.a'],
               'include_dirs': ['<(PRODUCT_DIR)/../../zmq/include'],
+              'cflags_cc': [ '-std=c++17' ],
             }],
           ],
         }],
