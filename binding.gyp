@@ -16,8 +16,15 @@
         ["zmq_shared == 'false'", {
           'actions': [{
             'action_name': 'build_libzmq',
-            'inputs': ['package.json'],
-            'outputs': ['build/libzmq'],
+            'inputs': ['package.json', './script/build.ts'],
+            'conditions': [
+              ['OS != "win"', {
+                'outputs': ['build/libzmq/lib/libzmq.a', 'build/libzmq/include/zmq.h', 'build/libzmq/include/zmq_utils.h'],
+              }],
+              ['OS == "win"', {
+                'outputs': ['build/libzmq/lib/libzmq.lib', 'build/libzmq/include/zmq.h', 'build/libzmq/include/zmq_utils.h'],
+              }],
+            ],
             'action': ['ts-node', '<(PRODUCT_DIR)/../../script/build.ts', '<(CONFIGURATION_NAME)'],
           }],
         }],
