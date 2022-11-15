@@ -98,13 +98,14 @@ jobs:
         with:
           path: ./prebuilds
 
-      - name: Test
-        uses: nick-invision/retry@v2
-        with:
-          timeout_minutes: 4
-          max_attempts: 3
-          command: npm run test
-
       - name: Lint
         if: contains(matrix.os, 'ubuntu')
         run: npm run lint-test
+
+      - name: Test (Debug)
+        run: |
+          npm run test.nogc
+
+      - name: Tests + GC Tests (Release)
+        run: |
+          npm run test
