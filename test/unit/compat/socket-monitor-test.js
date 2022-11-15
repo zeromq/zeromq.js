@@ -3,6 +3,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   const semver = require("semver")
   const {assert} = require("chai")
   const {testProtos, uniqAddress} = require("../helpers")
+  const {isFullError} = require("../../src/errors")
 
   /* This test case only seems to work reliably with TCP. */
   for (const proto of testProtos("tcp")) {

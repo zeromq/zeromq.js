@@ -7,7 +7,20 @@
     "eslint-config-atomic"
   ],
   "rules": {
-    "@typescript-eslint/quotes": ["error", "double"]
+    "@typescript-eslint/quotes": [
+      "error",
+      "double"
+    ],
+    "require-await": "off"
   },
-  "ignorePatterns": ["node_modules/", "build/", "lib/", "libzmq/", "tmp/", "zmq/", "v5-compat.d.ts", "draft.d.ts"]
+  "ignorePatterns": [
+    "node_modules/",
+    "build/",
+    "lib/",
+    "libzmq/",
+    "tmp/",
+    "zmq/",
+    "v5-compat.d.ts",
+    "draft.d.ts"
+  ]
 }

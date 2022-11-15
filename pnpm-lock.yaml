@@ -39,6 +39,7 @@ dependencies:
   '@types/node': 18.11.9
   '@types/shelljs': 0.8.11
   cross-env: 7.0.3
+  node-addon-api: 5.0.0
   node-gyp-build: 4.5.0
   shelljs: 0.8.5
   ts-node: 10.9.1_iwjeuo5dinivysbddhw4eygg7m
@@ -59,7 +60,6 @@ devDependencies:
   fs-extra: 10.1.0
   gunzip-maybe: 1.4.2
   mocha: 10.1.0
-  node-addon-api: 5.0.0
   node-fetch: 3.3.0
   node-gyp: 9.3.0
   npm-run-all2: 6.0.4
@@ -3188,7 +3188,7 @@ packages:
 
   /node-addon-api/5.0.0:
     resolution: {integrity: sha512-CvkDw2OEnme7ybCykJpVcKH+uAOLV2qLqiyla128dN9TkEWfrYmxG6C2boDe5KcNQqZF3orkqzGgOMvZ/JNekA==}
-    dev: true
+    dev: false
 
   /node-domexception/1.0.0:
     resolution: {integrity: sha512-/jKZoMpw0F8GRwl4/eLROPA3cfcXtLApP0QzLmUT/HuPCZWyB7IY9ZrMeKw2O/nFIqPQB3PVM9aYm0F312AXDQ==}

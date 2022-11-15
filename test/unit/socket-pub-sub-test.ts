@@ -39,7 +39,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         const send = async () => {
           /* Wait briefly before publishing to avoid slow joiner syndrome. */
-          await new Promise(resolve => setTimeout(resolve, 25))
+          await new Promise(resolve => {
+            setTimeout(resolve, 25)
+          })
           for (const msg of messages) {
             await pub.send(msg)
           }
@@ -80,7 +82,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         const send = async () => {
           /* Wait briefly before publishing to avoid slow joiner syndrome. */
-          await new Promise(resolve => setTimeout(resolve, 25))
+          await new Promise(resolve => {
+            setTimeout(resolve, 25)
+          })
           for (const msg of messages) {
             await pub.send(msg)
           }
