@@ -29,7 +29,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           if (!isFullError(err)) {
             throw err
           }
-          assert.include(err.message, "send is not a function")
+          assert.include(err.message, "Message must be present")
         }
       })
 
