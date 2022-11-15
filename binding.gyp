@@ -16,9 +16,16 @@
         ["zmq_shared == 'false'", {
           'actions': [{
             'action_name': 'build_libzmq',
-            'inputs': ['package.json'],
-            'outputs': ['libzmq/lib'],
-            'action': ['sh', '<(PRODUCT_DIR)/../../script/build.sh', '<(CONFIGURATION_NAME)'],
+            'inputs': ['package.json', './script/build.ts'],
+            'conditions': [
+              ['OS != "win"', {
+                'outputs': ['build/libzmq/lib/libzmq.a', 'build/libzmq/include/zmq.h', 'build/libzmq/include/zmq_utils.h'],
+              }],
+              ['OS == "win"', {
+                'outputs': ['build/libzmq/lib/libzmq.lib', 'build/libzmq/include/zmq.h', 'build/libzmq/include/zmq_utils.h'],
+              }],
+            ],
+            'action': ['ts-node', '<(PRODUCT_DIR)/../../script/build.ts'],
           }],
         }],
       ],
@@ -95,6 +102,7 @@
           ],
           'conditions': [
             ['OS == "linux" or OS == "freebsd" or OS == "openbsd" or OS == "solaris"', {
+              # flag removal
               'cflags_cc!': [
                 '-std=gnu++0x',
                 '-std=gnu++1y'
@@ -172,6 +180,7 @@
           'defines': [
             'NAPI_CPP_EXCEPTIONS',
           ],
+          # flag removal
           'cflags_cc!': [
             "-fno-exceptions",
           ],

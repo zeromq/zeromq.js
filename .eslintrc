@@ -9,5 +9,5 @@
   "rules": {
     "@typescript-eslint/quotes": ["error", "double"]
   },
-  "ignorePatterns": ["node_modules/", "build/", "lib/", "libzmq/", "tmp/", "zmq/"]
+  "ignorePatterns": ["node_modules/", "build/", "lib/", "libzmq/", "tmp/", "zmq/", "v5-compat.d.ts", "draft.d.ts"]
 }
