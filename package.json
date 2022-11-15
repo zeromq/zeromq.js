@@ -86,9 +86,9 @@
     "build.debug": "run-p build.js build.native.debug",
     "test": "run-s build && mocha",
     "test.skip_gc_tests": "run-s build.debug && cross-env SKIP_GC_TESTS=true mocha",
-    "lint.clang-format": "clang-format -i -style=file src/*.{cc,h} src/*/*.h",
+    "lint.clang-format": "clang-format -i -style=file ./src/*.cc ./src/*.h ./src/util/*.h",
     "lint-test.eslint": "eslint **/*.{ts,tsx,js,jsx,cjs,mjs,json,yaml} --no-error-on-unmatched-pattern --cache --cache-location ./.cache/eslint/",
-    "lint.eslint": "run-s lint-test.eslint -- --fix",
+    "lint.eslint": "pnpm run lint-test.eslint -- --fix",
     "lint": "run-p lint.eslint lint.clang-format",
     "lint-test": "run-s lint-test.eslint",
     "bench": "node --expose-gc test/bench"

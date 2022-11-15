@@ -48,7 +48,9 @@ if (zmq.capability.draft) {
 
           const send = async () => {
             /* Wait briefly before publishing to avoid slow joiner syndrome. */
-            await new Promise(resolve => setTimeout(resolve, 25))
+            await new Promise(resolve => {
+              setTimeout(resolve, 25)
+            })
             for (const msg of messages) {
               await radio.send(msg, {group: uuid})
             }
@@ -92,7 +94,9 @@ if (zmq.capability.draft) {
 
           const send = async () => {
             /* Wait briefly before publishing to avoid slow joiner syndrome. */
-            await new Promise(resolve => setTimeout(resolve, 25))
+            await new Promise(resolve => {
+              setTimeout(resolve, 25)
+            })
             for (const msg of messages) {
               await radio.send(msg, {group: msg.slice(0, 2)})
             }

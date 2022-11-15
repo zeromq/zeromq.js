@@ -50,7 +50,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         const send = async () => {
           /* Wait briefly before publishing to avoid slow joiner syndrome. */
-          await new Promise(resolve => setTimeout(resolve, 25))
+          await new Promise(resolve => {
+            setTimeout(resolve, 25)
+          })
           for (const msg of messages) {
             await pub.send(msg)
           }
@@ -117,7 +119,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         const send = async () => {
           /* Wait briefly before publishing to avoid slow joiner syndrome. */
-          await new Promise(resolve => setTimeout(resolve, 25))
+          await new Promise(resolve => {
+            setTimeout(resolve, 25)
+          })
 
           for (const msg of messages) {
             await pub.send(msg)
@@ -176,7 +180,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await sub2.connect(address)
 
         const subscribe = async () => {
-          await new Promise(resolve => setTimeout(resolve, 25))
+          await new Promise(resolve => {
+            setTimeout(resolve, 25)
+          })
           sub1.subscribe("fo")
           sub2.subscribe("fo")
           sub2.unsubscribe("fo")
@@ -213,7 +219,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await sub2.connect(address)
 
         const subscribe = async () => {
-          await new Promise(resolve => setTimeout(resolve, 25))
+          await new Promise(resolve => {
+            setTimeout(resolve, 25)
+          })
           sub1.subscribe("fo")
           sub2.subscribe("fo")
           sub2.unsubscribe("fo")
@@ -258,7 +266,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await sub2.connect(address)
 
         const subscribe = async () => {
-          await new Promise(resolve => setTimeout(resolve, 25))
+          await new Promise(resolve => {
+            setTimeout(resolve, 25)
+          })
           sub1.subscribe("fo")
           sub2.subscribe("fo")
           sub2.unsubscribe("fo")
