@@ -1,11 +1,9 @@
 import {dirname} from "path"
-import {set, mkdir, cd, echo, test, exec, find, mv} from "shelljs"
+import {mkdir, cd, echo, test, exec, find, mv} from "shelljs"
 
 const root = dirname(dirname(__dirname))
 
 function main() {
-  set("-e")
-
   const zmq_version = process.env.ZMQ_VERSION ?? "4.3.4"
   const src_url = `https://github.com/zeromq/libzmq/releases/download/v${zmq_version}/zeromq-${zmq_version}.tar.gz`
   const src_dir = `zeromq-${zmq_version}`
@@ -71,7 +69,7 @@ function main() {
         `cmake --build ./ --config ${CMAKE_BUILD_TYPE} --target install -- -verbosity:Minimal -maxcpucount`,
       )
 
-      const build_file = find(`${path_prefix}/lib/*.lib`, "-type", "f")
+      const build_file = find(`${path_prefix}/lib/*.lib`)[0]
 
       mv(build_file, `${path_prefix}/lib/libzmq.lib`)
     } else {
