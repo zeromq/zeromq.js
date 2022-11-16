@@ -74,11 +74,13 @@ function main() {
     writeFileSync(clang_format_file, "")
   }
 
-  exec(
-    `cmake -S "${src_dir}" -B ./build ${build_options} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX="${libzmq_install_prefix}" -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_STATIC=ON -DBUILD_TESTS=OFF -DBUILD_SHARED=OFF -DWITH_DOCS=OFF`,
-  )
+  const cmake_configure = `cmake -S "${src_dir}" -B ./build ${build_options} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX="${libzmq_install_prefix}" -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_STATIC=ON -DBUILD_TESTS=OFF -DBUILD_SHARED=OFF -DWITH_DOCS=OFF`
+  console.log(cmake_configure)
+  exec(cmake_configure)
 
-  exec(`cmake --build ./build --config ${CMAKE_BUILD_TYPE} --target install`)
+  const cmake_build = `cmake --build ./build --config ${CMAKE_BUILD_TYPE} --target install`
+  console.log(cmake_build)
+  exec(cmake_build)
 
   if (process.platform === "win32") {
     // rename libzmq-v143-mt-s-4_3_4.lib to libzmq.lib
