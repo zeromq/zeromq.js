@@ -124,8 +124,10 @@ jobs:
           timeout_minutes: 15
           max_attempts: 1
           command: |
+            pnpm run clean
             pnpm run test.skip_gc_tests
 
       - name: Tests + GC Tests (Release)
         run: |
+          pnpm run clean
           pnpm run test

@@ -76,7 +76,8 @@
   ],
   "scripts": {
     "install": "node-gyp-build",
-    "clean": "shx rm -rf build lib libzmq tmp zmq prebuilds && shx mkdir -p tmp && shx touch tmp/.gitkeep",
+    "clean": "shx rm -rf ./build ./lib/ ./prebuilds",
+    "clean.temp": "shx rm -rf ./tmp && shx mkdir -p tmp && shx touch tmp/.gitkeep",
     "build.js": "tsc --project tsconfig-build.json && node script/ci/downlevel-dts.js",
     "build.doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
     "prebuild": "ts-node -P ./tsconfig.json ./script/prebuild.ts",
