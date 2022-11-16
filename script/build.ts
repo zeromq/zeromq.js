@@ -51,15 +51,17 @@ function main() {
     return
   }
 
+  const execOptions = {fatal: true}
+
   if (existsSync(tarball)) {
     console.log("Found libzmq source; skipping download...")
   } else {
     console.log(`Downloading libzmq source from ${src_url}`)
-    exec(`curl "${src_url}" -fsSL -o "${tarball}"`)
+    exec(`curl "${src_url}" -fsSL -o "${tarball}"`, execOptions)
   }
 
   if (!existsSync(src_dir)) {
-    exec(`tar xzf "${tarball}"`)
+    exec(`tar xzf "${tarball}"`, execOptions)
   }
 
   if (process.env.ZMQ_DRAFT === "true") {
@@ -77,11 +79,11 @@ function main() {
 
   const cmake_configure = `cmake -S "${src_dir}" -B ./build ${build_options} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX="${libzmq_install_prefix}" -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_STATIC=ON -DBUILD_TESTS=OFF -DBUILD_SHARED=OFF -DWITH_DOCS=OFF`
   console.log(cmake_configure)
-  exec(cmake_configure)
+  exec(cmake_configure, execOptions)
 
   const cmake_build = `cmake --build ./build --config ${CMAKE_BUILD_TYPE} --target install`
   console.log(cmake_build)
-  exec(cmake_build)
+  exec(cmake_build, execOptions)
 
   if (process.platform === "win32") {
     // rename libzmq-v143-mt-s-4_3_4.lib to libzmq.lib
