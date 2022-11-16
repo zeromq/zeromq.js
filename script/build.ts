@@ -12,7 +12,7 @@ function main() {
   const libzmq_build_prefix = `${root}/build/libzmq-staging`
   const libzmq_install_prefix = `${root}/build/libzmq`
 
-  const artifact = `${libzmq_build_prefix}/lib/libzmq.${
+  const installed_artifact = `${libzmq_install_prefix}/lib/libzmq${
     process.platform === "win32" ? ".lib" : ".a"
   }`
 
@@ -44,8 +44,10 @@ function main() {
   mkdir("-p", libzmq_build_prefix)
   cd(libzmq_build_prefix)
 
-  if (existsSync(artifact)) {
-    console.log("Found previously built libzmq; skipping rebuild...")
+  if (existsSync(installed_artifact)) {
+    console.log(
+      `Skipping rebuild, found previously built libzmq at ${installed_artifact}`,
+    )
     return
   }
 
@@ -60,7 +62,6 @@ function main() {
     exec(`tar xzf "${tarball}"`)
   }
 
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
   if (process.env.ZMQ_DRAFT === "true") {
     console.log("Enabling draft support")
     build_options += " -DENABLE_DRAFTS=ON"
