@@ -53,13 +53,13 @@ jobs:
             zmq_draft: false
             zmq_version: 4.3.4
 
-          # - os: macos-11
-          #   node_version: 18
-          #   node_arch: x64
-          #   ARCH: arm64
-          #   cpp_arch: amd64_arm64
-          #   zmq_draft: false
-          #   zmq_version: 4.3.4
+          - os: macos-11
+            node_version: 18
+            node_arch: x64
+            ARCH: arm64
+            cpp_arch: amd64_arm64
+            zmq_draft: false
+            zmq_version: 4.3.4
 
     env:
       ZMQ_VERSION: ${{ matrix.zmq_version }}
