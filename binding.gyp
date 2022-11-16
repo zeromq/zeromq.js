@@ -125,7 +125,15 @@
                   '-Wno-missing-field-initializers',
                 ],
                 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
-                'GCC_ENABLE_EXCEPTIONS': 'YES'
+                'GCC_ENABLE_EXCEPTIONS': 'YES',
+                'OTHER_CFLAGS': [
+                  '-arch x86_64',
+                  '-arch arm64'
+                ],
+                'OTHER_LDFLAGS': [
+                  '-arch x86_64',
+                  '-arch arm64'
+                ]
               },
             }],
 
@@ -212,7 +220,15 @@
                 'GCC_SYMBOLS_PRIVATE_EXTERN': 'YES',
                 'DEAD_CODE_STRIPPING': 'YES',
                 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
-                'GCC_ENABLE_EXCEPTIONS': 'YES'
+                'GCC_ENABLE_EXCEPTIONS': 'YES',
+                'OTHER_CFLAGS': [
+                  '-arch x86_64',
+                  '-arch arm64'
+                ],
+                'OTHER_LDFLAGS': [
+                  '-arch x86_64',
+                  '-arch arm64'
+                ]
               },
             }],
 

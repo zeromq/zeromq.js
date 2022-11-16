@@ -20,6 +20,7 @@ jobs:
           - 18
         node_arch:
           - x64
+          - arm64
         zmq_draft:
           - false
         zmq_shared:
@@ -28,23 +29,11 @@ jobs:
           - 4.3.4
 
         include:
-        - os: windows-latest
-          node_version: 18
-          node_arch: x86
-          zmq_draft: false
-          zmq_shared: false
-
-        - os: windows-latest
-          node_version: 18
-          node_arch: arm64
-          zmq_draft: false
-          zmq_shared: false
-
-        # - os: macos-11.0
-        #   node_version: 15
-        #   node_arch: arm64
-        #   zmq_draft: false
-        #   zmq_shared: false
+          - os: windows-latest
+            node_version: 18
+            node_arch: x86
+            zmq_draft: false
+            zmq_shared: false
 
     env:
       ZMQ_VERSION: ${{ matrix.zmq_version }}
