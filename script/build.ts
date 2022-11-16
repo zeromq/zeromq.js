@@ -61,7 +61,7 @@ function main() {
   }
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
-  if (process.env.ZMQ_DRAFT) {
+  if (process.env.ZMQ_DRAFT === "true") {
     console.log("Enabling draft support")
     build_options += " -DENABLE_DRAFTS=ON"
   }
