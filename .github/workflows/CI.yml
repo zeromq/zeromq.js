@@ -22,6 +22,8 @@ jobs:
           - x64
         cpp_arch:
           - x64
+        ARCH:
+          - x64
         zmq_draft:
           - false
         zmq_version:
@@ -31,6 +33,7 @@ jobs:
           - os: windows-2022
             node_version: 18
             node_arch: x86
+            ARCH: x86
             cpp_arch: amd64_x86
             zmq_draft: false
             zmq_version: 4.3.4
@@ -38,6 +41,15 @@ jobs:
           - os: windows-2022
             node_version: 18
             node_arch: x64
+            ARCH: arm64
+            cpp_arch: amd64_arm64
+            zmq_draft: false
+            zmq_version: 4.3.4
+
+          - os: macos-11
+            node_version: 18
+            node_arch: x64
+            ARCH: arm64
             cpp_arch: amd64_arm64
             zmq_draft: false
             zmq_version: 4.3.4
@@ -89,7 +101,7 @@ jobs:
       - name: Prebuild
         run: npm run prebuild
         env:
-          ARCH: ${{ matrix.node_arch }}
+          ARCH: ${{ matrix.ARCH }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
