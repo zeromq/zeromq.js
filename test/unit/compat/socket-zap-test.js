@@ -71,7 +71,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
       after(async function () {
         zapSocket.close()
-        await new Promise(resolve => setTimeout(resolve, 15))
+        await new Promise(resolve => {
+          setTimeout(resolve, 15)
+        })
       })
 
       beforeEach(function () {

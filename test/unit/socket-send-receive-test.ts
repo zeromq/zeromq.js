@@ -108,7 +108,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         await send(16)
         global.gc?.()
-        await new Promise(resolve => setTimeout(resolve, 5))
+        await new Promise(resolve => {
+          setTimeout(resolve, 5)
+        })
         assert.equal(released, true)
       })
 
@@ -130,7 +132,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         await send(1025)
         global.gc?.()
-        await new Promise(resolve => setTimeout(resolve, 5))
+        await new Promise(resolve => {
+          setTimeout(resolve, 5)
+        })
         assert.equal(released, false)
       })
     })
@@ -152,7 +156,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       it("should be readable if message is available", async function () {
         await sockB.send(Buffer.from("foo"))
-        await new Promise(resolve => setTimeout(resolve, 15))
+        await new Promise(resolve => {
+          setTimeout(resolve, 15)
+        })
         assert.equal(sockA.readable, true)
       })
 
@@ -275,6 +281,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should poll simultaneously", async function () {
+        this.timeout(5000)
+
         const sendReceiveA = async () => {
           const [msg1] = await Promise.all([
             sockA.receive(),
@@ -296,7 +304,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should poll simultaneously after delay", async function () {
-        await new Promise(resolve => setTimeout(resolve, 15))
+        await new Promise(resolve => {
+          setTimeout(resolve, 15)
+        })
         const sendReceiveA = async () => {
           const [msg1] = await Promise.all([
             sockA.receive(),
@@ -365,7 +375,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         /* Repeated GC to allow inproc messages from being collected. */
         for (let i = 0; i < 5; i++) {
           global.gc?.()
-          await new Promise(resolve => setTimeout(resolve, 2))
+          await new Promise(resolve => {
+            setTimeout(resolve, 2)
+          })
         }
 
         assert.equal(released, n * 2)
@@ -413,7 +425,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         /* Repeated GC to allow inproc messages from being collected. */
         for (let i = 0; i < 5; i++) {
           global.gc?.()
-          await new Promise(resolve => setTimeout(resolve, 2))
+          await new Promise(resolve => {
+            setTimeout(resolve, 2)
+          })
         }
 
         assert.equal(released, n * 3)
@@ -445,14 +459,18 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         const countDelays = async (fn: () => Promise<void>) => {
           let delays = 0
-          await new Promise(resolve => setTimeout(resolve, 15))
+          await new Promise(resolve => {
+            setTimeout(resolve, 15)
+          })
           const interval = setInterval(() => {
             delays++
           }, 0)
           await new Promise(setImmediate) /* Move to check phase. */
           await fn()
           clearInterval(interval)
-          await new Promise(resolve => setTimeout(resolve, 15))
+          await new Promise(resolve => {
+            setTimeout(resolve, 15)
+          })
           return delays
         }
 

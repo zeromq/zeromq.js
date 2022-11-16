@@ -132,7 +132,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         await task()
         global.gc?.()
-        await new Promise(resolve => setTimeout(resolve, 5))
+        await new Promise(resolve => {
+          setTimeout(resolve, 5)
+        })
         assert.equal(released, true)
       })
     })
@@ -164,7 +166,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         await task()
         global.gc?.()
-        await new Promise(resolve => setTimeout(resolve, 5))
+        await new Promise(resolve => {
+          setTimeout(resolve, 5)
+        })
         assert.equal(released, true)
       })
     })
