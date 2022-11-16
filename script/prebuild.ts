@@ -26,7 +26,12 @@ async function main() {
     process.env.ZMQ_BUILD_OPTIONS = `--host=${TRIPLE}`
   }
 
-  let prebuildScript = `prebuildify --napi --arch=${prebuildArch} --strip --tag-libc`
+  // use the current node version to build the prebuild
+  // If the distribution for that particular architecture is not available, updated your Node:
+  // https://nodejs.org/dist/
+  const nodeVersion = process.version.replace("v", "")
+
+  let prebuildScript = `prebuildify --napi --arch=${prebuildArch} --strip --tag-libc -t ${nodeVersion}`
 
   if (typeof process.env.ALPINE_CHROOT === "string") {
     prebuildScript = `/alpine/enter-chroot ${prebuildScript}`
