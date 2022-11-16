@@ -12,7 +12,7 @@ function main() {
   const libzmq_build_prefix = `${root}/build/libzmq-staging`
   const libzmq_install_prefix = `${root}/build/libzmq`
 
-  const artifact = `${libzmq_build_prefix}/lib/libzmq.${
+  const installed_artifact = `${libzmq_install_prefix}/lib/libzmq${
     process.platform === "win32" ? ".lib" : ".a"
   }`
 
@@ -44,23 +44,26 @@ function main() {
   mkdir("-p", libzmq_build_prefix)
   cd(libzmq_build_prefix)
 
-  if (existsSync(artifact)) {
-    console.log("Found previously built libzmq; skipping rebuild...")
+  if (existsSync(installed_artifact)) {
+    console.log(
+      `Skipping rebuild, found previously built libzmq at ${installed_artifact}`,
+    )
     return
   }
+
+  const execOptions = {fatal: true}
 
   if (existsSync(tarball)) {
     console.log("Found libzmq source; skipping download...")
   } else {
     console.log(`Downloading libzmq source from ${src_url}`)
-    exec(`curl "${src_url}" -fsSL -o "${tarball}"`)
+    exec(`curl "${src_url}" -fsSL -o "${tarball}"`, execOptions)
   }
 
   if (!existsSync(src_dir)) {
-    exec(`tar xzf "${tarball}"`)
+    exec(`tar xzf "${tarball}"`, execOptions)
   }
 
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
   if (process.env.ZMQ_DRAFT === "true") {
     console.log("Enabling draft support")
     build_options += " -DENABLE_DRAFTS=ON"
@@ -76,11 +79,11 @@ function main() {
 
   const cmake_configure = `cmake -S "${src_dir}" -B ./build ${build_options} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX="${libzmq_install_prefix}" -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_STATIC=ON -DBUILD_TESTS=OFF -DBUILD_SHARED=OFF -DWITH_DOCS=OFF`
   console.log(cmake_configure)
-  exec(cmake_configure)
+  exec(cmake_configure, execOptions)
 
   const cmake_build = `cmake --build ./build --config ${CMAKE_BUILD_TYPE} --target install`
   console.log(cmake_build)
-  exec(cmake_build)
+  exec(cmake_build, execOptions)
 
   if (process.platform === "win32") {
     // rename libzmq-v143-mt-s-4_3_4.lib to libzmq.lib

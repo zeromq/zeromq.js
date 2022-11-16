@@ -16,16 +16,16 @@
         ["zmq_shared == 'false'", {
           'actions': [{
             'action_name': 'build_libzmq',
-            'inputs': ['package.json', './script/build.ts'],
+            'inputs': ['<(module_root_dir)/package.json', '<(module_root_dir)/script/build.ts'],
             'conditions': [
               ['OS != "win"', {
-                'outputs': ['build/libzmq/lib/libzmq.a', 'build/libzmq/include/zmq.h', 'build/libzmq/include/zmq_utils.h'],
+                'outputs': ['<(module_root_dir)/build/libzmq/lib/libzmq.a', '<(module_root_dir)/build/libzmq/include/zmq.h', '<(module_root_dir)/build/libzmq/include/zmq_utils.h'],
               }],
               ['OS == "win"', {
-                'outputs': ['build/libzmq/lib/libzmq.lib', 'build/libzmq/include/zmq.h', 'build/libzmq/include/zmq_utils.h'],
+                'outputs': ['<(module_root_dir)/build/libzmq/lib/libzmq.lib', '<(module_root_dir)/build/libzmq/include/zmq.h', '<(module_root_dir)/build/libzmq/include/zmq_utils.h'],
               }],
             ],
-            'action': ['ts-node', '<(PRODUCT_DIR)/../../script/build.ts'],
+            'action': ['ts-node', '<(module_root_dir)/script/build.ts'],
           }],
         }],
       ],
@@ -46,7 +46,7 @@
 
       'include_dirs': [
         "vendor",
-        '<(PRODUCT_DIR)/../libzmq/include',
+        '<(module_root_dir)/build/libzmq/include',
         "<!@(node -p \"require('node-addon-api').include\")"
       ],
 
@@ -76,20 +76,20 @@
           'conditions': [
             ['OS != "win"', {
               'libraries': [
-                '<(PRODUCT_DIR)/../libzmq/lib/libzmq.a',
+                '<(module_root_dir)/build/libzmq/lib/libzmq.a',
               ],
             }],
 
             ['OS == "mac"', {
               'libraries': [
-                '<(PRODUCT_DIR)/../libzmq/lib/libzmq.a',
+                '<(module_root_dir)/build/libzmq/lib/libzmq.a',
                 '-lsodium',
               ],
             }],
 
             ['OS == "win"', {
               'libraries': [
-                '<(PRODUCT_DIR)/../libzmq/lib/libzmq',
+                '<(module_root_dir)/build/libzmq/lib/libzmq',
                 'ws2_32.lib',
                 'iphlpapi',
               ],
