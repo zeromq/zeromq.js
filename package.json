@@ -91,7 +91,8 @@
     "lint.eslint": "pnpm run lint-test.eslint --fix",
     "lint": "run-p lint.eslint lint.clang-format",
     "lint-test": "run-s lint-test.eslint",
-    "bench": "node --expose-gc test/bench"
+    "bench": "node --expose-gc test/bench",
+    "prepublishOnly": "pnpm run build.js"
   },
   "keywords": [
     "zeromq",
