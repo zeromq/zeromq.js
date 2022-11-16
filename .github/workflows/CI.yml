@@ -65,6 +65,7 @@ jobs:
       ZMQ_VERSION: ${{ matrix.zmq_version }}
       ZMQ_DRAFT: ${{ matrix.zmq_draft }}
       ZMQ_SHARED: false
+      ARCH: ${{ matrix.ARCH }}
     steps:
       - uses: actions/checkout@v3
 
@@ -104,13 +105,9 @@ jobs:
 
       - name: Install Dependencies and Build
         run: pnpm install
-        env:
-          ARCH: ${{ matrix.ARCH }}
 
       - name: Prebuild
         run: pnpm run prebuild
-        env:
-          ARCH: ${{ matrix.ARCH }}
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
