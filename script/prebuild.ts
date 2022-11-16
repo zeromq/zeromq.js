@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-
 import {spawnSync} from "child_process"
 
 main().catch(e => {
@@ -9,9 +7,9 @@ main().catch(e => {
 async function main() {
   console.log("Building distribution binary...")
 
-  const prebuildArch = getNodearch(process.env.ARCH)
+  const prebuildArch = getNodearch(process.env.ARCH ?? process.arch)
 
-  if (process.env.TRIPLE) {
+  if (typeof process.env.TRIPLE === "string") {
     const TRIPLE = process.env.TRIPLE
 
     const GCC = process.env.GCC
@@ -30,7 +28,7 @@ async function main() {
 
   let prebuildScript = `prebuildify --napi --arch=${prebuildArch} --strip --tag-libc`
 
-  if (process.env.ALPINE_CHROOT) {
+  if (typeof process.env.ALPINE_CHROOT === "string") {
     prebuildScript = `/alpine/enter-chroot ${prebuildScript}`
   }
 
@@ -41,13 +39,9 @@ async function main() {
   })
 }
 
-function getNodearch(arch: string | undefined): string {
-  if (!arch) {
-    return process.arch
-  }
+function getNodearch(arch: string): string {
   if (arch === "x86") {
     return "ia32"
-  } else {
-    return arch
   }
+  return arch
 }

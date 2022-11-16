@@ -33,7 +33,9 @@ function main() {
 
   // Handle x86
   if (process.arch === "ia32" || process.env.ARCH === "x86") {
-    build_options += " -DCMAKE_GENERATOR_PLATFORM=x86"
+    const CMAKE_GENERATOR_PLATFORM =
+      process.platform === "win32" ? "win32" : "x86"
+    build_options += ` -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}`
   }
 
   if (process.platform === "darwin") {
