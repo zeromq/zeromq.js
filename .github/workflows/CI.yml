@@ -81,7 +81,7 @@ jobs:
       - name: Install Mac-OS Dependencies
         if: contains(matrix.os, 'macos')
         run: |
-          brew install libsodium
+          brew install libsodium gnutls
 
       - name: Install Dependencies and Build
         run: npm install
