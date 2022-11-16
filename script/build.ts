@@ -19,7 +19,8 @@ function main() {
   const src_dir = `zeromq-${zmq_version}`
   const tarball = `zeromq-${zmq_version}.tar.gz`
 
-  const CMAKE_BUILD_TYPE = process.env.CMAKE_BUILD_TYPE ?? "Release"
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
+  const CMAKE_BUILD_TYPE = process.env.CMAKE_BUILD_TYPE || "Release"
 
   let build_options: string = ""
 
@@ -32,10 +33,12 @@ function main() {
     }
   }
 
-  build_options += handleArch()
+  build_options += archCMakeOptions()
 
   if (process.platform === "darwin") {
-    process.env.MACOSX_DEPLOYMENT_TARGET = "10.15"
+    const MACOSX_DEPLOYMENT_TARGET = "10.15"
+    process.env.MACOSX_DEPLOYMENT_TARGET = MACOSX_DEPLOYMENT_TARGET
+    build_options += ` -DCMAKE_OSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET}`
   }
 
   mkdir("-p", libzmq_build_prefix)
@@ -86,27 +89,40 @@ function main() {
 
 main()
 
-function handleArch() {
-  if (process.platform !== "win32") {
-    // https://cmake.org/cmake/help/latest/variable/CMAKE_GENERATOR_PLATFORM.html
-    // CMAKE_GENERATOR_PLATFORM only supported on Windows
-    return ""
-  }
-
+function archCMakeOptions() {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
   const arch = (process.env.ARCH || process.arch).toLowerCase()
-  let CMAKE_GENERATOR_PLATFORM: string
-  switch (arch) {
-    case "x86":
-    case "ia32": {
-      CMAKE_GENERATOR_PLATFORM = "win32"
-      break
-    }
-    default: {
-      CMAKE_GENERATOR_PLATFORM = arch.toUpperCase()
-      break
+
+  if (process.platform === "win32") {
+    // CMAKE_GENERATOR_PLATFORM only supported on Windows
+    // https://cmake.org/cmake/help/latest/variable/CMAKE_GENERATOR_PLATFORM.html
+
+    switch (arch) {
+      case "x86":
+      case "ia32": {
+        return " -DCMAKE_GENERATOR_PLATFORM=win32"
+      }
+      default: {
+        return ` -DCMAKE_GENERATOR_PLATFORM=${arch.toUpperCase()}`
+      }
     }
   }
 
-  return ` -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}`
+  if (process.platform === "darwin") {
+    // handle MacOS Arm
+    switch (arch) {
+      case "x64":
+      case "x86_64": {
+        return ""
+      }
+      case "arm64": {
+        return ` -DCMAKE_OSX_ARCHITECTURES=${arch}`
+      }
+      default: {
+        return ""
+      }
+    }
+  }
+
+  return ""
 }

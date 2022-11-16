@@ -7,7 +7,7 @@ main().catch(e => {
 async function main() {
   console.log("Building distribution binary...")
 
-  const prebuildArch = getNodearch(process.env.ARCH ?? process.arch)
+  const prebuildArch = getNodearch()
 
   if (typeof process.env.TRIPLE === "string") {
     const TRIPLE = process.env.TRIPLE
@@ -39,9 +39,18 @@ async function main() {
   })
 }
 
-function getNodearch(arch: string): string {
-  if (arch === "x86") {
-    return "ia32"
+function getNodearch(): string {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
+  const arch = process.env.ARCH || process.arch
+  switch (arch) {
+    case "x86": {
+      return "ia32"
+    }
+    case "x86_64": {
+      return "x64"
+    }
+    default: {
+      return arch
+    }
   }
-  return arch
 }
