@@ -5,7 +5,8 @@ import {mkdir, cd, exec, find, mv} from "shelljs"
 const root = dirname(__dirname)
 
 function main() {
-  const zmq_version = process.env.ZMQ_VERSION ?? "4.3.4"
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
+  const zmq_version = process.env.ZMQ_VERSION || "4.3.4"
   const src_url = `https://github.com/zeromq/libzmq/releases/download/v${zmq_version}/zeromq-${zmq_version}.tar.gz`
 
   const libzmq_build_prefix = `${root}/build/libzmq-staging`
@@ -48,7 +49,7 @@ function main() {
   if (existsSync(tarball)) {
     console.log("Found libzmq source; skipping download...")
   } else {
-    console.log("Downloading libzmq source...")
+    console.log(`Downloading libzmq source from ${src_url}`)
     exec(`curl "${src_url}" -fsSL -o "${tarball}"`)
   }
 
@@ -56,7 +57,8 @@ function main() {
     exec(`tar xzf "${tarball}"`)
   }
 
-  if (process.env.npm_config_zmq_draft === "true") {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
+  if (process.env.ZMQ_DRAFT) {
     console.log("Enabling draft support")
     build_options += " -DENABLE_DRAFTS=ON"
   }
@@ -91,7 +93,8 @@ function handleArch() {
     return ""
   }
 
-  const arch = (process.env.ARCH ?? process.arch).toLowerCase()
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
+  const arch = (process.env.ARCH || process.arch).toLowerCase()
   let CMAKE_GENERATOR_PLATFORM: string
   switch (arch) {
     case "x86":

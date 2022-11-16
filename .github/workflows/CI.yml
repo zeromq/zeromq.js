@@ -24,8 +24,6 @@ jobs:
           - x64
         zmq_draft:
           - false
-        zmq_shared:
-          - false
         zmq_version:
           - 4.3.4
 
@@ -35,19 +33,19 @@ jobs:
             node_arch: x86
             cpp_arch: amd64_x86
             zmq_draft: false
-            zmq_shared: false
+            zmq_version: 4.3.4
 
           - os: windows-2022
             node_version: 18
             node_arch: x64
             cpp_arch: amd64_arm64
             zmq_draft: false
-            zmq_shared: false
+            zmq_version: 4.3.4
 
     env:
       ZMQ_VERSION: ${{ matrix.zmq_version }}
       ZMQ_DRAFT: ${{ matrix.zmq_draft }}
-      ZMQ_SHARED: ${{ matrix.zmq_shared }}
+      ZMQ_SHARED: false
     steps:
       - uses: actions/checkout@v3
 
