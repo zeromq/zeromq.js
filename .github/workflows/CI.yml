@@ -97,6 +97,8 @@ jobs:
 
       - name: Install Dependencies and Build
         run: npm install
+        env:
+          ARCH: ${{ matrix.ARCH }}
 
       - name: Prebuild
         run: npm run prebuild

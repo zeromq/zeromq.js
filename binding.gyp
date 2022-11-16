@@ -127,10 +127,10 @@
                 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
                 'GCC_ENABLE_EXCEPTIONS': 'YES',
                 'OTHER_CFLAGS': [
-                  "-arch <!(echo $ARCH)",
+                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
                 ],
                 'OTHER_LDFLAGS': [
-                  "-arch <!(echo $ARCH)",
+                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
                 ]
               },
             }],
@@ -220,10 +220,10 @@
                 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
                 'GCC_ENABLE_EXCEPTIONS': 'YES',
                 'OTHER_CFLAGS': [
-                  "-arch <!(echo $ARCH)",
+                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
                 ],
                 'OTHER_LDFLAGS': [
-                  "-arch <!(echo $ARCH)",
+                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
                 ]
               },
             }],
