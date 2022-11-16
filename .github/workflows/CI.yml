@@ -101,8 +101,12 @@ jobs:
         run: npm run lint-test
 
       - name: Test (Debug)
-        run: |
-          npm run test.skip_gc_tests
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 15
+          max_attempts: 1
+          command: |
+            npm run test.skip_gc_tests
 
       - name: Tests + GC Tests (Release)
         run: |
