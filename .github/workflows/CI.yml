@@ -20,7 +20,8 @@ jobs:
           - 18
         node_arch:
           - x64
-          - arm64
+        cpp_arch:
+          - x64
         zmq_draft:
           - false
         zmq_shared:
@@ -29,9 +30,17 @@ jobs:
           - 4.3.4
 
         include:
-          - os: windows-latest
+          - os: windows-2022
             node_version: 18
             node_arch: x86
+            cpp_arch: amd64_x86
+            zmq_draft: false
+            zmq_shared: false
+
+          - os: windows-2022
+            node_version: 18
+            node_arch: x64
+            cpp_arch: amd64_arm64
             zmq_draft: false
             zmq_shared: false
 
@@ -63,7 +72,7 @@ jobs:
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
           cmake: true
           ninja: true
-          architecture: ${{ matrix.node_arch }}
+          architecture: ${{ matrix.cpp_arch }}
 
       - name: Install Node
         uses: actions/setup-node@v3
