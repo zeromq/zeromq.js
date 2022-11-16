@@ -34,6 +34,12 @@ jobs:
           zmq_draft: false
           zmq_shared: false
 
+        - os: windows-latest
+          node_version: 18
+          node_arch: arm64
+          zmq_draft: false
+          zmq_shared: false
+
         # - os: macos-11.0
         #   node_version: 15
         #   node_arch: arm64

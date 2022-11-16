@@ -31,12 +31,7 @@ function main() {
     }
   }
 
-  // Handle x86
-  if (process.arch === "ia32" || process.env.ARCH === "x86") {
-    const CMAKE_GENERATOR_PLATFORM =
-      process.platform === "win32" ? "win32" : "x86"
-    build_options += ` -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}`
-  }
+  build_options += handleArch()
 
   if (process.platform === "darwin") {
     process.env.MACOSX_DEPLOYMENT_TARGET = "10.15"
@@ -88,3 +83,27 @@ function main() {
 }
 
 main()
+
+function handleArch() {
+  if (process.platform !== "win32") {
+    // https://cmake.org/cmake/help/latest/variable/CMAKE_GENERATOR_PLATFORM.html
+    // CMAKE_GENERATOR_PLATFORM only supported on Windows
+    return ""
+  }
+
+  const arch = (process.env.ARCH ?? process.arch).toLowerCase()
+  let CMAKE_GENERATOR_PLATFORM: string
+  switch (arch) {
+    case "x86":
+    case "ia32": {
+      CMAKE_GENERATOR_PLATFORM = "win32"
+      break
+    }
+    default: {
+      CMAKE_GENERATOR_PLATFORM = arch.toUpperCase()
+      break
+    }
+  }
+
+  return ` -DCMAKE_GENERATOR_PLATFORM=${CMAKE_GENERATOR_PLATFORM}`
+}
