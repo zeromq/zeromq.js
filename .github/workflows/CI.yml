@@ -27,12 +27,12 @@ jobs:
         zmq_version:
           - 4.3.4
 
-        # include:
-        # - os: windows-latest
-        #   node_version: 18
-        #   node_arch: x86
-        #   zmq_draft: false
-        #   zmq_shared: false
+        include:
+        - os: windows-latest
+          node_version: 18
+          node_arch: x86
+          zmq_draft: false
+          zmq_shared: false
 
         # - os: macos-11.0
         #   node_version: 15
