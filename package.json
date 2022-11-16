@@ -20,8 +20,8 @@
     "@types/node": "^18.11.9",
     "@types/shelljs": "^0.8.11",
     "cross-env": "^7.0.3",
-    "node-gyp-build": "^4.5.0",
     "node-addon-api": "^5.0.0",
+    "node-gyp-build": "^4.5.0",
     "shelljs": "^0.8.5",
     "ts-node": "10.9"
   },
@@ -34,7 +34,6 @@
     "@types/weak-napi": "^2.0.1",
     "benchmark": ">=2",
     "chai": ">=4.3",
-    "choma": ">= 1.2",
     "deasync": "^0.1.28",
     "eslint-config-atomic": "^1.18.1",
     "eslint-plugin-prettier": "^4.2.1",
@@ -46,11 +45,12 @@
     "npm-run-all2": "^6.0.4",
     "prebuildify": "^5.0.1",
     "prettier": "^2.7.1",
+    "rocha": "^2.5.10",
     "semver": ">=7",
     "shx": "^0.3.4",
     "tar-fs": "^2.1.1",
     "ts-morph": "^16.0.0",
-    "typescript": "4.8",
+    "typescript": "4.9",
     "weak-napi": "^2.0.2"
   },
   "engines": {
@@ -88,10 +88,11 @@
     "test.skip_gc_tests": "run-s build.debug && cross-env SKIP_GC_TESTS=true mocha",
     "lint.clang-format": "clang-format -i -style=file ./src/*.cc ./src/*.h ./src/util/*.h",
     "lint-test.eslint": "eslint **/*.{ts,tsx,js,jsx,cjs,mjs,json,yaml} --no-error-on-unmatched-pattern --cache --cache-location ./.cache/eslint/",
-    "lint.eslint": "pnpm run lint-test.eslint -- --fix",
+    "lint.eslint": "pnpm run lint-test.eslint --fix",
     "lint": "run-p lint.eslint lint.clang-format",
     "lint-test": "run-s lint-test.eslint",
-    "bench": "node --expose-gc test/bench"
+    "bench": "node --expose-gc test/bench",
+    "prepublishOnly": "pnpm run build.js"
   },
   "keywords": [
     "zeromq",
@@ -111,32 +112,5 @@
     "napi"
   ],
   "license": "MIT",
-  "author": "Rolf Timmermans <rolf@zxcv.nl>",
-  "greenkeeper": {
-    "ignore": [
-      "@gnd/typedoc",
-      "@types/chai",
-      "@types/mocha",
-      "@types/node",
-      "@types/semver",
-      "@typescript-eslint/eslint-plugin",
-      "@typescript-eslint/parser",
-      "benchmark",
-      "chai",
-      "choma",
-      "eslint",
-      "eslint-config-prettier",
-      "eslint-plugin-prettier",
-      "gunzip-maybe",
-      "mocha",
-      "node-addon-api",
-      "node-fetch",
-      "prebuildify",
-      "prettier",
-      "semver",
-      "tar-fs",
-      "ts-node",
-      "weak-napi"
-    ]
-  }
+  "author": "Rolf Timmermans <rolf@zxcv.nl>"
 }

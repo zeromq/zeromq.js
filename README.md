@@ -121,7 +121,7 @@ async function run() {
 
   while (true) {
     await sock.send("some work")
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise(resolve => { setTimeout(resolve, 500) })
   }
 }
 
@@ -170,7 +170,7 @@ async function run() {
   while (true) {
     console.log("sending a multipart message envelope")
     await sock.send(["kitty cats", "meow!"])
-    await new Promise(resolve => setTimeout(resolve, 500))
+    await new Promise(resolve => { setTimeout(resolve, 500) })
   }
 }
 

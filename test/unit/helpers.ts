@@ -121,7 +121,7 @@ export function createProcess(fn: () => void): Promise<Result> {
 
   return new Promise((resolve, reject) => {
     child.on("close", (code: number, signal: string) => {
-      if (signal != null) {
+      if (signal) {
         reject(new Error(`Child exited with ${signal}`))
       } else {
         resolve({code, stdout, stderr})

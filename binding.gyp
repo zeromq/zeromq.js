@@ -80,6 +80,13 @@
               ],
             }],
 
+            ['OS == "mac"', {
+              'libraries': [
+                '<(PRODUCT_DIR)/../libzmq/lib/libzmq.a',
+                '-lsodium',
+              ],
+            }],
+
             ['OS == "win"', {
               'libraries': [
                 '<(PRODUCT_DIR)/../libzmq/lib/libzmq',
@@ -125,7 +132,13 @@
                   '-Wno-missing-field-initializers',
                 ],
                 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
-                'GCC_ENABLE_EXCEPTIONS': 'YES'
+                'GCC_ENABLE_EXCEPTIONS': 'YES',
+                'OTHER_CFLAGS': [
+                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
+                ],
+                'OTHER_LDFLAGS': [
+                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
+                ]
               },
             }],
 
@@ -212,7 +225,13 @@
                 'GCC_SYMBOLS_PRIVATE_EXTERN': 'YES',
                 'DEAD_CODE_STRIPPING': 'YES',
                 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
-                'GCC_ENABLE_EXCEPTIONS': 'YES'
+                'GCC_ENABLE_EXCEPTIONS': 'YES',
+                'OTHER_CFLAGS': [
+                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
+                ],
+                'OTHER_LDFLAGS': [
+                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
+                ]
               },
             }],
 

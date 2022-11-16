@@ -5,7 +5,8 @@ import {mkdir, cd, exec, find, mv} from "shelljs"
 const root = dirname(__dirname)
 
 function main() {
-  const zmq_version = process.env.ZMQ_VERSION ?? "4.3.4"
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
+  const zmq_version = process.env.ZMQ_VERSION || "4.3.4"
   const src_url = `https://github.com/zeromq/libzmq/releases/download/v${zmq_version}/zeromq-${zmq_version}.tar.gz`
 
   const libzmq_build_prefix = `${root}/build/libzmq-staging`
@@ -18,7 +19,8 @@ function main() {
   const src_dir = `zeromq-${zmq_version}`
   const tarball = `zeromq-${zmq_version}.tar.gz`
 
-  const CMAKE_BUILD_TYPE = process.env.CMAKE_BUILD_TYPE ?? "Release"
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
+  const CMAKE_BUILD_TYPE = process.env.CMAKE_BUILD_TYPE || "Release"
 
   let build_options: string = ""
 
@@ -31,13 +33,12 @@ function main() {
     }
   }
 
-  // Handle x86
-  if (process.arch === "ia32" || process.env.ARCH === "x86") {
-    build_options += " -DCMAKE_GENERATOR_PLATFORM=x86"
-  }
+  build_options += archCMakeOptions()
 
   if (process.platform === "darwin") {
-    process.env.MACOSX_DEPLOYMENT_TARGET = "10.15"
+    const MACOSX_DEPLOYMENT_TARGET = "10.15"
+    process.env.MACOSX_DEPLOYMENT_TARGET = MACOSX_DEPLOYMENT_TARGET
+    build_options += ` -DCMAKE_OSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET}`
   }
 
   mkdir("-p", libzmq_build_prefix)
@@ -51,7 +52,7 @@ function main() {
   if (existsSync(tarball)) {
     console.log("Found libzmq source; skipping download...")
   } else {
-    console.log("Downloading libzmq source...")
+    console.log(`Downloading libzmq source from ${src_url}`)
     exec(`curl "${src_url}" -fsSL -o "${tarball}"`)
   }
 
@@ -59,7 +60,8 @@ function main() {
     exec(`tar xzf "${tarball}"`)
   }
 
-  if (process.env.npm_config_zmq_draft === "true") {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
+  if (process.env.ZMQ_DRAFT === "true") {
     console.log("Enabling draft support")
     build_options += " -DENABLE_DRAFTS=ON"
   }
@@ -72,11 +74,13 @@ function main() {
     writeFileSync(clang_format_file, "")
   }
 
-  exec(
-    `cmake -S "${src_dir}" -B ./build ${build_options} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX="${libzmq_install_prefix}" -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_STATIC=ON -DBUILD_TESTS=OFF -DBUILD_SHARED=OFF -DWITH_DOCS=OFF`,
-  )
+  const cmake_configure = `cmake -S "${src_dir}" -B ./build ${build_options} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX="${libzmq_install_prefix}" -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_STATIC=ON -DBUILD_TESTS=OFF -DBUILD_SHARED=OFF -DWITH_DOCS=OFF`
+  console.log(cmake_configure)
+  exec(cmake_configure)
 
-  exec(`cmake --build ./build --config ${CMAKE_BUILD_TYPE} --target install`)
+  const cmake_build = `cmake --build ./build --config ${CMAKE_BUILD_TYPE} --target install`
+  console.log(cmake_build)
+  exec(cmake_build)
 
   if (process.platform === "win32") {
     // rename libzmq-v143-mt-s-4_3_4.lib to libzmq.lib
@@ -86,3 +90,41 @@ function main() {
 }
 
 main()
+
+function archCMakeOptions() {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
+  const arch = (process.env.ARCH || process.arch).toLowerCase()
+
+  if (process.platform === "win32") {
+    // CMAKE_GENERATOR_PLATFORM only supported on Windows
+    // https://cmake.org/cmake/help/latest/variable/CMAKE_GENERATOR_PLATFORM.html
+
+    switch (arch) {
+      case "x86":
+      case "ia32": {
+        return " -DCMAKE_GENERATOR_PLATFORM=win32"
+      }
+      default: {
+        return ` -DCMAKE_GENERATOR_PLATFORM=${arch.toUpperCase()}`
+      }
+    }
+  }
+
+  if (process.platform === "darwin") {
+    // handle MacOS Arm
+    switch (arch) {
+      case "x64":
+      case "x86_64": {
+        return ""
+      }
+      case "arm64": {
+        return ` -DCMAKE_OSX_ARCHITECTURES=${arch}`
+      }
+      default: {
+        return ""
+      }
+    }
+  }
+
+  return ""
+}
