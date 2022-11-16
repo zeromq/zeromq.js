@@ -80,6 +80,13 @@
               ],
             }],
 
+            ['OS == "mac"', {
+              'libraries': [
+                '<(PRODUCT_DIR)/../libzmq/lib/libzmq.a',
+                '-lsodium',
+              ],
+            }],
+
             ['OS == "win"', {
               'libraries': [
                 '<(PRODUCT_DIR)/../libzmq/lib/libzmq',
