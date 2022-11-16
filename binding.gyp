@@ -16,7 +16,7 @@
         ["zmq_shared == 'false'", {
           'actions': [{
             'action_name': 'build_libzmq',
-            'inputs': ['<(module_root_dir)/package.json', '<(module_root_dir)/script/build.ts'],
+            'inputs': [],
             'conditions': [
               ['OS != "win"', {
                 'outputs': ['<(module_root_dir)/build/libzmq/lib/libzmq.a', '<(module_root_dir)/build/libzmq/include/zmq.h', '<(module_root_dir)/build/libzmq/include/zmq_utils.h'],
