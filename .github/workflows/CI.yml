@@ -148,7 +148,7 @@ jobs:
         if: ${{ !matrix.docker }}
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 15
+          timeout_minutes: 8
           max_attempts: 1
           command: |
             pnpm run clean
