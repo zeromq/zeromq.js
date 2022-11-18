@@ -19,7 +19,8 @@
   "dependencies": {
     "node-addon-api": "^5.0.0",
     "node-gyp-build": "^4.5.0",
-    "shelljs": "^0.8.5"
+    "shelljs": "^0.8.5",
+    "shx": "^0.3.4"
   },
   "devDependencies": {
     "@gnd/typedoc": "^0.15.0-0",
@@ -46,7 +47,6 @@
     "prettier": "^2.7.1",
     "rocha": "^2.5.10",
     "semver": ">=7",
-    "shx": "^0.3.4",
     "tar-fs": "^2.1.1",
     "ts-morph": "^16.0.0",
     "ts-node": "10.9",
@@ -70,7 +70,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "install": "node-gyp-build",
+    "install": "(shx test -f ./script/build.js || run-s build.js) && node-gyp-build",
     "clean": "shx rm -rf ./build ./lib/ ./prebuilds",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p tmp && shx touch tmp/.gitkeep",
     "build.library": "shx rm -rf ./lib && tsc && node script/ci/downlevel-dts.js",
