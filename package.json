@@ -67,7 +67,7 @@
     "src/util/*.h",
     "src/*.cc",
     "src/*.h",
-    "script/build.sh",
+    "script/build.ts",
     "prebuilds",
     "v5-compat.d.ts",
     "v5-compat.js",
