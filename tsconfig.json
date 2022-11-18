@@ -17,6 +17,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "incremental": true,
+    "sourceMap": true,
     "lib": [
       "ES2020",
       "dom"
