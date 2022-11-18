@@ -1,14 +1,32 @@
 {
-  "exclude": ["*.d.ts"],
   "compilerOptions": {
     "allowJs": false,
     "target": "es2020",
-    "outDir": "lib",
     "declaration": true,
     "module": "commonjs",
-    "types": ["node", "mocha"],
+    "types": [
+      "node",
+      "mocha"
+    ],
+    "strictPropertyInitialization": false, // TODO
     "strict": true,
-    "strictPropertyInitialization": false,
-    "lib": ["ES2020", "dom"]
-  }
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    // eslint already warns about:
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "incremental": true,
+    "sourceMap": true,
+    "lib": [
+      "ES2020",
+      "dom"
+    ]
+  },
+  "include": [
+    "src",
+    "script",
+    "examples"
+  ]
 }

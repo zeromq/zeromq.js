@@ -65,7 +65,7 @@ for (const proto of testProtos("tcp")) {
         const port = parseInt(address.split(":").pop()!, 10)
 
         const server = await new Promise<Server>(resolve => {
-          const http = createServer((req, res) => {
+          const http = createServer((_req, res) => {
             res.writeHead(200, {
               "Content-Type": "text/plain",
               "Content-Length": 12,

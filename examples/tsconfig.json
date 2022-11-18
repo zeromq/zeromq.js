@@ -1,9 +1,19 @@
 {
-  "include": ["*"],
+  "include": [
+    "./**/*.ts"
+  ],
   "compilerOptions": {
     "target": "es2018",
     "module": "commonjs",
-    "lib": ["es2018", "esnext.asynciterable"],
+    "lib": [
+      "es2018",
+      "esnext.asynciterable"
+    ],
     "strict": true,
+    "paths": {
+      "zeromq": [
+        "../src/index.ts"
+      ],
+    },
   }
 }
