@@ -14,8 +14,9 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    // eslint already warns about:
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "incremental": true,
     "sourceMap": true,
     "lib": [
