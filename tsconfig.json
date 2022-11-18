@@ -8,13 +8,22 @@
       "node",
       "mocha"
     ],
+    "strictPropertyInitialization": false, // TODO
     "strict": true,
-    "strictPropertyInitialization": false,
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "lib": [
       "ES2020",
       "dom"
-    ],
-    "outDir": "lib"
+    ]
   },
-  "include": ["src"]
+  "include": [
+    "src",
+    "script",
+    "examples"
+  ]
 }

@@ -18,7 +18,8 @@
     "build/",
     "lib/",
     "tmp/",
-    "./*.d.ts",
+    "v5-compat.d.ts",
+    "draft.d.ts",
     "script/*.js",
     "script/*.d.ts"
   ]

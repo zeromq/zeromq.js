@@ -73,7 +73,7 @@
     "install": "(shx test -f ./script/build.js || run-s build.js) && node-gyp-build",
     "clean": "shx rm -rf ./build ./lib/ ./prebuilds",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p tmp && shx touch tmp/.gitkeep",
-    "build.library": "shx rm -rf ./lib && tsc && node script/ci/downlevel-dts.js",
+    "build.library": "shx rm -rf ./lib && tsc -p ./src/tsconfig.json && node script/ci/downlevel-dts.js",
     "build.script": "tsc -p ./script/tsconfig.json",
     "build.js": "run-p build.script build.library",
     "build.doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
