@@ -4,7 +4,7 @@ import * as zmq from "zeromq"
 export class ThreadedWorker {
   static async spawn(threads: number) {
     const workers = Array.from({length: threads}).map(() => {
-      return new Promise((resolve, reject) => {
+      return new Promise<undefined>((resolve, reject) => {
         const src = `
           const zmq = require("zeromq")
           ${ThreadedWorker.toString()}
@@ -13,7 +13,7 @@ export class ThreadedWorker {
 
         new Worker(src, {eval: true}).on("exit", code => {
           if (code === 0) {
-            resolve()
+            resolve(undefined)
           } else {
             reject(new Error(`Worker stopped with exit code ${code}`))
           }
