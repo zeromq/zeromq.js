@@ -16,6 +16,7 @@
     "noImplicitThis": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "incremental": true,
     "lib": [
       "ES2020",
       "dom"

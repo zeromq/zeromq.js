@@ -17,3 +17,4 @@ test/typings-compatibility/
 /script/*.d.ts
 /script/*/*.js
 /script/*/*.d.ts
+tsconfig.tsbuildinfo
