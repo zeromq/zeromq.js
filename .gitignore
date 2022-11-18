@@ -13,3 +13,7 @@ prebuilds
 test.js
 .cache/
 test/typings-compatibility/
+script/*.js
+script/*.d.ts
+script/*/*.js
+script/*/*.d.ts

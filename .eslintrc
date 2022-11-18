@@ -17,10 +17,9 @@
     "node_modules/",
     "build/",
     "lib/",
-    "libzmq/",
     "tmp/",
-    "zmq/",
-    "v5-compat.d.ts",
-    "draft.d.ts"
+    "./*.d.ts",
+    "script/*.js",
+    "script/*.d.ts"
   ]
 }
