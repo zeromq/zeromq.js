@@ -5,9 +5,10 @@ import {mkdir, cd, exec, find, mv} from "shelljs"
 const root = dirname(__dirname)
 
 function main() {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
-  const zmq_version = process.env.ZMQ_VERSION || "4.3.4"
-  const src_url = `https://github.com/zeromq/libzmq/releases/download/v${zmq_version}/zeromq-${zmq_version}.tar.gz`
+  const zmq_rev =
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
+    process.env.ZMQ_VERSION || "4e193f36fc7d0f729a7c87d55fff18d8c0db5ebf"
+  const src_url = `"https://github.com/zeromq/libzmq/archive/${zmq_rev}.tar.gz`
 
   const libzmq_build_prefix = `${root}/build/libzmq-staging`
   const libzmq_install_prefix = `${root}/build/libzmq`
@@ -16,8 +17,8 @@ function main() {
     process.platform === "win32" ? ".lib" : ".a"
   }`
 
-  const src_dir = `zeromq-${zmq_version}`
-  const tarball = `zeromq-${zmq_version}.tar.gz`
+  const src_dir = `libzmq-${zmq_rev}`
+  const tarball = `libzmq-${zmq_rev}.tar.gz`
 
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
   const CMAKE_BUILD_TYPE = process.env.CMAKE_BUILD_TYPE || "Release"
