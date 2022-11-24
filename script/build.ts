@@ -8,7 +8,7 @@ function main() {
   const zmq_rev =
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
     process.env.ZMQ_VERSION || "4e193f36fc7d0f729a7c87d55fff18d8c0db5ebf"
-  const src_url = `"https://github.com/zeromq/libzmq/archive/${zmq_rev}.tar.gz`
+  const src_url = `https://github.com/zeromq/libzmq/archive/${zmq_rev}.tar.gz`
 
   const libzmq_build_prefix = `${root}/build/libzmq-staging`
   const libzmq_install_prefix = `${root}/build/libzmq`

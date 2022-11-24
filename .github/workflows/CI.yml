@@ -44,7 +44,6 @@ jobs:
           #   ARCH: arm64
           #   cpp_arch: amd64_arm64
           #   zmq_draft: false
-          #   zmq_version: "v4.3.4"
 
           - os: macos-11
             node_version: 18
