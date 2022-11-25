@@ -25,8 +25,6 @@ jobs:
           - x64
         zmq_draft:
           - false
-        zmq_version:
-          - 4.3.4
         docker:
           - ""
         docker_cmd:
@@ -39,7 +37,6 @@ jobs:
             ARCH: x86
             cpp_arch: amd64_x86
             zmq_draft: false
-            zmq_version: 4.3.4
 
           # - os: windows-2022
           #   node_version: 18
@@ -47,7 +44,6 @@ jobs:
           #   ARCH: arm64
           #   cpp_arch: amd64_arm64
           #   zmq_draft: false
-          #   zmq_version: 4.3.4
 
           - os: macos-11
             node_version: 18
@@ -55,7 +51,6 @@ jobs:
             ARCH: x86_64
             cpp_arch: x64
             zmq_draft: false
-            zmq_version: 4.3.4
 
           - os: macos-11
             node_version: 18
@@ -63,7 +58,6 @@ jobs:
             ARCH: arm64
             cpp_arch: amd64_arm64
             zmq_draft: false
-            zmq_version: 4.3.4
 
           - os: ubuntu-22.04
             docker: node:18-alpine
@@ -73,10 +67,8 @@ jobs:
             ARCH: x64
             cpp_arch: x64
             zmq_draft: false
-            zmq_version: 4.3.4
 
     env:
-      ZMQ_VERSION: ${{ matrix.zmq_version }}
       ZMQ_DRAFT: ${{ matrix.zmq_draft }}
       ZMQ_SHARED: false
       ARCH: ${{ matrix.ARCH }}
