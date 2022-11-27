@@ -5,39 +5,56 @@
 
 /* eslint-env node */
 
-const {Project, ts} = require("ts-morph")
-const path = require("path")
-const fs = require("fs-extra")
+import {
+  Directory,
+  ExportDeclaration,
+  GetAccessorDeclaration,
+  ImportDeclaration,
+  Project,
+  SetAccessorDeclaration,
+  SourceFile,
+  ts,
+} from "ts-morph"
+import * as path from "path"
+import * as fs from "fs-extra"
 
-const project = new Project()
-const inputDir = project.addDirectoryAtPath(path.join(__dirname, "../../lib/"))
+async function main() {
+  const project = new Project()
+  const inputDir = project.addDirectoryAtPath(path.join(__dirname, "../lib/"))
 
-// Create output directory
-fs.emptyDirSync(path.join(inputDir.getPath().toString(), "ts3.7"))
-const ts36Dir = inputDir.createDirectory("ts3.7")
-project.saveSync()
+  // Create output directory
+  fs.emptyDirSync(path.join(inputDir.getPath().toString(), "ts3.7"))
+  const tsDownDir = inputDir.createDirectory("ts3.7")
+  project.saveSync()
 
-// Down-level all *.d.ts files in input directory
-const files = inputDir.addSourceFilesAtPaths("*.d.ts")
-for (const f of files) {
-  // Create copy for TypeScript 3.6+
-  copyTypingsFile(f, ts36Dir)
-  downlevelTS36(f)
-  downlevelTS34(f)
-  // Original file will be overwritten by down-leveled file when saved
+  // Down-level all *.d.ts files in input directory
+  const files = inputDir.addSourceFilesAtPaths("*.d.ts")
+  for (const file of files) {
+    // Create copy for TypeScript 3.6+
+    copyTypingsFile(file, tsDownDir)
+    downlevelTS36(file)
+    downlevelTS34(file)
+    // Original file will be overwritten by down-leveled file when saved
+  }
+  project.saveSync()
 }
-project.saveSync()
+
+main().catch(err => {
+  throw err
+})
 
 /**
  * Copy typings source file *.d.ts to target dir
  */
-function copyTypingsFile(f, targetDir) {
-  const cf = f.copyToDirectory(targetDir, {overwrite: true})
-  const srcPath = f.getDirectoryPath()
+function copyTypingsFile(file: SourceFile, targetDir: Directory) {
+  const cFile = file.copyToDirectory(targetDir, {overwrite: true})
+  const srcPath = file.getDirectoryPath()
   const targetPath = targetDir.getPath()
-  revertModulePathChange(cf.getImportDeclarations(), srcPath, targetPath)
-  revertModulePathChange(cf.getExportDeclarations(), srcPath, targetPath)
+  revertModulePathChange(cFile.getImportDeclarations(), srcPath, targetPath)
+  revertModulePathChange(cFile.getExportDeclarations(), srcPath, targetPath)
 }
+
+type StandardizedFilePath = ReturnType<SourceFile["getDirectoryPath"]>
 
 /**
  * HELPER for reverting changed relative paths for import/export declarations in
@@ -49,7 +66,11 @@ function copyTypingsFile(f, targetDir) {
  * [after copied to targetDir]  from "../<module-file>"
  * [reverted in targetDir]      from "./<module-file>"
  */
-function revertModulePathChange(importExportDecl, srcDir, targetDir) {
+function revertModulePathChange(
+  importExportDecl: ImportDeclaration[] | ExportDeclaration[],
+  srcDir: StandardizedFilePath,
+  targetDir: StandardizedFilePath,
+) {
   const absSrcDir = path.resolve(srcDir)
   for (const decl of importExportDecl) {
     if (!decl.isModuleSpecifierRelative()) {
@@ -69,9 +90,9 @@ function revertModulePathChange(importExportDecl, srcDir, targetDir) {
 /**
  * Down-level TypeScript 3.6 types in the given source file
  */
-function downlevelTS36(f) {
+function downlevelTS36(file: SourceFile) {
   // Replace get/set accessors with (read-only) properties
-  const gs = f.getDescendantsOfKind(ts.SyntaxKind.GetAccessor)
+  const gs = file.getDescendantsOfKind(ts.SyntaxKind.GetAccessor)
   for (const g of gs) {
     const comment = getLeadingComments(g)
     const s = g.getSetAccessor()
@@ -86,7 +107,7 @@ function downlevelTS36(f) {
       s.remove()
     }
   }
-  const ss = f.getDescendantsOfKind(ts.SyntaxKind.SetAccessor)
+  const ss = file.getDescendantsOfKind(ts.SyntaxKind.SetAccessor)
   for (const s of ss) {
     const g = s.getGetAccessor()
     if (!g) {
@@ -106,23 +127,23 @@ function downlevelTS36(f) {
 /**
  * Down-level TypeScript 3.4 types in the given source file
  */
-function downlevelTS34(f) {
+function downlevelTS34(file: SourceFile) {
   // Replace "es2018.asynciterable" with "esnext.asynciterable" in lib references
-  const refs = f.getLibReferenceDirectives()
+  const refs = file.getLibReferenceDirectives()
   for (const r of refs) {
     if (r.getFileName() === "es2018.asynciterable") {
-      f.replaceText([r.getPos(), r.getEnd()], "esnext.asynciterable")
+      file.replaceText([r.getPos(), r.getEnd()], "esnext.asynciterable")
     }
   }
-  downlevelEs2018(f)
+  downlevelEs2018(file)
 }
 
 /**
  * Down-level es2018 to esnext library in the given source file
  */
-function downlevelEs2018(f) {
+function downlevelEs2018(file: SourceFile) {
   // Replace AsyncIterator<T1,T2> with AsyncIterator<T1>
-  const typeParams = f.getDescendantsOfKind(ts.SyntaxKind.TypeReference)
+  const typeParams = file.getDescendantsOfKind(ts.SyntaxKind.TypeReference)
   for (const t of typeParams) {
     if (t.wasForgotten()) {
       continue
@@ -137,7 +158,9 @@ function downlevelEs2018(f) {
   }
 }
 
-function getModifiersText(node) {
+function getModifiersText(
+  node: GetAccessorDeclaration | SetAccessorDeclaration,
+) {
   const modifiersText = node
     .getModifiers()
     .map(m => m.getText())
@@ -145,7 +168,9 @@ function getModifiersText(node) {
   return modifiersText.length > 0 ? `${modifiersText} ` : ""
 }
 
-function getLeadingComments(node) {
+function getLeadingComments(
+  node: GetAccessorDeclaration | SetAccessorDeclaration,
+) {
   const t = node.getText()
   const tlen = t.length
   const ct = node.getText(true)
@@ -163,7 +188,10 @@ function getLeadingComments(node) {
     .replace(/(\r?\n)\s+$/gm, "$1")
 }
 
-function relativeModulePath(fromAbsModulePath, toAbsTargetDir) {
+function relativeModulePath(
+  fromAbsModulePath: string,
+  toAbsTargetDir: StandardizedFilePath,
+) {
   const fromModDir = path.dirname(fromAbsModulePath)
   const revertedPath = path.resolve(
     fromModDir,
