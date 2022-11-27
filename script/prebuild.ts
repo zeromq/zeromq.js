@@ -31,7 +31,7 @@ async function main() {
   // https://nodejs.org/dist/
   const nodeVersion = process.version.replace("v", "")
 
-  let prebuildScript = `prebuildify --napi --arch=${prebuildArch} --strip --tag-libc -t ${nodeVersion}`
+  let prebuildScript = `prebuildify --napi --arch=${prebuildArch} --strip --tag-libc -t ${nodeVersion} --electron-compat`
 
   if (typeof process.env.ALPINE_CHROOT === "string") {
     prebuildScript = `/alpine/enter-chroot ${prebuildScript}`
