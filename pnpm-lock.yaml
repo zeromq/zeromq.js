@@ -9,6 +9,7 @@ specifiers:
   '@types/semver': '>=7'
   '@types/shelljs': ^0.8.11
   '@types/weak-napi': ^2.0.1
+  '@types/which': ^2.0.1
   benchmark: '>=2'
   chai: '>=4.3'
   cross-env: ^7.0.3
@@ -34,6 +35,7 @@ specifiers:
   ts-node: '10.9'
   typescript: '4.9'
   weak-napi: ^2.0.2
+  which: ^3.0.0
 
 dependencies:
   node-addon-api: 5.0.0
@@ -50,6 +52,7 @@ devDependencies:
   '@types/semver': 7.3.13
   '@types/shelljs': 0.8.11
   '@types/weak-napi': 2.0.1
+  '@types/which': 2.0.1
   benchmark: 2.1.4
   chai: 4.3.7
   cross-env: 7.0.3
@@ -71,6 +74,7 @@ devDependencies:
   ts-node: 10.9.1_wup25etrarvlqkprac7h35hj7u
   typescript: 4.9.3
   weak-napi: 2.0.2
+  which: 3.0.0
 
 packages:
 
@@ -593,6 +597,10 @@ packages:
     resolution: {integrity: sha512-07jFwDZ2JLexI5lGzRirWzsC8MdA1avc6QsdvidKvPOKNYXAAijpA/6ygxL1CEW/qbEU6udapLZmempcH3trXQ==}
     dependencies:
       '@types/node': 18.11.9
+    dev: true
+
+  /@types/which/2.0.1:
+    resolution: {integrity: sha512-Jjakcv8Roqtio6w1gr0D7y6twbhx6gGgFGF5BLwajPpnOIOxFkakFhCq+LmyyeAz7BX6ULrjBOxdKaCDy+4+dQ==}
     dev: true
 
   /@typescript-eslint/eslint-plugin/5.43.0_wze2rj5tow7zwqpgbdx2buoy3m:
@@ -4897,6 +4905,14 @@ packages:
   /which/2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
     engines: {node: '>= 8'}
+    hasBin: true
+    dependencies:
+      isexe: 2.0.0
+    dev: true
+
+  /which/3.0.0:
+    resolution: {integrity: sha512-nla//68K9NU6yRiwDY/Q8aU6siKlSs64aEC7+IV56QoAuyQT2ovsJcgGYGyqMOmI/CGN1BOR6mM5EN0FBO+zyQ==}
+    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     hasBin: true
     dependencies:
       isexe: 2.0.0

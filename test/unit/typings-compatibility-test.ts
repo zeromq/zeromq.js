@@ -8,6 +8,7 @@ import {
   readFile,
   writeFile,
 } from "fs-extra"
+import * as which from "which"
 
 import {assert} from "chai"
 
@@ -169,9 +170,7 @@ async function prepareTestPackage(
 async function getPackageManager() {
   const packageManagers = ["pnpm", "yarn", "npm"]
 
-  const versionResults = await Promise.all(
-    packageManagers.map(pm => run(`${pm} --version`, tscTestBasePath, false)),
-  )
+  const versionResults = await Promise.all(packageManagers.map(pm => which(pm)))
 
   const packageManagerIndex = versionResults.findIndex(
     versionResult => typeof versionResult === "string",
