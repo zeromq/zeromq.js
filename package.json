@@ -5,9 +5,9 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "typesVersions": {
-    ">=3.6": {
+    ">=3.7": {
       "lib/*": [
-        "lib/ts3.6/*"
+        "lib/ts3.7/*"
       ]
     }
   },

@@ -13,8 +13,8 @@ const project = new Project()
 const inputDir = project.addDirectoryAtPath(path.join(__dirname, "../../lib/"))
 
 // Create output directory
-fs.emptyDirSync(path.join(inputDir.getPath().toString(), "ts3.6"))
-const ts36Dir = inputDir.createDirectory("ts3.6")
+fs.emptyDirSync(path.join(inputDir.getPath().toString(), "ts3.7"))
+const ts36Dir = inputDir.createDirectory("ts3.7")
 project.saveSync()
 
 // Down-level all *.d.ts files in input directory
