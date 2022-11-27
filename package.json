@@ -44,11 +44,11 @@
     "node-gyp": "^9.3.0",
     "npm-run-all2": "^6.0.4",
     "prebuildify": "^5.0.1",
-    "prettier": "^2.7.1",
+    "prettier": "^2.8.0",
     "rocha": "^2.5.10",
     "semver": ">=7",
     "tar-fs": "^2.1.1",
-    "ts-morph": "^16.0.0",
+    "ts-morph": "^17.0.1",
     "ts-node": "10.9",
     "typescript": "4.9",
     "weak-napi": "^2.0.2"

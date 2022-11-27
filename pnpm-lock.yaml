@@ -24,13 +24,13 @@ specifiers:
   node-gyp-build: ^4.5.0
   npm-run-all2: ^6.0.4
   prebuildify: ^5.0.1
-  prettier: ^2.7.1
+  prettier: ^2.8.0
   rocha: ^2.5.10
   semver: '>=7'
   shelljs: ^0.8.5
   shx: ^0.3.4
   tar-fs: ^2.1.1
-  ts-morph: ^16.0.0
+  ts-morph: ^17.0.1
   ts-node: '10.9'
   typescript: '4.9'
   weak-napi: ^2.0.2
@@ -55,7 +55,7 @@ devDependencies:
   cross-env: 7.0.3
   deasync: 0.1.28
   eslint-config-atomic: 1.18.1
-  eslint-plugin-prettier: 4.2.1_prettier@2.7.1
+  eslint-plugin-prettier: 4.2.1_prettier@2.8.0
   fs-extra: 10.1.0
   gunzip-maybe: 1.4.2
   mocha: 10.1.0
@@ -63,11 +63,11 @@ devDependencies:
   node-gyp: 9.3.0
   npm-run-all2: 6.0.4
   prebuildify: 5.0.1
-  prettier: 2.7.1
+  prettier: 2.8.0
   rocha: 2.5.10
   semver: 7.3.8
   tar-fs: 2.1.1
-  ts-morph: 16.0.0
+  ts-morph: 17.0.1
   ts-node: 10.9.1_wup25etrarvlqkprac7h35hj7u
   typescript: 4.9.3
   weak-napi: 2.0.2
@@ -496,8 +496,8 @@ packages:
     engines: {node: '>= 10'}
     dev: true
 
-  /@ts-morph/common/0.17.0:
-    resolution: {integrity: sha512-RMSSvSfs9kb0VzkvQ2NWobwnj7TxCA9vI/IjR9bDHqgAyVbu2T0DN4wiKVqomyDWqO7dPr/tErSfq7urQ1Q37g==}
+  /@ts-morph/common/0.18.0:
+    resolution: {integrity: sha512-UvWF+oQdMa4qMWhXTOd2JWtAbAJGgkPMNzGHgEcfOwQRIcViKdwsSqXXjSaQCZ4fo+bZMhdfuwQCjlW5bNcqEQ==}
     dependencies:
       fast-glob: 3.2.12
       minimatch: 5.1.0
@@ -2030,7 +2030,7 @@ packages:
       regexp-tree: 0.1.24
     dev: true
 
-  /eslint-plugin-prettier/4.2.1_prettier@2.7.1:
+  /eslint-plugin-prettier/4.2.1_prettier@2.8.0:
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
@@ -2041,7 +2041,7 @@ packages:
       eslint-config-prettier:
         optional: true
     dependencies:
-      prettier: 2.7.1
+      prettier: 2.8.0
       prettier-linter-helpers: 1.0.0
     dev: true
 
@@ -3914,8 +3914,8 @@ packages:
     hasBin: true
     dev: true
 
-  /prettier/2.7.1:
-    resolution: {integrity: sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==}
+  /prettier/2.8.0:
+    resolution: {integrity: sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true
@@ -4611,10 +4611,10 @@ packages:
       is-number: 7.0.0
     dev: true
 
-  /ts-morph/16.0.0:
-    resolution: {integrity: sha512-jGNF0GVpFj0orFw55LTsQxVYEUOCWBAbR5Ls7fTYE5pQsbW18ssTb/6UXx/GYAEjS+DQTp8VoTw0vqYMiaaQuw==}
+  /ts-morph/17.0.1:
+    resolution: {integrity: sha512-10PkHyXmrtsTvZSL+cqtJLTgFXkU43Gd0JCc0Rw6GchWbqKe0Rwgt1v3ouobTZwQzF1mGhDeAlWYBMGRV7y+3g==}
     dependencies:
-      '@ts-morph/common': 0.17.0
+      '@ts-morph/common': 0.18.0
       code-block-writer: 11.0.3
     dev: true
 
