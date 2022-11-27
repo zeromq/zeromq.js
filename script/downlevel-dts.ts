@@ -23,17 +23,18 @@ async function main() {
   const inputDir = project.addDirectoryAtPath(path.join(__dirname, "../lib/"))
 
   // Create output directory
-  fs.emptyDirSync(path.join(inputDir.getPath().toString(), "ts3.7"))
-  const tsDownDir = inputDir.createDirectory("ts3.7")
+  const oldestSupportedTS = "ts3.7"
+
+  fs.emptyDirSync(path.join(inputDir.getPath().toString(), oldestSupportedTS))
+  const tsDownDir = inputDir.createDirectory(oldestSupportedTS)
   project.saveSync()
 
   // Down-level all *.d.ts files in input directory
   const files = inputDir.addSourceFilesAtPaths("*.d.ts")
   for (const file of files) {
-    // Create copy for TypeScript 3.6+
+    // Create copy for TypeScript 3.7
     copyTypingsFile(file, tsDownDir)
     downlevelTS36(file)
-    downlevelTS34(file)
     // Original file will be overwritten by down-leveled file when saved
   }
   project.saveSync()
@@ -77,7 +78,7 @@ function revertModulePathChange(
       continue
     }
     const declPath = decl.getModuleSpecifierValue()
-    if (!declPath) {
+    if (declPath === undefined) {
       continue
     }
     const absDeclPath = path.resolve(path.join(targetDir, declPath))
@@ -113,47 +114,13 @@ function downlevelTS36(file: SourceFile) {
     if (!g) {
       const comment = getLeadingComments(s)
       const firstParam = s.getParameters()[0]
-      const firstParamTypeNode = firstParam && firstParam.getTypeNode()
+      const firstParamTypeNode = firstParam?.getTypeNode()
       const firstParamType = firstParamTypeNode
         ? firstParamTypeNode.getText()
         : "any"
       s.replaceWithText(
         `${comment}${getModifiersText(s)}${s.getName()}: ${firstParamType};`,
       )
-    }
-  }
-}
-
-/**
- * Down-level TypeScript 3.4 types in the given source file
- */
-function downlevelTS34(file: SourceFile) {
-  // Replace "es2018.asynciterable" with "esnext.asynciterable" in lib references
-  const refs = file.getLibReferenceDirectives()
-  for (const r of refs) {
-    if (r.getFileName() === "es2018.asynciterable") {
-      file.replaceText([r.getPos(), r.getEnd()], "esnext.asynciterable")
-    }
-  }
-  downlevelEs2018(file)
-}
-
-/**
- * Down-level es2018 to esnext library in the given source file
- */
-function downlevelEs2018(file: SourceFile) {
-  // Replace AsyncIterator<T1,T2> with AsyncIterator<T1>
-  const typeParams = file.getDescendantsOfKind(ts.SyntaxKind.TypeReference)
-  for (const t of typeParams) {
-    if (t.wasForgotten()) {
-      continue
-    }
-    const typeName = t.getTypeName().getText()
-    if (typeName === "AsyncIterator") {
-      const params = t.getTypeArguments()
-      if (params.length > 1) {
-        t.replaceWithText(`${typeName}<${params[0].getText()}>`)
-      }
     }
   }
 }
