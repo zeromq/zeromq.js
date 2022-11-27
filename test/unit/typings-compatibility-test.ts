@@ -85,7 +85,7 @@ function getItLabelDetails(tsVer: TestDef): string {
 }
 
 describe("compatibility of typings for typescript versions", function () {
-  let execCmd: "pnpm" | "npm" | "yarn"
+  let execCmd: "pnpm" | "npm" | "yarn" = "npm"
 
   before(async function () {
     this.timeout(10000)
@@ -111,11 +111,13 @@ describe("compatibility of typings for typescript versions", function () {
         )
       }
 
+      // eslint-disable-next-line require-atomic-updates
       execCmd = packageManagers[packageManagerIndex]
     }
   })
 
   for (const tsVer of tsVersions) {
+    // eslint-disable-next-line no-loop-func
     describe(`when used in a project with typescript version ${tsVer.version}`, function () {
       // must increase timeout for allowing `npm install`'ing the version of
       // the typescript package to complete
@@ -123,65 +125,62 @@ describe("compatibility of typings for typescript versions", function () {
 
       const tscTargetPath = path.resolve(tscTestBasePath, `ts-${tsVer.version}`)
 
-      beforeEach(done => {
-        emptyDir(tscTargetPath).then(() => {
-          Promise.all([
-            readJson(path.resolve(templateSrcPath, "tsconfig.json")).then(
-              pkg => {
-                pkg.compilerOptions.target = tsVer.minTarget
-                if (tsVer.requiredLibs) {
-                  pkg.compilerOptions.lib = addLibs(
-                    tsVer.requiredLibs,
-                    pkg.compilerOptions.lib,
-                  )
-                }
-                return writeJson(
-                  path.resolve(tscTargetPath, "tsconfig.json"),
-                  pkg,
-                )
-              },
-            ),
-            readJson(path.resolve(templateSrcPath, "package.json")).then(
-              pkg => {
-                pkg.name = `test-typings-ts-${tsVer.version}`
-                pkg.devDependencies.typescript = `${tsVer.version}`
-                return writeJson(
-                  path.resolve(tscTargetPath, "package.json"),
-                  pkg,
-                )
-              },
-            ),
-            srcStr.then(content =>
-              writeFile(
-                path.resolve(tscTargetPath, "typings-test.ts"),
-                content,
-                "utf8",
-              ),
-            ),
-          ])
-            .then(() => run(`${execCmd} install`, tscTargetPath, false))
-            .catch(err => {
-              if (err) {
-                done(err)
-              }
-            })
-            .then(() => done())
-        })
+      beforeEach(async () => {
+        await emptyDir(tscTargetPath)
+
+        await Promise.all([
+          (async () => {
+            const tsConfig = await readJson(
+              path.resolve(templateSrcPath, "tsconfig.json"),
+            )
+
+            tsConfig.compilerOptions.target = tsVer.minTarget
+            if (tsVer.requiredLibs) {
+              tsConfig.compilerOptions.lib = addLibs(
+                tsVer.requiredLibs,
+                tsConfig.compilerOptions.lib as string[],
+              )
+            }
+            return writeJson(
+              path.resolve(tscTargetPath, "tsconfig.json"),
+              tsConfig,
+            )
+          })(),
+          (async () => {
+            const pkgJson = await readJson(
+              path.resolve(templateSrcPath, "package.json"),
+            )
+
+            pkgJson.name = `test-typings-ts-${tsVer.version}`
+            pkgJson.devDependencies.typescript = `${tsVer.version}`
+            return writeJson(
+              path.resolve(tscTargetPath, "package.json"),
+              pkgJson,
+            )
+          })(),
+          (async () => {
+            const content = await srcStr
+            return writeFile(
+              path.resolve(tscTargetPath, "typings-test.ts"),
+              content,
+              "utf8",
+            )
+          })(),
+        ])
+
+        await run(`${execCmd} install`, tscTargetPath, false)
       })
 
-      afterEach(done => {
-        remove(tscTargetPath, err => {
-          if (err) {
-            return done(err)
-          }
-          done()
-        })
+      afterEach(async () => {
+        await remove(tscTargetPath)
       })
 
       it(`it should compile successfully with tsc ${getItLabelDetails(
         tsVer,
       )}`, async function () {
-        const cmd = execCmd === "npm" ? `${execCmd} run` : execCmd
+        const cmd = ["npm", "pnpm"].includes(execCmd)
+          ? `${execCmd} run`
+          : execCmd
         const errMsg = (await run(`${cmd} test`, tscTargetPath, true)) as
           | string
           | undefined
