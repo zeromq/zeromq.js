@@ -5,6 +5,7 @@
     'zmq_no_sync_resolve%': 'false',
     'sanitizers%': 'false',
     'openssl_fips': '',
+    'runtime%': 'node',
   },
 
   'targets': [
@@ -51,7 +52,6 @@
       ],
 
       'defines': [
-        'NAPI_VERSION=3',
         'ZMQ_STATIC',
       ],
 
@@ -95,6 +95,9 @@
               ],
             }],
           ],
+        }],
+        ['runtime=="electron"', {
+          "defines": ["NODE_RUNTIME_ELECTRON=1"]
         }],
       ],
 

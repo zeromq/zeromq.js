@@ -2,6 +2,7 @@
 #pragma once
 
 #include <napi.h>
+#include <node_version.h>
 #define NAPI_BUILD_VERSION NAPI_VERSION
 
 #include <zmq.h>
