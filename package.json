@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "node-addon-api": "^5.0.0",
-    "node-gyp-build": "^4.5.0",
+    "@aminya/node-gyp-build": "4.5.0-aminya.1",
     "shelljs": "^0.8.5",
     "shx": "^0.3.4"
   },
