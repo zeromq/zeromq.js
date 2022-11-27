@@ -85,33 +85,33 @@ function getItLabelDetails(tsVer: TestDef): string {
 }
 
 describe("compatibility of typings for typescript versions", function () {
-  let execCmd: "npm" | "yarn"
+  let execCmd: "pnpm" | "npm" | "yarn"
 
-  before(function (done) {
+  before(async function () {
     this.timeout(10000)
     if (/^true$/.test(process.env.EXCLUDE_TYPINGS_COMPAT_TESTS as string)) {
       this.skip()
     } else {
-      // detect package manager (npm or yarn) for installing typescript versions
-      Promise.all([
-        run("npm --version", tscTestBasePath, false),
-        run("yarn --version", tscTestBasePath, false),
-      ]).then(results => {
-        if (results.length === 2) {
-          if (!results[0]) {
-            execCmd = "npm"
-          } else if (!results[1]) {
-            execCmd = "yarn"
-          }
-          if (execCmd) {
-            return done()
-          }
-        }
-        done(
-          "Cannot run typings compatibility test," +
-            " because neither npm nor yarn are available.",
+      // detect package manager (pnpm, npm, yarn) for installing typescript versions
+      const packageManagers = ["pnpm", "yarn", "npm"] as typeof execCmd[]
+
+      const versionResults = await Promise.all(
+        packageManagers.map(pm =>
+          run(`${pm} --version`, tscTestBasePath, false),
+        ),
+      )
+
+      const packageManagerIndex = versionResults.findIndex(
+        versionResult => typeof versionResult === "string",
+      )
+
+      if (packageManagerIndex === -1) {
+        throw new Error(
+          "Cannot run typings compatibility test, because pnpm, npm, and yarn are not available.",
         )
-      })
+      }
+
+      execCmd = packageManagers[packageManagerIndex]
     }
   })
 
