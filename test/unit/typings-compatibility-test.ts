@@ -8,6 +8,7 @@ import {
   readFile,
   writeFile,
 } from "fs-extra"
+import * as which from "which"
 
 import {assert} from "chai"
 
@@ -61,7 +62,7 @@ async function run(
   cwd: string,
   errorAsString: boolean,
 ): Promise<string | Error | undefined> {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     exec(cmd, {cwd}, (error, stdout, stderr) => {
       if (error) {
         resolve(errorAsString ? `${stdout}\n${stderr}` : error)
@@ -84,109 +85,102 @@ function getItLabelDetails(tsVer: TestDef): string {
   )}`
 }
 
-describe("compatibility of typings for typescript versions", function () {
-  let execCmd: "npm" | "yarn"
+describe("compatibility of typings for typescript versions", async function () {
+  let execCmd: string
 
-  before(function (done) {
+  before(async function () {
     this.timeout(10000)
     if (/^true$/.test(process.env.EXCLUDE_TYPINGS_COMPAT_TESTS as string)) {
       this.skip()
-    } else {
-      // detect package manager (npm or yarn) for installing typescript versions
-      Promise.all([
-        run("npm --version", tscTestBasePath, false),
-        run("yarn --version", tscTestBasePath, false),
-      ]).then(results => {
-        if (results.length === 2) {
-          if (!results[0]) {
-            execCmd = "npm"
-          } else if (!results[1]) {
-            execCmd = "yarn"
-          }
-          if (execCmd) {
-            return done()
-          }
-        }
-        done(
-          "Cannot run typings compatibility test," +
-            " because neither npm nor yarn are available.",
-        )
-      })
     }
+    execCmd = await getPackageManager()
   })
 
   for (const tsVer of tsVersions) {
-    describe(`when used in a project with typescript version ${tsVer.version}`, function () {
-      // must increase timeout for allowing `npm install`'ing the version of
-      // the typescript package to complete
-      this.timeout(30000)
+    // must increase timeout for allowing `npm install`'ing the version of
+    // the typescript package to complete
+    this.timeout(30000)
 
-      const tscTargetPath = path.resolve(tscTestBasePath, `ts-${tsVer.version}`)
+    const tscTargetPath = path.resolve(tscTestBasePath, `ts-${tsVer.version}`)
 
-      beforeEach(done => {
-        emptyDir(tscTargetPath).then(() => {
-          Promise.all([
-            readJson(path.resolve(templateSrcPath, "tsconfig.json")).then(
-              pkg => {
-                pkg.compilerOptions.target = tsVer.minTarget
-                if (tsVer.requiredLibs) {
-                  pkg.compilerOptions.lib = addLibs(
-                    tsVer.requiredLibs,
-                    pkg.compilerOptions.lib,
-                  )
-                }
-                return writeJson(
-                  path.resolve(tscTargetPath, "tsconfig.json"),
-                  pkg,
-                )
-              },
-            ),
-            readJson(path.resolve(templateSrcPath, "package.json")).then(
-              pkg => {
-                pkg.name = `test-typings-ts-${tsVer.version}`
-                pkg.devDependencies.typescript = `${tsVer.version}`
-                return writeJson(
-                  path.resolve(tscTargetPath, "package.json"),
-                  pkg,
-                )
-              },
-            ),
-            srcStr.then(content =>
-              writeFile(
-                path.resolve(tscTargetPath, "typings-test.ts"),
-                content,
-                "utf8",
-              ),
-            ),
-          ])
-            .then(() => run(`${execCmd} install`, tscTargetPath, false))
-            .catch(err => {
-              if (err) {
-                done(err)
-              }
-            })
-            .then(() => done())
-        })
-      })
+    it(`it should compile successfully with typescript version ${
+      tsVer.version
+      // eslint-disable-next-line no-loop-func
+    }, tsc ${getItLabelDetails(tsVer)}`, async function () {
+      await prepareTestPackage(tscTargetPath, tsVer, execCmd)
 
-      afterEach(done => {
-        remove(tscTargetPath, err => {
-          if (err) {
-            return done(err)
-          }
-          done()
-        })
-      })
+      const cmd = ["npm", "pnpm"].includes(execCmd) ? `${execCmd} run` : execCmd
+      const errMsg = (await run(`${cmd} test`, tscTargetPath, true)) as
+        | string
+        | undefined
+      assert.isUndefined(errMsg, errMsg)
+    })
 
-      it(`it should compile successfully with tsc ${getItLabelDetails(
-        tsVer,
-      )}`, async function () {
-        const cmd = execCmd === "npm" ? `${execCmd} run` : execCmd
-        const errMsg = (await run(`${cmd} test`, tscTargetPath, true)) as
-          | string
-          | undefined
-        assert.isUndefined(errMsg, errMsg)
-      })
+    afterEach(async () => {
+      await remove(tscTargetPath)
     })
   }
 })
+
+async function prepareTestPackage(
+  tscTargetPath: string,
+  tsVer: TestDef,
+  execCmd: string,
+) {
+  await emptyDir(tscTargetPath)
+
+  await Promise.all([
+    (async () => {
+      const tsConfig = await readJson(
+        path.resolve(templateSrcPath, "tsconfig.json"),
+      )
+
+      tsConfig.compilerOptions.target = tsVer.minTarget
+      if (tsVer.requiredLibs) {
+        tsConfig.compilerOptions.lib = addLibs(
+          tsVer.requiredLibs,
+          tsConfig.compilerOptions.lib as string[],
+        )
+      }
+      return writeJson(path.resolve(tscTargetPath, "tsconfig.json"), tsConfig)
+    })(),
+    (async () => {
+      const pkgJson = await readJson(
+        path.resolve(templateSrcPath, "package.json"),
+      )
+
+      pkgJson.name = `test-typings-ts-${tsVer.version}`
+      pkgJson.devDependencies.typescript = `${tsVer.version}`
+      return writeJson(path.resolve(tscTargetPath, "package.json"), pkgJson)
+    })(),
+    (async () => {
+      const content = await srcStr
+      return writeFile(
+        path.resolve(tscTargetPath, "typings-test.ts"),
+        content,
+        "utf8",
+      )
+    })(),
+  ])
+
+  await run(`${execCmd} install`, tscTargetPath, false)
+}
+
+/// detect package manager (pnpm, npm, yarn) for installing typescript versions
+async function getPackageManager() {
+  const packageManagers = ["pnpm", "yarn", "npm"]
+
+  const versionResults = await Promise.all(packageManagers.map(pm => which(pm)))
+
+  const packageManagerIndex = versionResults.findIndex(
+    versionResult => typeof versionResult === "string",
+  )
+
+  if (packageManagerIndex === -1) {
+    throw new Error(
+      "Cannot run typings compatibility test, because pnpm, npm, and yarn are not available.",
+    )
+  }
+
+  return packageManagers[packageManagerIndex]
+}
