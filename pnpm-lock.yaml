@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@aminya/node-gyp-build': 4.5.0-aminya.1
   '@gnd/typedoc': ^0.15.0-0
   '@types/chai': '>=4.3'
   '@types/fs-extra': ^9.0.13
@@ -22,7 +23,6 @@ specifiers:
   node-addon-api: ^5.0.0
   node-fetch: ^3.3.0
   node-gyp: ^9.3.0
-  node-gyp-build: ^4.5.0
   npm-run-all2: ^6.0.4
   prebuildify: ^5.0.1
   prettier: ^2.8.0
@@ -38,8 +38,8 @@ specifiers:
   which: ^3.0.0
 
 dependencies:
+  '@aminya/node-gyp-build': 4.5.0-aminya.1
   node-addon-api: 5.0.0
-  node-gyp-build: 4.5.0
   shelljs: 0.8.5
   shx: 0.3.4
 
@@ -82,6 +82,11 @@ packages:
     resolution: {integrity: sha512-0VdfoicL+dorb0WrbbhsFsH8xH+8X2Y6CrO/3br68kimkMNOJB/5DFGRraVDYHfCIQgMnlv5Q9GX1yI7V4GcgQ==}
     engines: {node: '>=6'}
     dev: true
+
+  /@aminya/node-gyp-build/4.5.0-aminya.1:
+    resolution: {integrity: sha512-MqivQnE5pd5SSebBCH3QnWSGLPWeKtjPUqb1EXWlBDo8gr1JVLJbvjXelr3cPLo7ye3efuYkbiWn+Ehc7ItwMw==}
+    hasBin: true
+    dev: false
 
   /@ampproject/remapping/2.2.0:
     resolution: {integrity: sha512-qRmjj8nj9qmLTQXXmaR1cck3UXSRMPrbsLJAasZpF+t3riI71BXed5ebIOYwQntykeZuhjsdweEc9BxH5Jc26w==}
@@ -3579,6 +3584,7 @@ packages:
   /node-gyp-build/4.5.0:
     resolution: {integrity: sha512-2iGbaQBV+ITgCz76ZEjmhUKAKVf7xfY1sRl4UiKQspfZMH2h06SyhNsnSVy50cwkFQDGLyif6m/6uFXHkOZ6rg==}
     hasBin: true
+    dev: true
 
   /node-gyp/9.3.0:
     resolution: {integrity: sha512-A6rJWfXFz7TQNjpldJ915WFb1LnhO4lIve3ANPbWreuEoLoKlFT3sxIepPBkLhM27crW8YmN+pjlgbasH6cH/Q==}
