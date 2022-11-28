@@ -15,6 +15,7 @@ specifiers:
   chai: '>=4.3'
   cross-env: ^7.0.3
   deasync: ^0.1.28
+  downlevel-dts: ^0.11.0
   eslint-config-atomic: ^1.18.1
   eslint-plugin-prettier: ^4.2.1
   fs-extra: ^10.1.0
@@ -57,6 +58,7 @@ devDependencies:
   chai: 4.3.7
   cross-env: 7.0.3
   deasync: 0.1.28
+  downlevel-dts: 0.11.0
   eslint-config-atomic: 1.18.1
   eslint-plugin-prettier: 4.2.1_prettier@2.8.0
   fs-extra: 10.1.0
@@ -1664,6 +1666,15 @@ packages:
     engines: {node: '>=4'}
     dependencies:
       is-obj: 1.0.1
+    dev: true
+
+  /downlevel-dts/0.11.0:
+    resolution: {integrity: sha512-vo835pntK7kzYStk7xUHDifiYJvXxVhUapt85uk2AI94gUUAQX9HNRtrcMHNSc3YHJUEHGbYIGsM99uIbgAtxw==}
+    hasBin: true
+    dependencies:
+      semver: 7.3.8
+      shelljs: 0.8.5
+      typescript: 5.0.0-dev.20221127
     dev: true
 
   /duplexer3/0.1.5:
@@ -4731,6 +4742,12 @@ packages:
 
   /typescript/4.9.3:
     resolution: {integrity: sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==}
+    engines: {node: '>=4.2.0'}
+    hasBin: true
+    dev: true
+
+  /typescript/5.0.0-dev.20221127:
+    resolution: {integrity: sha512-BiiOmTz96U8xt8azvXiHbSKCA+XAY2Ke5p+hpvGHWk2NSrOguWMzK5vwqdNQ7J6jH76yBwbQkEqqvafY8rH9BQ==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
