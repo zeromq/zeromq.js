@@ -69,7 +69,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "install": "(shx test -f ./script/build.js || run-s build.js) && echo 'running node-gyp-build:' && node-gyp-build",
+    "install": "(shx test -f ./script/build.js || run-s build.js) && node-gyp-build",
     "clean": "shx rm -rf ./build ./lib/ ./prebuilds ./script/*.js ./script/*.js.map ./script/*.d.ts ./script/*.tsbuildinfo",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp && shx touch ./tmp/.gitkeep",
     "build.library": "tsc -p ./src/tsconfig.json && downlevel-dts ./lib ./lib/ts3.7 --to=3.7",
