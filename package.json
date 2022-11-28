@@ -17,7 +17,7 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "@aminya/node-gyp-build": "4.5.0-aminya.3",
+    "@aminya/node-gyp-build": "4.5.0-aminya.4",
     "node-addon-api": "^5.0.0",
     "shelljs": "^0.8.5",
     "shx": "^0.3.4"
