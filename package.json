@@ -17,10 +17,11 @@
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
   "dependencies": {
-    "@aminya/node-gyp-build": "4.5.0-aminya.1",
+    "@aminya/node-gyp-build": "4.5.0-aminya.4",
     "node-addon-api": "^5.0.0",
     "shelljs": "^0.8.5",
-    "shx": "^0.3.4"
+    "shx": "^0.3.4",
+    "cross-env": "^7.0.3"
   },
   "devDependencies": {
     "@gnd/typedoc": "^0.15.0-0",
@@ -34,7 +35,6 @@
     "@types/which": "^2.0.1",
     "benchmark": "^2.1.4",
     "chai": "^4.3.7",
-    "cross-env": "^7.0.3",
     "deasync": "^0.1.28",
     "downlevel-dts": "^0.11.0",
     "eslint-config-atomic": "^1.18.1",
@@ -69,7 +69,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "install": "(shx test -f ./script/build.js || run-s build.js) && node-gyp-build",
+    "install": "(shx test -f ./script/build.js || run-s build.js) && cross-env npm_config_build_from_source=true node-gyp-build",
     "clean": "shx rm -rf ./build ./lib/ ./prebuilds ./script/*.js ./script/*.js.map ./script/*.d.ts ./script/*.tsbuildinfo",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp && shx touch ./tmp/.gitkeep",
     "build.library": "tsc -p ./src/tsconfig.json && downlevel-dts ./lib ./lib/ts3.7 --to=3.7",
