@@ -159,7 +159,7 @@ export interface Writable<
    *   they are dropped**, you should implement a [simple
    *   queue](examples/queue/queue.ts) in JavaScript. Such a queue is not
    *   provided by this library because most real world applications need to
-   *   deal with undeliverable messages in more complex ways – for example, they
+   *   deal with undeliverable messages in more complex ways - for example, they
    *   might need to reply with a status message; or first retry delivery a
    *   certain number of times before giving up.
    *
@@ -902,14 +902,14 @@ declare module "./native" {
      * Returns the current security mechanism for the socket, if any. The
      * security mechanism is set implictly by using any of the relevant security
      * options. The returned value is one of:
-     * * `null` – No security mechanism is used.
-     * * `"plain"` – The PLAIN mechanism defines a simple username/password
+     * * `null` - No security mechanism is used.
+     * * `"plain"` - The PLAIN mechanism defines a simple username/password
      *   mechanism that lets a server authenticate a client. PLAIN makes no
      *   attempt at security or confidentiality.
-     * * `"curve"` – The CURVE mechanism defines a mechanism for secure
+     * * `"curve"` - The CURVE mechanism defines a mechanism for secure
      *   authentication and confidentiality for communications between a client
      *   and a server. CURVE is intended for use on public networks.
-     * * `"gssapi"` – The GSSAPI mechanism defines a mechanism for secure
+     * * `"gssapi"` - The GSSAPI mechanism defines a mechanism for secure
      *   authentication and confidentiality for communications between a client
      *   and a server using the Generic Security Service Application Program
      *   Interface (GSSAPI). The GSSAPI mechanism can be used on both public and
@@ -1002,7 +1002,7 @@ export class Publisher extends Socket {
    *
    * If set to `true`, a socket shall keep only one message in its
    * inbound/outbound queue: the last message to be received/sent. Ignores any
-   * high water mark options. Does not support multi-part messages – in
+   * high water mark options. Does not support multi-part messages - in
    * particular, only one part of it is kept in the socket internal queue.
    */
   conflate: boolean
@@ -1041,7 +1041,7 @@ export class Subscriber extends Socket {
    *
    * If set to `true`, a socket shall keep only one message in its
    * inbound/outbound queue: the last message to be received/sent. Ignores any
-   * high water mark options. Does not support multi-part messages – in
+   * high water mark options. Does not support multi-part messages - in
    * particular, only one part of it is kept in the socket internal queue.
    */
   conflate: boolean
@@ -1268,7 +1268,7 @@ export class Dealer extends Socket {
    *
    * If set to `true`, a socket shall keep only one message in its
    * inbound/outbound queue: the last message to be received/sent. Ignores any
-   * high water mark options. Does not support multi-part messages – in
+   * high water mark options. Does not support multi-part messages - in
    * particular, only one part of it is kept in the socket internal queue.
    */
   conflate: boolean
@@ -1398,7 +1398,7 @@ export interface Pull extends Readable {
    *
    * If set to `true`, a socket shall keep only one message in its
    * inbound/outbound queue: the last message to be received/sent. Ignores any
-   * high water mark options. Does not support multi-part messages – in
+   * high water mark options. Does not support multi-part messages - in
    * particular, only one part of it is kept in the socket internal queue.
    */
   conflate: boolean
@@ -1429,7 +1429,7 @@ export interface Push extends Writable {
    *
    * If set to `true`, a socket shall keep only one message in its
    * inbound/outbound queue: the last message to be received/sent. Ignores any
-   * high water mark options. Does not support multi-part messages – in
+   * high water mark options. Does not support multi-part messages - in
    * particular, only one part of it is kept in the socket internal queue.
    */
   conflate: boolean
@@ -1485,11 +1485,11 @@ export class XPublisher extends Socket {
    * ZMQ_XPUB_VERBOSE / ZMQ_XPUB_VERBOSER
    *
    * Whether to pass any duplicate subscription/unsuscription messages.
-   *  * `null` (default) – Only unique subscribe and unsubscribe messages are
+   *  * `null` (default) - Only unique subscribe and unsubscribe messages are
    *    visible to the caller.
-   *  * `"allSubs"` – All subscribe messages (including duplicates) are visible
+   *  * `"allSubs"` - All subscribe messages (including duplicates) are visible
    *    to the caller, but only unique unsubscribe messages are visible.
-   *  * `"allSubsUnsubs"` – All subscribe and unsubscribe messages (including
+   *  * `"allSubsUnsubs"` - All subscribe and unsubscribe messages (including
    *    duplicates) are visible to the caller.
    */
   set verbosity(value: null | "allSubs" | "allSubsUnsubs") {

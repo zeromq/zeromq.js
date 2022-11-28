@@ -19,13 +19,13 @@ export declare const version: string
  * Unavailable capabilities will be absent or set to `false`.
  *
  * Possible keys include:
- * * `ipc` – Support for the `ipc://` protocol.
- * * `pgm` – Support for the `pgm://` protocol.
- * * `tipc` – Support for the `tipc://` protocol.
- * * `norm` – Support for the `norm://` protocol.
- * * `curve` – Support for the CURVE security mechanism.
- * * `gssapi` – Support for the GSSAPI security mechanism.
- * * `draft` – Wether the library is built with support for DRAFT sockets.
+ * * `ipc` - Support for the `ipc://` protocol.
+ * * `pgm` - Support for the `pgm://` protocol.
+ * * `tipc` - Support for the `tipc://` protocol.
+ * * `norm` - Support for the `norm://` protocol.
+ * * `curve` - Support for the CURVE security mechanism.
+ * * `gssapi` - Support for the GSSAPI security mechanism.
+ * * `draft` - Wether the library is built with support for DRAFT sockets.
  */
 export declare const capability: Partial<{
   ipc: boolean
@@ -65,7 +65,7 @@ export declare function curveKeyPair(): {
  * A ØMQ context. Contexts manage the background I/O to send and receive
  * messages of their associated sockets.
  *
- * It is usually not necessary to instantiate a new context – the global
+ * It is usually not necessary to instantiate a new context - the global
  * {@link context} is used for new sockets by default. The global context is the
  * only context that is shared between threads (when using
  * [worker_threads](https://nodejs.org/api/worker_threads.html)). Custom
@@ -176,76 +176,76 @@ type EventFor<T extends string, D = {}> = Expand<{type: T} & D>
  * errors) that correspond to a specific operation are namespaced with a colon
  * `:`, e.g. `bind:error` or `connect:retry`.
  *
- * * **accept** – ZMQ_EVENT_ACCEPTED The socket has accepted a connection from a
+ * * **accept** - ZMQ_EVENT_ACCEPTED The socket has accepted a connection from a
  *   remote peer.
  *
- * * **accept:error** – ZMQ_EVENT_ACCEPT_FAILED The socket has rejected a
+ * * **accept:error** - ZMQ_EVENT_ACCEPT_FAILED The socket has rejected a
  *   connection from a remote peer.
  *
  *   The following additional details will be included with this event:
  *
- *   * `error` – An error object that describes the specific error
+ *   * `error` - An error object that describes the specific error
  *     that occurred.
  *
- * * **bind** – ZMQ_EVENT_LISTENING The socket was successfully bound to a
+ * * **bind** - ZMQ_EVENT_LISTENING The socket was successfully bound to a
  *   network interface.
  *
- * * **bind:error** – ZMQ_EVENT_BIND_FAILED The socket could not bind to a given
+ * * **bind:error** - ZMQ_EVENT_BIND_FAILED The socket could not bind to a given
  *   interface.
  *
  *   The following additional details will be included with this event:
  *
- *   * `error` – An error object that describes the specific error
+ *   * `error` - An error object that describes the specific error
  *     that occurred.
  *
- * * **connect** – ZMQ_EVENT_CONNECTED The socket has successfully connected to
+ * * **connect** - ZMQ_EVENT_CONNECTED The socket has successfully connected to
  *   a remote peer.
  *
- * * **connect:delay** – ZMQ_EVENT_CONNECT_DELAYED A connect request on the
+ * * **connect:delay** - ZMQ_EVENT_CONNECT_DELAYED A connect request on the
  *   socket is pending.
  *
- * * **connect:retry** – ZMQ_EVENT_CONNECT_RETRIED A connection attempt is being
+ * * **connect:retry** - ZMQ_EVENT_CONNECT_RETRIED A connection attempt is being
  *   handled by reconnect timer. Note that the reconnect interval is
  *   recalculated at each retry.
  *
  *   The following additional details will be included with this event:
  *
- *   * `interval` – The current reconnect interval.
+ *   * `interval` - The current reconnect interval.
  *
- * * **close** – ZMQ_EVENT_CLOSED The socket was closed.
+ * * **close** - ZMQ_EVENT_CLOSED The socket was closed.
  *
- * * **close:error** – ZMQ_EVENT_CLOSE_FAILED The socket close failed. Note that
+ * * **close:error** - ZMQ_EVENT_CLOSE_FAILED The socket close failed. Note that
  *   this event occurs **only on IPC** transports..
  *
  *   The following additional details will be included with this event:
  *
- *   * `error` – An error object that describes the specific error
+ *   * `error` - An error object that describes the specific error
  *     that occurred.
  *
- * * **disconnect** – ZMQ_EVENT_DISCONNECTED The socket was disconnected
+ * * **disconnect** - ZMQ_EVENT_DISCONNECTED The socket was disconnected
  *   unexpectedly.
  *
- * * **handshake** – ZMQ_EVENT_HANDSHAKE_SUCCEEDED The ZMTP security mechanism
+ * * **handshake** - ZMQ_EVENT_HANDSHAKE_SUCCEEDED The ZMTP security mechanism
  *   handshake succeeded. NOTE: This event may still be in DRAFT statea and not
  *   yet available in stable releases.
  *
- * * **handshake:error:protocol** – ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL The ZMTP
+ * * **handshake:error:protocol** - ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL The ZMTP
  *   security mechanism handshake failed due to some mechanism protocol error,
  *   either between the ZMTP mechanism peers, or between the mechanism server
  *   and the ZAP handler. This indicates a configuration or implementation error
  *   in either peer resp. the ZAP handler. NOTE: This event may still be in
  *   DRAFT state and not yet available in stable releases.
  *
- * * **handshake:error:auth** – ZMQ_EVENT_HANDSHAKE_FAILED_AUTH The ZMTP
+ * * **handshake:error:auth** - ZMQ_EVENT_HANDSHAKE_FAILED_AUTH The ZMTP
  *   security mechanism handshake failed due to an authentication failure. NOTE:
  *   This event may still be in DRAFT state and not yet available in stable
  *   releases.
  *
- * * **handshake:error:other** – ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL
+ * * **handshake:error:other** - ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL
  *   Unspecified error during handshake. NOTE: This event may still be in DRAFT
  *   state and not yet available in stable releases.
  *
- * * **end** – ZMQ_EVENT_MONITOR_STOPPED Monitoring on this socket ended.
+ * * **end** - ZMQ_EVENT_MONITOR_STOPPED Monitoring on this socket ended.
  *
  * * **unknown** An event was generated by ZeroMQ that the Node.js library could
  *   not interpret. Please submit a pull request for new event types if they are
