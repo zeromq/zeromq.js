@@ -82,6 +82,7 @@
             ['OS == "mac"', {
               'libraries': [
                 '<(module_root_dir)/build/libzmq/lib/libzmq.a',
+                "<!@(pkg-config libsodium --libs)",
               ],
             }],
 
