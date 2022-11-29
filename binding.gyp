@@ -46,7 +46,6 @@
       ],
 
       'include_dirs': [
-        "vendor",
         '<(module_root_dir)/build/libzmq/include',
         "<!@(node -p \"require('node-addon-api').include\")"
       ],
@@ -83,7 +82,7 @@
             ['OS == "mac"', {
               'libraries': [
                 '<(module_root_dir)/build/libzmq/lib/libzmq.a',
-                '-lsodium',
+                "<!@(pkg-config libsodium --libs)",
               ],
             }],
 

@@ -113,7 +113,7 @@ jobs:
 
       - name: Install Dependencies and Build
         if: ${{ !matrix.docker }}
-        run: pnpm install --verbose
+        run: pnpm install
 
       - name: Prebuild
         if: ${{ !matrix.docker }}
