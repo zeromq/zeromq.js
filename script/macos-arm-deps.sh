@@ -25,10 +25,27 @@ arm-brew fetch --deps --bottle-tag=$bottle_tag $dependencies |
     grep -E "(Downloaded to:|Already downloaded:)" |
     grep -v pkg-config |
     awk '{ print $3 }' |
-    xargs -n 1 arm-brew install --ignore-dependencies --force-bottle
+    xargs -n 1 arm-brew install --force-bottle
 
 # Install host version of pkg-config so we can call it in the build system
 arm-brew install pkg-config
 ln -s ~/arm-target/arm-homebrew/bin/pkg-config ~/arm-target/bin/arm-pkg-config
 
+export PATH="$HOME/arm-target/arm-homebrew/bin/:$PATH"
+export PATH="$HOME/arm-target/arm-homebrew/lib/:$PATH"
+
 cd "$PREV_PWD"
+
+# libsodium
+export PATH="$HOME/arm-target/Cellar/libsodium/1.0.18_1/lib:$PATH"
+export PKG_CONFIG_PATH="$HOME/arm-target/Cellar/libsodium/1.0.18_1/lib:$PKG_CONFIG_PATH"
+
+# gnutils
+export GUILE_TLS_CERTIFICATE_DIRECTORY=/Users/runner/arm-target/etc/gnutls/
+export PATH="$HOME/arm-target/opt/gnu-sed/libexec/gnubin:$PATH"
+export PATH="$HOME/arm-target/opt/m4/bin:$PATH"
+export LDFLAGS="-L$HOME/arm-target/opt/readline/lib $LDFLAGS"
+export CPPFLAGS="-I$HOME/arm-target/opt/readline/include $CPPFLAGS"
+export PKG_CONFIG_PATH="$HOME/arm-target/opt/readline/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PKG_CONFIG_PATH="$HOME/arm-target/opt/openssl@1.1/lib/pkgconfig:$PKG_CONFIG_PATH"
+export PKG_CONFIG_PATH="$HOME/arm-target/opt/readline/lib/pkgconfig:$PKG_CONFIG_PATH"

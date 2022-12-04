@@ -106,17 +106,17 @@ jobs:
           architecture: ${{ matrix.node_arch }}
           cache: "pnpm"
 
-      - name: Install Mac-OS ${{ matrix.ARCH }} Dependencies
+      - name: Install Mac-OS x86_64 Dependencies
         if: ${{ contains(matrix.os, 'macos') && matrix.ARCH == 'x86_64' }}
         run: |
           brew install libsodium gnutls
 
-      - name: Install Mac-OS ${{ matrix.ARCH }} Dependencies
+      - name: Install Mac-OS arm64 Dependencies
         if: ${{ contains(matrix.os, 'macos') && matrix.ARCH == 'arm64' }}
         run: |
           brew uninstall libsodium --force --ignore-dependencies
           chmod +x ./script/macos-arm-deps.sh
-          ./script/macos-arm-deps.sh
+          source ./script/macos-arm-deps.sh
 
       - name: Install Dependencies and Build
         if: ${{ !matrix.docker }}
