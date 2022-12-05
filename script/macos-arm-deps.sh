@@ -31,10 +31,10 @@ arm-brew fetch --deps --bottle-tag=$bottle_tag $dependencies |
     grep -E ".tar.gz" |
     grep -v pkg-config |
     awk '{ print $3 }' |
-    xargs -n 1 arm-brew reinstall --force-bottle
+    xargs -n 1 arm-brew install --force-bottle || true
 
 # Install host version of pkg-config so we can call it in the build system
-arm-brew reinstall pkg-config
+arm-brew install pkg-config || true
 
 # Add the installed binaries/libraries to the path
 export PATH="$HOME/arm-target/bin/:$PATH"
@@ -44,3 +44,4 @@ export PATH="$HOME/arm-target/lib/:$PATH"
 SODIUM_PATH=$(~/arm-target/bin/pkg-config libsodium --libs-only-L | sed -e 's/-L//g') # print only -L and replace "-L" itself
 export PATH="$SODIUM_PATH:$PATH"
 export PKG_CONFIG_PATH="$SODIUM_PATH:$PKG_CONFIG_PATH"
+export npm_config_target_arch=arm64
