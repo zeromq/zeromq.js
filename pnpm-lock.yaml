@@ -1647,7 +1647,7 @@ packages:
     dependencies:
       semver: 7.3.8
       shelljs: 0.8.5
-      typescript: 5.0.0-dev.20221128
+      typescript: 5.0.0-dev.20221205
     dev: true
 
   /duplexer3/0.1.5:
@@ -4578,8 +4578,8 @@ packages:
     hasBin: true
     dev: true
 
-  /typescript/5.0.0-dev.20221128:
-    resolution: {integrity: sha512-cNV/osEHGNKTyjj/Ivi8s8x7MPkh0Kd/t53QjyXfM3jO3cC2jhL6kor57ziWqvyfl6paWjdNUVO/jxGsQOyfug==}
+  /typescript/5.0.0-dev.20221205:
+    resolution: {integrity: sha512-afHkcfhaQqUk+Hjn+lUKtMqMttizIy5K2r75cz8l7/K+m0k6Yx9IoHRC5v8cjxB77ub2COdbr+0xsNodB7q6dg==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
