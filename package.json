@@ -89,7 +89,7 @@
     "lint": "run-p lint.eslint lint.clang-format",
     "lint-test": "run-s lint-test.eslint",
     "bench": "node --expose-gc test/bench",
-    "prepublishOnly": "pnpm run build.js"
+    "prepublishOnly": "shx rm -rf ./lib && pnpm run build.js"
   },
   "keywords": [
     "zeromq",
