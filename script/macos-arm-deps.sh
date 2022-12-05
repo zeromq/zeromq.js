@@ -11,16 +11,21 @@ mkdir -p ~/arm-target/bin
 mkdir -p ~/arm-target/brew-cache
 export PATH="$HOME/arm-target/bin:$PATH"
 
+# Download Homebrew under ~/arm-target
 PREV_PWD="$PWD"
 cd ~/arm-target
-
 mkdir arm-homebrew
 curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C arm-homebrew
+cd "$PREV_PWD"
+
+# Add arm-brew binary
 ln -s ~/arm-target/arm-homebrew/bin/brew ~/arm-target/bin/arm-brew
 
+# Homebrew env variables
 export HOMEBREW_CACHE=~/arm-target/brew-cache
 export HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1
 
+# Install the given dependencies for the given bottle_tag
 arm-brew fetch --deps --bottle-tag=$bottle_tag $dependencies |
     grep -E "(Downloaded to:|Already downloaded:)" |
     grep -v pkg-config |
@@ -29,13 +34,12 @@ arm-brew fetch --deps --bottle-tag=$bottle_tag $dependencies |
 
 # Install host version of pkg-config so we can call it in the build system
 arm-brew install pkg-config
-ln -s ~/arm-target/arm-homebrew/bin/pkg-config ~/arm-target/bin/arm-pkg-config
 
+# Add the installed binaries/libraries to the path
 export PATH="$HOME/arm-target/arm-homebrew/bin/:$PATH"
 export PATH="$HOME/arm-target/arm-homebrew/lib/:$PATH"
 
-cd "$PREV_PWD"
-
 # libsodium
-export PATH="$HOME/arm-target/Cellar/libsodium/1.0.18_1/lib:$PATH"
-export PKG_CONFIG_PATH="$HOME/arm-target/Cellar/libsodium/1.0.18_1/lib:$PKG_CONFIG_PATH"
+SODIUM_PATH=$(~/arm-target/arm-homebrew/bin/pkg-config libsodium --libs)
+export PATH="$SODIUM_PATH:$PATH"
+export PKG_CONFIG_PATH="$SODIUM_PATH:$PKG_CONFIG_PATH"
