@@ -116,6 +116,9 @@ jobs:
         run: |
           brew uninstall libsodium --force --ignore-dependencies
           source ./script/macos-arm-deps.sh
+          echo "PATH=$PATH" >> $GITHUB_ENV
+          echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
+          echo "npm_config_target_arch=$npm_config_target_arch" >> $GITHUB_ENV
 
       - name: Install Dependencies and Build
         if: ${{ !matrix.docker }}
