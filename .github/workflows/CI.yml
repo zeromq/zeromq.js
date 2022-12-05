@@ -115,7 +115,6 @@ jobs:
         if: ${{ contains(matrix.os, 'macos') && matrix.ARCH == 'arm64' }}
         run: |
           brew uninstall libsodium --force --ignore-dependencies
-          chmod +x ./script/macos-arm-deps.sh
           source ./script/macos-arm-deps.sh
 
       - name: Install Dependencies and Build
