@@ -1,484 +1,123 @@
-<!doctype html>
-<html class="default no-js">
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>zeromq.js</title>
-	<meta name="description" content="">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" href="assets/css/main.css">
-</head>
-<body>
-<header>
-	<div class="tsd-page-toolbar">
-		<div class="container">
-			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
-					<div class="field">
-						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
-						<input id="tsd-search-field" type="text" />
-					</div>
-					<ul class="results">
-						<li class="state loading">Preparing search index...</li>
-						<li class="state failure">The search index is not available</li>
-					</ul>
-					<a href="index.html" class="title">zeromq.js</a>
-				</div>
-				<div class="table-cell" id="tsd-widgets">
-					<div id="tsd-filter">
-						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
-						<div class="tsd-filter-group">
-							<div class="tsd-select" id="tsd-filter-visibility">
-								<span class="tsd-select-label">All</span>
-								<ul class="tsd-select-list">
-									<li data-value="public">Public</li>
-									<li data-value="protected">Public/Protected</li>
-									<li data-value="private" class="selected">All</li>
-								</ul>
-							</div>
-							<input type="checkbox" id="tsd-filter-inherited" checked />
-							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
-						</div>
-					</div>
-					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="tsd-page-title">
-		<div class="container">
-			<ul class="tsd-breadcrumb">
-				<li>
-					<a href="globals.html">Globals</a>
-				</li>
-			</ul>
-			<h1> zeromq.js</h1>
-		</div>
-	</div>
-</header>
-<div class="container container-main">
-	<div class="row">
-		<div class="col-8 col-content">
-			<div class="tsd-panel tsd-typography">
-				<a href="#zeromqjs-next-generation" id="zeromqjs-next-generation" style="color: inherit; text-decoration: none;">
-					<h1>ZeroMQ.js Next Generation</h1>
-				</a>
-				<p><a href="https://www.npmjs.com/package/zeromq"><img src="https://img.shields.io/npm/v/zeromq?label=version" alt="Latest version"></a> <a href="https://greenkeeper.io/"><img src="https://img.shields.io/badge/dependencies-monitored-brightgreen" alt="Greenkeeper monitoring"></a> <a href="https://travis-ci.org/zeromq/zeromq.js"><img src="https://img.shields.io/travis/zeromq/zeromq.js" alt="Travis build status"></a></p>
-				<a href="#⚠️-version-600-in-beta-features-a-brand-new-api-that-solves-many-fundamental-issues-and-is-recommended-for-new-projects-for-the-current-stable-version-see-the-a-hrefhttpsgithubcomzeromqzeromqjstree5x5x-brancha-⚠️" id="⚠️-version-600-in-beta-features-a-brand-new-api-that-solves-many-fundamental-issues-and-is-recommended-for-new-projects-for-the-current-stable-version-see-the-a-hrefhttpsgithubcomzeromqzeromqjstree5x5x-brancha-⚠️" style="color: inherit; text-decoration: none;">
-					<h2>⚠️ Version 6.0.0 (in beta) features a brand new API that solves many fundamental issues and is recommended for new projects. For the current stable version see the <a href="https://github.com/zeromq/zeromq.js/tree/5.x">5.x branch</a> ⚠️</h2>
-				</a>
-				<p><a href="http://zeromq.org">ØMQ</a> bindings for Node.js. The goals of this library are:</p>
-				<ul>
-					<li>Semantically similar to the <a href="https://github.com/zeromq/libzmq">native</a> ØMQ library, while sticking to JavaScript idioms.</li>
-					<li>Use modern JavaScript and Node.js features such as <code>async</code>/<code>await</code> and async iterators.</li>
-					<li>High performance.</li>
-					<li>Fully usable with TypeScript (3.6+).</li>
-				</ul>
-				<p>The API reference <a href="http://zeromq.github.io/zeromq.js/globals.html">can be found here</a>.</p>
-				<a href="#table-of-contents" id="table-of-contents" style="color: inherit; text-decoration: none;">
-					<h1>Table of contents</h1>
-				</a>
-				<ul>
-					<li><a href="#installation">Installation</a><ul>
-							<li><a href="#prebuilt-binaries">Prebuilt binaries</a></li>
-							<li><a href="#building-from-source">Building from source</a></li>
-						</ul>
-					</li>
-					<li><a href="#examples">Examples</a><ul>
-							<li><a href="#pushpull">Push/Pull</a></li>
-							<li><a href="#pubsub">Pub/Sub</a></li>
-							<li><a href="#compatibility-layer-for-version-45">Compatibility layer for version 4/5</a></li>
-						</ul>
-					</li>
-					<li><a href="#contribution">Contribution</a></li>
-					<li><a href="#history">History</a></li>
-				</ul>
-				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
-					<h1>Installation</h1>
-				</a>
-				<p>Install ZeroMQ.js with prebuilt binaries:</p>
-				<pre><code class="language-sh">npm install zeromq@6.0.0-beta.5</code></pre>
-				<p>Requirements for prebuilt binaries:</p>
-				<ul>
-					<li>Node.js 10.2+ or Electron 3+ (requires a <a href="https://nodejs.org/api/n-api.html">N-API</a> version 3+)</li>
-				</ul>
-				<a href="#prebuilt-binaries" id="prebuilt-binaries" style="color: inherit; text-decoration: none;">
-					<h2>Prebuilt binaries</h2>
-				</a>
-				<p>The following platforms have a <strong>prebuilt binary</strong> available:</p>
-				<ul>
-					<li>Linux on x86-64/armv7/armv8 with libstdc++.so.6.0.21+ (glibc++ 3.4.21+), for example:<ul>
-							<li>Debian 9+ (Stretch or later)</li>
-							<li>Ubuntu 16.04+ (Xenial or later)</li>
-							<li>CentOS 8+</li>
-						</ul>
-					</li>
-					<li>Linux on x86-64 with musl, for example:<ul>
-							<li>Alpine 3.3+</li>
-						</ul>
-					</li>
-					<li>MacOS 10.9+ on x86-64</li>
-					<li>Windows on x86/x86-64</li>
-				</ul>
-				<p>If a prebuilt binary is not available for your platform, installing will attempt to start a build from source.</p>
-				<a href="#building-from-source" id="building-from-source" style="color: inherit; text-decoration: none;">
-					<h2>Building from source</h2>
-				</a>
-				<p>If a prebuilt binary is unavailable or if you want to pass certain options during build, you can build this package from source.</p>
-				<p>Make sure you have the following installed before attempting to build from source:</p>
-				<ul>
-					<li>Node.js 10+ or Electron 3+</li>
-					<li>A working C++17 compiler toolchain with make</li>
-					<li>Python 2.7 (or Python 3 with Node 12.13+)</li>
-					<li>CMake 2.8+</li>
-					<li>curl</li>
-				</ul>
-				<p>To install from source</p>
-				<pre><code class="language-sh">npm install zeromq@6.0.0-beta.5 --build-from-source</code></pre>
-				<p>If you want to link against a shared ZeroMQ library, you can build skip downloading libzmq and link with the installed library instead as follows:</p>
-				<pre><code class="language-sh">npm install zeromq@6.0.0-beta.5 --zmq-shared</code></pre>
-				<p>If you wish to use any DRAFT sockets then it is also necessary to compile the library from source:</p>
-				<pre><code class="language-sh">npm install zeromq@6.0.0-beta.5 --zmq-draft</code></pre>
-				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
-					<h1>Examples</h1>
-				</a>
-				<p><strong>Note:</strong> The examples assume the reader is familiar with ZeroMQ. If you are new to ZeroMQ, please start with the <a href="https://zeromq.org/get-started/">ZeroMQ documentation</a>.</p>
-				<p>More examples can be found in the <a href="examples">examples directory</a>.</p>
-				<a href="#pushpull" id="pushpull" style="color: inherit; text-decoration: none;">
-					<h2>Push/Pull</h2>
-				</a>
-				<p>This example demonstrates how a producer pushes information onto a
-				socket and how a worker pulls information from the socket.</p>
-				<a href="#producerjs" id="producerjs" style="color: inherit; text-decoration: none;">
-					<h3>producer.js</h3>
-				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> zmq = <span class="hljs-built_in">require</span>(<span class="hljs-string">"zeromq"</span>)
+<!doctypehtml><html class="default no-js"><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><title>zeromq.js</title><meta name=description content=""><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet href=assets/css/main.css><header><div class=tsd-page-toolbar><div class=container><div class=table-wrap><div class=table-cell id=tsd-search data-index=assets/js/search.js data-base=.><div class=field><label for=tsd-search-field class="tsd-widget search no-caption">Search</label> <input id=tsd-search-field type=text></div><ul class=results><li class="state loading">Preparing search index...<li class="state failure">The search index is not available</ul><a href=index.html class=title>zeromq.js</a></div><div class=table-cell id=tsd-widgets><div id=tsd-filter><a href=# class="tsd-widget options no-caption"data-toggle=options>Options</a><div class=tsd-filter-group><div class=tsd-select id=tsd-filter-visibility><span class=tsd-select-label>All</span><ul class=tsd-select-list><li data-value=public>Public<li data-value=protected>Public/Protected<li data-value=private class=selected>All</ul></div><input type=checkbox id=tsd-filter-inherited checked=checked> <label class=tsd-widget for=tsd-filter-inherited>Inherited</label></div></div><a href=# class="tsd-widget menu no-caption"data-toggle=menu>Menu</a></div></div></div></div><div class=tsd-page-title><div class=container><ul class=tsd-breadcrumb><li><a href=globals.html>Globals</a></ul><h1>zeromq.js</h1></div></div></header><div class="container container-main"><div class=row><div class="col-8 col-content"><div class="tsd-panel tsd-typography"><a href=#zeromqjs-next-generation id=zeromqjs-next-generation style=color:inherit;text-decoration:none><h1>ZeroMQ.js Next Generation</h1></a><p><a href=https://www.npmjs.com/package/zeromq><img src="https://img.shields.io/npm/v/zeromq?label=version"alt="Latest version"></a><a href=https://greenkeeper.io/ ><img src=https://img.shields.io/badge/dependencies-monitored-brightgreen alt="Greenkeeper monitoring"></a><a href=https://travis-ci.org/zeromq/zeromq.js><img src=https://img.shields.io/travis/zeromq/zeromq.js alt="Travis build status"></a></p><a href=#⚠️-version-600-in-beta-features-a-brand-new-api-that-solves-many-fundamental-issues-and-is-recommended-for-new-projects-⚠️ id=⚠️-version-600-in-beta-features-a-brand-new-api-that-solves-many-fundamental-issues-and-is-recommended-for-new-projects-⚠️ style=color:inherit;text-decoration:none><h2>⚠️ Version 6.0.0 (in beta) features a brand new API that solves many fundamental issues and is recommended for new projects. ⚠️</h2></a><a href=#⚠️-for-the-current-stable-version-see-the-a-hrefhttpsgithubcomzeromqzeromqjstree5x5x-brancha-⚠️ id=⚠️-for-the-current-stable-version-see-the-a-hrefhttpsgithubcomzeromqzeromqjstree5x5x-brancha-⚠️ style=color:inherit;text-decoration:none><h2>⚠️ For the current stable version see the <a href=https://github.com/zeromq/zeromq.js/tree/5.x>5.x branch</a> ⚠️</h2></a><p><a href=http://zeromq.org>ØMQ</a> bindings for Node.js. The goals of this library are:<ul><li>Semantically similar to the <a href=https://github.com/zeromq/libzmq>native</a> ØMQ library, while sticking to JavaScript idioms.<li>Use modern JavaScript and Node.js features such as <code>async</code>/<code>await</code> and async iterators.<li>High performance.<li>Fully usable with TypeScript (3+).</ul><a href=#useful-links id=useful-links style=color:inherit;text-decoration:none><h2>Useful links</h2></a><ul><li><a href=http://zeromq.github.io/zeromq.js/globals.html>ZeroMQ.js API reference</a>.<li><a href=https://zeromq.org/get-started/ >ZeroMQ project documentation</a>.<ul><li><strong>Note:</strong> The Node.js examples on zeromq.org do not yet reflect the new API, but <a href=http://zguide.zeromq.org>the Guide</a> in particular is still a good introduction to ZeroMQ for new users.</ul></ul><a href=#table-of-contents id=table-of-contents style=color:inherit;text-decoration:none><h2>Table of contents</h2></a><ul><li><a href=#installation>Installation</a><ul><li><a href=#prebuilt-binaries>Prebuilt binaries</a><li><a href=#building-from-source>Building from source</a></ul><li><a href=#examples>Examples</a><ul><li><a href=#pushpull>Push/Pull</a><li><a href=#pubsub>Pub/Sub</a><li><a href=#reqrep>Req/Rep</a><li><a href=#typescript>TypeScript</a><li><a href=#more-examples>More examples</a><li><a href=#compatibility-layer-for-version-45>Compatibility layer for version 4/5</a></ul><li><a href=#contribution>Contribution</a><li><a href=#history>History</a></ul><a href=#installation id=installation style=color:inherit;text-decoration:none><h2>Installation</h2></a><p>Install <strong>ZeroMQ.js</strong> with prebuilt binaries:<pre><code class=language-sh>npm install zeromq@6.0.0-beta.15</code></pre><p>Requirements for using prebuilt binaries:<ul><li>Node.js 10.2+ or Electron 3+ (requires a <a href=https://nodejs.org/api/n-api.html>N-API</a> version 3+)</ul><a href=#prebuilt-binaries id=prebuilt-binaries style=color:inherit;text-decoration:none><h3>Prebuilt binaries</h3></a><p>The following platforms have a <strong>prebuilt binary</strong> available:<ul><li>Linux on x86-64 with libstdc++.so.6.0.21+ (glibc++ 3.4.21+), for example:<ul><li>Debian 9+ (Stretch or later)<li>Ubuntu 16.04+ (Xenial or later)<li>CentOS 8+</ul><li>Linux on x86-64 with musl, for example:<ul><li>Alpine 3.3+</ul><li>MacOS 10.9+ on x86-64<li>Windows on x86/x86-64</ul><p>If a prebuilt binary is not available for your platform, installing will attempt to start a build from source.</p><a href=#building-from-source id=building-from-source style=color:inherit;text-decoration:none><h3>Building from source</h3></a><p>If a prebuilt binary is unavailable or if you want to pass certain options during build, you can build this package from source.<p>Make sure you have the following installed before attempting to build from source:<ul><li>Node.js 10+ or Electron 3+<li>A working C++17 compiler toolchain with make<li>Python 3 with Node 12.13+ (or legacy Python 2.7)<li>CMake 2.8+<li>curl</ul><p>To install from source:<pre><code class=language-sh>npm install zeromq@6.0.0-beta.15 --build-from-source</code></pre><p>If you want to link against a shared ZeroMQ library, you can build skip downloading <code>libzmq</code> and link with the installed library instead as follows:<pre><code class=language-sh>npm install zeromq@6.0.0-beta.15 --zmq-shared</code></pre><p>If you wish to use any DRAFT sockets then it is also necessary to compile the library from source:<pre><code class=language-sh>npm install zeromq@6.0.0-beta.15 --zmq-draft</code></pre><a href=#examples id=examples style=color:inherit;text-decoration:none><h2>Examples</h2></a><p><strong>Note:</strong> These examples assume the reader is familiar with ZeroMQ. If you are new to ZeroMQ, please start with the <a href=https://zeromq.org/get-started/ >ZeroMQ documentation</a>.<p>More examples can be found in the <a href=examples>examples directory</a>.</p><a href=#pushpull id=pushpull style=color:inherit;text-decoration:none><h3>Push/Pull</h3></a><p>This example demonstrates how a producer pushes information onto a socket and how a worker pulls information from the socket.</p><a href=#codeproducerjscode id=codeproducerjscode style=color:inherit;text-decoration:none><h4><code>producer.js</code></h4></a><p>Creates a producer to push information onto a socket.<pre><code class=language-js><span class=hljs-keyword>const</span> zmq = <span class=hljs-built_in>require</span>(<span class=hljs-string>"zeromq"</span>)
 
-<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">run</span>(<span class="hljs-params"></span>) </span>{
-  <span class="hljs-keyword">const</span> sock = <span class="hljs-keyword">new</span> zmq.Push
+<span class=hljs-keyword>async</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>run</span>(<span class=hljs-params></span>) </span>{
+  <span class=hljs-keyword>const</span> sock = <span class=hljs-keyword>new</span> zmq.Push
 
-  <span class="hljs-keyword">await</span> sock.bind(<span class="hljs-string">"tcp://127.0.0.1:3000"</span>)
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Producer bound to port 3000"</span>)
+  <span class=hljs-keyword>await</span> sock.bind(<span class=hljs-string>"tcp://127.0.0.1:3000"</span>)
+  <span class=hljs-built_in>console</span>.log(<span class=hljs-string>"Producer bound to port 3000"</span>)
 
-  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
-    <span class="hljs-keyword">await</span> sock.send(<span class="hljs-string">"some work"</span>)
-    <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> setTimeout(resolve, <span class="hljs-number">500</span>))
+  <span class=hljs-keyword>while</span> (<span class=hljs-literal>true</span>) {
+    <span class=hljs-keyword>await</span> sock.send(<span class=hljs-string>"some work"</span>)
+    <span class=hljs-keyword>await</span> <span class=hljs-keyword>new</span> <span class=hljs-built_in>Promise</span>(<span class=hljs-function><span class=hljs-params>resolve</span> =&gt;</span> { setTimeout(resolve, <span class=hljs-number>500</span>) })
   }
 }
 
-run()</code></pre>
-				<a href="#workerjs" id="workerjs" style="color: inherit; text-decoration: none;">
-					<h3>worker.js</h3>
-				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> zmq = <span class="hljs-built_in">require</span>(<span class="hljs-string">"zeromq"</span>)
+run()</code></pre><a href=#codeworkerjscode id=codeworkerjscode style=color:inherit;text-decoration:none><h4><code>worker.js</code></h4></a><p>Creates a worker to pull information from the socket.<pre><code class=language-js><span class=hljs-keyword>const</span> zmq = <span class=hljs-built_in>require</span>(<span class=hljs-string>"zeromq"</span>)
 
-<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">run</span>(<span class="hljs-params"></span>) </span>{
-  <span class="hljs-keyword">const</span> sock = <span class="hljs-keyword">new</span> zmq.Pull
+<span class=hljs-keyword>async</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>run</span>(<span class=hljs-params></span>) </span>{
+  <span class=hljs-keyword>const</span> sock = <span class=hljs-keyword>new</span> zmq.Pull
 
-  sock.connect(<span class="hljs-string">"tcp://127.0.0.1:3000"</span>)
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Worker connected to port 3000"</span>)
+  sock.connect(<span class=hljs-string>"tcp://127.0.0.1:3000"</span>)
+  <span class=hljs-built_in>console</span>.log(<span class=hljs-string>"Worker connected to port 3000"</span>)
 
-  <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> [msg] <span class="hljs-keyword">of</span> sock) {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"work: %s"</span>, msg.toString())
+  <span class=hljs-keyword>for</span> <span class=hljs-keyword>await</span> (<span class=hljs-keyword>const</span> [msg] <span class=hljs-keyword>of</span> sock) {
+    <span class=hljs-built_in>console</span>.log(<span class=hljs-string>"work: %s"</span>, msg.toString())
   }
 }
 
-run()</code></pre>
-				<a href="#pubsub" id="pubsub" style="color: inherit; text-decoration: none;">
-					<h2>Pub/Sub</h2>
-				</a>
-				<p>This example demonstrates using <code>zeromq</code> in a classic Pub/Sub,
-				Publisher/Subscriber, application.</p>
-				<a href="#publisherjs" id="publisherjs" style="color: inherit; text-decoration: none;">
-					<h3>publisher.js</h3>
-				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> zmq = <span class="hljs-built_in">require</span>(<span class="hljs-string">"zeromq"</span>)
+run()</code></pre><a href=#pubsub id=pubsub style=color:inherit;text-decoration:none><h3>Pub/Sub</h3></a><p>This example demonstrates using <code>zeromq</code> in a classic Pub/Sub, Publisher/Subscriber, application.</p><a href=#codepublisherjscode id=codepublisherjscode style=color:inherit;text-decoration:none><h4><code>publisher.js</code></h4></a><p>Create the publisher which sends messages.<pre><code class=language-js><span class=hljs-keyword>const</span> zmq = <span class=hljs-built_in>require</span>(<span class=hljs-string>"zeromq"</span>)
 
-<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">run</span>(<span class="hljs-params"></span>) </span>{
-  <span class="hljs-keyword">const</span> sock = <span class="hljs-keyword">new</span> zmq.Publisher
+<span class=hljs-keyword>async</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>run</span>(<span class=hljs-params></span>) </span>{
+  <span class=hljs-keyword>const</span> sock = <span class=hljs-keyword>new</span> zmq.Publisher
 
-  <span class="hljs-keyword">await</span> sock.bind(<span class="hljs-string">"tcp://127.0.0.1:3000"</span>)
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Publisher bound to port 3000"</span>)
+  <span class=hljs-keyword>await</span> sock.bind(<span class=hljs-string>"tcp://127.0.0.1:3000"</span>)
+  <span class=hljs-built_in>console</span>.log(<span class=hljs-string>"Publisher bound to port 3000"</span>)
 
-  <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"sending a multipart message envelope"</span>)
-    <span class="hljs-keyword">await</span> sock.send([<span class="hljs-string">"kitty cats"</span>, <span class="hljs-string">"meow!"</span>])
-    <span class="hljs-keyword">await</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Promise</span>(<span class="hljs-function"><span class="hljs-params">resolve</span> =&gt;</span> setTimeout(resolve, <span class="hljs-number">500</span>))
+  <span class=hljs-keyword>while</span> (<span class=hljs-literal>true</span>) {
+    <span class=hljs-built_in>console</span>.log(<span class=hljs-string>"sending a multipart message envelope"</span>)
+    <span class=hljs-keyword>await</span> sock.send([<span class=hljs-string>"kitty cats"</span>, <span class=hljs-string>"meow!"</span>])
+    <span class=hljs-keyword>await</span> <span class=hljs-keyword>new</span> <span class=hljs-built_in>Promise</span>(<span class=hljs-function><span class=hljs-params>resolve</span> =&gt;</span> { setTimeout(resolve, <span class=hljs-number>500</span>) })
   }
 }
 
-run()</code></pre>
-				<a href="#subscriberjs" id="subscriberjs" style="color: inherit; text-decoration: none;">
-					<h3>subscriber.js</h3>
-				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> zmq = <span class="hljs-built_in">require</span>(<span class="hljs-string">"zeromq"</span>)
+run()</code></pre><a href=#codesubscriberjscode id=codesubscriberjscode style=color:inherit;text-decoration:none><h4><code>subscriber.js</code></h4></a><p>Create a subscriber to connect to a publisher&#39;s port to receive messages.<pre><code class=language-js><span class=hljs-keyword>const</span> zmq = <span class=hljs-built_in>require</span>(<span class=hljs-string>"zeromq"</span>)
 
-<span class="hljs-keyword">async</span> <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">run</span>(<span class="hljs-params"></span>) </span>{
-  <span class="hljs-keyword">const</span> sock = <span class="hljs-keyword">new</span> zmq.Subscriber
+<span class=hljs-keyword>async</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>run</span>(<span class=hljs-params></span>) </span>{
+  <span class=hljs-keyword>const</span> sock = <span class=hljs-keyword>new</span> zmq.Subscriber
 
-  sock.connect(<span class="hljs-string">"tcp://127.0.0.1:3000"</span>)
-  sock.subscribe(<span class="hljs-string">"kitty cats"</span>)
-  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Subscriber connected to port 3000"</span>)
+  sock.connect(<span class=hljs-string>"tcp://127.0.0.1:3000"</span>)
+  sock.subscribe(<span class=hljs-string>"kitty cats"</span>)
+  <span class=hljs-built_in>console</span>.log(<span class=hljs-string>"Subscriber connected to port 3000"</span>)
 
-  <span class="hljs-keyword">for</span> <span class="hljs-keyword">await</span> (<span class="hljs-keyword">const</span> [topic, msg] <span class="hljs-keyword">of</span> sock) {
-    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"received a message related to:"</span>, topic, <span class="hljs-string">"containing message:"</span>, msg)
+  <span class=hljs-keyword>for</span> <span class=hljs-keyword>await</span> (<span class=hljs-keyword>const</span> [topic, msg] <span class=hljs-keyword>of</span> sock) {
+    <span class=hljs-built_in>console</span>.log(<span class=hljs-string>"received a message related to:"</span>, topic, <span class=hljs-string>"containing message:"</span>, msg)
   }
 }
 
-run()</code></pre>
-				<a href="#compatibility-layer-for-version-45" id="compatibility-layer-for-version-45" style="color: inherit; text-decoration: none;">
-					<h2>Compatibility layer for version 4/5</h2>
-				</a>
-				<p>The next generation version of the library features a compatibility layer for ZeroMQ.js versions 4 and 5. This is recommended for users upgrading from previous versions.</p>
-				<p>Example:</p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> zmq = <span class="hljs-built_in">require</span>(<span class="hljs-string">"zeromq/v5-compat"</span>)
+run()</code></pre><a href=#reqrep id=reqrep style=color:inherit;text-decoration:none><h3>Req/Rep</h3></a><p>This example illustrates a request from a client and a reply from a server.</p><a href=#codeclientjscode id=codeclientjscode style=color:inherit;text-decoration:none><h4><code>client.js</code></h4></a><pre><code class=language-js><span class=hljs-keyword>const</span> zmq = <span class=hljs-built_in>require</span>(<span class=hljs-string>"zeromq"</span>)
 
-<span class="hljs-keyword">const</span> pub = zmq.socket(<span class="hljs-string">"pub"</span>)
-<span class="hljs-keyword">const</span> sub = zmq.socket(<span class="hljs-string">"sub"</span>)
+<span class=hljs-keyword>async</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>run</span>(<span class=hljs-params></span>) </span>{
+  <span class=hljs-keyword>const</span> sock = <span class=hljs-keyword>new</span> zmq.Request
 
-pub.bind(<span class="hljs-string">"tcp://*:3456"</span>, err =&gt; {
-  <span class="hljs-keyword">if</span> (err) <span class="hljs-keyword">throw</span> err
+  sock.connect(<span class=hljs-string>"tcp://127.0.0.1:3000"</span>)
+  <span class=hljs-built_in>console</span>.log(<span class=hljs-string>"Producer bound to port 3000"</span>)
 
-  sub.connect(<span class="hljs-string">"tcp://127.0.0.1:3456"</span>)
+  <span class=hljs-keyword>await</span> sock.send(<span class=hljs-string>"4"</span>)
+  <span class=hljs-keyword>const</span> [result] = <span class=hljs-keyword>await</span> sock.receive()
 
-  pub.send(<span class="hljs-string">"message"</span>)
+  <span class=hljs-built_in>console</span>.log(result)
+}
 
-  sub.on(<span class="hljs-string">"message"</span>, msg =&gt; {
-    <span class="hljs-comment">// Handle received message...</span>
+run()</code></pre><a href=#codeserverjscode id=codeserverjscode style=color:inherit;text-decoration:none><h4><code>server.js</code></h4></a><pre><code class=language-js><span class=hljs-keyword>const</span> zmq = <span class=hljs-built_in>require</span>(<span class=hljs-string>"zeromq"</span>)
+
+<span class=hljs-keyword>async</span> <span class=hljs-function><span class=hljs-keyword>function</span> <span class=hljs-title>run</span>(<span class=hljs-params></span>) </span>{
+  <span class=hljs-keyword>const</span> sock = <span class=hljs-keyword>new</span> zmq.Reply
+
+  <span class=hljs-keyword>await</span> sock.bind(<span class=hljs-string>"tcp://127.0.0.1:3000"</span>)
+
+  <span class=hljs-keyword>for</span> <span class=hljs-keyword>await</span> (<span class=hljs-keyword>const</span> [msg] <span class=hljs-keyword>of</span> sock) {
+    <span class=hljs-keyword>await</span> sock.send(<span class=hljs-number>2</span> * <span class=hljs-built_in>parseInt</span>(msg, <span class=hljs-number>10</span>))
+  }
+}
+
+run()</code></pre><a href=#typescript id=typescript style=color:inherit;text-decoration:none><h2>TypeScript</h2></a><p>This library provides typings for TypeScript version 3.0.x and later.<p><em>Requirements</em><ul><li>For TypeScript version &gt;= 3:<ul><li><a href=https://www.typescriptlang.org/docs/handbook/compiler-options.html>compilerOptions</a></ul><li>For TypeScript version &lt; 3.6:<ul><li>either set <code>compilerOptions.target</code> to <code>esnext</code> or later (e.g. <code>es2018</code>)<li>or add the following, or similar, libraries to <code>compilerOptions.lib</code> (and include their corresponding polyfills if needed): <code>es2015</code>, <code>ESNext.AsyncIterable</code></ul></ul><p><em>Example Usage</em><pre><code class=language-typescript><span class=hljs-keyword>import</span> { Request } <span class=hljs-keyword>from</span> <span class=hljs-string>"zeromq"</span>
+<span class=hljs-comment>// or as namespace</span>
+<span class=hljs-keyword>import</span> * <span class=hljs-keyword>as</span> zmq <span class=hljs-keyword>from</span> <span class=hljs-string>"zeromq"</span>
+
+<span class=hljs-keyword>const</span> reqSock = <span class=hljs-keyword>new</span> Request()
+<span class=hljs-comment>//...</span>
+<span class=hljs-keyword>const</span> repSock = <span class=hljs-keyword>new</span> zmq.Reply()</code></pre><a href=#more-examples id=more-examples style=color:inherit;text-decoration:none><h3>More examples</h3></a><p>More advanced examples can be found in the <a href=examples>examples</a> directory of this repository.<p>Or you can <a href=http://zeromq.github.io/zeromq.js/globals.html>browse the API reference documentation</a> to see all socket types, methods &amp; options as well as more detailed information about how to apply them.</p><a href=#compatibility-layer-for-version-45 id=compatibility-layer-for-version-45 style=color:inherit;text-decoration:none><h3>Compatibility layer for version 4/5</h3></a><p>The next generation version of the library features a compatibility layer for ZeroMQ.js versions 4 and 5. This is recommended for users upgrading from previous versions.<p>Example:<pre><code class=language-js><span class=hljs-keyword>const</span> zmq = <span class=hljs-built_in>require</span>(<span class=hljs-string>"zeromq/v5-compat"</span>)
+
+<span class=hljs-keyword>const</span> pub = zmq.socket(<span class=hljs-string>"pub"</span>)
+<span class=hljs-keyword>const</span> sub = zmq.socket(<span class=hljs-string>"sub"</span>)
+
+pub.bind(<span class=hljs-string>"tcp://*:3456"</span>, err =&gt; {
+  <span class=hljs-keyword>if</span> (err) <span class=hljs-keyword>throw</span> err
+
+  sub.connect(<span class=hljs-string>"tcp://127.0.0.1:3456"</span>)
+
+  pub.send(<span class=hljs-string>"message"</span>)
+
+  sub.on(<span class=hljs-string>"message"</span>, msg =&gt; {
+    <span class=hljs-comment>// Handle received message...</span>
   })
-})</code></pre>
-				<a href="#contribution" id="contribution" style="color: inherit; text-decoration: none;">
-					<h1>Contribution</h1>
-				</a>
-				<a href="#dependencies" id="dependencies" style="color: inherit; text-decoration: none;">
-					<h2>Dependencies</h2>
-				</a>
-				<p>In order to develop and test the library, you&#39;ll need the tools required to build from source (<a href="#building-from-source">see above</a>).</p>
-				<p>Additionally, having clang-format is strongly recommended.</p>
-				<a href="#defining-new-options" id="defining-new-options" style="color: inherit; text-decoration: none;">
-					<h2>Defining new options</h2>
-				</a>
-				<p>Socket and context options can be set at runtime, even if they are not implemented by this library. By design, this requires no recompilation if the built version of ZeroMQ has support for them. This allows library users to test and use options that have been introduced in recent versions of ZeroMQ without having to modify this library. Of course we&#39;d love to include support for new options in an idiomatic way.</p>
-				<p>Options can be set as follows:</p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> {Dealer} = <span class="hljs-built_in">require</span>(<span class="hljs-string">"zeromq"</span>)
+})</code></pre><a href=#contribution id=contribution style=color:inherit;text-decoration:none><h2>Contribution</h2></a><p>If you are interested in making contributions to this project, please read the following sections.</p><a href=#dependencies id=dependencies style=color:inherit;text-decoration:none><h3>Dependencies</h3></a><p>In order to develop and test the library, you&#39;ll need the tools required to build from source (<a href=#building-from-source>see above</a>).<p>Additionally, having clang-format is strongly recommended.</p><a href=#defining-new-options id=defining-new-options style=color:inherit;text-decoration:none><h3>Defining new options</h3></a><p>Socket and context options can be set at runtime, even if they are not implemented by this library. By design, this requires no recompilation if the built version of ZeroMQ has support for them. This allows library users to test and use options that have been introduced in recent versions of ZeroMQ without having to modify this library. Of course we&#39;d love to include support for new options in an idiomatic way.<p>Options can be set as follows:<pre><code class=language-js><span class=hljs-keyword>const</span> {Dealer} = <span class=hljs-built_in>require</span>(<span class=hljs-string>"zeromq"</span>)
 
-<span class="hljs-comment">/* This defines an accessor named 'sendHighWaterMark', which corresponds to
+<span class=hljs-comment>/* This defines an accessor named 'sendHighWaterMark', which corresponds to
    the constant ZMQ_SNDHWM, which is defined as '23' in zmq.h. The option takes
    integers. The accessor name has been converted to idiomatic JavaScript.
    Of course, this particular option already exists in this library. */</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyDealer</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Dealer</span> </span>{
-  <span class="hljs-keyword">get</span> sendHighWaterMark(): number {
-    <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.getInt32Option(<span class="hljs-number">23</span>)
+<span class=hljs-class><span class=hljs-keyword>class</span> <span class=hljs-title>MyDealer</span> <span class=hljs-keyword>extends</span> <span class=hljs-title>Dealer</span> </span>{
+  <span class=hljs-keyword>get</span> sendHighWaterMark(): number {
+    <span class=hljs-keyword>return</span> <span class=hljs-keyword>this</span>.getInt32Option(<span class=hljs-number>23</span>)
   }
 
-  <span class="hljs-keyword">set</span> sendHighWaterMark(value: number) {
-    <span class="hljs-keyword">this</span>.setInt32Option(<span class="hljs-number">23</span>, value)
+  <span class=hljs-keyword>set</span> sendHighWaterMark(value: number) {
+    <span class=hljs-keyword>this</span>.setInt32Option(<span class=hljs-number>23</span>, value)
   }
 }
 
-<span class="hljs-keyword">const</span> sock = <span class="hljs-keyword">new</span> MyDealer({<span class="hljs-attr">sendHighWaterMark</span>: <span class="hljs-number">456</span>})</code></pre>
-				<p>When submitting pull requests for new socket/context options, please consider the following:</p>
-				<ul>
-					<li>The option is documented in the TypeScript interface.</li>
-					<li>The option is only added to relevant socket types, and if the ZMQ_ constant has a prefix indicating which type it applies to, it is stripped from the name as it is exposed in JavaScript.</li>
-					<li>The name as exposed in this library is idiomatic for JavaScript, spelling out any abbreviations and using proper <code>camelCase</code> naming conventions.</li>
-					<li>The option is a value that can be set on a socket, and you don&#39;t think it should actually be a method.</li>
-				</ul>
-				<a href="#testing" id="testing" style="color: inherit; text-decoration: none;">
-					<h2>Testing</h2>
-				</a>
-				<p>The test suite can be run with:</p>
-				<pre><code class="language-sh">npm install
-npm run dev:build
-npm run dev:<span class="hljs-built_in">test</span></code></pre>
-				<p>Or, if you prefer:</p>
-				<pre><code class="language-sh">yarn
-yarn run dev:build
-yarn run dev:<span class="hljs-built_in">test</span></code></pre>
-				<p>The test suite will validate and fix the coding style, run all unit tests and verify the validity of the included TypeScript type definitions.</p>
-				<p>Some tests are not enabled by default:</p>
-				<ul>
-					<li>API Compatibility tests from ZeroMQ 5.x have been disabled by default. You can include the tests with <code>INCLUDE_COMPAT_TESTS=1 npm run dev:test</code></li>
-					<li>Some transports are not reliable on some older versions of ZeroMQ, the relevant tests will be skipped for those versions automatically.</li>
-				</ul>
-				<a href="#publishing" id="publishing" style="color: inherit; text-decoration: none;">
-					<h2>Publishing</h2>
-				</a>
-				<p>To publish a new version, run:</p>
-				<pre><code class="language-sh">npm version &lt;new version&gt;
-git push &amp;&amp; git push --tags</code></pre>
-				<p>Wait for continuous integration to finish. Prebuilds will be generated for all supported platforms and attached to a Github release. Documentation is automatically generated and committed to <code>gh-pages</code>. Finally, a new NPM package version will be automatically released.</p>
-				<a href="#history" id="history" style="color: inherit; text-decoration: none;">
-					<h1>History</h1>
-				</a>
-				<p>Version 6+ is a complete rewrite of previous versions of ZeroMQ.js in order to be more reliable, correct, and usable in modern JavaScript &amp; TypeScript code as first outlined in <a href="https://github.com/zeromq/zeromq.js/issues/189">this issue</a>. Previous versions of ZeroMQ.js were based on <code>zmq</code> and a fork that included prebuilt binaries.</p>
-				<p>See detailed changes in the <a href="CHANGELOG.md">CHANGELOG</a>.</p>
-			</div>
-		</div>
-		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
-			<nav class="tsd-navigation primary">
-				<ul>
-					<li class="globals  ">
-						<a href="globals.html"><em>Globals</em></a>
-					</li>
-				</ul>
-			</nav>
-			<nav class="tsd-navigation secondary menu-sticky">
-				<ul class="before-current">
-					<li class=" tsd-kind-class">
-						<a href="classes/context.html" class="tsd-kind-icon">Context</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/dealer.html" class="tsd-kind-icon">Dealer</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/observer.html" class="tsd-kind-icon">Observer</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/pair.html" class="tsd-kind-icon">Pair</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/proxy.html" class="tsd-kind-icon">Proxy</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/publisher.html" class="tsd-kind-icon">Publisher</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/pull.html" class="tsd-kind-icon">Pull</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/push.html" class="tsd-kind-icon">Push</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/reply.html" class="tsd-kind-icon">Reply</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/request.html" class="tsd-kind-icon">Request</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/router.html" class="tsd-kind-icon">Router</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/socket.html" class="tsd-kind-icon">Socket</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/stream.html" class="tsd-kind-icon">Stream</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/subscriber.html" class="tsd-kind-icon">Subscriber</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/xpublisher.html" class="tsd-kind-icon">XPublisher</a>
-					</li>
-					<li class=" tsd-kind-class tsd-has-type-parameter">
-						<a href="classes/xsubscriber.html" class="tsd-kind-icon">XSubscriber</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-has-type-parameter">
-						<a href="interfaces/readable.html" class="tsd-kind-icon">Readable</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-has-type-parameter">
-						<a href="interfaces/writable.html" class="tsd-kind-icon">Writable</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#event" class="tsd-kind-icon">Event</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="globals.html#eventoftype" class="tsd-kind-icon">Event<wbr>OfType</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#eventtype" class="tsd-kind-icon">Event<wbr>Type</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#message" class="tsd-kind-icon">Message</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#messagelike" class="tsd-kind-icon">Message<wbr>Like</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-has-type-parameter">
-						<a href="globals.html#socketoptions" class="tsd-kind-icon">Socket<wbr>Options</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#capability" class="tsd-kind-icon">capability</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#context" class="tsd-kind-icon">context</a>
-					</li>
-					<li class=" tsd-kind-variable">
-						<a href="globals.html#version" class="tsd-kind-icon">version</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#curvekeypair" class="tsd-kind-icon">curve<wbr>Key<wbr>Pair</a>
-					</li>
-				</ul>
-			</nav>
-		</div>
-	</div>
-</div>
-<footer class="with-border-bottom">
-	<div class="container">
-		<h2>Legend</h2>
-		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
-			</ul>
-		</div>
-	</div>
-</footer>
-<div class="container tsd-generator">
-	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
-</div>
-<div class="overlay"></div>
-<script src="assets/js/main.js"></script>
-<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
-</body>
-</html>
+<span class=hljs-keyword>const</span> sock = <span class=hljs-keyword>new</span> MyDealer({<span class=hljs-attr>sendHighWaterMark</span>: <span class=hljs-number>456</span>})</code></pre><p>When submitting pull requests for new socket/context options, please consider the following:<ul><li>The option is documented in the TypeScript interface.<li>The option is only added to relevant socket types, and if the ZMQ_ constant has a prefix indicating which type it applies to, it is stripped from the name as it is exposed in JavaScript.<li>The name as exposed in this library is idiomatic for JavaScript, spelling out any abbreviations and using proper <code>camelCase</code> naming conventions.<li>The option is a value that can be set on a socket, and you don&#39;t think it should actually be a method.</ul><a href=#testing id=testing style=color:inherit;text-decoration:none><h3>Testing</h3></a><p>The test suite can be run with:<pre><code class=language-sh>npm install
+npm run build
+npm run <span class=hljs-built_in>test</span></code></pre><p>The test suite will validate and fix the coding style, run all unit tests and verify the validity of the included TypeScript type definitions.<p>Some tests are not enabled by default:<ul><li>API Compatibility tests from ZeroMQ 5.x have been disabled by default. You can include the tests with <code>INCLUDE_COMPAT_TESTS=1 npm run test</code><li>Some transports are not reliable on some older versions of ZeroMQ, the relevant tests will be skipped for those versions automatically.</ul><a href=#publishing id=publishing style=color:inherit;text-decoration:none><h3>Publishing</h3></a><p>To publish a new version, run:<pre><code class=language-sh>npm version &lt;new version&gt;
+git push &amp;&amp; git push --tags</code></pre><p>Wait for continuous integration to finish. Prebuilds will be generated for all supported platforms and attached to a Github release. Documentation is automatically generated and committed to <code>gh-pages</code>. Finally, a new NPM package version will be automatically released.</p><a href=#history id=history style=color:inherit;text-decoration:none><h2>History</h2></a><p>Version 6+ is a complete rewrite of previous versions of ZeroMQ.js in order to be more reliable, correct, and usable in modern JavaScript &amp; TypeScript code as first outlined in <a href=https://github.com/zeromq/zeromq.js/issues/189>this issue</a>. Previous versions of ZeroMQ.js were based on <code>zmq</code> and a fork that included prebuilt binaries.<p>See detailed changes in the <a href=CHANGELOG.md>CHANGELOG</a>.</div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class=globals><a href=globals.html><em>Globals</em></a><li class=tsd-kind-external-module><a href=modules/_index_.html>"index"</a></ul></nav><nav class="tsd-navigation secondary menu-sticky"><ul class=before-current></ul></nav></div></div></div><footer class=with-border-bottom><div class=container><h2>Legend</h2><div class=tsd-legend-group><ul class=tsd-legend><li class=tsd-kind-module><span class=tsd-kind-icon>Module</span><li class=tsd-kind-object-literal><span class=tsd-kind-icon>Object literal</span><li class=tsd-kind-variable><span class=tsd-kind-icon>Variable</span><li class=tsd-kind-function><span class=tsd-kind-icon>Function</span><li class="tsd-kind-function tsd-has-type-parameter"><span class=tsd-kind-icon>Function with type parameter</span><li class=tsd-kind-index-signature><span class=tsd-kind-icon>Index signature</span><li class=tsd-kind-type-alias><span class=tsd-kind-icon>Type alias</span><li class="tsd-kind-type-alias tsd-has-type-parameter"><span class=tsd-kind-icon>Type alias with type parameter</span></ul><ul class=tsd-legend><li class=tsd-kind-enum><span class=tsd-kind-icon>Enumeration</span><li class=tsd-kind-enum-member><span class=tsd-kind-icon>Enumeration member</span><li class="tsd-kind-property tsd-parent-kind-enum"><span class=tsd-kind-icon>Property</span><li class="tsd-kind-method tsd-parent-kind-enum"><span class=tsd-kind-icon>Method</span></ul><ul class=tsd-legend><li class=tsd-kind-interface><span class=tsd-kind-icon>Interface</span><li class="tsd-kind-interface tsd-has-type-parameter"><span class=tsd-kind-icon>Interface with type parameter</span><li class="tsd-kind-constructor tsd-parent-kind-interface"><span class=tsd-kind-icon>Constructor</span><li class="tsd-kind-property tsd-parent-kind-interface"><span class=tsd-kind-icon>Property</span><li class="tsd-kind-method tsd-parent-kind-interface"><span class=tsd-kind-icon>Method</span><li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class=tsd-kind-icon>Index signature</span></ul><ul class=tsd-legend><li class=tsd-kind-class><span class=tsd-kind-icon>Class</span><li class="tsd-kind-class tsd-has-type-parameter"><span class=tsd-kind-icon>Class with type parameter</span><li class="tsd-kind-constructor tsd-parent-kind-class"><span class=tsd-kind-icon>Constructor</span><li class="tsd-kind-property tsd-parent-kind-class"><span class=tsd-kind-icon>Property</span><li class="tsd-kind-method tsd-parent-kind-class"><span class=tsd-kind-icon>Method</span><li class="tsd-kind-accessor tsd-parent-kind-class"><span class=tsd-kind-icon>Accessor</span><li class="tsd-kind-index-signature tsd-parent-kind-class"><span class=tsd-kind-icon>Index signature</span></ul><ul class=tsd-legend><li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class=tsd-kind-icon>Inherited constructor</span><li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class=tsd-kind-icon>Inherited property</span><li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class=tsd-kind-icon>Inherited method</span><li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class=tsd-kind-icon>Inherited accessor</span></ul><ul class=tsd-legend><li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class=tsd-kind-icon>Protected property</span><li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class=tsd-kind-icon>Protected method</span><li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class=tsd-kind-icon>Protected accessor</span></ul><ul class=tsd-legend><li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class=tsd-kind-icon>Private property</span><li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class=tsd-kind-icon>Private method</span><li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class=tsd-kind-icon>Private accessor</span></ul><ul class=tsd-legend><li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class=tsd-kind-icon>Static property</span><li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class=tsd-kind-icon>Static method</span></ul></div></div></footer><div class="container tsd-generator"><p>Generated using <a href=https://typedoc.org/ target=_blank>TypeDoc</a></div><div class=overlay></div><script src=assets/js/main.js></script><script>"file:"==location.protocol&&document.write('<script src="assets/js/search.js"><\/script>')</script>
