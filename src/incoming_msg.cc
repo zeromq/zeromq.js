@@ -1,6 +1,7 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #include "incoming_msg.h"
 
+#include "util/electron_helper.h"
 #include "util/error.h"
 
 namespace zmq {
@@ -14,39 +15,37 @@ IncomingMsg::~IncomingMsg() {
 }
 
 Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
-#if !(NODE_RUNTIME_ELECTRON && NODE_MODULE_VERSION >= 109)  // 109 is Electron v21 and up
-    if (moved) {
-        /* If ownership has been transferred, do not attempt to read the buffer
-           again in any case. This should not happen of course. */
-        ErrnoException(env, EINVAL).ThrowAsJavaScriptException();
-        return env.Undefined();
+    if (!hasElectronMemoryCage(env)) {
+        if (moved) {
+            /* If ownership has been transferred, do not attempt to read the buffer
+               again in any case. This should not happen of course. */
+            ErrnoException(env, EINVAL).ThrowAsJavaScriptException();
+            return env.Undefined();
+        }
     }
-
-    static auto constexpr zero_copy_threshold = 1 << 7;
-#endif
-
     auto data = reinterpret_cast<uint8_t*>(zmq_msg_data(*ref));
     auto length = zmq_msg_size(*ref);
 
-#if !(NODE_RUNTIME_ELECTRON && NODE_MODULE_VERSION >= 109)  // 109 is Electron v21 and up
-    if (length > zero_copy_threshold) {
-        /* Reuse existing buffer for external storage. This avoids copying but
-           does include an overhead in having to call a finalizer when the
-           buffer is GC'ed. For very small messages it is faster to copy. */
-        moved = true;
+    if (!hasElectronMemoryCage(env)) {
+        static auto constexpr zero_copy_threshold = 1 << 7;
+        if (length > zero_copy_threshold) {
+            /* Reuse existing buffer for external storage. This avoids copying but
+               does include an overhead in having to call a finalizer when the
+               buffer is GC'ed. For very small messages it is faster to copy. */
+            moved = true;
 
-        /* Put appropriate GC pressure according to the size of the buffer. */
-        Napi::MemoryManagement::AdjustExternalMemory(env, length);
+            /* Put appropriate GC pressure according to the size of the buffer. */
+            Napi::MemoryManagement::AdjustExternalMemory(env, length);
 
-        auto release = [](const Napi::Env& env, uint8_t*, Reference* ref) {
-            ptrdiff_t length = zmq_msg_size(*ref);
-            Napi::MemoryManagement::AdjustExternalMemory(env, -length);
-            delete ref;
-        };
+            auto release = [](const Napi::Env& env, uint8_t*, Reference* ref) {
+                ptrdiff_t length = zmq_msg_size(*ref);
+                Napi::MemoryManagement::AdjustExternalMemory(env, -length);
+                delete ref;
+            };
 
-        return Napi::Buffer<uint8_t>::New(env, data, length, release, ref);
+            return Napi::Buffer<uint8_t>::New(env, data, length, release, ref);
+        }
     }
-#endif
 
     if (length > 0) {
         return Napi::Buffer<uint8_t>::Copy(env, data, length);
