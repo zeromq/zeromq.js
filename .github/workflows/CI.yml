@@ -149,23 +149,32 @@ jobs:
         if: ${{ !matrix.docker }}
         uses: nick-fields/retry@v2
         with:
-          timeout_minutes: 8
+          timeout_minutes: 5
           max_attempts: 1
           command: |
             pnpm run clean
             pnpm run test.skip_gc_tests
-        continue-on-error: true
+        continue-on-error: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
 
       - name: Test Electron (Main)
-        if: ${{ !matrix.docker }}
-        run: |
-          pnpm install -g electron@latest
-          pnpm run clean
-          pnpm run test.electron.main
-        continue-on-error: true
+        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 1
+          command: |
+            sudo apt-get install xvfb
+            pnpm install -g electron@latest
+            pnpm run clean
+            xvfb-run --auto-servernum pnpm run test.electron.main
+        # continue-on-error: true
 
       - name: Tests + GC Tests (Release)
         if: ${{ !matrix.docker }}
-        run: |
-          pnpm run clean
-          pnpm run test
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 1
+          command: |
+            pnpm run clean
+            pnpm run test
