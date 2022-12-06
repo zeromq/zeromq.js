@@ -27,8 +27,6 @@ static inline bool hasElectronMemoryCage(const Napi::Env& env) {
     if (!hasRun) {
         if (IsElectron(env)) {
             auto electronVers = env.Global()
-                                    .Get("window")
-                                    .ToObject()
                                     .Get("process")
                                     .ToObject()
                                     .Get("versions")
