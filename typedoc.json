@@ -1,0 +1,22 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "name": "zeromq.js",
+    "entryPoints": [
+        "./src/index.ts"
+    ],
+    "tsconfig": " ./tsconfig.docs.json",
+    "out": "docs",
+    "excludePrivate": true,
+    "excludeNotExported": true,
+    "excludeExternals": true,
+    "exclude": [
+        "script/**/*",
+        "test/**/*",
+        "examples/**/*",
+        "src/+(draft|native|compat).ts",
+        "src/errors.ts",
+        "src/util.ts"
+    ],
+    "pretty": false,
+    "githubPages": true
+}

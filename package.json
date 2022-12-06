@@ -18,10 +18,10 @@
   },
   "dependencies": {
     "@aminya/node-gyp-build": "4.5.0-aminya.4",
+    "cross-env": "^7.0.3",
     "node-addon-api": "^5.0.0",
     "shelljs": "^0.8.5",
-    "shx": "^0.3.4",
-    "cross-env": "^7.0.3"
+    "shx": "^0.3.4"
   },
   "devDependencies": {
     "@gnd/typedoc": "^0.15.0-0",
@@ -52,6 +52,11 @@
     "weak-napi": "^2.0.2",
     "which": "^3.0.0"
   },
+  "pnpm": {
+    "overrides": {
+      "typescript": "~4.9.3"
+    }
+  },
   "engines": {
     "node": ">= 10.2"
   },
@@ -72,10 +77,11 @@
     "install": "(shx test -f ./script/build.js || run-s build.js) && cross-env npm_config_build_from_source=true node-gyp-build",
     "clean": "shx rm -rf ./build ./lib/ ./prebuilds ./script/*.js ./script/*.js.map ./script/*.d.ts ./script/*.tsbuildinfo",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp && shx touch ./tmp/.gitkeep",
-    "build.library": "tsc -p ./src/tsconfig.json && downlevel-dts ./lib ./lib/ts3.7 --to=3.7",
+    "build.library.compat": "shx rm -rf ./lib/ts3.7 && downlevel-dts ./lib ./lib/ts3.7 --to=3.7",
+    "build.library": "tsc -p ./src/tsconfig.json && run-s build.library.compat",
     "build.script": "tsc -p ./script/tsconfig.json",
     "build.js": "run-p build.script build.library",
-    "build.doc": "typedoc --out docs --name zeromq.js --excludeProtected --excludePrivate --excludeNotExported --excludeExternals --externalPattern 'src/+(draft|native|compat).ts' --tsconfig tsconfig-build.json --mode file",
+    "build.doc": "typedoc --options ./typedoc.json --tsconfig ./tsconfig.docs.json",
     "prebuild": "run-s build.js && node ./script/prebuild.js",
     "build.native": "node-gyp configure --release && node-gyp build --release",
     "build.native.debug": "cross-env CMAKE_BUILD_TYPE=Debug node-gyp configure --debug && cross-env CMAKE_BUILD_TYPE=Debug node-gyp build --debug",
@@ -89,7 +95,7 @@
     "lint": "run-p lint.eslint lint.clang-format",
     "lint-test": "run-s lint-test.eslint",
     "bench": "node --expose-gc test/bench",
-    "prepublishOnly": "shx rm -rf ./lib && pnpm run build.js"
+    "prepublishOnly": "pnpm run build.js"
   },
   "keywords": [
     "zeromq",

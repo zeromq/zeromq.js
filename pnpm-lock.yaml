@@ -1,5 +1,8 @@
 lockfileVersion: 5.4
 
+overrides:
+  typescript: ~4.9.3
+
 specifiers:
   '@aminya/node-gyp-build': 4.5.0-aminya.4
   '@gnd/typedoc': ^0.15.0-0
@@ -382,7 +385,7 @@ packages:
       progress: 2.0.3
       shelljs: 0.8.5
       typedoc-default-themes: 0.6.3
-      typescript: 3.6.5
+      typescript: 4.9.3
     dev: true
 
   /@humanwhocodes/config-array/0.11.7:
@@ -1647,7 +1650,7 @@ packages:
     dependencies:
       semver: 7.3.8
       shelljs: 0.8.5
-      typescript: 5.0.0-dev.20221205
+      typescript: 4.9.3
     dev: true
 
   /duplexer3/0.1.5:
@@ -4566,20 +4569,8 @@ packages:
       underscore: 1.13.6
     dev: true
 
-  /typescript/3.6.5:
-    resolution: {integrity: sha512-BEjlc0Z06ORZKbtcxGrIvvwYs5hAnuo6TKdNFL55frVDlB+na3z5bsLhFaIxmT+dPWgBIjMo6aNnTOgHHmHgiQ==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
-    dev: true
-
   /typescript/4.9.3:
     resolution: {integrity: sha512-CIfGzTelbKNEnLpLdGFgdyKhG23CKdKgQPOBc+OUNrkJ2vr+KSzsSV5kq5iWhEQbok+quxgGzrAtGWCyU7tHnA==}
-    engines: {node: '>=4.2.0'}
-    hasBin: true
-    dev: true
-
-  /typescript/5.0.0-dev.20221205:
-    resolution: {integrity: sha512-afHkcfhaQqUk+Hjn+lUKtMqMttizIy5K2r75cz8l7/K+m0k6Yx9IoHRC5v8cjxB77ub2COdbr+0xsNodB7q6dg==}
     engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
