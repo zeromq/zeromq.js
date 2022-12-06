@@ -155,6 +155,13 @@ jobs:
             pnpm run clean
             pnpm run test.skip_gc_tests
 
+      - name: Test Electron (Main)
+        if: ${{ !matrix.docker }}
+        run: |
+          pnpm install -g electron@latest
+          pnpm run clean
+          pnpm run test.electron.main
+
       - name: Tests + GC Tests (Release)
         if: ${{ !matrix.docker }}
         run: |
