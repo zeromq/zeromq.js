@@ -1,10 +1,12 @@
 name: docs
 on:
-  create:
-    types: [tag]
+  push:
+    tags:
+      - "*"
 
 jobs:
   Docs:
+    if: "startsWith(github.ref, 'refs/tags/') && !contains(github.event.head_commit.message, '[skip ci]')"
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
