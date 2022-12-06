@@ -1,0 +1,72 @@
+name: docs
+on:
+  create:
+    types: [tag]
+
+jobs:
+  Docs:
+    runs-on: ubuntu-22.04
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-22.04
+        node_version:
+          - 18
+        node_arch:
+          - x64
+        cpp_arch:
+          - x64
+        ARCH:
+          - x64
+        zmq_draft:
+          - false
+    env:
+      ZMQ_DRAFT: ${{ matrix.zmq_draft }}
+      ZMQ_SHARED: false
+      ARCH: ${{ matrix.ARCH }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ./node_modules/
+            ./build/
+          key: "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-Node:${{ matrix.node_version }}-${{ hashFiles('./package.json') }}"
+          restore-keys: |
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-Node:${{ matrix.node_version }}-"
+
+      - name: Setup Cpp
+        uses: aminya/setup-cpp@v1
+        with:
+          cmake: true
+          architecture: ${{ matrix.cpp_arch }}
+
+      - uses: pnpm/action-setup@v2.2.4
+        with:
+          version: 7
+
+      - name: Install Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node_version }}
+          architecture: ${{ matrix.node_arch }}
+          cache: "pnpm"
+
+      - name: Build Documentation
+        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
+        run: |
+          pnpm install
+          pnpm run build.doc
+
+      - name: Deploy Documentation
+        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
+        uses: Cecilapp/GitHub-Pages-deploy@v3
+        with:
+          build_dir: docs
+          branch: gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
