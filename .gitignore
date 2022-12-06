@@ -20,3 +20,4 @@ test/typings-compatibility/
 /script/*/*.d.ts
 /script/*/*.js.map
 tsconfig.tsbuildinfo
+/docs-raw

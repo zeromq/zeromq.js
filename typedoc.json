@@ -5,7 +5,7 @@
         "./src/index.ts"
     ],
     "tsconfig": " ./tsconfig.docs.json",
-    "out": "docs",
+    "out": "docs-raw",
     "excludePrivate": true,
     "excludeNotExported": true,
     "excludeExternals": true,
