@@ -16,6 +16,7 @@
     "type": "git",
     "url": "https://github.com/zeromq/zeromq.js.git"
   },
+  "homepage": "http://zeromq.github.io/zeromq.js/",
   "dependencies": {
     "@aminya/node-gyp-build": "4.5.0-aminya.4",
     "cross-env": "^7.0.3",
@@ -40,6 +41,7 @@
     "eslint-config-atomic": "^1.18.1",
     "eslint-plugin-prettier": "^4.2.1",
     "fs-extra": "^10.1.0",
+    "gh-pages": "^4.0.0",
     "minify-all-cli": "^1.0.13",
     "mocha": "^10.1.0",
     "node-gyp": "^9.3.0",
@@ -83,6 +85,7 @@
     "build.script": "tsc -p ./script/tsconfig.json",
     "build.js": "run-p build.script build.library",
     "build.doc": "typedoc --options ./typedoc.json --tsconfig ./tsconfig.docs.json && minify-all -s docs-raw -d docs --jsCompressor terser",
+    "deploy.doc": "run-s build.doc && gh-pages --dist \"./docs\"",
     "prebuild": "run-s build.js && node ./script/prebuild.js",
     "build.native": "node-gyp configure --release && node-gyp build --release",
     "build.native.debug": "cross-env CMAKE_BUILD_TYPE=Debug node-gyp configure --debug && cross-env CMAKE_BUILD_TYPE=Debug node-gyp build --debug",

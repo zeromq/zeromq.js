@@ -17,6 +17,7 @@
         "src/errors.ts",
         "src/util.ts"
     ],
+    "cleanOutputDir": true,
     "pretty": false,
     "githubPages": true
 }
