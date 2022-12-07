@@ -4,16 +4,14 @@
     "entryPoints": [
         "./src/index.ts"
     ],
-    "tsconfig": " ./tsconfig.docs.json",
+    "tsconfig": "./tsconfig.docs.json",
     "out": "docs-raw",
     "excludePrivate": true,
-    "excludeNotExported": true,
-    "excludeExternals": true,
+    "excludeExternals": false,
     "exclude": [
         "script/**/*",
         "test/**/*",
         "examples/**/*",
-        "src/+(draft|native|compat).ts",
         "src/errors.ts",
         "src/util.ts"
     ],

@@ -25,7 +25,6 @@
     "shx": "^0.3.4"
   },
   "devDependencies": {
-    "@gnd/typedoc": "^0.15.0-0",
     "@types/chai": "^4.3.4",
     "@types/fs-extra": "^9.0.13",
     "@types/mocha": "^10.0.0",
@@ -51,6 +50,7 @@
     "rocha": "^2.5.10",
     "semver": "^7.3.8",
     "ts-node": "~10.9.1",
+    "typedoc": "^0.23.21",
     "typescript": "~4.9.3",
     "weak-napi": "^2.0.2",
     "which": "^3.0.0"
@@ -84,7 +84,7 @@
     "build.library": "tsc -p ./src/tsconfig.json && run-s build.library.compat",
     "build.script": "tsc -p ./script/tsconfig.json",
     "build.js": "run-p build.script build.library",
-    "build.doc": "typedoc --options ./typedoc.json --tsconfig ./tsconfig.docs.json && minify-all -s docs-raw -d docs --jsCompressor terser",
+    "build.doc": "typedoc --options ./typedoc.json && minify-all -s docs-raw -d docs --jsCompressor terser",
     "deploy.doc": "run-s build.doc && gh-pages --dist \"./docs\"",
     "prebuild": "run-s build.js && node ./script/prebuild.js",
     "build.native": "node-gyp configure --release && node-gyp build --release",
