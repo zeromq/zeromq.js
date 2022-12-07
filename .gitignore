@@ -21,3 +21,4 @@ test/typings-compatibility/
 /script/*/*.js.map
 tsconfig.tsbuildinfo
 /docs-raw
+.DS_Store
