@@ -304,7 +304,7 @@ function asyncIterator<T extends SocketLikeIterable<U>, U>(this: T) {
 Object.assign(Socket.prototype, {[Symbol.asyncIterator]: asyncIterator})
 Object.assign(Observer.prototype, {[Symbol.asyncIterator]: asyncIterator})
 
-interface EventSubscriber {
+export interface EventSubscriber {
   /**
    * Adds a listener function which will be invoked when the given event type is
    * observed. Calling this method will convert the {@link Observer} to **event
@@ -1374,7 +1374,7 @@ export class Router extends Socket {
   }
 }
 
-interface RouterConnectOptions {
+export interface RouterConnectOptions {
   routingId?: string
 }
 
@@ -1582,7 +1582,7 @@ export class Stream extends Socket {
   }
 }
 
-interface StreamConnectOptions {
+export interface StreamConnectOptions {
   routingId?: string
 }
 

@@ -117,11 +117,11 @@ interface ErrnoError extends Error {
   errno: number
 }
 
-interface AuthError extends Error {
+export interface AuthError extends Error {
   status: 300 | 400 | 500
 }
 
-interface ProtoError extends Error {
+export interface ProtoError extends Error {
   code:
     | "ERR_ZMTP_UNSPECIFIED"
     | "ERR_ZMTP_UNEXPECTED_COMMAND"
@@ -145,19 +145,19 @@ interface ProtoError extends Error {
     | "ERR_ZAP_INVALID_METADATA"
 }
 
-interface EventAddress {
+export interface EventAddress {
   address: string
 }
 
-interface EventInterval {
+export interface EventInterval {
   interval: number
 }
 
-interface EventError<E = ErrnoError> {
+export interface EventError<E = ErrnoError> {
   error: E
 }
 
-type EventFor<T extends string, D = {}> = Expand<{type: T} & D>
+export type EventFor<T extends string, D = {}> = Expand<{type: T} & D>
 
 /**
  * A union type that represents all possible even types and the associated data.
@@ -630,7 +630,7 @@ type IfEquals<X, Y, A, B = never> = (<T>() => T extends X ? 1 : 2) extends <
   : B
 
 /* https://stackoverflow.com/questions/57683303 */
-type Expand<T> = T extends infer O ? {[K in keyof O]: O[K]} : never
+export type Expand<T> = T extends infer O ? {[K in keyof O]: O[K]} : never
 
 /** @internal */
 export type ReadableKeys<T> = {

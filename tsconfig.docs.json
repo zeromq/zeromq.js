@@ -7,5 +7,12 @@
         "./src/index.ts"
       ]
     }
-  }
+  },
+  "exclude": [
+    "script/**/*",
+    "test/**/*",
+    "examples/**/*",
+    "src/errors.ts",
+    "src/util.ts"
+  ]
 }
