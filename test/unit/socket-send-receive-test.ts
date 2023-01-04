@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import * as zmq from "../../src"
 
 import {assert} from "chai"
@@ -94,6 +93,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         if (process.env.SKIP_GC_TESTS) {
           this.skip()
         }
+
+        /* eslint-disable-next-line @typescript-eslint/no-var-requires */
         const weak = require("weak-napi")
 
         let released = false

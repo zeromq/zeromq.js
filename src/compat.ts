@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 /* The API of the compatibility layer and parts of the implementation has been
    adapted from the original ZeroMQ.js version (up to 5.x) for which the license
    and copyright notice is reproduced below.
@@ -438,6 +435,7 @@ class Socket extends EventEmitter {
   bindSync(...args: Parameters<Socket["bind"]>) {
     try {
       Object.defineProperty(this, "bindSync", {
+        /* eslint-disable-next-line @typescript-eslint/no-var-requires */
         value: require("deasync")(this.bind),
       })
     } catch (err) {
@@ -453,6 +451,7 @@ class Socket extends EventEmitter {
   unbindSync(...args: Parameters<Socket["unbind"]>) {
     try {
       Object.defineProperty(this, "unbindSync", {
+        /* eslint-disable-next-line @typescript-eslint/no-var-requires */
         value: require("deasync")(this.unbind),
       })
     } catch (err) {

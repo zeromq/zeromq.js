@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 /* Declare all native C++ classes and methods in this file. */
-const path = require("path")
+import * as path from "path"
+/* eslint-disable-next-line @typescript-eslint/no-var-requires */
 module.exports = require("@aminya/node-gyp-build")(path.join(__dirname, ".."))
 
 /**
