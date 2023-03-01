@@ -389,3 +389,4 @@ modern JavaScript & TypeScript code as first outlined in [this issue](https://gi
 Previous versions of ZeroMQ.js were based on `zmq` and a fork that included prebuilt binaries.
 
 See detailed changes in the [CHANGELOG](CHANGELOG.md).
+
