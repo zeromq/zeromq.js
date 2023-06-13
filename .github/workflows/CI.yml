@@ -13,7 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-22.04
+          # - ubuntu-22.04
+          - ubuntu-20.04
           - windows-2022
         node_version:
           - 18
@@ -59,6 +60,7 @@ jobs:
             cpp_arch: amd64_arm64
             zmq_draft: false
 
+          # Alpine
           - os: ubuntu-22.04
             docker: node:18-alpine
             docker_cmd: apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake musl-dev && npm i -g pnpm && pnpm install && pnpm run prebuild
