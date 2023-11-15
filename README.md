@@ -40,7 +40,7 @@
 Install **ZeroMQ.js** with prebuilt binaries:
 
 ```sh
-npm install zeromq@6.0.0-beta.17
+npm install zeromq@6.0.0-beta.18
 ```
 
 Requirements for using prebuilt binaries:
@@ -78,20 +78,20 @@ Make sure you have the following installed before attempting to build from sourc
 To install from source:
 
 ```sh
-npm install zeromq@6.0.0-beta.17 --build-from-source
+npm install zeromq@6.0.0-beta.18 --build-from-source
 ```
 
 If you want to link against a shared ZeroMQ library, you can build skip downloading `libzmq` and link with the
 installed library instead as follows:
 
 ```sh
-npm install zeromq@6.0.0-beta.17 --zmq-shared
+npm install zeromq@6.0.0-beta.18 --zmq-shared
 ```
 
 If you wish to use any DRAFT sockets then it is also necessary to compile the library from source:
 
 ```sh
-npm install zeromq@6.0.0-beta.17 --zmq-draft
+npm install zeromq@6.0.0-beta.18 --zmq-draft
 ```
 
 ## Examples
