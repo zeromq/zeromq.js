@@ -113,7 +113,6 @@ jobs:
         if: ${{ contains(matrix.os, 'macos') && matrix.ARCH == 'x86_64' }}
         run: |
           brew install libsodium gnutls
-          python -m pip install distutils
 
       - name: Install Mac-OS arm64 Dependencies
         if: ${{ contains(matrix.os, 'macos') && matrix.ARCH == 'arm64' }}
@@ -123,7 +122,6 @@ jobs:
           echo "PATH=$PATH" >> $GITHUB_ENV
           echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
           echo "npm_config_target_arch=$npm_config_target_arch" >> $GITHUB_ENV
-          python -m pip install distutils
 
       - name: Install Dependencies and Build
         if: ${{ !matrix.docker }}
