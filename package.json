@@ -35,7 +35,7 @@
     "@types/which": "^2.0.1",
     "benchmark": "^2.1.4",
     "chai": "^4.3.7",
-    "deasync": "^0.1.28",
+    "deasync": "^0.1.29",
     "downlevel-dts": "^0.11.0",
     "electron-mocha": "^11.0.2",
     "eslint-config-atomic": "^1.18.1",
