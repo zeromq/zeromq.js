@@ -45,14 +45,14 @@ jobs:
           #   cpp_arch: amd64_arm64
           #   zmq_draft: false
 
-          - os: macos-11
+          - os: macos-12
             node_version: 20
             node_arch: x64
             ARCH: x86_64
             cpp_arch: x64
             zmq_draft: false
 
-          - os: macos-11
+          - os: macos-12
             node_version: 20
             node_arch: x64
             ARCH: arm64
@@ -123,7 +123,6 @@ jobs:
       - name: Install Dependencies and Build
         if: ${{ !matrix.docker }}
         run: |
-          pnpm install -g node-gyp@10.0.1
           pnpm install
 
       - name: Prebuild
