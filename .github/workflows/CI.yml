@@ -17,7 +17,7 @@ jobs:
           - ubuntu-20.04
           - windows-2022
         node_version:
-          - 18
+          - 20
         node_arch:
           - x64
         cpp_arch:
@@ -33,28 +33,28 @@ jobs:
 
         include:
           - os: windows-2022
-            node_version: 18
+            node_version: 20
             node_arch: x86
             ARCH: x86
             cpp_arch: amd64_x86
             zmq_draft: false
 
           # - os: windows-2022
-          #   node_version: 18
+          #   node_version: 20
           #   node_arch: x64
           #   ARCH: arm64
           #   cpp_arch: amd64_arm64
           #   zmq_draft: false
 
-          - os: macos-11
-            node_version: 18
+          - os: macos-13
+            node_version: 20
             node_arch: x64
             ARCH: x86_64
             cpp_arch: x64
             zmq_draft: false
 
-          - os: macos-11
-            node_version: 18
+          - os: macos-13
+            node_version: 20
             node_arch: x64
             ARCH: arm64
             cpp_arch: amd64_arm64
@@ -62,9 +62,9 @@ jobs:
 
           # Alpine
           - os: ubuntu-22.04
-            docker: node:18-alpine
+            docker: node:20-alpine
             docker_cmd: apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake musl-dev && npm i -g pnpm && pnpm install && pnpm run prebuild
-            node_version: 18
+            node_version: 20
             node_arch: x64
             ARCH: x64
             cpp_arch: x64
@@ -99,7 +99,7 @@ jobs:
       - uses: pnpm/action-setup@v2.2.4
         if: ${{ !matrix.docker }}
         with:
-          version: 7
+          version: 8
 
       - name: Install Node
         if: ${{ !matrix.docker }}
@@ -107,7 +107,6 @@ jobs:
         with:
           node-version: ${{ matrix.node_version }}
           architecture: ${{ matrix.node_arch }}
-          cache: "pnpm"
 
       - name: Install Mac-OS x86_64 Dependencies
         if: ${{ contains(matrix.os, 'macos') && matrix.ARCH == 'x86_64' }}
