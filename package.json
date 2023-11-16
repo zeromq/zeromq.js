@@ -1,6 +1,6 @@
 {
-  "name": "@pshenmic/zeromq",
-  "version": "6.0.0-beta.20",
+  "name": "zeromq",
+  "version": "6.0.0-beta.18",
   "description": "Next-generation ZeroMQ bindings for Node.js",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -14,9 +14,9 @@
   "gypfile": true,
   "repository": {
     "type": "git",
-    "url": "https://github.com/pshenmic/zeromq.js.git"
+    "url": "https://github.com/zeromq/zeromq.js.git"
   },
-  "homepage": "http://pshenmic.github.io/zeromq.js/",
+  "homepage": "http://zeromq.github.io/zeromq.js/",
   "dependencies": {
     "@aminya/node-gyp-build": "4.5.0-aminya.4",
     "cross-env": "^7.0.3",
