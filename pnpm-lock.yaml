@@ -56,8 +56,8 @@ devDependencies:
     specifier: ^4.3.7
     version: 4.3.7
   deasync:
-    specifier: ^0.1.28
-    version: 0.1.28
+    specifier: ^0.1.29
+    version: 0.1.29
   downlevel-dts:
     specifier: ^0.11.0
     version: 0.11.0
@@ -1713,8 +1713,8 @@ packages:
     resolution: {integrity: sha512-AsElvov3LoNB7tf5k37H2jYSB+ZZPMT5sG2QjJCcdlV5chIv6htBUBUui2IKRjgtKAKtCBN7Zbwa+MtwLjSeNw==}
     dev: true
 
-  /deasync@0.1.28:
-    resolution: {integrity: sha512-QqLF6inIDwiATrfROIyQtwOQxjZuek13WRYZ7donU5wJPLoP67MnYxA6QtqdvdBy2mMqv5m3UefBVdJjvevOYg==}
+  /deasync@0.1.29:
+    resolution: {integrity: sha512-EBtfUhVX23CE9GR6m+F8WPeImEE4hR/FW9RkK0PMl9V1t283s0elqsTD8EZjaKX28SY1BW2rYfCgNsAYdpamUw==}
     engines: {node: '>=0.11.0'}
     requiresBuild: true
     dependencies:
