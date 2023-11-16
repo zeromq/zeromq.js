@@ -52,7 +52,7 @@ jobs:
             cpp_arch: x64
             zmq_draft: false
 
-          - os: macos-12
+          - os: macos-13
             node_version: 20
             node_arch: x64
             ARCH: arm64
