@@ -110,6 +110,7 @@ jobs:
         if: ${{ contains(matrix.os, 'macos') && matrix.ARCH == 'x86_64' }}
         run: |
           brew install libsodium gnutls
+          pnpm -g install node-gyp@10.0.1
 
       - name: Install Mac-OS arm64 Dependencies
         if: ${{ contains(matrix.os, 'macos') && matrix.ARCH == 'arm64' }}
