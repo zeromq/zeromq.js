@@ -6,7 +6,6 @@ settings:
 
 overrides:
   typescript: ~4.9.3
-  node-gyp: 10.0.1
 
 dependencies:
   '@aminya/node-gyp-build':
@@ -84,7 +83,7 @@ devDependencies:
     specifier: ^10.1.0
     version: 10.1.0
   node-gyp:
-    specifier: 10.0.1
+    specifier: ^10.0.1
     version: 10.0.1
   npm-run-all2:
     specifier: ^6.0.4
