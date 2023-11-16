@@ -45,14 +45,14 @@ jobs:
           #   cpp_arch: amd64_arm64
           #   zmq_draft: false
 
-          - os: macos-12
+          - os: macos-13
             node_version: 20
             node_arch: x64
             ARCH: x86_64
             cpp_arch: x64
             zmq_draft: false
 
-          - os: macos-12
+          - os: macos-13
             node_version: 20
             node_arch: x64
             ARCH: arm64
