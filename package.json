@@ -44,7 +44,7 @@
     "gh-pages": "^4.0.0",
     "minify-all-cli": "^1.0.13",
     "mocha": "^10.1.0",
-    "node-gyp": "^9.3.0",
+    "node-gyp": "^10.0.1",
     "npm-run-all2": "^6.0.4",
     "prebuildify": "^5.0.1",
     "prettier": "^2.8.0",
