@@ -10,8 +10,8 @@ overrides:
 
 dependencies:
   '@aminya/node-gyp-build':
-    specifier: 4.5.0-aminya.4
-    version: 4.5.0-aminya.4
+    specifier: 4.5.0-aminya.5
+    version: 4.5.0-aminya.5
   cross-env:
     specifier: ^7.0.3
     version: 7.0.3
@@ -124,8 +124,8 @@ packages:
     engines: {node: '>=6'}
     dev: true
 
-  /@aminya/node-gyp-build@4.5.0-aminya.4:
-    resolution: {integrity: sha512-2c2+BqZOxfTz/m+1MNWncMyMgil2WOg8cHhKPf1qUo1t9ohOWOgSeb7TVVD4fnTxIcAcpWdmXBpFkjPRyBVS9g==}
+  /@aminya/node-gyp-build@4.5.0-aminya.5:
+    resolution: {integrity: sha512-TO7GldxDfSeSRNZVmhlm0liS2GX2o2Q/qTlcD3iD4ltTM6dir568LTRZ+ZDsDbLfMAkfhrbU+VuzNYImwYfczg==}
     hasBin: true
     dev: false
 

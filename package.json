@@ -18,7 +18,7 @@
   },
   "homepage": "http://zeromq.github.io/zeromq.js/",
   "dependencies": {
-    "@aminya/node-gyp-build": "4.5.0-aminya.4",
+    "@aminya/node-gyp-build": "4.5.0-aminya.5",
     "cross-env": "^7.0.3",
     "node-addon-api": "^7.0.0",
     "shelljs": "^0.8.5",
@@ -79,7 +79,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "install": "(shx test -f ./script/build.js || run-s build.js) && cross-env npm_config_build_from_source=true node-gyp-build",
+    "install": "(shx test -f ./script/build.js || run-s build.js) && cross-env npm_config_build_from_source=true aminya-node-gyp-build",
     "clean": "shx rm -rf ./build ./lib/ ./prebuilds ./script/*.js ./script/*.js.map ./script/*.d.ts ./script/*.tsbuildinfo",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp && shx touch ./tmp/.gitkeep",
     "build.library.compat": "shx rm -rf ./lib/ts3.7 && downlevel-dts ./lib ./lib/ts3.7 --to=3.7",
