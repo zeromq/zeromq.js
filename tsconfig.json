@@ -1,4 +1,5 @@
 {
+  "root": true,
   "compilerOptions": {
     "allowJs": false,
     "target": "es2020",
