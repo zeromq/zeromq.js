@@ -2,7 +2,7 @@
 import * as zmq from "../../src"
 
 import {assert} from "chai"
-import {testProtos, uniqAddress} from "./helpers"
+import {testProtos, uniqAddress, getGcOrSkipTest} from "./helpers"
 import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
@@ -107,75 +107,50 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should release reference to context", async function () {
-        if (process.env.SKIP_GC_TESTS === "true") {
-          this.skip()
-        }
-        if (global.gc === undefined) {
-          console.warn("gc is not exposed by the runtime")
-          this.skip()
-        }
-
+        const gc = getGcOrSkipTest(this)
         this.slow(200)
 
-        const weak = require("weak-napi") as typeof import("weak-napi")
+        let weakRef: undefined | WeakRef<any>
 
-        let released = false
         const task = async () => {
           let context: zmq.Context | undefined = new zmq.Context()
           const socket = new zmq.Dealer({context, linger: 0})
+          weakRef = new WeakRef(context)
 
-          weak(context, () => {
-            released = true
-          })
-          context = undefined
-
-          global.gc!()
           socket.connect(await uniqAddress(proto))
           await socket.send(Buffer.from("foo"))
           socket.close()
         }
 
         await task()
-        global.gc()
-        await new Promise(resolve => {
-          setTimeout(resolve, 5)
-        })
-        assert.equal(released, true)
+        await gc()
+
+        assert.isDefined(weakRef)
+        assert.isUndefined(weakRef!.deref())
       })
     })
 
     describe("in gc finalizer", function () {
       it("should release reference to context", async function () {
-        if (process.env.SKIP_GC_TESTS === "true") {
-          this.skip()
-        }
-        if (global.gc === undefined) {
-          console.warn("gc is not exposed by the runtime")
+        const gc = getGcOrSkipTest(this)
+        if (process.env.SKIP_GC_FINALIZER_TESTS) {
           this.skip()
         }
         this.slow(200)
 
-        const weak = require("weak-napi") as typeof import("weak-napi")
-
-        let released = false
+        let weakRef: undefined | WeakRef<any>
         const task = async () => {
           let context: zmq.Context | undefined = new zmq.Context()
 
           const _dealer = new zmq.Dealer({context, linger: 0})
-
-          weak(context, () => {
-            released = true
-          })
-          context = undefined
-          global.gc!()
+          weakRef = new WeakRef(context)
         }
 
         await task()
-        global.gc()
-        await new Promise(resolve => {
-          setTimeout(resolve, 5)
-        })
-        assert.equal(released, true)
+        await gc()
+
+        assert.isDefined(weakRef)
+        assert.isUndefined(weakRef!.deref())
       })
     })
   })

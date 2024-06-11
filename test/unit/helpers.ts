@@ -235,3 +235,43 @@ export async function captureEventsUntil(
 
   return events
 }
+
+// REAL typings for global.gc per
+// https://github.com/nodejs/node/blob/v20.0.0/deps/v8/src/extensions/gc-extension.cc
+interface GCFunction {
+  (options: {
+    execution?: "sync"
+    flavor?: "regular" | "last-resort"
+    type?: "major-snapshot" | "major" | "minor"
+    filename?: string
+  }): void
+  (options: {
+    execution?: "async"
+    flavor?: "regular" | "last-resort"
+    type?: "major-snapshot" | "major" | "minor"
+    filename?: string
+  }): Promise<void>
+  (options: {
+    execution?: "async" | "sync"
+    flavor?: "regular" | "last-resort"
+    type?: "major-snapshot" | "major" | "minor"
+    filename?: string
+  }): void | Promise<void>
+}
+
+export function getGcOrSkipTest(test: Mocha.Context) {
+  if (process.env.SKIP_GC_TESTS) {
+    test.skip()
+  }
+
+  const gc = globalThis.gc as undefined | GCFunction
+  if (typeof gc !== "function") {
+    throw new Error(
+      "Garbage collection is not exposed. It may be enabled by the node --expose-gc flag. To skip GC tests, set the environment variable `SKIP_GC_TESTS`",
+    )
+  }
+  // https://github.com/nodejs/node/blob/v20.0.0/deps/v8/src/extensions/gc-extension.h
+  // per docs, we we're using use case 2 (Test that certain objects indeed are reclaimed)
+  const asyncMajorGc = () => gc({type: "major", execution: "async"})
+  return asyncMajorGc
+}

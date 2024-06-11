@@ -1,10 +1,12 @@
 {
   "compilerOptions": {
     "allowJs": false,
-    "target": "es2020",
+    "target": "es2022",
     "declaration": true,
     "module": "commonjs",
-    "types": ["node", "mocha"],
+    "types": [
+      "node",
+    ],
     "strictPropertyInitialization": false, // TODO
     "strict": true,
     "strictNullChecks": true,
@@ -17,6 +19,9 @@
     "incremental": true,
     "sourceMap": true,
     "esModuleInterop": true,
-    "lib": ["ES2020", "dom"]
+    "lib": [
+      "ES2022",
+      "dom"
+    ]
   }
 }
