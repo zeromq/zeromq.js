@@ -63,7 +63,9 @@ jobs:
           # Alpine
           - os: ubuntu-22.04
             docker: node:20-alpine
-            docker_cmd: apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake musl-dev && npm i -g pnpm && pnpm install && pnpm run prebuild
+            docker_cmd:
+              apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake
+              musl-dev && npm i -g pnpm && pnpm install && pnpm run prebuild
             node_version: 20
             node_arch: x64
             ARCH: x64
@@ -83,7 +85,10 @@ jobs:
           path: |
             ./node_modules/
             ./build/
-          key: "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-Node:${{ matrix.node_version }}-${{ hashFiles('./package.json') }}"
+          key:
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch
+            }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-Node:${{ matrix.node_version
+            }}-${{ hashFiles('./package.json') }}"
           restore-keys: |
             "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-Node:${{ matrix.node_version }}-"
 
@@ -156,7 +161,8 @@ jobs:
           command: |
             pnpm run clean
             pnpm run test.skip_gc_tests
-        continue-on-error: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
+        continue-on-error:
+          "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
 
       - name: Test Electron (Main)
         if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
