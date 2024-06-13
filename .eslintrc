@@ -1,18 +1,16 @@
 {
   "plugins": [
-    "prettier"
+    "@typescript-eslint"
   ],
   "extends": [
-    "plugin:prettier/recommended",
-    "eslint-config-atomic"
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier"
   ],
   "rules": {
-    "@typescript-eslint/quotes": [
-      "error",
-      "double"
-    ],
     "require-await": "off"
   },
+  "parser": "@typescript-eslint/parser",
   "ignorePatterns": [
     "node_modules/",
     "build/",
