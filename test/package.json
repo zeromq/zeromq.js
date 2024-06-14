@@ -1,0 +1,6 @@
+{
+    "devDependencies": {
+        "@types/weak-napi": "^2.0.3",
+        "weak-napi": "^2.0.2"
+    }
+}
