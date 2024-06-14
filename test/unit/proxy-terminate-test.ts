@@ -7,14 +7,14 @@ import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`proxy with ${proto} terminate`, function () {
+    /* ZMQ < 4.0.5 has no steerable proxy support. */
+    if (semver.satisfies(zmq.version, "< 4.0.5")) {
+      return
+    }
+
     let proxy: zmq.Proxy
 
     beforeEach(async function () {
-      /* ZMQ < 4.0.5 has no steerable proxy support. */
-      if (semver.satisfies(zmq.version, "< 4.0.5")) {
-        this.skip()
-      }
-
       proxy = new zmq.Proxy(new zmq.Router(), new zmq.Dealer())
     })
 
@@ -28,12 +28,13 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       await proxy.frontEnd.bind(uniqAddress(proto))
       await proxy.backEnd.bind(uniqAddress(proto))
 
-      try {
-        const timer = setTimeout(() => proxy.terminate(), 50)
-        await proxy.run()
+      const sleep_ms = 50
 
+      setTimeout(() => proxy.terminate(), sleep_ms)
+      await proxy.run()
+
+      try {
         await proxy.terminate()
-        timer.unref()
         assert.ok(false)
       } catch (err) {
         if (!isFullError(err)) {

@@ -8,7 +8,7 @@ import {
   readFile,
   writeFile,
 } from "fs-extra"
-import * as which from "which"
+import which from "which"
 
 import {assert} from "chai"
 
