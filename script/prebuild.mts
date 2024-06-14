@@ -1,8 +1,4 @@
-import {spawnSync} from "child_process"
-
-main().catch(e => {
-  throw e
-})
+import {execaCommandSync} from "execa"
 
 async function main() {
   console.log("Building distribution binary...")
@@ -37,12 +33,17 @@ async function main() {
     prebuildScript = `/alpine/enter-chroot ${prebuildScript}`
   }
 
-  spawnSync(prebuildScript, {
+  execaCommandSync(prebuildScript, {
     shell: true,
+    windowsHide: true,
     stdio: "inherit",
     encoding: "utf8",
   })
 }
+
+main().catch(e => {
+  throw e
+})
 
 function getNodearch(): string {
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
