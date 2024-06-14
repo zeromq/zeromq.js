@@ -559,7 +559,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("during close", function () {
       it("should gracefully stop async iterator", async function () {
-        process.nextTick(() => sockA.close())
+        process.nextTick(() => { sockA.close(); })
         /* eslint-disable-next-line no-empty */
         for await (const _ of sockA) {
         }
@@ -567,7 +567,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       it("should not mask other error type in async iterator", async function () {
         sockA = new zmq.Request()
-        process.nextTick(() => sockA.close())
+        process.nextTick(() => { sockA.close(); })
         try {
           /* eslint-disable-next-line no-empty */
           for await (const _ of sockA) {

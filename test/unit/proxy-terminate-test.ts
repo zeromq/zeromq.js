@@ -28,7 +28,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       await proxy.frontEnd.bind(uniqAddress(proto))
       await proxy.backEnd.bind(uniqAddress(proto))
 
-      setTimeout(() => proxy.terminate(), 50)
+      setTimeout(() => { proxy.terminate(); }, 50)
       await proxy.run()
 
       try {

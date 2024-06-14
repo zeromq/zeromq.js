@@ -150,7 +150,7 @@ async function prepareTestPackage(
       )
 
       pkgJson.name = `test-typings-ts-${tsVer.version}`
-      pkgJson.devDependencies.typescript = `${tsVer.version}`
+      pkgJson.devDependencies.typescript = tsVer.version
       return writeJson(path.resolve(tscTargetPath, "package.json"), pkgJson)
     })(),
     (async () => {
