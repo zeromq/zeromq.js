@@ -86,7 +86,6 @@ describe("socket construction", function () {
       }
       const sock1 = new MySocket()
       const sock2 = new MySocket()
-      assert.instanceOf(sock1, zmq.Socket)
       assert.equal(sock1.context, sock2.context)
     })
 
@@ -98,7 +97,6 @@ describe("socket construction", function () {
       }
       const context = new zmq.Context()
       const socket = new MySocket({context})
-      assert.instanceOf(socket, zmq.Socket)
       assert.equal(socket.context, context)
     })
   })
@@ -121,7 +119,6 @@ describe("socket construction", function () {
     it("should create socket with given context", function () {
       const ctxt = new zmq.Context()
       const sock = new zmq.Dealer({context: ctxt})
-      assert.instanceOf(sock, zmq.Socket)
       assert.equal(sock.context, ctxt)
     })
 

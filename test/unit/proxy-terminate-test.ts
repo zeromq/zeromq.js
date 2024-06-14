@@ -28,11 +28,12 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       await proxy.frontEnd.bind(uniqAddress(proto))
       await proxy.backEnd.bind(uniqAddress(proto))
 
-      setTimeout(() => proxy.terminate(), 50)
-      await proxy.run()
-
       try {
+        const timer = setTimeout(() => proxy.terminate(), 50)
+        await proxy.run()
+
         await proxy.terminate()
+        timer.unref()
         assert.ok(false)
       } catch (err) {
         if (!isFullError(err)) {
