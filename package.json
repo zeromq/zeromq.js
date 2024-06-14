@@ -41,6 +41,7 @@
     "electron-mocha": "^11.0.2",
     "eslint": "^8",
     "eslint-config-prettier": "*",
+    "eslint-plugin-only-warn": "*",
     "fs-extra": "^10.1.0",
     "gh-pages": "^4.0.0",
     "minify-all-cli": "^1.0.13",

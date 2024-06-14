@@ -1,10 +1,14 @@
 {
+  "root": true,
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "only-warn"
   ],
+  "env": {
+    "node": true
+  },
   "extends": [
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended",
     "prettier"
   ],
   "rules": {
@@ -22,5 +26,47 @@
     "script/*.d.ts",
     "docs/",
     "docs-raw/"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "**/*.ts"
+      ],
+      "parserOptions": {
+        "ecmaVersion": "latest",
+        "project": true
+      },
+      "extends": [
+        "eslint:recommended",
+        "plugin:@typescript-eslint/strict-type-checked",
+        "prettier"
+      ]
+    },
+    {
+      "extends": [
+        "eslint:recommended",
+        "prettier"
+      ],
+      "env": {
+        "mocha": true
+      },
+      "files": [
+        "./test/**"
+      ],
+      "rules": {
+        "no-invalid-this": "off",
+        "no-inner-declarations": "off",
+        "no-prototype-builtins": "off",
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/no-use-before-define": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "no-await-in-loop": "off",
+        "require-await": "off",
+        "import/no-extraneous-dependencies": "off"
+      }
+    }
   ]
 }

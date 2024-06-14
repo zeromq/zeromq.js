@@ -76,6 +76,9 @@ importers:
       eslint-config-prettier:
         specifier: '*'
         version: 9.1.0(eslint@8.57.0)
+      eslint-plugin-only-warn:
+        specifier: '*'
+        version: 1.1.0
       fs-extra:
         specifier: ^10.1.0
         version: 10.1.0
@@ -822,6 +825,10 @@ packages:
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
+
+  eslint-plugin-only-warn@1.1.0:
+    resolution: {integrity: sha512-2tktqUAT+Q3hCAU0iSf4xAN1k9zOpjK5WO8104mB0rT/dGhOa09582HN5HlbxNbPRZ0THV7nLGvzugcNOSjzfA==}
+    engines: {node: '>=6'}
 
   eslint-scope@7.2.2:
     resolution: {integrity: sha512-dOt21O7lTMhDM+X9mB4GX+DZrZtCUJPL/wlcTqxyrx5IvO0IYtILdtrQGQp+8n5S0gwSVmOf9NQrjMOgfQZlIg==}
@@ -3137,6 +3144,8 @@ snapshots:
   eslint-config-prettier@9.1.0(eslint@8.57.0):
     dependencies:
       eslint: 8.57.0
+
+  eslint-plugin-only-warn@1.1.0: {}
 
   eslint-scope@7.2.2:
     dependencies:
