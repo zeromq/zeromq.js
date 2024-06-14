@@ -1,8 +1,8 @@
 {
-    "extends": "../tsconfig.json",
-    "compilerOptions": {
-        "outDir": "./"
-    },
-    "include": ["./**/*.ts"],
-    "exclude": []
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./"
+  },
+  "include": ["./**/*.ts"],
+  "exclude": []
 }

@@ -2,7 +2,8 @@
 
 ## Running this example
 
-To run this example, install the example project depedencies and run the threaded worker example script with `yarn`:
+To run this example, install the example project depedencies and run the
+threaded worker example script with `yarn`:
 
 ```
 > yarn install
@@ -11,7 +12,8 @@ To run this example, install the example project depedencies and run the threade
 
 ## Expected behaviour
 
-The example will start worker threads which each encodes a character with the caesar cipher 200 million + 1 times. The output will be similar to this:
+The example will start worker threads which each encodes a character with the
+caesar cipher 200 million + 1 times. The output will be similar to this:
 
 ```
 starting 8 worker threads
