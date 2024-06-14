@@ -1,9 +1,11 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
-#include "context.h"
-#include "module.h"
-#include "socket.h"
+#include "./context.h"
 
-#include "util/uvwork.h"
+#include "./module.h"
+#include "./socket.h"
+#include "util/arguments.h"
+#include "util/error.h"
+#include "util/object.h"
 
 namespace zmq {
 Context::Context(const Napi::CallbackInfo& info)

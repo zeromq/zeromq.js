@@ -1,23 +1,24 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 
 #define NOMINMAX  // prevent minwindef.h from defining max macro in the debug build
-#include "socket.h"
-#include "context.h"
-#include "incoming_msg.h"
-#include "module.h"
-#include "observer.h"
 
-#include "util/arguments.h"
-#include "util/async_scope.h"
-#include "util/error.h"
-#include "util/take.h"
-#include "util/uvdelayed.h"
-#include "util/uvloop.h"
-#include "util/uvwork.h"
+#include "./socket.h"
 
 #include <cmath>
 #include <limits>
 #include <unordered_set>
+
+#include "./context.h"
+#include "./incoming_msg.h"
+#include "./module.h"
+#include "./observer.h"
+#include "util/arguments.h"
+#include "util/async_scope.h"
+#include "util/error.h"
+#include "util/object.h"
+#include "util/take.h"
+#include "util/uvdelayed.h"
+#include "util/uvwork.h"
 
 namespace zmq {
 /* The maximum number of sync I/O operations that are allowed before the I/O

@@ -1,9 +1,11 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include "prefix.h"
+#include <napi.h>
 
 #include <forward_list>
+
+#include "./zmq_inc.h"
 
 namespace zmq {
 class Module;

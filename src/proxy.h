@@ -1,7 +1,10 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include "prefix.h"
+#include <napi.h>
+
+#include "./zmq_inc.h"
+#include "closable.h"
 
 #ifdef ZMQ_HAS_STEERABLE_PROXY
 

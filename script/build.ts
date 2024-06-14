@@ -82,7 +82,7 @@ function main() {
   console.log(cmake_configure)
   exec(cmake_configure, execOptions)
 
-  const cmake_build = `cmake --build ./build --config ${CMAKE_BUILD_TYPE} --target install`
+  const cmake_build = `cmake --build ./build --config ${CMAKE_BUILD_TYPE} --target install --parallel`
   console.log(cmake_build)
   exec(cmake_build, execOptions)
 

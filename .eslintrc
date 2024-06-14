@@ -13,6 +13,8 @@
     "v5-compat.d.ts",
     "draft.d.ts",
     "script/*.js",
-    "script/*.d.ts"
+    "script/*.d.ts",
+    "docs/",
+    "docs-raw/"
   ]
 }

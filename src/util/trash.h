@@ -1,12 +1,12 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include "uvhandle.h"
-#include "uvloop.h"
-
 #include <deque>
 #include <memory>
 #include <mutex>
+
+#include "./uvhandle.h"
+#include "./uvloop.h"
 
 namespace zmq {
 /* Container for unused references to outgoing messages. Once an item is

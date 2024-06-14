@@ -1,6 +1,8 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
+#include <string>
+
 namespace zmq {
 /* Provide an alternative, simplified std::to_string implementation for
    integers to work around https://bugs.alpinelinux.org/issues/8626. */

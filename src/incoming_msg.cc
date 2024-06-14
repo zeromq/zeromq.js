@@ -1,5 +1,7 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
-#include "incoming_msg.h"
+#include "./incoming_msg.h"
+
+#include <cassert>
 
 #include "util/electron_helper.h"
 #include "util/error.h"

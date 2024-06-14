@@ -1,9 +1,11 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include "to_string.h"
+#include <napi.h>
 
 #include <optional>
+
+#include "to_string.h"
 
 namespace zmq {
 namespace Arg {
