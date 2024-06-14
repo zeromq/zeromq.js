@@ -95,8 +95,8 @@ importers:
         specifier: ^6.2.0
         version: 6.2.0
       prebuildify:
-        specifier: ^5.0.1
-        version: 5.0.1
+        specifier: ^6.0.1
+        version: 6.0.1
       prettier:
         specifier: ^2.8.8
         version: 2.8.8
@@ -1588,9 +1588,6 @@ packages:
     resolution: {integrity: sha512-vpOyYg7UAVKLAWWtRS2gAdgkT7oJbCn0me3gmUmxZih4kd3MF/oo8kNTBTIbkO3yuuF5uB4ZCZfn8BOolITYhg==}
     engines: {node: ^18.19.0 || >=20.5.0}
 
-  execspawn@1.0.1:
-    resolution: {integrity: sha512-s2k06Jy9i8CUkYe0+DxRlvtkZoOkwwfhB+Xxo5HGUtrISVW2m98jO2tr67DGRFxZwkjQqloA3v/tNtjhBRBieg==}
-
   exit@0.1.2:
     resolution: {integrity: sha512-Zk/eNKV2zbjpKzrsQ+n1G6poVbErQxJ0LBOJXaKZ1EViLzH+hrLu9cdXI4zw9dBQJslwBEpbQ2P1oS7nDxs6jQ==}
     engines: {node: '>= 0.8.0'}
@@ -2968,8 +2965,8 @@ packages:
     resolution: {integrity: sha512-h+pbPsyhlYj6N2ozBmHhHrs9DzGmbaarbLvWipMRO7RLS+v4onj26MPFXA5OBYFxyqYhUJK456SwDcY9H2/zsA==}
     engines: {node: ^10 || ^12 || >=14}
 
-  prebuildify@5.0.1:
-    resolution: {integrity: sha512-vXpKLfIEsDCqMJWVIoSrUUBJQIuAk9uHAkLiGJuTdXdqKSJ10sHmWeuNCDkIoRFTV1BDGYMghHVmDFP8NfkA2Q==}
+  prebuildify@6.0.1:
+    resolution: {integrity: sha512-8Y2oOOateom/s8dNBsGIcnm6AxPmLH4/nanQzL5lQMU+sC0CMhzARZHizwr36pUPLdvBnOkCNQzxg4djuFSgIw==}
     hasBin: true
 
   prelude-ls@1.2.1:
@@ -3661,9 +3658,6 @@ packages:
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
-
-  util-extend@1.0.3:
-    resolution: {integrity: sha512-mLs5zAK+ctllYBj+iAQvlDCwoxU/WDOUaJkcFudeiAX6OajC6BKXJUa9a+tbtkC11dz2Ufb7h0lyvIOVn4LADA==}
 
   v8-compile-cache-lib@3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
@@ -5771,10 +5765,6 @@ snapshots:
       strip-final-newline: 4.0.0
       yoctocolors: 2.0.2
 
-  execspawn@1.0.1:
-    dependencies:
-      util-extend: 1.0.3
-
   exit@0.1.2: {}
 
   exponential-backoff@3.1.1: {}
@@ -7213,9 +7203,8 @@ snapshots:
       picocolors: 1.0.0
       source-map-js: 1.0.2
 
-  prebuildify@5.0.1:
+  prebuildify@6.0.1:
     dependencies:
-      execspawn: 1.0.1
       minimist: 1.2.7
       mkdirp-classic: 0.5.3
       node-abi: 3.28.0
@@ -8002,8 +7991,6 @@ snapshots:
       prepend-http: 1.0.4
 
   util-deprecate@1.0.2: {}
-
-  util-extend@1.0.3: {}
 
   v8-compile-cache-lib@3.0.1: {}
 
