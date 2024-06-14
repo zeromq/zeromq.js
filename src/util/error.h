@@ -48,7 +48,7 @@ static inline Napi::Error ErrnoException(
 
 static inline Napi::Error ErrnoException(
     const Napi::Env& env, int32_t error, const std::string& address) {
-    auto exception = ErrnoException(env, error);
+    auto exception = ErrnoException(env, error, nullptr);
     exception.Set("address", Napi::String::New(env, address));
     return exception;
 }

@@ -14,12 +14,17 @@ test.js
 .cache/
 test/typings-compatibility/
 /script/*.js
+/script/*.mjs
 /script/*.d.ts
+/script/*.d.mts
 /script/*.js.map
+/script/*.mjs.map
 /script/*/*.js
+/script/*/*.mjs
 /script/*/*.d.ts
 /script/*/*.js.map
 tsconfig.tsbuildinfo
+tsconfig.esm.tsbuildinfo
 /docs-raw
 .DS_Store
 .idea

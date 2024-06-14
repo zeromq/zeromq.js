@@ -1,5 +1,6 @@
 import * as path from "path"
 import * as semver from "semver"
+import * as fs from "fs"
 
 import {spawn} from "child_process"
 
@@ -21,6 +22,9 @@ export function uniqAddress(proto: Proto) {
   switch (proto) {
     case "ipc": {
       const sock = path.resolve(__dirname, `../../tmp/${proto}-${id}`)
+      // create the directory
+      fs.mkdirSync(path.dirname(sock), {recursive: true})
+
       return `${proto}://${sock}`
     }
 
@@ -28,6 +32,7 @@ export function uniqAddress(proto: Proto) {
     case "udp":
       return `${proto}://127.0.0.1:${id}`
 
+    case "inproc":
     default:
       return `${proto}://${proto}-${id}`
   }

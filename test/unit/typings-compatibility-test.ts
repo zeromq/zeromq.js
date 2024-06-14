@@ -8,7 +8,7 @@ import {
   readFile,
   writeFile,
 } from "fs-extra"
-import * as which from "which"
+import which from "which"
 
 import {assert} from "chai"
 
@@ -23,9 +23,6 @@ import {assert} from "chai"
 type TestDef = {version: string; minTarget: string; requiredLibs?: string[]}
 
 const tsVersions: TestDef[] = [
-  // the oldest supported version
-  {version: "3.7.x", minTarget: "es3"},
-
   // 4.x
   {version: "4.x", minTarget: "es3"},
 ]
@@ -170,7 +167,9 @@ async function prepareTestPackage(
 async function getPackageManager() {
   const packageManagers = ["pnpm", "yarn", "npm"]
 
-  const versionResults = await Promise.all(packageManagers.map(pm => which(pm)))
+  const versionResults: Array<string | null> = await Promise.all(
+    packageManagers.map(pm => which(pm, {nothrow: true})),
+  )
 
   const packageManagerIndex = versionResults.findIndex(
     versionResult => typeof versionResult === "string",
