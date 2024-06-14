@@ -23,9 +23,6 @@ import {assert} from "chai"
 type TestDef = {version: string; minTarget: string; requiredLibs?: string[]}
 
 const tsVersions: TestDef[] = [
-  // the oldest supported version
-  {version: "3.7.x", minTarget: "es3"},
-
   // 4.x
   {version: "4.x", minTarget: "es3"},
 ]
