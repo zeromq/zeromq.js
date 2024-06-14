@@ -1,21 +1,19 @@
 {
-    "$schema": "https://typedoc.org/schema.json",
-    "name": "zeromq.js",
-    "entryPoints": [
-        "./src/index.ts"
-    ],
-    "tsconfig": "./tsconfig.docs.json",
-    "out": "docs-raw",
-    "excludePrivate": true,
-    "excludeExternals": false,
-    "exclude": [
-        "script/**/*",
-        "test/**/*",
-        "examples/**/*",
-        "src/errors.ts",
-        "src/util.ts"
-    ],
-    "cleanOutputDir": true,
-    "pretty": false,
-    "githubPages": true
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "zeromq.js",
+  "entryPoints": ["./src/index.ts"],
+  "tsconfig": "./tsconfig.docs.json",
+  "out": "docs-raw",
+  "excludePrivate": true,
+  "excludeExternals": false,
+  "exclude": [
+    "script/**/*",
+    "test/**/*",
+    "examples/**/*",
+    "src/errors.ts",
+    "src/util.ts"
+  ],
+  "cleanOutputDir": true,
+  "pretty": false,
+  "githubPages": true
 }

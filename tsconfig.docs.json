@@ -3,9 +3,7 @@
   "compilerOptions": {
     "incremental": false,
     "paths": {
-      "zeromq": [
-        "./src/index.ts"
-      ]
+      "zeromq": ["./src/index.ts"]
     }
   },
   "exclude": [

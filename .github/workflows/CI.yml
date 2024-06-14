@@ -7,7 +7,7 @@ on:
 
 jobs:
   Build:
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -17,7 +17,7 @@ jobs:
           - ubuntu-20.04
           - windows-2022
         node_version:
-          - 20
+          - 18
         node_arch:
           - x64
         cpp_arch:
@@ -33,28 +33,28 @@ jobs:
 
         include:
           - os: windows-2022
-            node_version: 20
+            node_version: 18
             node_arch: x86
             ARCH: x86
             cpp_arch: amd64_x86
             zmq_draft: false
 
           # - os: windows-2022
-          #   node_version: 20
+          #   node_version: 18
           #   node_arch: x64
           #   ARCH: arm64
           #   cpp_arch: amd64_arm64
           #   zmq_draft: false
 
           - os: macos-13
-            node_version: 20
+            node_version: 18
             node_arch: x64
             ARCH: x86_64
             cpp_arch: x64
             zmq_draft: false
 
           - os: macos-13
-            node_version: 20
+            node_version: 18
             node_arch: x64
             ARCH: arm64
             cpp_arch: amd64_arm64
@@ -62,9 +62,11 @@ jobs:
 
           # Alpine
           - os: ubuntu-22.04
-            docker: node:20-alpine
-            docker_cmd: apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake musl-dev && npm i -g pnpm && pnpm install && pnpm run prebuild
-            node_version: 20
+            docker: node:18-alpine
+            docker_cmd:
+              apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake
+              musl-dev && npm i -g pnpm && pnpm install && pnpm run prebuild
+            node_version: 18
             node_arch: x64
             ARCH: x64
             cpp_arch: x64
@@ -75,15 +77,18 @@ jobs:
       ZMQ_SHARED: false
       ARCH: ${{ matrix.ARCH }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ./node_modules/
             ./build/
-          key: "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-Node:${{ matrix.node_version }}-${{ hashFiles('./package.json') }}"
+          key:
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch
+            }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-Node:${{ matrix.node_version
+            }}-${{ hashFiles('./package.json') }}"
           restore-keys: |
             "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-Node:${{ matrix.node_version }}-"
 
@@ -96,14 +101,14 @@ jobs:
           python: true
           architecture: ${{ matrix.cpp_arch }}
 
-      - uses: pnpm/action-setup@v2.2.4
+      - uses: pnpm/action-setup@v4
         if: ${{ !matrix.docker }}
         with:
-          version: 8
+          version: 9
 
       - name: Install Node
         if: ${{ !matrix.docker }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
           architecture: ${{ matrix.node_arch }}
@@ -149,18 +154,19 @@ jobs:
 
       - name: Test (Debug)
         if: ${{ !matrix.docker }}
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 1
           command: |
             pnpm run clean
             pnpm run test.skip_gc_tests
-        continue-on-error: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
+        continue-on-error:
+          "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
 
       - name: Test Electron (Main)
         if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 1
@@ -173,7 +179,7 @@ jobs:
 
       - name: Tests + GC Tests (Release)
         if: ${{ !matrix.docker }}
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 1

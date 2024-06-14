@@ -1,8 +1,7 @@
 The tests in this directory have been copied from the original ZeroMQ.js version
 (up to 5.x) for which the license and copyright notice is reproduced below.
 
-Copyright (c) 2011 TJ Holowaychuk
-Copyright (c) 2010, 2011 Justin Tulloss
+Copyright (c) 2011 TJ Holowaychuk Copyright (c) 2010, 2011 Justin Tulloss
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
 this software and associated documentation files (the "Software"), to deal in

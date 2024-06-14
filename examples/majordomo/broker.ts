@@ -48,7 +48,7 @@ export class Broker {
   }
 
   handleWorker(worker: Buffer, type?: Buffer, ...rest: Buffer[]) {
-    switch (type && type.toString()) {
+    switch (type?.toString()) {
       case Message.Ready: {
         const [service] = rest
         this.register(worker, service)

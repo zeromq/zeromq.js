@@ -1,10 +1,13 @@
 # Majordomo broker
 
-This is an example broker implementation that partially implements [7/MDP](https://rfc.zeromq.org/spec:7/MDP/). Notably, the broker and workers do not send or listen to heartbeats.
+This is an example broker implementation that partially implements
+[7/MDP](https://rfc.zeromq.org/spec:7/MDP/). Notably, the broker and workers do
+not send or listen to heartbeats.
 
 ## Running this example
 
-To run this example, install the example project depedencies and run the majordomo example script with `yarn`:
+To run this example, install the example project depedencies and run the
+majordomo example script with `yarn`:
 
 ```
 > yarn install
@@ -13,7 +16,8 @@ To run this example, install the example project depedencies and run the majordo
 
 ## Expected behaviour
 
-The example will start a broker and some workers, then do some requests. The output will be similar to this:
+The example will start a broker and some workers, then do some requests. The
+output will be similar to this:
 
 ```
 starting broker on tcp://127.0.0.1:5555
