@@ -18,7 +18,7 @@
   },
   "homepage": "http://zeromq.github.io/zeromq.js/",
   "dependencies": {
-    "@aminya/node-gyp-build": "4.5.0-aminya.5",
+    "@aminya/node-gyp-build": "4.8.1-aminya.1",
     "cross-env": "^7.0.3",
     "node-addon-api": "^7.1.0",
     "shelljs": "^0.8.5",
