@@ -1,7 +1,9 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include "prefix.h"
+#include <napi.h>
+
+#include "closable.h"
 
 namespace zmq {
 class Module;

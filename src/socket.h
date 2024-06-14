@@ -1,12 +1,12 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include "prefix.h"
-
-#include "outgoing_msg.h"
-#include "poller.h"
-
 #include <optional>
+
+#include "./closable.h"
+#include "./inline.h"
+#include "./outgoing_msg.h"
+#include "./poller.h"
 
 namespace zmq {
 class Module;

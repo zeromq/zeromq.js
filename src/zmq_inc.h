@@ -1,20 +1,10 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include <napi.h>
+#include <zmq.h>  // IWYU pragma: export
 
-#include <zmq.h>
 #if ZMQ_VERSION < ZMQ_MAKE_VERSION(4, 1, 0)
-#include <zmq_utils.h>
-#endif
-
-#include <cassert>
-#include <iostream>
-
-#ifdef _MSC_VER
-#define force_inline inline __forceinline
-#else
-#define force_inline inline __attribute__((always_inline))
+#include <zmq_utils.h>  // IWYU pragma: export
 #endif
 
 #ifdef _MSC_VER
@@ -39,11 +29,3 @@
 #define ZMQ_HAS_POLLABLE_THREAD_SAFE 1
 #endif
 #endif
-
-/* A thing that can be closed. Simple interface to allow us to correctly clean
-   up ZMQ resources at agent exit. */
-namespace zmq {
-struct Closable {
-    virtual void Close() = 0;
-};
-}

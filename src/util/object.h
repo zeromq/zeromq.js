@@ -1,6 +1,8 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
+#include <napi.h>
+
 namespace zmq {
 /* Seals an object to prevent setting incorrect options. */
 static inline void Seal(Napi::Object object) {

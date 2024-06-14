@@ -1,8 +1,9 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
-#include <memory>
 #include <uv.h>
+
+#include <memory>
 
 namespace zmq {
 template <typename T>

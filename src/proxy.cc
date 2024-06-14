@@ -1,9 +1,9 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
-#include "proxy.h"
-#include "context.h"
-#include "module.h"
-#include "socket.h"
+#include "./proxy.h"
 
+#include "./context.h"
+#include "./module.h"
+#include "./socket.h"
 #include "util/arguments.h"
 #include "util/async_scope.h"
 #include "util/error.h"

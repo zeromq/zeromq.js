@@ -1,6 +1,11 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
+#include <napi.h>
+#include <uv.h>
+
+#include <cassert>
+
 namespace zmq {
 inline uv_loop_t* UvLoop(const Napi::Env& env) {
     uv_loop_t* loop = nullptr;

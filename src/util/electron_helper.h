@@ -1,6 +1,7 @@
 #pragma once
 
 #include <napi.h>
+
 #include <string>
 
 namespace zmq {

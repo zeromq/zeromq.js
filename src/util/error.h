@@ -2,6 +2,11 @@
 #pragma once
 
 #include <errno.h>
+#include <napi.h>
+
+#include <string>
+
+#include "../zmq_inc.h"
 
 namespace zmq {
 static inline constexpr const char* ErrnoMessage(int32_t errorno);

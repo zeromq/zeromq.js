@@ -1,10 +1,13 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
-#include "module.h"
-#include "context.h"
-#include "observer.h"
-#include "outgoing_msg.h"
-#include "proxy.h"
-#include "socket.h"
+#include "./module.h"
+
+#include "./context.h"
+#include "./observer.h"
+#include "./outgoing_msg.h"
+#include "./proxy.h"
+#include "./socket.h"
+#include "util/error.h"
+#include "util/to_string.h"
 
 namespace zmq {
 static inline Napi::String Version(const Napi::Env& env) {

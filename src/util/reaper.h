@@ -1,6 +1,7 @@
 /* Copyright (c) 2017-2019 Rolf Timmermans */
 #pragma once
 
+#include <cassert>
 #include <mutex>
 #include <set>
 #include <vector>
