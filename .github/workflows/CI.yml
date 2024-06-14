@@ -65,7 +65,7 @@ jobs:
             docker: node:18-alpine
             docker_cmd:
               apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake
-              musl-dev && npm i -g pnpm && pnpm install && pnpm run prebuild
+              musl-dev && npm i -g pnpm && pnpm install && pnpm run build.prebuild
             node_version: 18
             node_arch: x64
             ARCH: x64
@@ -133,7 +133,7 @@ jobs:
 
       - name: Prebuild
         if: ${{ !matrix.docker }}
-        run: pnpm run prebuild
+        run: pnpm run build.prebuild
 
       - name: Prebuild Docker
         if: ${{ matrix.docker }}
