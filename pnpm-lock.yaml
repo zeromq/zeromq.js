@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@aminya/node-gyp-build':
-        specifier: 4.5.0-aminya.5
-        version: 4.5.0-aminya.5
+        specifier: 4.8.1-aminya.1
+        version: 4.8.1-aminya.1
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -46,9 +46,6 @@ importers:
       '@types/shelljs':
         specifier: ^0.8.15
         version: 0.8.15
-      '@types/weak-napi':
-        specifier: ^2.0.3
-        version: 2.0.3
       '@types/which':
         specifier: ^2.0.2
         version: 2.0.2
@@ -125,8 +122,8 @@ packages:
     resolution: {integrity: sha512-0VdfoicL+dorb0WrbbhsFsH8xH+8X2Y6CrO/3br68kimkMNOJB/5DFGRraVDYHfCIQgMnlv5Q9GX1yI7V4GcgQ==}
     engines: {node: '>=6'}
 
-  '@aminya/node-gyp-build@4.5.0-aminya.5':
-    resolution: {integrity: sha512-TO7GldxDfSeSRNZVmhlm0liS2GX2o2Q/qTlcD3iD4ltTM6dir568LTRZ+ZDsDbLfMAkfhrbU+VuzNYImwYfczg==}
+  '@aminya/node-gyp-build@4.8.1-aminya.1':
+    resolution: {integrity: sha512-r5eD8cvhlXpr5H2TKKsDBlPUzmK8FaWQG4QQ0+AbHyGra2a1uZBa7r9DXCe4FSADw1sU9RAMRJH5/POm4lojFQ==}
     hasBin: true
 
   '@ampproject/remapping@2.2.0':
@@ -474,9 +471,6 @@ packages:
 
   '@types/shelljs@0.8.15':
     resolution: {integrity: sha512-vzmnCHl6hViPu9GNLQJ+DZFd6BQI2DBTUeOvYHqkWQLMfKAAQYMb/xAmZkTogZI/vqXHCWkqDRymDI5p0QTi5Q==}
-
-  '@types/weak-napi@2.0.3':
-    resolution: {integrity: sha512-hNh8wxRTaQC8gLT6BKkG5Kokwp4hEyWw4RshGTLwa1K4S1o6kX7G0bJ85kKr+2fK3fuF8HZuz1+Dy8YtICZDqg==}
 
   '@types/which@2.0.2':
     resolution: {integrity: sha512-113D3mDkZDjo+EeUEHCFy0qniNc1ZpecGiAU7WSo7YDoSzolZIQKpYFHrPpjkB2nuyahcKfrmLXeQlh7gqJYdw==}
@@ -3767,7 +3761,7 @@ snapshots:
 
   '@aminya/eslint-plugin-only-warn@1.2.2': {}
 
-  '@aminya/node-gyp-build@4.5.0-aminya.5': {}
+  '@aminya/node-gyp-build@4.8.1-aminya.1': {}
 
   '@ampproject/remapping@2.2.0':
     dependencies:
@@ -4198,10 +4192,6 @@ snapshots:
   '@types/shelljs@0.8.15':
     dependencies:
       '@types/glob': 7.2.0
-      '@types/node': 18.19.34
-
-  '@types/weak-napi@2.0.3':
-    dependencies:
       '@types/node': 18.19.34
 
   '@types/which@2.0.2': {}
