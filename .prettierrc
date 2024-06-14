@@ -10,7 +10,7 @@
   "singleQuote": false,
   "overrides": [
     {
-      "files": ["pnpm-lock.yaml", "*.md"],
+      "files": ["pnpm-lock.yaml"],
       "options": {
         "requirePragma": true
       }

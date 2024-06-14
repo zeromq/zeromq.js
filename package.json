@@ -105,7 +105,7 @@
     "lint.prettier": "prettier . --write",
     "lint-test.eslint": "cross-env ESLINT_USE_FLAT_CONFIG=false eslint **/*.{ts,tsx,js,jsx,cjs,mjs,json,yaml} --no-error-on-unmatched-pattern --cache --cache-location ./.cache/eslint/",
     "lint.eslint": "pnpm run lint-test.eslint --fix",
-    "lint": "run-p lint.eslint lint.clang-format lint.prettier",
+    "lint": "run-s lint.eslint lint.clang-format lint.prettier",
     "lint-test": "run-s lint-test.eslint",
     "bench": "node --expose-gc test/bench",
     "prepublishOnly": "pnpm run build.js"

@@ -73,7 +73,9 @@ for (const proto of testProtos("tcp")) {
             res.end("Hello world!")
           })
 
-          http.listen(port, () => { resolve(http); })
+          http.listen(port, () => {
+            resolve(http)
+          })
         })
 
         const routingId = "abcdef1234567890"
