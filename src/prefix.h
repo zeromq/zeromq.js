@@ -2,8 +2,6 @@
 #pragma once
 
 #include <napi.h>
-#include <node_version.h>
-#define NAPI_BUILD_VERSION NAPI_VERSION
 
 #include <zmq.h>
 #if ZMQ_VERSION < ZMQ_MAKE_VERSION(4, 1, 0)
