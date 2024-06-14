@@ -5,14 +5,14 @@ import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} curve send/receive`, function () {
+    if (!zmq.capability.curve) {
+      return
+    }
+
     let sockA: zmq.Pair
     let sockB: zmq.Pair
 
     beforeEach(function () {
-      if (!zmq.capability.curve) {
-        this.skip()
-      }
-
       const serverKeypair = zmq.curveKeyPair()
       const clientKeypair = zmq.curveKeyPair()
 
@@ -39,10 +39,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("when connected", function () {
       beforeEach(async function () {
-        if (!zmq.capability.curve) {
-          this.skip()
-        }
-
         const address = uniqAddress(proto)
         await sockB.bind(address)
         await sockA.connect(address)
