@@ -16,8 +16,7 @@ jobs:
           # - ubuntu-22.04
           - ubuntu-20.04
           - windows-2022
-        node_version:
-          - 18
+        node_version: [10, 12, 14, 16, 18, 20]
         node_arch:
           - x64
         cpp_arch:
