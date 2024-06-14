@@ -7,7 +7,7 @@ on:
 
 jobs:
   Build:
-    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -77,10 +77,10 @@ jobs:
       ZMQ_SHARED: false
       ARCH: ${{ matrix.ARCH }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             ./node_modules/
@@ -101,14 +101,14 @@ jobs:
           python: true
           architecture: ${{ matrix.cpp_arch }}
 
-      - uses: pnpm/action-setup@v2.2.4
+      - uses: pnpm/action-setup@v4
         if: ${{ !matrix.docker }}
         with:
-          version: 8
+          version: 9
 
       - name: Install Node
         if: ${{ !matrix.docker }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
           architecture: ${{ matrix.node_arch }}
@@ -154,7 +154,7 @@ jobs:
 
       - name: Test (Debug)
         if: ${{ !matrix.docker }}
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 1
@@ -166,7 +166,7 @@ jobs:
 
       - name: Test Electron (Main)
         if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 1
@@ -179,7 +179,7 @@ jobs:
 
       - name: Tests + GC Tests (Release)
         if: ${{ !matrix.docker }}
-        uses: nick-fields/retry@v2
+        uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
           max_attempts: 1
