@@ -6,6 +6,11 @@ import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`proxy with ${proto} router/dealer`, function () {
+    /* ZMQ < 4.0.5 has no steerable proxy support. */
+    if (semver.satisfies(zmq.version, "< 4.0.5")) {
+      return
+    }
+
     let proxy: zmq.Proxy
 
     let frontAddress: string
@@ -15,11 +20,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     let rep: zmq.Reply
 
     beforeEach(async function () {
-      /* ZMQ < 4.0.5 has no steerable proxy support. */
-      if (semver.satisfies(zmq.version, "< 4.0.5")) {
-        this.skip()
-      }
-
       proxy = new zmq.Proxy(new zmq.Router(), new zmq.Dealer())
 
       frontAddress = uniqAddress(proto)
@@ -88,6 +88,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
           rep.close()
         }
+
+        console.log("waiting for messages")
 
         await Promise.all([echo(), send()])
         assert.deepEqual(received, messages)

@@ -16,6 +16,7 @@
     "noUnusedParameters": false,
     "incremental": true,
     "sourceMap": true,
+    "esModuleInterop": true,
     "lib": ["ES2020", "dom"]
   }
 }
