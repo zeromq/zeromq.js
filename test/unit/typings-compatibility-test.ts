@@ -170,7 +170,9 @@ async function prepareTestPackage(
 async function getPackageManager() {
   const packageManagers = ["pnpm", "yarn", "npm"]
 
-  const versionResults = await Promise.all(packageManagers.map(pm => which(pm)))
+  const versionResults: Array<string | null> = await Promise.all(
+    packageManagers.map(pm => which(pm, {nothrow: true})),
+  )
 
   const packageManagerIndex = versionResults.findIndex(
     versionResult => typeof versionResult === "string",
