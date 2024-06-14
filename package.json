@@ -79,8 +79,10 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "install": "(shx test -f ./script/build.js || run-s build.js) && cross-env npm_config_build_from_source=true aminya-node-gyp-build",
-    "clean": "shx rm -rf ./build ./lib/ ./prebuilds ./script/*.js ./script/*.js.map ./script/*.d.ts ./script/*.tsbuildinfo",
+    "preinstall": "run-s build.script",
+    "install": "node-gyp-build",
+    "prepare": "run-s build.library",
+    "clean": "shx rm -rf ./build ./lib/ ./prebuilds",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp && shx touch ./tmp/.gitkeep",
     "build.library.compat": "shx rm -rf ./lib/ts3.7 && downlevel-dts ./lib ./lib/ts3.7 --to=3.7",
     "build.library": "tsc -p ./src/tsconfig.json && run-s build.library.compat",
@@ -88,11 +90,11 @@
     "build.js": "run-p build.script build.library",
     "build.doc": "typedoc --options ./typedoc.json && minify-all -s docs-raw -d docs --jsCompressor terser",
     "deploy.doc": "run-s build.doc && gh-pages --dist \"./docs\"",
-    "prebuild": "run-s build.js && node ./script/prebuild.js",
+    "prebuild": "node ./script/prebuild.js",
     "build.native": "node-gyp configure --release && node-gyp configure --release -- -f compile_commands_json && node-gyp build --release",
     "build.native.debug": "node-gyp configure --debug && node-gyp configure --debug -- -f compile_commands_json && cross-env CMAKE_BUILD_TYPE=Debug node-gyp build --debug",
-    "build": "run-s build.js build.native",
-    "build.debug": "run-s build.js build.native.debug",
+    "build": "run-s build.native",
+    "build.debug": "run-s build.native.debug",
     "test.deps": "cd test && pnpm install && cd ..",
     "test": "run-s test.deps build && mocha --exit",
     "test.skip_gc_tests": "run-s test.deps build.debug && cross-env SKIP_GC_TESTS=true mocha --exit",
@@ -104,8 +106,7 @@
     "lint.eslint": "pnpm run lint-test.eslint --fix",
     "lint": "run-p lint.eslint lint.clang-format",
     "lint-test": "run-s lint-test.eslint",
-    "bench": "node --expose-gc test/bench",
-    "prepublishOnly": "pnpm run build.js"
+    "bench": "node --expose-gc test/bench"
   },
   "keywords": [
     "zeromq",

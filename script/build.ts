@@ -5,11 +5,13 @@ import {mkdir, cd, exec, find, mv} from "shelljs"
 const root = dirname(__dirname)
 
 function main() {
-  const zmq_rev =
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
-    process.env.ZMQ_VERSION || "5657b4586f24ec433930e8ece02ddba7afcf0fe0"
-  const src_url = `https://github.com/zeromq/libzmq/archive/${zmq_rev}.tar.gz`
+  // Revision to use. Can be a version number like "4.3.5", a branch name, or a commit hash.
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
+  const zmq_rev = process.env.ZMQ_VERSION || "4.3.5"
 
+  // if it looks like a dot-separated version number, prepend with "v" to match repo tagging convention
+  const gitref = zmq_rev.match(/^\d+\./) ? `v${zmq_rev}` : zmq_rev
+  const src_url = `https://github.com/zeromq/libzmq/archive/${gitref}.tar.gz`
   const libzmq_build_prefix = `${root}/build/libzmq-staging`
   const libzmq_install_prefix = `${root}/build/libzmq`
 
