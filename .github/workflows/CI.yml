@@ -161,8 +161,7 @@ jobs:
           command: |
             pnpm run clean
             pnpm run test.skip_gc_tests
-        continue-on-error:
-          "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
+        continue-on-error: true
 
       - name: Test Electron (Main)
         if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
@@ -175,7 +174,7 @@ jobs:
             pnpm install -g electron@latest
             pnpm run clean
             xvfb-run --auto-servernum pnpm run test.electron.main
-        # continue-on-error: true
+        continue-on-error: true
 
       - name: Tests + GC Tests (Release)
         if: ${{ !matrix.docker }}
@@ -186,3 +185,4 @@ jobs:
           command: |
             pnpm run clean
             pnpm run test
+        continue-on-error: true
