@@ -1,6 +1,7 @@
-"use strict"
-
-module.exports = {
+/**
+ * @type {import('mocha').MochaOptions}
+ */
+const config = {
   require: ["ts-node/register", "rocha"],
   spec: [
     "test/unit/*-test.ts",
@@ -13,3 +14,5 @@ module.exports = {
   exit: true,
   parallel: true,
 }
+
+module.exports = config

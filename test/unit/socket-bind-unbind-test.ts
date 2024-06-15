@@ -72,8 +72,11 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       it("should fail during other bind", async function () {
         let promise
         try {
-          promise = sock.bind(await uniqAddress(proto))
-          await sock.bind(await uniqAddress(proto))
+          const address = await uniqAddress(proto)
+          const address2 = await uniqAddress(proto)
+
+          promise = sock.bind(address)
+          await sock.bind(address2)
           assert.ok(false)
         } catch (err) {
           if (!isFullError(err)) {
