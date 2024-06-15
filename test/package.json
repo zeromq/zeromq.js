@@ -1,6 +1,6 @@
 {
   "devDependencies": {
     "@types/weak-napi": "^2.0.3",
-    "weak-napi": "^2.0.2"
+    "weak-napi": "https://github.com/aminya/weak-napi#ea97678fc4c9304eea7f3fb1ddc88eaf59cccc6f"
   }
 }

@@ -160,8 +160,7 @@ jobs:
           timeout_minutes: 5
           max_attempts: 1
           command: |
-            pnpm run clean
-            pnpm run test.skip_gc_tests
+            pnpm run test
         continue-on-error: true
 
       - name: Test Electron (Main)
@@ -173,7 +172,6 @@ jobs:
           command: |
             sudo apt-get install xvfb
             pnpm install -g electron@latest
-            pnpm run clean
             xvfb-run --auto-servernum pnpm run test.electron.main
         continue-on-error: true
 
@@ -184,6 +182,5 @@ jobs:
           timeout_minutes: 5
           max_attempts: 1
           command: |
-            pnpm run clean
             pnpm run test
         continue-on-error: true

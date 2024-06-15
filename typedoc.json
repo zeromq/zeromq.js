@@ -11,7 +11,8 @@
     "test/**/*",
     "examples/**/*",
     "src/errors.ts",
-    "src/util.ts"
+    "src/util.ts",
+    "build/**/*"
   ],
   "cleanOutputDir": true,
   "pretty": false,

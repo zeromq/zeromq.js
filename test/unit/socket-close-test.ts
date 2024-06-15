@@ -107,9 +107,14 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should release reference to context", async function () {
-        if (process.env.SKIP_GC_TESTS) {
+        if (process.env.SKIP_GC_TESTS === "true") {
           this.skip()
         }
+        if (global.gc === undefined) {
+          console.warn("gc is not exposed by the runtime")
+          this.skip()
+        }
+
         this.slow(200)
 
         const weak = require("weak-napi") as typeof import("weak-napi")
@@ -124,14 +129,14 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           })
           context = undefined
 
-          global.gc?.()
+          global.gc!()
           socket.connect(uniqAddress(proto))
           await socket.send(Buffer.from("foo"))
           socket.close()
         }
 
         await task()
-        global.gc?.()
+        global.gc()
         await new Promise(resolve => {
           setTimeout(resolve, 5)
         })
@@ -141,10 +146,11 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("in gc finalizer", function () {
       it("should release reference to context", async function () {
-        if (process.env.SKIP_GC_TESTS) {
+        if (process.env.SKIP_GC_TESTS === "true") {
           this.skip()
         }
-        if (process.env.SKIP_GC_FINALIZER_TESTS) {
+        if (global.gc === undefined) {
+          console.warn("gc is not exposed by the runtime")
           this.skip()
         }
         this.slow(200)
@@ -155,17 +161,17 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const task = async () => {
           let context: zmq.Context | undefined = new zmq.Context()
 
-          new zmq.Dealer({context, linger: 0})
+          const _dealer = new zmq.Dealer({context, linger: 0})
 
           weak(context, () => {
             released = true
           })
           context = undefined
-          global.gc?.()
+          global.gc!()
         }
 
         await task()
-        global.gc?.()
+        global.gc()
         await new Promise(resolve => {
           setTimeout(resolve, 5)
         })
