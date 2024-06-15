@@ -181,6 +181,7 @@ export function createProcess(fn: () => void): Promise<Result> {
 
     setTimeout(() => {
       resolve({code: -1, stdout, stderr})
+      console.warn("Process timeout")
       child.kill()
     }, 750)
   })
