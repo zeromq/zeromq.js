@@ -1,0 +1,4 @@
+{
+    "mochaExplorer.parallel": true,
+    "mochaExplorer.globImplementation": "vscode"
+}
