@@ -42,7 +42,7 @@ export function testProtos(...requested: Proto[]) {
   const set = new Set(requested)
 
   /* Do not test with ipc if unsupported. */
-  if (!zmq.capability.ipc) {
+  if (zmq.capability.ipc !== true) {
     set.delete("ipc")
   }
 
