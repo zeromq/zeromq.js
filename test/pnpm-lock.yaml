@@ -12,8 +12,8 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
       weak-napi:
-        specifier: ^2.0.2
-        version: 2.0.2
+        specifier: https://github.com/aminya/weak-napi#ea97678fc4c9304eea7f3fb1ddc88eaf59cccc6f
+        version: https://codeload.github.com/aminya/weak-napi/tar.gz/ea97678fc4c9304eea7f3fb1ddc88eaf59cccc6f
 
 packages:
 
@@ -29,8 +29,9 @@ packages:
   get-uv-event-loop-napi-h@1.0.6:
     resolution: {integrity: sha512-t5c9VNR84nRoF+eLiz6wFrEp1SE2Acg0wS+Ysa2zF0eROes+LzOfuTaVHxGy8AbS8rq7FHEJzjnCZo1BupwdJg==}
 
-  node-addon-api@3.2.1:
-    resolution: {integrity: sha512-mmcei9JghVNDYydghQmeDX8KoAm0FAiYyIcUt/N4nhyAipB17pllZQDOJD2fotxABnt4Mdz+dKTO7eftLg4d0A==}
+  node-addon-api@8.0.0:
+    resolution: {integrity: sha512-ipO7rsHEBqa9STO5C5T10fj732ml+5kLN1cAG8/jdHd56ldQeGj3Q7+scUS+VHK/qy1zLEwC4wMK5+yM0btPvw==}
+    engines: {node: ^18 || ^20 || >= 21}
 
   node-gyp-build@4.8.1:
     resolution: {integrity: sha512-OSs33Z9yWr148JZcbZd5WiAXhh/n9z8TxQcdMhIOlpN9AhWpLfvVFO73+m77bBABQMaY9XSvIa+qk0jlI7Gcaw==}
@@ -42,8 +43,9 @@ packages:
   undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
 
-  weak-napi@2.0.2:
-    resolution: {integrity: sha512-LcOSVFrghtVXf4QH+DLIy8iPiCktV7lVbqRDYP+bDPpLzC41RCHQPMyQOnPpWO41Ie4CmnDxS+mbL72r5xFMMQ==}
+  weak-napi@https://codeload.github.com/aminya/weak-napi/tar.gz/ea97678fc4c9304eea7f3fb1ddc88eaf59cccc6f:
+    resolution: {tarball: https://codeload.github.com/aminya/weak-napi/tar.gz/ea97678fc4c9304eea7f3fb1ddc88eaf59cccc6f}
+    version: 2.0.2
 
 snapshots:
 
@@ -61,7 +63,7 @@ snapshots:
     dependencies:
       get-symbol-from-current-process-h: 1.0.2
 
-  node-addon-api@3.2.1: {}
+  node-addon-api@8.0.0: {}
 
   node-gyp-build@4.8.1: {}
 
@@ -72,8 +74,8 @@ snapshots:
 
   undici-types@5.26.5: {}
 
-  weak-napi@2.0.2:
+  weak-napi@https://codeload.github.com/aminya/weak-napi/tar.gz/ea97678fc4c9304eea7f3fb1ddc88eaf59cccc6f:
     dependencies:
-      node-addon-api: 3.2.1
+      node-addon-api: 8.0.0
       node-gyp-build: 4.8.1
       setimmediate-napi: 1.0.6
