@@ -134,12 +134,6 @@
                 ],
                 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
                 'GCC_ENABLE_EXCEPTIONS': 'YES',
-                'OTHER_CFLAGS': [
-                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
-                ],
-                'OTHER_LDFLAGS': [
-                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
-                ]
               },
             }],
 
@@ -227,12 +221,6 @@
                 'DEAD_CODE_STRIPPING': 'YES',
                 'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
                 'GCC_ENABLE_EXCEPTIONS': 'YES',
-                'OTHER_CFLAGS': [
-                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
-                ],
-                'OTHER_LDFLAGS': [
-                  "<!(echo \"-arch ${ARCH:=x86_64}\")",
-                ]
               },
             }],
 
