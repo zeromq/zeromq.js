@@ -64,7 +64,7 @@
   },
   "engines": {
     "node": ">= 10.2",
-    "pnpm": ">= 9"
+    "pnpm": "*"
   },
   "files": [
     "CHANGELOG.md",
