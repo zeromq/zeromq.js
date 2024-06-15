@@ -162,6 +162,10 @@ for (const proto of testProtos("tcp", "ipc")) {
         if (semver.satisfies(zmq.version, "< 4.3.0")) {
           this.skip()
         }
+        if (zmq.capability.curve !== true) {
+          console.warn("Curve not supported by this zmq build")
+          this.skip()
+        }
 
         this.slow(250)
 
