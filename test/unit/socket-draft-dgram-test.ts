@@ -28,7 +28,7 @@ for (const proto of testProtos("udp")) {
     describe("send/receive", function () {
       it("should deliver messages", async function () {
         const messages = ["foo", "bar", "baz", "qux"]
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const port = parseInt(address.split(":").pop()!, 10)
 
         await dgram.bind(address)

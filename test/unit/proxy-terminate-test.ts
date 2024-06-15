@@ -25,8 +25,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     })
 
     it("should throw if called after termination", async function () {
-      await proxy.frontEnd.bind(uniqAddress(proto))
-      await proxy.backEnd.bind(uniqAddress(proto))
+      await proxy.frontEnd.bind(await uniqAddress(proto))
+      await proxy.backEnd.bind(await uniqAddress(proto))
 
       const sleep_ms = 50
 

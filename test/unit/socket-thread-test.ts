@@ -18,7 +18,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("when connected within thread", function () {
       it("should deliver messages", async function () {
-        const data = {address: uniqAddress(proto)}
+        const data = {address: await uniqAddress(proto)}
         const recv = await createWorker(data, async ({address}) => {
           const sockA = new zmq.Pair({linger: 0})
           const sockB = new zmq.Pair({linger: 0})
@@ -38,7 +38,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("when connected to thread", function () {
       it("should deliver messages", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
 
         const sockA = new zmq.Pair({linger: 0})
         await sockA.bind(address)
@@ -64,7 +64,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("when connected between threads", function () {
       it("should deliver messages", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
 
         const worker1 = createWorker({address}, async ({address}) => {
           const sockA = new zmq.Pair({linger: 0})

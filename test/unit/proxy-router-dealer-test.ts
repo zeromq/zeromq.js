@@ -22,8 +22,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     beforeEach(async function () {
       proxy = new zmq.Proxy(new zmq.Router(), new zmq.Dealer())
 
-      frontAddress = uniqAddress(proto)
-      backAddress = uniqAddress(proto)
+      frontAddress = await uniqAddress(proto)
+      backAddress = await uniqAddress(proto)
 
       req = new zmq.Request()
       rep = new zmq.Reply()

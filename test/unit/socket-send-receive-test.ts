@@ -63,7 +63,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     describe("when not connected", function () {
       beforeEach(async function () {
         sockA.sendHighWaterMark = 1
-        await sockA.connect(uniqAddress(proto))
+        await sockA.connect(await uniqAddress(proto))
       })
 
       it("should be writable", async function () {
@@ -97,7 +97,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const weak = require("weak-napi")
 
         let released = false
-        sockA.connect(uniqAddress(proto))
+        sockA.connect(await uniqAddress(proto))
         const send = async (size: number) => {
           const msg = Buffer.alloc(size)
           weak(msg, () => {
@@ -121,7 +121,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const weak = require("weak-napi")
 
         let released = false
-        sockA.connect(uniqAddress(proto))
+        sockA.connect(await uniqAddress(proto))
         const send = async (size: number) => {
           const msg = Buffer.alloc(size)
           weak(msg, () => {
@@ -141,7 +141,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("when connected", function () {
       beforeEach(async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         await sockB.bind(address)
         await sockA.connect(address)
       })
@@ -497,7 +497,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     if (proto !== "inproc") {
       describe("when connected after send/receive", function () {
         it("should deliver message", async function () {
-          const address = uniqAddress(proto)
+          const address = await uniqAddress(proto)
 
           const sent = "foo"
           const promise = Promise.all([sockB.receive(), sockA.send(sent)])

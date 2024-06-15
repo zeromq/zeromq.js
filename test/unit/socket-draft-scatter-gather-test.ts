@@ -35,7 +35,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
                      -> qux ->
           */
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const messages = ["foo", "bar", "baz", "qux"]
         const received: string[] = []
 
@@ -59,7 +59,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       if (proto !== "inproc") {
         it("should deliver messages with immediate", async function () {
-          const address = uniqAddress(proto)
+          const address = await uniqAddress(proto)
           const messages = ["foo", "bar", "baz", "qux"]
           const received: string[] = []
 
@@ -69,7 +69,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await scatter.connect(address)
 
           /* Never connected, without immediate: true it would cause lost msgs. */
-          await scatter.connect(uniqAddress(proto))
+          await scatter.connect(await uniqAddress(proto))
 
           for (const msg of messages) {
             await scatter.send(msg)

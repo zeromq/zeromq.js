@@ -41,7 +41,7 @@ for (const proto of testProtos("tcp", "ipc")) {
         assert.equal(sockA.securityMechanism, "plain")
         assert.equal(sockB.securityMechanism, "plain")
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         await sockA.bind(address)
         await sockB.connect(address)
 
@@ -72,7 +72,7 @@ for (const proto of testProtos("tcp", "ipc")) {
         sockB.plainUsername = "user"
         sockB.plainPassword = "BAD PASS"
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
 
         const [eventA, eventB] = await Promise.all([
           captureEvent(sockA, "handshake:error:auth"),
@@ -114,7 +114,7 @@ for (const proto of testProtos("tcp", "ipc")) {
 
         sockB.plainUsername = "user"
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const [eventA] = await Promise.all([
           captureEvent(sockA, "handshake:error:protocol"),
           sockA.bind(address),
@@ -143,7 +143,7 @@ for (const proto of testProtos("tcp", "ipc")) {
 
         sockB.plainUsername = "user"
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const [eventA] = await Promise.all([
           captureEvent(sockA, "handshake:error:protocol"),
           sockA.bind(address),
@@ -172,7 +172,7 @@ for (const proto of testProtos("tcp", "ipc")) {
         sockA.plainServer = true
         sockB.curveServer = true
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const [eventA, eventB] = await Promise.all([
           captureEvent(sockA, "handshake:error:protocol"),
           captureEvent(sockB, "handshake:error:protocol"),

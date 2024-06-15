@@ -34,8 +34,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
                 -> qux ->
          */
 
-        const address1 = uniqAddress(proto)
-        const address2 = uniqAddress(proto)
+        const address1 = await uniqAddress(proto)
+        const address2 = await uniqAddress(proto)
 
         const messages = ["foo", "bar", "baz", "qux"]
         const received: string[] = []
@@ -103,8 +103,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
                 -> qux -X
          */
 
-        const address1 = uniqAddress(proto)
-        const address2 = uniqAddress(proto)
+        const address1 = await uniqAddress(proto)
+        const address2 = await uniqAddress(proto)
 
         const messages = ["foo", "bar", "baz", "qux"]
         const received: string[] = []
@@ -167,7 +167,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("verbosity", function () {
       it("should deduplicate subscriptions/unsubscriptions", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
 
         const subs: Buffer[] = []
 
@@ -206,7 +206,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should forward all subscriptions", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
 
         const subs: Buffer[] = []
 
@@ -253,7 +253,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           this.skip()
         }
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
 
         const subs: Buffer[] = []
 

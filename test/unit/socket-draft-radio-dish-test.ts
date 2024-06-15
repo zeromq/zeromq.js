@@ -36,7 +36,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc", "udp")) {
                    -> qux ->
           */
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const messages = ["foo", "bar", "baz", "qux"]
 
         /* Max 15 non-null bytes. */
@@ -87,7 +87,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc", "udp")) {
                    -> qux -X
           */
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const messages = ["foo", "bar", "baz", "qux"]
         const received: string[] = []
 
