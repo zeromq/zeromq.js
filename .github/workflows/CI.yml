@@ -9,6 +9,7 @@ jobs:
   Build:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ${{ matrix.os }}
+    container: ${{ matrix.docker }}
     strategy:
       fail-fast: false
       matrix:
@@ -17,7 +18,6 @@ jobs:
           - ubuntu-20.04
           - windows-2022
         node_version: [10, 12, 14, 16, 18, 20, 22]
-        pnpm_version: [6, 7, 8, 9]
         node_arch:
           - x64
         cpp_arch:
@@ -28,10 +28,16 @@ jobs:
           - false
         docker:
           - ""
-        docker_cmd:
-          - ""
 
         include:
+          # https://pnpm.io/installation#compatibility
+          - {node_version: 10, pnpm_version: 6}
+          - {node_version: 12, pnpm_version: 6}
+          - {node_version: 14, pnpm_version: 7}
+          - {node_version: 16, pnpm_version: 8}
+          - {node_version: 18, pnpm_version: 9}
+          - {node_version: 20, pnpm_version: 9}
+          - {node_version: 22, pnpm_version: 9}
           - os: windows-2022
             node_version: 18
             node_arch: x86
@@ -63,10 +69,6 @@ jobs:
           # Alpine
           - os: ubuntu-22.04
             docker: node:18-alpine
-            docker_cmd:
-              apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake
-              musl-dev && npm i -g pnpm@${{matrix.pnpm-version}} && pnpm install && pnpm run
-              build.prebuild
             node_version: 18
             node_arch: x64
             ARCH: x64
@@ -105,7 +107,7 @@ jobs:
       - uses: pnpm/action-setup@v4
         if: ${{ !matrix.docker }}
         with:
-          version: ${{ matrix.pnpm-version }}
+          version: ${{ matrix.pnpm_version }}
 
       - name: Install Node
         if: ${{ !matrix.docker }}
@@ -139,10 +141,8 @@ jobs:
       - name: Prebuild Docker
         if: ${{ matrix.docker }}
         run: |
-          docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          docker pull ${{ matrix.docker }}
-          docker tag ${{ matrix.docker }} builder
-          docker run --volume ${{ github.workspace }}:/app --workdir /app --privileged builder sh -c "${{ matrix.docker_cmd }}"
+          apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake
+          musl-dev && npm i -g pnpm@${{ matrix.pnpm_version }} && pnpm install && pnpm run build.prebuild
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
