@@ -24,17 +24,9 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       global.gc?.()
     })
 
-    it("should throw if called after termination", async function () {
-      await proxy.frontEnd.bind(await uniqAddress(proto))
-      await proxy.backEnd.bind(await uniqAddress(proto))
-
-      const sleep_ms = 50
-
-      setTimeout(() => proxy.terminate(), sleep_ms)
-      await proxy.run()
-
+    const terminator_test = () => {
       try {
-        await proxy.terminate()
+        proxy.terminate()
         assert.ok(false)
       } catch (err) {
         if (!isFullError(err)) {
@@ -44,6 +36,27 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.equal(err.code, "EBADF")
         assert.typeOf(err.errno, "number")
       }
+    }
+
+    it("should throw if not started yet", async function () {
+      await proxy.frontEnd.bind(await uniqAddress(proto))
+      await proxy.backEnd.bind(await uniqAddress(proto))
+
+      terminator_test()
+    })
+
+    it("should throw if called after termination", async function () {
+      await proxy.frontEnd.bind(await uniqAddress(proto))
+      await proxy.backEnd.bind(await uniqAddress(proto))
+
+      setTimeout(() => {
+        proxy.terminate()
+      }, 50)
+
+      await proxy.run()
+      // TODO throws Operation not supported
+
+      terminator_test()
     })
   })
 }
