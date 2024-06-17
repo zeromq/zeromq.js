@@ -1,14 +1,8 @@
 {
   "extends": "../tsconfig.json",
-  "include": [
-    "**/*.ts"
-  ],
+  "include": ["**/*.ts"],
   "compilerOptions": {
-    "types": [
-      "mocha"
-    ],
-    "lib": [
-      "ESNext",
-    ]
+    "types": ["mocha"],
+    "lib": ["ESNext"]
   }
 }

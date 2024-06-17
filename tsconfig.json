@@ -4,9 +4,7 @@
     "target": "es2020",
     "declaration": true,
     "module": "commonjs",
-    "types": [
-      "node",
-    ],
+    "types": ["node"],
     "strictPropertyInitialization": false, // TODO
     "strict": true,
     "strictNullChecks": true,
@@ -19,9 +17,6 @@
     "incremental": true,
     "sourceMap": true,
     "esModuleInterop": true,
-    "lib": [
-      "ES2022",
-      "dom"
-    ]
+    "lib": ["ES2022", "dom"]
   }
 }
