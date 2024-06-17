@@ -53,9 +53,9 @@ jobs:
             cpp_arch: x64
             zmq_draft: false
 
-          - os: macos-13
+          - os: macos-14
             node_version: 18
-            node_arch: x64
+            node_arch: arm64
             ARCH: arm64
             cpp_arch: amd64_arm64
             zmq_draft: false
@@ -173,14 +173,4 @@ jobs:
             sudo apt-get install xvfb
             pnpm install -g electron@latest
             xvfb-run --auto-servernum pnpm run test.electron.main
-        continue-on-error: true
-
-      - name: Tests + GC Tests (Release)
-        if: ${{ !matrix.docker }}
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 5
-          max_attempts: 1
-          command: |
-            pnpm run test
         continue-on-error: true
