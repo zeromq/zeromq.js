@@ -148,7 +148,7 @@ interface Result {
   code: number
   stdout: Buffer
   stderr: Buffer
-  is_timeout: boolean
+  isTimeout: boolean
 }
 
 export function createProcess(fn: () => void): Promise<Result> {
@@ -158,7 +158,13 @@ export function createProcess(fn: () => void): Promise<Result> {
     const result = fn()
     if (result instanceof Promise) {
       result.catch(err => {
-        throw err
+        if (error instanceof Error) {
+          console.error(error.message)
+          console.error(error.stack)
+        } else {
+          console.error(error)
+        }
+        process.exit(10)
       })
     }
   `
@@ -191,12 +197,12 @@ export function createProcess(fn: () => void): Promise<Result> {
           )
         }
 
-        resolve({code, stdout, stderr, is_timeout: false})
+        resolve({code, stdout, stderr, isTimeout: false})
       }
     })
 
     setTimeout(() => {
-      resolve({code: -1, stdout, stderr, is_timeout: true})
+      resolve({code: -1, stdout, stderr, isTimeout: true})
       console.error(
         `Child timed out\n${stdout.toString()}\n${stderr.toString()}`,
       )

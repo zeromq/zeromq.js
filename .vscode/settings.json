@@ -1,4 +1,4 @@
 {
-    "mochaExplorer.parallel": true,
-    "mochaExplorer.globImplementation": "vscode"
+  "mochaExplorer.parallel": true,
+  "mochaExplorer.globImplementation": "vscode"
 }
