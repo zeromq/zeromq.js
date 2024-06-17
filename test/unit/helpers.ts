@@ -260,7 +260,7 @@ interface GCFunction {
 }
 
 export function getGcOrSkipTest(test: Mocha.Context) {
-  if (process.env.SKIP_GC_TESTS) {
+  if (process.env.SKIP_GC_TESTS === "true") {
     test.skip()
   }
 

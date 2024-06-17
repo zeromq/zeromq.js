@@ -140,8 +140,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         let weakRef: undefined | WeakRef<any>
         const task = async () => {
-          let context: zmq.Context | undefined = new zmq.Context()
-
+          const context: zmq.Context | undefined = new zmq.Context()
           const _dealer = new zmq.Dealer({context, linger: 0})
           weakRef = new WeakRef(context)
         }
