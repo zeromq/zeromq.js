@@ -1,15 +1,8 @@
 {
-  "plugins": [
-    "prettier"
-  ],
-  "extends": [
-    "eslint-config-atomic"
-  ],
+  "plugins": ["prettier"],
+  "extends": ["eslint-config-atomic"],
   "rules": {
-    "@typescript-eslint/quotes": [
-      "error",
-      "double"
-    ],
+    "@typescript-eslint/quotes": ["error", "double"],
     "require-await": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",
     "@typescript-eslint/no-explicit-any": "off",

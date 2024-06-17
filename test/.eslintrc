@@ -1,10 +1,6 @@
 {
   "extends": "../.eslintrc",
-  "ignorePatterns": [
-    "unit/compat/",
-    "bench/",
-    "node_modules"
-  ],
+  "ignorePatterns": ["unit/compat/", "bench/", "node_modules"],
   "rules": {
     "no-invalid-this": "off",
     "no-inner-declarations": "off",
