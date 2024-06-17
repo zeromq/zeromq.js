@@ -17,6 +17,6 @@
     "incremental": true,
     "sourceMap": true,
     "esModuleInterop": true,
-    "lib": ["ES2022", "dom"]
+    "lib": ["ES2020", "dom"]
   }
 }
