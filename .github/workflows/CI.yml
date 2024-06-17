@@ -145,7 +145,7 @@ jobs:
           docker run --volume ${{ github.workspace }}:/app --workdir /app --privileged builder sh -c "${{ matrix.docker_cmd }}"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ./prebuilds
 
