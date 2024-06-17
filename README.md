@@ -1,8 +1,6 @@
 # ZeroMQ.js Next Generation
 
 [![Latest version](https://img.shields.io/npm/v/zeromq?label=version)](https://www.npmjs.com/package/zeromq)
-[![Greenkeeper monitoring](https://img.shields.io/badge/dependencies-monitored-brightgreen)](https://greenkeeper.io/)
-[![Travis build status](https://img.shields.io/travis/zeromq/zeromq.js)](https://travis-ci.org/zeromq/zeromq.js)
 
 ## ⚠️ Version 6.0.0 (in beta) features a brand new API that solves many fundamental issues and is recommended for new projects. ⚠️
 
