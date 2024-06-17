@@ -4,7 +4,7 @@ set -e
 #! Install arm-brew on x86 MacOS Arm
 #! Based on https://github.com/Homebrew/discussions/discussions/2843#discussioncomment-2243610
 
-bottle_tag="arm64_big_sur" # Macos 11 is big sure
+bottle_tag="arm64_sonoma" # Macos 14
 dependencies="libsodium"
 
 mkdir -p ~/arm-target/bin
