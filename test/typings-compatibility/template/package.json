@@ -8,6 +8,7 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "typescript": "x.x.x"
+    "typescript": "x.x.x",
+    "@types/node": "y.y.y"
   }
 }
