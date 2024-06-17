@@ -20,16 +20,30 @@ import {assert} from "chai"
  *       EXCLUDE_TYPINGS_COMPAT_TESTS=true
  */
 
-type TestDef = {version: string; minTarget: string; requiredLibs?: string[]}
+type TestDef = {
+  tscVersion: string
+  nodeTypesVersion: string
+  minTarget: string
+  requiredLibs?: string[]
+}
 
 const tsVersions: TestDef[] = [
+  // the oldest supported version
+  {tscVersion: "3.7.x", nodeTypesVersion: "10.x", minTarget: "es3"},
+
+  // 4.0
+  {tscVersion: "4.0", nodeTypesVersion: "14.x", minTarget: "es5"},
+
   // 4.x
-  {version: "4.x", minTarget: "es3"},
+  {tscVersion: "4.x", nodeTypesVersion: "18.x", minTarget: "es6"},
+
+  // 5.x
+  {tscVersion: "5.x", nodeTypesVersion: "22.x", minTarget: "ES2022"},
 ]
 
 // use ./typings-test.ts for tsc test, but change the import location for zmq
 // to be used from `test/typings-compatibility/ts-x.x.x/typings-test.ts`:
-const zmqImportLoc = "../../../"
+const zmqImportLoc = "../../../lib"
 const srcFile = path.resolve(__dirname, "typings-test.ts")
 const srcStr = readFile(srcFile, "utf8").then(content => {
   // replace import statement `import * as zmq from ...`:
@@ -41,9 +55,9 @@ const srcStr = readFile(srcFile, "utf8").then(content => {
 const tscTestBasePath = path.resolve(__dirname, "..", "typings-compatibility")
 const templateSrcPath = path.resolve(tscTestBasePath, "template")
 
-function addLibs(libs: string[], targetList: string[]): string[] {
-  if (!targetList) {
-    targetList = libs
+function addLibs(libs: string[], targetList: string[] | undefined): string[] {
+  if (targetList === undefined) {
+    return libs
   } else {
     libs.forEach(l => {
       if (!targetList.find(e => e.toLowerCase() === l.toLowerCase())) {
@@ -71,9 +85,9 @@ async function run(
 }
 
 function getItLabelDetails(tsVer: TestDef): string {
-  const lbl = `v${tsVer.version} for (minimal) compile target ${JSON.stringify(
-    tsVer.minTarget,
-  )}`
+  const lbl = `v${
+    tsVer.tscVersion
+  } for (minimal) compile target ${JSON.stringify(tsVer.minTarget)}`
   if (!tsVer.requiredLibs || tsVer.requiredLibs.length === 0) {
     return lbl
   }
@@ -98,12 +112,15 @@ describe("compatibility of typings for typescript versions", async function () {
     // the typescript package to complete
     this.timeout(30000)
 
-    const tscTargetPath = path.resolve(tscTestBasePath, `ts-${tsVer.version}`)
+    const tscTargetPath = path.resolve(
+      tscTestBasePath,
+      `ts-${tsVer.tscVersion}`,
+    )
 
     it(`it should compile successfully with typescript version ${
-      tsVer.version
+      tsVer.tscVersion
       // eslint-disable-next-line no-loop-func
-    }, tsc ${getItLabelDetails(tsVer)}`, async function () {
+    }, tsc ${getItLabelDetails(tsVer)}`, async () => {
       await prepareTestPackage(tscTargetPath, tsVer, execCmd)
 
       const cmd = ["npm", "pnpm"].includes(execCmd) ? `${execCmd} run` : execCmd
@@ -136,7 +153,7 @@ async function prepareTestPackage(
       if (tsVer.requiredLibs) {
         tsConfig.compilerOptions.lib = addLibs(
           tsVer.requiredLibs,
-          tsConfig.compilerOptions.lib as string[],
+          tsConfig.compilerOptions.lib as string[] | undefined,
         )
       }
       return writeJson(path.resolve(tscTargetPath, "tsconfig.json"), tsConfig)
@@ -146,8 +163,9 @@ async function prepareTestPackage(
         path.resolve(templateSrcPath, "package.json"),
       )
 
-      pkgJson.name = `test-typings-ts-${tsVer.version}`
-      pkgJson.devDependencies.typescript = `${tsVer.version}`
+      pkgJson.name = `test-typings-ts-${tsVer.tscVersion}`
+      pkgJson.devDependencies.typescript = `${tsVer.tscVersion}`
+      pkgJson.devDependencies["@types/node"] = tsVer.nodeTypesVersion
       return writeJson(path.resolve(tscTargetPath, "package.json"), pkgJson)
     })(),
     (async () => {

@@ -159,15 +159,16 @@ describe("socket construction", function () {
       )
     })
 
-    if (!zmq.capability.draft) {
-      it("should throw with draft type", function () {
-        assert.throws(
-          () => new (zmq.Socket as any)(14),
-          Error,
-          "Invalid argument",
-        )
-      })
-    }
+    it("should throw with draft type", function () {
+      if (zmq.capability.draft === true) {
+        this.skip()
+      }
+      assert.throws(
+        () => new (zmq.Socket as any)(14),
+        Error,
+        "Invalid argument",
+      )
+    })
 
     it("should throw error on file descriptor limit", async function () {
       const context = new zmq.Context({maxSockets: 10})

@@ -63,7 +63,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     describe("when not connected", function () {
       beforeEach(async function () {
         sockA.sendHighWaterMark = 1
-        await sockA.connect(uniqAddress(proto))
+        await sockA.connect(await uniqAddress(proto))
       })
 
       it("should be writable", async function () {
@@ -97,7 +97,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const weak = require("weak-napi")
 
         let released = false
-        sockA.connect(uniqAddress(proto))
+        sockA.connect(await uniqAddress(proto))
         const send = async (size: number) => {
           const msg = Buffer.alloc(size)
           weak(msg, () => {
@@ -121,7 +121,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const weak = require("weak-napi")
 
         let released = false
-        sockA.connect(uniqAddress(proto))
+        sockA.connect(await uniqAddress(proto))
         const send = async (size: number) => {
           const msg = Buffer.alloc(size)
           weak(msg, () => {
@@ -141,7 +141,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("when connected", function () {
       beforeEach(async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         await sockB.bind(address)
         await sockA.connect(address)
       })
@@ -248,7 +248,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       it("should deliver messages coercible to string", async function () {
         const messages = [
           null,
-          /* eslint-disable-next-line @typescript-eslint/no-empty-function */
           function () {},
           16.19,
           true,
@@ -256,7 +255,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           Promise.resolve(),
         ]
         for (const msg of messages) {
-          await sockA.send(msg as any)
+          await sockA.send(msg as zmq.MessageLike)
         }
 
         const received: string[] = []
@@ -440,10 +439,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
           const echo = async (sock: zmq.Pair) => {
             const msg = await sock.receive()
-            sock.send(msg)
+            await sock.send(msg)
           }
 
-          echo(sockB)
+          await echo(sockB)
 
           const [final] = await sockA.receive()
           final.writeUInt8(0x40, 0)
@@ -497,7 +496,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     if (proto !== "inproc") {
       describe("when connected after send/receive", function () {
         it("should deliver message", async function () {
-          const address = uniqAddress(proto)
+          const address = await uniqAddress(proto)
 
           const sent = "foo"
           const promise = Promise.all([sockB.receive(), sockA.send(sent)])

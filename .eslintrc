@@ -1,9 +1,20 @@
 {
-  "plugins": ["prettier"],
-  "extends": ["plugin:prettier/recommended", "eslint-config-atomic"],
+  "plugins": [
+    "prettier"
+  ],
+  "extends": [
+    "eslint-config-atomic"
+  ],
   "rules": {
-    "@typescript-eslint/quotes": ["error", "double"],
-    "require-await": "off"
+    "@typescript-eslint/quotes": [
+      "error",
+      "double"
+    ],
+    "require-await": "off",
+    "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "no-await-in-loop": "off",
+    "class-methods-use-this": "off"
   },
   "ignorePatterns": [
     "node_modules/",
@@ -15,6 +26,8 @@
     "script/*.js",
     "script/*.d.ts",
     "docs/",
-    "docs-raw/"
+    "docs-raw/",
+    "test/unit/compat/",
+    "test/bench/"
   ]
 }

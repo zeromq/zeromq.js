@@ -5,7 +5,7 @@ import {testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} curve send/receive`, function () {
-    if (!zmq.capability.curve) {
+    if (zmq.capability.curve !== true) {
       return
     }
 
@@ -39,7 +39,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("when connected", function () {
       beforeEach(async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         await sockB.bind(address)
         await sockA.connect(address)
       })

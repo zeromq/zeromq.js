@@ -19,7 +19,7 @@ for (const proto of testProtos("tcp")) {
 
     describe("send/receive as server", function () {
       it("should deliver messages", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
 
         await stream.bind(address)
 
@@ -61,7 +61,7 @@ for (const proto of testProtos("tcp")) {
 
     describe("send/receive as client", function () {
       it("should deliver messages", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const port = parseInt(address.split(":").pop()!, 10)
 
         const server = await new Promise<Server>(resolve => {

@@ -30,13 +30,16 @@ describe("context process exit", function () {
 
     it("should not occur when sockets are open and polling", async function () {
       this.slow(1000)
-      const {code} = await createProcess(() => {
+      const {code, is_timeout} = await createProcess(() => {
         const socket1 = new zmq.Dealer()
         socket1.connect("inproc://foo")
-        socket1.receive()
+        socket1.receive().catch(err => {
+          throw err
+        })
       })
 
-      assert.equal(code, 1)
+      assert.equal(code, -1)
+      assert.equal(is_timeout, true)
     })
 
     it("should produce warning when messages are queued with blocky", async function () {
@@ -45,7 +48,9 @@ describe("context process exit", function () {
         zmq.context.blocky = true
         const socket1 = new zmq.Dealer({linger: 1000})
         socket1.connect("tcp://127.0.0.1:4567")
-        socket1.send(null)
+        socket1.send(null).catch(err => {
+          throw err
+        })
       })
 
       if (semver.satisfies(zmq.version, ">= 4.2")) {
@@ -67,7 +72,9 @@ describe("context process exit", function () {
         zmq.context.blocky = false
         const socket1 = new zmq.Dealer({linger: 1000})
         socket1.connect("tcp://127.0.0.1:4567")
-        socket1.send(null)
+        socket1.send(null).catch(err => {
+          throw err
+        })
       })
 
       assert.match(
@@ -82,7 +89,9 @@ describe("context process exit", function () {
         zmq.context.blocky = true
         const socket1 = new zmq.Dealer({linger: 50})
         socket1.connect("tcp://127.0.0.1:4567")
-        socket1.send(null)
+        socket1.send(null).catch(err => {
+          throw err
+        })
       })
 
       assert.equal(stderr.toString(), "")
@@ -134,14 +143,15 @@ describe("context process exit", function () {
 
     it("should not occur when sockets are open and polling", async function () {
       this.slow(1000)
-      const {code} = await createProcess(() => {
+      const {code, is_timeout} = await createProcess(() => {
         const context = new zmq.Context()
         const socket1 = new zmq.Dealer({context})
         socket1.connect("inproc://foo")
         socket1.receive()
       })
 
-      assert.equal(code, 1)
+      assert.equal(code, -1)
+      assert.equal(is_timeout, true)
     })
   })
 })

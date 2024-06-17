@@ -25,7 +25,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     })
 
     it("should fail if front end is not bound or connected", async function () {
-      await proxy.backEnd.bind(uniqAddress(proto))
+      await proxy.backEnd.bind(await uniqAddress(proto))
 
       try {
         await proxy.run()
@@ -39,8 +39,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     })
 
     it("should fail if front end is not open", async function () {
-      await proxy.frontEnd.bind(uniqAddress(proto))
-      await proxy.backEnd.bind(uniqAddress(proto))
+      await proxy.frontEnd.bind(await uniqAddress(proto))
+      await proxy.backEnd.bind(await uniqAddress(proto))
       proxy.frontEnd.close()
 
       try {
@@ -55,7 +55,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     })
 
     it("should fail if back end is not bound or connected", async function () {
-      await proxy.frontEnd.bind(uniqAddress(proto))
+      await proxy.frontEnd.bind(await uniqAddress(proto))
 
       try {
         await proxy.run()
@@ -71,8 +71,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     })
 
     it("should fail if back end is not open", async function () {
-      await proxy.frontEnd.bind(uniqAddress(proto))
-      await proxy.backEnd.bind(uniqAddress(proto))
+      await proxy.frontEnd.bind(await uniqAddress(proto))
+      await proxy.backEnd.bind(await uniqAddress(proto))
       proxy.backEnd.close()
 
       try {

@@ -26,7 +26,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("send/receive", function () {
       it("should deliver messages", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const messages = ["foo", "bar", "baz", "qux"]
         const receivedA: string[] = []
         const receivedB: string[] = []

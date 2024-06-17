@@ -16,8 +16,14 @@ export class Worker {
     await this.socket.send([null, Header.Worker, Message.Ready, this.service])
 
     const loop = async () => {
-      for await (const [blank1, header, type, client, blank2, ...req] of this
-        .socket) {
+      for await (const [
+        _blank1,
+        _header,
+        _type,
+        client,
+        _blank2,
+        ...req
+      ] of this.socket) {
         const rep = await this.process(...req)
         try {
           await this.socket.send([
@@ -34,7 +40,7 @@ export class Worker {
       }
     }
 
-    loop()
+    return loop()
   }
 
   async stop() {

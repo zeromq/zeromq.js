@@ -22,7 +22,9 @@ export class Processor {
       this.input.bind("inproc://input"),
       this.output.bind("inproc://output"),
       this.signal.bind("inproc://signal"),
-      new Promise(resolve => setTimeout(resolve, 100)),
+      new Promise(resolve => {
+        setTimeout(resolve, 100)
+      }),
     ])
 
     this.exit = Promise.all([ThreadedWorker.spawn(this.threads)])

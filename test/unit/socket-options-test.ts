@@ -194,7 +194,7 @@ describe("socket options", function () {
       process.on("warning", warning => warnings.push(warning))
 
       const sock = new zmq.Dealer()
-      sock.connect(uniqAddress("inproc"))
+      sock.connect(await uniqAddress("inproc"))
       sock.routingId = "asdf"
 
       await new Promise(process.nextTick)
@@ -212,7 +212,7 @@ describe("socket options", function () {
       process.on("warning", warning => warnings.push(warning))
 
       const sock = new zmq.Dealer()
-      const promise = sock.bind(uniqAddress("inproc"))
+      const promise = sock.bind(await uniqAddress("inproc"))
       sock.routingId = "asdf"
 
       await new Promise(process.nextTick)
@@ -231,7 +231,7 @@ describe("socket options", function () {
       process.on("warning", warning => warnings.push(warning))
 
       const sock = new zmq.Dealer()
-      await sock.bind(uniqAddress("inproc"))
+      await sock.bind(await uniqAddress("inproc"))
       sock.routingId = "asdf"
 
       await new Promise(process.nextTick)

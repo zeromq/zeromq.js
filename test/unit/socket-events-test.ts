@@ -42,7 +42,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       if (proto !== "inproc") {
         it("should receive bind events", async function () {
-          const address = uniqAddress(proto)
+          const address = await uniqAddress(proto)
 
           const [event] = await Promise.all([
             captureEvent(sockA, "bind"),
@@ -55,7 +55,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         it("should receive connect events", async function () {
           this.slow(250)
-          const address = uniqAddress(proto)
+          const address = await uniqAddress(proto)
 
           const [event] = await Promise.all([
             captureEvent(sockB, "connect"),
@@ -69,7 +69,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       if (proto === "tcp") {
         it("should receive error events", async function () {
-          const address = uniqAddress(proto)
+          const address = await uniqAddress(proto)
 
           await sockA.bind(address)
           const [event] = await Promise.all([
@@ -88,7 +88,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       }
 
       it("should receive events with emitter", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const events: zmq.Event[] = []
 
         sockA.events.on("bind", event => {

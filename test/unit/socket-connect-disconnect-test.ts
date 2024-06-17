@@ -52,7 +52,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       if (semver.satisfies(zmq.version, ">= 4.1")) {
         it("should allow setting routing id on router", async function () {
           sock = new zmq.Router({mandatory: true, linger: 0})
-          await sock.connect(uniqAddress(proto), {routingId: "remoteId"})
+          await sock.connect(await uniqAddress(proto), {routingId: "remoteId"})
           await sock.send(["remoteId", "hi"])
         })
       }
@@ -60,7 +60,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("disconnect", function () {
       it("should throw error if not connected to endpoint", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         try {
           await sock.disconnect(address)
           assert.ok(false)

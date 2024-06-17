@@ -60,7 +60,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should close after successful bind", async function () {
-        const promise = sock.bind(uniqAddress(proto))
+        const promise = sock.bind(await uniqAddress(proto))
         sock.close()
         assert.equal(sock.closed, false)
         await promise
@@ -68,7 +68,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should close after unsuccessful bind", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         await sock.bind(address)
         const promise = sock.bind(address)
         sock.close()
@@ -83,7 +83,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should close after successful unbind", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         await sock.bind(address)
         const promise = sock.unbind(address)
         sock.close()
@@ -93,7 +93,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should close after unsuccessful unbind", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const promise = sock.unbind(address)
         sock.close()
         assert.equal(sock.closed, false)
@@ -130,7 +130,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           context = undefined
 
           global.gc!()
-          socket.connect(uniqAddress(proto))
+          socket.connect(await uniqAddress(proto))
           await socket.send(Buffer.from("foo"))
           socket.close()
         }

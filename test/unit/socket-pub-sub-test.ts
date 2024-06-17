@@ -27,7 +27,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
                 -> qux ->
          */
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const messages = ["foo", "bar", "baz", "qux"]
         const received: string[] = []
 
@@ -70,7 +70,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
                 -> qux -X
          */
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         const messages = ["foo", "bar", "baz", "qux"]
         const received: string[] = []
 

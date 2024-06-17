@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+        "hbenl.vscode-mocha-test-adapter",
+        "hbenl.vscode-test-explorer",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "xadillax.gyp",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+    ]
+}

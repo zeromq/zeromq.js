@@ -18,7 +18,7 @@ export class Broker {
     await this.socket.bind(this.address)
 
     const loop = async () => {
-      for await (const [sender, blank, header, ...rest] of this.socket) {
+      for await (const [sender, _blank, header, ...rest] of this.socket) {
         switch (header.toString()) {
           case Header.Client:
             this.handleClient(sender, ...rest)
@@ -32,7 +32,7 @@ export class Broker {
       }
     }
 
-    loop()
+    return loop()
   }
 
   async stop() {
@@ -56,8 +56,10 @@ export class Broker {
       }
 
       case Message.Reply: {
-        const [client, blank, ...rep] = rest
-        this.dispatchReply(worker, client, ...rep)
+        const [client, _blank, ...rep] = rest
+        this.dispatchReply(worker, client, ...rep).catch(err => {
+          console.error(err)
+        })
         break
       }
 
@@ -85,7 +87,7 @@ export class Broker {
 
   dispatchReply(worker: Buffer, client: Buffer, ...rep: Buffer[]) {
     const service = this.getWorkerService(worker)
-    this.getService(service).dispatchReply(worker, client, ...rep)
+    return this.getService(service).dispatchReply(worker, client, ...rep)
   }
 
   deregister(worker: Buffer) {

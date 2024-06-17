@@ -1,6 +1,7 @@
 import * as path from "path"
 import * as semver from "semver"
 import * as fs from "fs"
+import * as lockfile from "proper-lockfile"
 
 import {spawn} from "child_process"
 
@@ -12,18 +13,63 @@ if (semver.satisfies(zmq.version, ">= 4.2")) {
   zmq.context.blocky = false
 }
 
-/* Windows cannot bind on a ports just above 1014; start higher to be safe. */
-let seq = 5000
+/**
+ * Get a unique id to be used as a port number or IPC path.
+ * This function is thread-safe and will use a lock file to ensure that the id is unique.
+ */
+let idFallback = 5000
+async function getUniqueId() {
+  const idPath = path.resolve(__dirname, "../../tmp/id")
+  await fs.promises.mkdir(path.dirname(idPath), {recursive: true})
+
+  try {
+    // Create the file if it doesn't exist
+    if (!fs.existsSync(idPath)) {
+      await fs.promises.writeFile(idPath, "5000", "utf8")
+
+      /* Windows cannot bind on a ports just above 1014; start higher to be safe. */
+      return 5000
+    }
+
+    await lockfile.lock(idPath, {retries: 10})
+
+    // Read the current number from the file
+    const idString = await fs.promises.readFile(idPath, "utf8")
+    let id = parseInt(idString, 10)
+
+    // Increment the number
+    id++
+
+    // Ensure the number is within the valid port range
+    if (id > 65535) {
+      idFallback++
+      id = idFallback
+    }
+
+    // Write the new number back to the file
+    await fs.promises.writeFile(idPath, id.toString(), "utf8")
+
+    return id
+  } catch (err) {
+    console.error(`Error getting unique id via id file: ${err}`)
+    return idFallback++
+  } finally {
+    // Release the lock
+    try {
+      await lockfile.unlock(idPath)
+    } catch {
+      // ignore
+    }
+  }
+}
 
 type Proto = "ipc" | "tcp" | "udp" | "inproc"
 
-export function uniqAddress(proto: Proto) {
-  const id = seq++
+export async function uniqAddress(proto: Proto) {
+  const id = await getUniqueId()
   switch (proto) {
     case "ipc": {
       const sock = path.resolve(__dirname, `../../tmp/${proto}-${id}`)
-      // create the directory
-      fs.mkdirSync(path.dirname(sock), {recursive: true})
 
       return `${proto}://${sock}`
     }
@@ -42,7 +88,7 @@ export function testProtos(...requested: Proto[]) {
   const set = new Set(requested)
 
   /* Do not test with ipc if unsupported. */
-  if (!zmq.capability.ipc) {
+  if (zmq.capability.ipc !== true) {
     set.delete("ipc")
   }
 
@@ -102,13 +148,19 @@ interface Result {
   code: number
   stdout: Buffer
   stderr: Buffer
+  is_timeout: boolean
 }
 
 export function createProcess(fn: () => void): Promise<Result> {
   const src = `
     const zmq = require(${JSON.stringify(path.resolve(__dirname, "../.."))})
     const fn = ${fn.toString()}
-    fn()
+    const result = fn()
+    if (result instanceof Promise) {
+      result.catch(err => {
+        throw err
+      })
+    }
   `
 
   const child = spawn(process.argv[0], ["--expose_gc"])
@@ -127,14 +179,27 @@ export function createProcess(fn: () => void): Promise<Result> {
   return new Promise((resolve, reject) => {
     child.on("close", (code: number, signal: string) => {
       if (signal) {
-        reject(new Error(`Child exited with ${signal}`))
+        reject(
+          new Error(
+            `Child exited with ${signal}:\n${stdout.toString()}\n${stderr.toString()}`,
+          ),
+        )
       } else {
-        resolve({code, stdout, stderr})
+        if (code !== 0) {
+          console.error(
+            `Child exited with code ${code}:\n${stdout.toString()}\n${stderr.toString()}`,
+          )
+        }
+
+        resolve({code, stdout, stderr, is_timeout: false})
       }
     })
 
     setTimeout(() => {
-      resolve({code: -1, stdout, stderr})
+      resolve({code: -1, stdout, stderr, is_timeout: true})
+      console.error(
+        `Child timed out\n${stdout.toString()}\n${stderr.toString()}`,
+      )
       child.kill()
     }, 750)
   })
@@ -144,7 +209,9 @@ export function captureEvent<E extends zmq.EventType>(
   socket: zmq.Socket,
   type: E,
 ): Promise<zmq.EventOfType<E>> {
-  return new Promise(resolve => socket.events.on<E>(type, resolve))
+  return new Promise(resolve => {
+    socket.events.on<E>(type, resolve)
+  })
 }
 
 export async function captureEventsUntil(

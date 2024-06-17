@@ -5,8 +5,7 @@ describe("typings", function () {
     /* To test the TypeScript typings this file should compile successfully.
        We don't actually execute the code in this function. */
 
-    /* @ts-ignore unused function */
-    function test() {
+    function _test() {
       const version: string = zmq.version
       console.log(version)
 
@@ -143,7 +142,9 @@ describe("typings", function () {
         proxy.backEnd.close()
       }
 
-      exec()
+      exec().catch(err => {
+        throw err
+      })
     }
   })
 })

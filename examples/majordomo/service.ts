@@ -15,7 +15,7 @@ export class Service {
 
   dispatchRequest(client: Buffer, ...req: Buffer[]) {
     this.requests.push([client, req])
-    this.dispatchPending()
+    return this.dispatchPending()
   }
 
   async dispatchReply(worker: Buffer, client: Buffer, ...rep: Buffer[]) {
@@ -28,12 +28,15 @@ export class Service {
 
     await this.socket.send([client, null, Header.Client, this.name, ...rep])
 
-    this.dispatchPending()
+    return this.dispatchPending()
   }
 
   async dispatchPending() {
     while (this.workers.size && this.requests.length) {
-      const [key, worker] = this.workers.entries().next().value!
+      const [key, worker] = this.workers.entries().next().value as [
+        string,
+        Buffer,
+      ]
       this.workers.delete(key)
       const [client, req] = this.requests.shift()!
 
@@ -42,6 +45,7 @@ export class Service {
           `${client.toString("hex")} req -> ${worker.toString("hex")}`,
       )
 
+      // eslint-disable-next-line no-await-in-loop
       await this.socket.send([
         worker,
         null,
@@ -59,7 +63,7 @@ export class Service {
       `registered worker ${worker.toString("hex")} for '${this.name}'`,
     )
     this.workers.set(worker.toString("hex"), worker)
-    this.dispatchPending()
+    return this.dispatchPending()
   }
 
   deregister(worker: Buffer) {
@@ -67,6 +71,6 @@ export class Service {
       `deregistered worker ${worker.toString("hex")} for '${this.name}'`,
     )
     this.workers.delete(worker.toString("hex"))
-    this.dispatchPending()
+    return this.dispatchPending()
   }
 }

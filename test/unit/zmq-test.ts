@@ -47,7 +47,7 @@ describe("zmq", function () {
 
   describe("version", function () {
     it("should return version string", function () {
-      if (process.env.ZMQ_VERSION) {
+      if (typeof process.env.ZMQ_VERSION === "string") {
         assert.equal(zmq.version, process.env.ZMQ_VERSION)
       } else {
         assert.match(zmq.version, /^\d+\.\d+\.\d+$/)
@@ -66,7 +66,7 @@ describe("zmq", function () {
 
   describe("curve keypair", function () {
     beforeEach(function () {
-      if (!zmq.capability.curve) {
+      if (zmq.capability.curve !== true) {
         this.skip()
       }
     })

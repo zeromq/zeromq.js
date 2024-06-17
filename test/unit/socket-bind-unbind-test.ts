@@ -19,12 +19,12 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("bind", function () {
       it("should resolve", async function () {
-        await sock.bind(uniqAddress(proto))
+        await sock.bind(await uniqAddress(proto))
         assert.ok(true)
       })
 
       it("should throw error if not bound to endpoint", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         try {
           await sock.unbind(address)
           assert.ok(false)
@@ -72,8 +72,11 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       it("should fail during other bind", async function () {
         let promise
         try {
-          promise = sock.bind(uniqAddress(proto))
-          await sock.bind(uniqAddress(proto))
+          const address = await uniqAddress(proto)
+          const address2 = await uniqAddress(proto)
+
+          promise = sock.bind(address)
+          await sock.bind(address2)
           assert.ok(false)
         } catch (err) {
           if (!isFullError(err)) {
@@ -92,7 +95,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
     describe("unbind", function () {
       it("should unbind", async function () {
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         await sock.bind(address)
         await sock.unbind(address)
         assert.ok(true)
@@ -130,7 +133,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       it("should fail during other unbind", async function () {
         let promise
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
         await sock.bind(address)
         try {
           promise = sock.unbind(address)
