@@ -3,15 +3,12 @@
   "include": [
     "**/*.ts"
   ],
-  "ts-node": {
-    "files": true
-  },
   "compilerOptions": {
     "types": [
       "mocha"
     ],
     "lib": [
-      "ESNext"
+      "ESNext",
     ]
   }
 }

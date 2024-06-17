@@ -93,7 +93,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       it("should copy and release small buffers", async function () {
         const gc = getGcOrSkipTest(this)
         let weakRef: undefined | WeakRef<any>
-        sockA.connect(uniqAddress(proto))
+        sockA.connect(await uniqAddress(proto))
         const send = async (size: number) => {
           const msg = Buffer.alloc(size)
           weakRef = new WeakRef(msg)
