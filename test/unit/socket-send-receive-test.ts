@@ -248,9 +248,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       it("should deliver messages coercible to string", async function () {
         const messages = [
           null,
-          function () {
-            // nothing
-          },
+          function () {},
           16.19,
           true,
           {},

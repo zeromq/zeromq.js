@@ -155,7 +155,12 @@ export function createProcess(fn: () => void): Promise<Result> {
   const src = `
     const zmq = require(${JSON.stringify(path.resolve(__dirname, "../.."))})
     const fn = ${fn.toString()}
-    fn()
+    const result = fn()
+    if (result instanceof Promise) {
+      result.catch(err => {
+        throw err
+      })
+    }
   `
 
   const child = spawn(process.argv[0], ["--expose_gc"])
