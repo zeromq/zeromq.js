@@ -248,15 +248,16 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       it("should deliver messages coercible to string", async function () {
         const messages = [
           null,
-          /* eslint-disable-next-line @typescript-eslint/no-empty-function */
-          function () {},
+          function () {
+            // nothing
+          },
           16.19,
           true,
           {},
           Promise.resolve(),
         ]
         for (const msg of messages) {
-          await sockA.send(msg as any)
+          await sockA.send(msg as zmq.MessageLike)
         }
 
         const received: string[] = []
@@ -440,10 +441,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
           const echo = async (sock: zmq.Pair) => {
             const msg = await sock.receive()
-            sock.send(msg)
+            await sock.send(msg)
           }
 
-          echo(sockB)
+          await echo(sockB)
 
           const [final] = await sockA.receive()
           final.writeUInt8(0x40, 0)

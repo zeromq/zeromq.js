@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-/* eslint-disable @typescript-eslint/no-var-requires */
-
 /* The API of the compatibility layer and parts of the implementation has been
    adapted from the original ZeroMQ.js version (up to 5.x) for which the license
    and copyright notice is reproduced below.

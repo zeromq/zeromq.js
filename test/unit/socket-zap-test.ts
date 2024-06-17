@@ -8,7 +8,7 @@ for (const proto of testProtos("tcp", "ipc")) {
   describe(`socket with ${proto} zap`, function () {
     let sockA: zmq.Pair
     let sockB: zmq.Pair
-    let handler: ZapHandler
+    let handler: ZapHandler | undefined
 
     beforeEach(function () {
       sockA = new zmq.Pair()
@@ -230,7 +230,9 @@ class ValidatingZapHandler extends ZapHandler {
   constructor(details: ZapDetails) {
     super()
     this.details = details
-    this.run()
+    this.run().catch(err => {
+      throw err
+    })
   }
 
   handle(request: Buffer[]) {
@@ -274,6 +276,8 @@ class CustomZapHandler extends ZapHandler {
   constructor(handler: ZapHandler["handle"]) {
     super()
     this.handle = handler
-    this.run()
+    this.run().catch(err => {
+      throw err
+    })
   }
 }

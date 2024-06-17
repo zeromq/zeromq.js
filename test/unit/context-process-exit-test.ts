@@ -33,7 +33,9 @@ describe("context process exit", function () {
       const {code, is_timeout} = await createProcess(() => {
         const socket1 = new zmq.Dealer()
         socket1.connect("inproc://foo")
-        socket1.receive()
+        socket1.receive().catch(err => {
+          throw err
+        })
       })
 
       assert.equal(code, -1)
@@ -46,7 +48,9 @@ describe("context process exit", function () {
         zmq.context.blocky = true
         const socket1 = new zmq.Dealer({linger: 1000})
         socket1.connect("tcp://127.0.0.1:4567")
-        socket1.send(null)
+        socket1.send(null).catch(err => {
+          throw err
+        })
       })
 
       if (semver.satisfies(zmq.version, ">= 4.2")) {
@@ -68,7 +72,9 @@ describe("context process exit", function () {
         zmq.context.blocky = false
         const socket1 = new zmq.Dealer({linger: 1000})
         socket1.connect("tcp://127.0.0.1:4567")
-        socket1.send(null)
+        socket1.send(null).catch(err => {
+          throw err
+        })
       })
 
       assert.match(
@@ -83,7 +89,9 @@ describe("context process exit", function () {
         zmq.context.blocky = true
         const socket1 = new zmq.Dealer({linger: 50})
         socket1.connect("tcp://127.0.0.1:4567")
-        socket1.send(null)
+        socket1.send(null).catch(err => {
+          throw err
+        })
       })
 
       assert.equal(stderr.toString(), "")

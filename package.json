@@ -103,7 +103,7 @@
     "format": "prettier --write .",
     "test.electron.renderer": "run-s build && electron-mocha --renderer",
     "lint.clang-format": "clang-format -i -style=file ./src/*.cc ./src/*.h ./src/util/*.h",
-    "lint-test.eslint": "eslint **/*.{ts,tsx,js,jsx,cjs,mjs,json,yaml} --no-error-on-unmatched-pattern --cache --cache-location ./.cache/eslint/",
+    "lint-test.eslint": "eslint ./**/*.{ts,tsx,js,jsx,cjs,mjs,json,yaml} --no-error-on-unmatched-pattern --cache --cache-location ./.cache/eslint/",
     "lint.eslint": "pnpm run lint-test.eslint --fix",
     "lint": "run-p lint.eslint lint.clang-format",
     "lint-test": "run-s lint-test.eslint",

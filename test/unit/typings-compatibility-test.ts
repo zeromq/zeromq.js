@@ -55,9 +55,9 @@ const srcStr = readFile(srcFile, "utf8").then(content => {
 const tscTestBasePath = path.resolve(__dirname, "..", "typings-compatibility")
 const templateSrcPath = path.resolve(tscTestBasePath, "template")
 
-function addLibs(libs: string[], targetList: string[]): string[] {
-  if (!targetList) {
-    targetList = libs
+function addLibs(libs: string[], targetList: string[] | undefined): string[] {
+  if (targetList === undefined) {
+    return libs
   } else {
     libs.forEach(l => {
       if (!targetList.find(e => e.toLowerCase() === l.toLowerCase())) {
@@ -153,7 +153,7 @@ async function prepareTestPackage(
       if (tsVer.requiredLibs) {
         tsConfig.compilerOptions.lib = addLibs(
           tsVer.requiredLibs,
-          tsConfig.compilerOptions.lib as string[],
+          tsConfig.compilerOptions.lib as string[] | undefined,
         )
       }
       return writeJson(path.resolve(tscTargetPath, "tsconfig.json"), tsConfig)

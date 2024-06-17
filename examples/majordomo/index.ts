@@ -4,7 +4,9 @@ import {Broker} from "./broker"
 import {Worker} from "./worker"
 
 async function sleep(msec: number) {
-  return new Promise(resolve => setTimeout(resolve, msec))
+  return new Promise(resolve => {
+    setTimeout(resolve, msec)
+  })
 }
 
 class TeaWorker extends Worker {
@@ -40,7 +42,7 @@ async function request(
   await socket.send(["MDPC01", service, ...req])
 
   try {
-    const [blank, header, ...res] = await socket.receive()
+    const [_blank, _header, ...res] = await socket.receive()
     console.log(`received '${res.join(", ")}' from '${service}'`)
     return res
   } catch (err) {
@@ -50,9 +52,9 @@ async function request(
 
 async function main() {
   for (const worker of workers) {
-    worker.start()
+    await worker.start()
   }
-  broker.start()
+  await broker.start()
 
   /* Requests are issued in parallel. */
   await Promise.all([
@@ -68,9 +70,9 @@ async function main() {
   ])
 
   for (const worker of workers) {
-    worker.stop()
+    await worker.stop()
   }
-  broker.stop()
+  await broker.stop()
 }
 
 main().catch(err => {

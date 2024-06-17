@@ -1,5 +1,10 @@
 {
   "extends": "../.eslintrc",
+  "ignorePatterns": [
+    "unit/compat/",
+    "bench/",
+    "node_modules"
+  ],
   "rules": {
     "no-invalid-this": "off",
     "no-inner-declarations": "off",
@@ -11,6 +16,8 @@
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
     "no-await-in-loop": "off",
+    "no-shadow": "off",
+    "@typescript-eslint/no-shadow": "off",
     "require-await": "off",
     "import/no-extraneous-dependencies": "off"
   }
