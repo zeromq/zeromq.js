@@ -148,6 +148,7 @@ interface Result {
   code: number
   stdout: Buffer
   stderr: Buffer
+  is_timeout: boolean
 }
 
 export function createProcess(fn: () => void): Promise<Result> {
@@ -173,15 +174,27 @@ export function createProcess(fn: () => void): Promise<Result> {
   return new Promise((resolve, reject) => {
     child.on("close", (code: number, signal: string) => {
       if (signal) {
-        reject(new Error(`Child exited with ${signal}`))
+        reject(
+          new Error(
+            `Child exited with ${signal}:\n${stdout.toString()}\n${stderr.toString()}`,
+          ),
+        )
       } else {
-        resolve({code, stdout, stderr})
+        if (code !== 0) {
+          console.error(
+            `Child exited with code ${code}:\n${stdout.toString()}\n${stderr.toString()}`,
+          )
+        }
+
+        resolve({code, stdout, stderr, is_timeout: false})
       }
     })
 
     setTimeout(() => {
-      resolve({code: -1, stdout, stderr})
-      console.warn("Process timeout")
+      resolve({code: -1, stdout, stderr, is_timeout: true})
+      console.error(
+        `Child timed out\n${stdout.toString()}\n${stderr.toString()}`,
+      )
       child.kill()
     }, 750)
   })
@@ -191,7 +204,9 @@ export function captureEvent<E extends zmq.EventType>(
   socket: zmq.Socket,
   type: E,
 ): Promise<zmq.EventOfType<E>> {
-  return new Promise(resolve => socket.events.on<E>(type, resolve))
+  return new Promise(resolve => {
+    socket.events.on<E>(type, resolve)
+  })
 }
 
 export async function captureEventsUntil(
