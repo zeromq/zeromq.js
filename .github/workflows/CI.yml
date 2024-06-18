@@ -148,7 +148,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: ./prebuilds
-          name: prebuild-${{ github.run_number }}-${{ github.run_attempt }}-${{ strategy.job-index }}
+          name: prebuilds-${{ strategy.job-index }}
+          overwrite: true
 
       - name: Lint
         if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
@@ -182,4 +183,4 @@ jobs:
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          pattern: prebuild-*
+          pattern: prebuilds-*
