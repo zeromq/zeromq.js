@@ -84,6 +84,7 @@
   "scripts": {
     "install": "(shx test -f ./script/build.js || run-s build.js) && cross-env npm_config_build_from_source=true aminya-node-gyp-build",
     "clean": "shx rm -rf ./build ./lib/ ./prebuilds ./script/*.js ./script/*.js.map ./script/*.d.ts ./script/*.tsbuildinfo",
+    "clean.release": "shx rm -rf ./build/Release",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp",
     "build.library": "tsc -p ./src/tsconfig.json",
     "build.script": "tsc -p ./script/tsconfig.json && tsc -p ./script/tsconfig.esm.json",

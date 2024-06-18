@@ -259,9 +259,9 @@ interface GCFunction {
   }): void | Promise<void>
 }
 
-export function getGcOrSkipTest(test: Mocha.Context) {
+export function getGcOrSkipTest(test?: Mocha.Context) {
   if (process.env.SKIP_GC_TESTS === "true") {
-    test.skip()
+    test?.skip()
   }
 
   const gc = global.gc as undefined | GCFunction

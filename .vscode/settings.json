@@ -3,5 +3,6 @@
   "mochaExplorer.globImplementation": "vscode",
   "mochaExplorer.nodeArgv": [
     "--expose-gc"
-  ]
+  ],
+  "mochaExplorer.debuggerConfig": "JS-Attach"
 }
