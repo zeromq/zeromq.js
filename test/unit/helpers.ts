@@ -264,10 +264,10 @@ export function getGcOrSkipTest(test: Mocha.Context) {
     test.skip()
   }
 
-  const gc = globalThis.gc as undefined | GCFunction
+  const gc = global.gc as undefined | GCFunction
   if (typeof gc !== "function") {
     throw new Error(
-      "Garbage collection is not exposed. It may be enabled by the node --expose-gc flag. To skip GC tests, set the environment variable `SKIP_GC_TESTS`",
+      "Garbage collection is not exposed. It may be enabled by the node --expose-gc flag or v8-expose-gc flag in Mocha. To skip GC tests, set the environment variable `SKIP_GC_TESTS`",
     )
   }
   // https://github.com/nodejs/node/blob/v20.0.0/deps/v8/src/extensions/gc-extension.h

@@ -91,7 +91,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       it("should copy and release small buffers", async function () {
         const gc = getGcOrSkipTest(this)
-        let weakRef: undefined | WeakRef<any>
+        let weakRef: undefined | WeakRef<Buffer>
         sockA.connect(await uniqAddress(proto))
         const send = async (size: number) => {
           const msg = Buffer.alloc(size)
@@ -107,7 +107,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       it("should retain large buffers", async function () {
         const gc = getGcOrSkipTest(this)
-        let weakRef: undefined | WeakRef<any>
+        let weakRef: undefined | WeakRef<Buffer>
 
         sockA.connect(await uniqAddress(proto))
         const send = async (size: number) => {
@@ -232,6 +232,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       it("should deliver messages coercible to string", async function () {
         const messages = [
           null,
+          // eslint-disable-next-line no-empty-function
           function () {},
           16.19,
           true,

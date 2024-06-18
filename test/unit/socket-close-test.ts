@@ -100,6 +100,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           await promise
           assert.ok(false)
         } catch (err) {
+          console.log(err)
           /* Ignore */
         }
         assert.equal(sock.closed, true)
@@ -109,7 +110,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const gc = getGcOrSkipTest(this)
         this.slow(200)
 
-        let weakRef: undefined | WeakRef<any>
+        let weakRef: undefined | WeakRef<zmq.Context>
 
         const task = async () => {
           const context: zmq.Context | undefined = new zmq.Context()
@@ -125,7 +126,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await gc()
 
         assert.isDefined(weakRef)
-        assert.isUndefined(weakRef!.deref())
+        assert.isUndefined(weakRef.deref())
       })
     })
 
@@ -137,7 +138,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
         this.slow(200)
 
-        let weakRef: undefined | WeakRef<any>
+        let weakRef: undefined | WeakRef<zmq.Context>
         const task = async () => {
           const context: zmq.Context | undefined = new zmq.Context()
           const _dealer = new zmq.Dealer({context, linger: 0})
@@ -148,7 +149,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await gc()
 
         assert.isDefined(weakRef)
-        assert.isUndefined(weakRef!.deref())
+        assert.isUndefined(weakRef.deref())
       })
     })
   })
