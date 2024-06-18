@@ -1,5 +1,3 @@
-/// <reference lib="ESNext" />
-
 import * as zmq from "../../src"
 
 import {assert} from "chai"
