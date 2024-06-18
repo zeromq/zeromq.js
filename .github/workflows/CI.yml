@@ -196,7 +196,7 @@ jobs:
       - if: ${{ matrix.pm }} == "npm"
         run: |
           npm install ${{ github.workspace }}/repo
-      
+
       - if: ${{ matrix.pm }} == "pnpm"
         run: |
           npm install -g pnpm
