@@ -1,3 +1,5 @@
+/// <reference lib="ESNext" />
+
 /* eslint-disable @typescript-eslint/no-var-requires */
 import * as zmq from "../../src"
 
