@@ -81,25 +81,75 @@ source:
 - CMake 2.8+
 - curl
 
-To install from source:
+To install from source, specify `build_from_source=true` in a `.npmrc` file
 
-```sh
-npm install zeromq@6.0.0-beta.20 --build-from-source
+```
+build_from_source=true
 ```
 
-If you want to link against a shared ZeroMQ library, you can build skip
-downloading `libzmq` and link with the installed library instead as follows:
+When building from source, you can also specify additional build options in a
+`.npmrc` file in your project:
 
-```sh
-npm install zeromq@6.0.0-beta.20 --zmq-shared
+<details>
+<summary>Available Build Options</summary>
+
+#### Draft support
+
+By default `libzmq` is built with support for `Draft` patterns (e.g.
+`server-client`, `radio-dish`, `scatter-gather`). If you want to build `libzmq`
+without support for `Draft`, you can specify the following in `.npmrc`:
+
+```
+zmq_draft=false
 ```
 
-If you wish to use any DRAFT sockets then it is also necessary to compile the
-library from source:
+#### Shared library support
 
-```sh
-npm install zeromq@6.0.0-beta.20 --zmq-draft
+If you want to link against a shared ZeroMQ library installed on your system,
+you can build skip downloading `libzmq` and link with the installed library
+instead by specifying the following in `.npmrc`:
+
+```ini
+zmq_shared=true
 ```
+
+#### Alternative libzmq version
+
+You can specify an alternative version or Git revision of `libzmq` to build
+against by specifying the following in `.npmrc`:
+
+```ini
+zmq_version="4.3.5"
+```
+
+#### Debug build of libzmq
+
+If you want to build `libzmq` with debug symbols, you can specify the following
+in `.npmrc`:
+
+```ini
+zmq_build_type="Debug"
+```
+
+#### Cross-compilation for different architectures
+
+If you want to cross-compile for a different architecture, you can specify the
+following in `.npmrc`:
+
+```ini
+arch="arm64"
+```
+
+#### MacOS Deployment Target
+
+If you want to specify the MacOS deployment target, you can specify the
+following in `.npmrc`:
+
+```ini
+macos_deployment_target="10.15"
+```
+
+</details>
 
 ## Examples
 

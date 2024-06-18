@@ -22,10 +22,8 @@ jobs:
           - x64
         cpp_arch:
           - x64
-        ARCH:
+        arch:
           - x64
-        zmq_draft:
-          - false
         docker:
           - ""
         docker_cmd:
@@ -35,30 +33,26 @@ jobs:
           - os: windows-2022
             node_version: 18
             node_arch: x86
-            ARCH: x86
+            arch: x86
             cpp_arch: amd64_x86
-            zmq_draft: false
 
           # - os: windows-2022
           #   node_version: 18
           #   node_arch: x64
-          #   ARCH: arm64
+          #   arch: arm64
           #   cpp_arch: amd64_arm64
-          #   zmq_draft: false
 
           - os: macos-13
             node_version: 18
             node_arch: x64
-            ARCH: x86_64
+            arch: x86_64
             cpp_arch: x64
-            zmq_draft: false
 
           - os: macos-14
             node_version: 18
             node_arch: arm64
-            ARCH: arm64
+            arch: arm64
             cpp_arch: amd64_arm64
-            zmq_draft: false
 
           # Alpine
           - os: ubuntu-22.04
@@ -69,14 +63,13 @@ jobs:
               build.prebuild
             node_version: 18
             node_arch: x64
-            ARCH: x64
+            arch: x64
             cpp_arch: x64
-            zmq_draft: false
 
     env:
-      ZMQ_DRAFT: ${{ matrix.zmq_draft }}
-      ZMQ_SHARED: false
-      ARCH: ${{ matrix.ARCH }}
+      npm_config_zmq_draft: false
+      npm_config_zmq_shared: false
+      npm_config_arch: ${{ matrix.arch }}
     steps:
       - uses: actions/checkout@v4
 
@@ -88,10 +81,10 @@ jobs:
             ./build/
           key:
             "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch
-            }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-Node:${{ matrix.node_version
-            }}-${{ hashFiles('./package.json') }}"
+            }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-Node:${{
+            matrix.node_version }}-${{ hashFiles('./package.json') }}"
           restore-keys: |
-            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ matrix.zmq_draft }}-Node:${{ matrix.node_version }}-"
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-Node:${{ matrix.node_version }}-"
 
       - name: Setup Cpp
         if: ${{ !matrix.docker }}
@@ -115,12 +108,12 @@ jobs:
           architecture: ${{ matrix.node_arch }}
 
       - name: Install Mac-OS x86_64 Dependencies
-        if: ${{ contains(matrix.os, 'macos') && matrix.ARCH == 'x86_64' }}
+        if: ${{ contains(matrix.os, 'macos') && matrix.arch == 'x86_64' }}
         run: |
           brew install libsodium gnutls
 
       - name: Install Mac-OS arm64 Dependencies
-        if: ${{ contains(matrix.os, 'macos') && matrix.ARCH == 'arm64' }}
+        if: ${{ contains(matrix.os, 'macos') && matrix.arch == 'arm64' }}
         run: |
           brew uninstall libsodium --force --ignore-dependencies
           source ./script/macos-arm-deps.sh
@@ -155,7 +148,7 @@ jobs:
         if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
         run: pnpm run lint-test
 
-      - name: Test (Debug)
+      - name: Test
         if: ${{ !matrix.docker }}
         uses: nick-fields/retry@v3
         with:

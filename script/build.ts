@@ -4,11 +4,62 @@ import {mkdir, cd, exec, find, mv} from "shelljs"
 
 const root = dirname(__dirname)
 
+type Options = {
+  zmq_shared: boolean
+  zmq_version: string
+  zmq_draft: boolean
+  zmq_build_type: string
+  arch: string
+  macosx_deployment_target?: string
+}
+
+function toBool(value: string | undefined): boolean | undefined {
+  switch (value) {
+    case "true":
+    case "1":
+      return true
+    case "false":
+    case "0":
+      return false
+    default:
+      return undefined
+  }
+}
+
+function toString(value: string | undefined): string | undefined {
+  switch (value) {
+    case undefined:
+    case "":
+      return undefined
+    default:
+      return value
+  }
+}
+
+function parseOptions(): Options {
+  return {
+    zmq_shared: toBool(process.env.npm_config_zmq_shared) ?? false,
+    zmq_draft: toBool(process.env.npm_config_zmq_draft) ?? false,
+    zmq_version:
+      toString(process.env.npm_config_zmq_version) ??
+      "5657b4586f24ec433930e8ece02ddba7afcf0fe0",
+    zmq_build_type:
+      toString(process.env.npm_config_zmq_build_type) ?? "Release",
+    arch: toString(process.env.npm_config_arch) ?? process.arch,
+    macosx_deployment_target:
+      toString(process.env.npm_config_macosx_deployment_target) ?? "10.15",
+  }
+}
+
 function main() {
-  const zmq_rev =
-    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
-    process.env.ZMQ_VERSION || "5657b4586f24ec433930e8ece02ddba7afcf0fe0"
-  const src_url = `https://github.com/zeromq/libzmq/archive/${zmq_rev}.tar.gz`
+  const opts = parseOptions()
+  console.log("Building libzmq with options ", opts)
+
+  if (opts.zmq_shared) {
+    return
+  }
+
+  const src_url = `https://github.com/zeromq/libzmq/archive/${opts.zmq_version}.tar.gz`
 
   const libzmq_build_prefix = `${root}/build/libzmq-staging`
   const libzmq_install_prefix = `${root}/build/libzmq`
@@ -17,29 +68,25 @@ function main() {
     process.platform === "win32" ? ".lib" : ".a"
   }`
 
-  const src_dir = `libzmq-${zmq_rev}`
-  const tarball = `libzmq-${zmq_rev}.tar.gz`
-
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
-  const CMAKE_BUILD_TYPE = process.env.CMAKE_BUILD_TYPE || "Release"
+  const src_dir = `libzmq-${opts.zmq_version}`
+  const tarball = `libzmq-${opts.zmq_version}.tar.gz`
 
   let build_options: string = ""
 
   // https://cmake.org/cmake/help/latest/variable/CMAKE_MSVC_RUNTIME_LIBRARY.html
   if (process.platform === "win32") {
-    if (CMAKE_BUILD_TYPE !== "Debug") {
+    if (opts.zmq_build_type !== "Debug") {
       build_options += " -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL"
     } else {
       build_options += " -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDebugDLL"
     }
   }
 
-  build_options += archCMakeOptions()
+  build_options += archCMakeOptions(opts)
 
   if (process.platform === "darwin") {
-    const MACOSX_DEPLOYMENT_TARGET = "10.15"
-    process.env.MACOSX_DEPLOYMENT_TARGET = MACOSX_DEPLOYMENT_TARGET
-    build_options += ` -DCMAKE_OSX_DEPLOYMENT_TARGET=${MACOSX_DEPLOYMENT_TARGET}`
+    process.env.MACOSX_DEPLOYMENT_TARGET = opts.macosx_deployment_target
+    build_options += ` -DCMAKE_OSX_DEPLOYMENT_TARGET=${opts.macosx_deployment_target}`
   }
 
   mkdir("-p", libzmq_build_prefix)
@@ -65,12 +112,12 @@ function main() {
     exec(`tar xzf "${tarball}"`, execOptions)
   }
 
-  if (process.env.ZMQ_DRAFT === "true") {
+  if (opts.zmq_draft) {
     console.log("Enabling draft support")
     build_options += " -DENABLE_DRAFTS=ON"
   }
 
-  console.log(`Building libzmq ${CMAKE_BUILD_TYPE}`)
+  console.log(`Building libzmq ${opts.zmq_build_type}`)
 
   // ClangFormat include causes issues but is not required to build.
   const clang_format_file = `${src_dir}/builds/cmake/Modules/ClangFormat.cmake`
@@ -78,11 +125,11 @@ function main() {
     writeFileSync(clang_format_file, "")
   }
 
-  const cmake_configure = `cmake -S "${src_dir}" -B ./build ${build_options} -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DCMAKE_INSTALL_PREFIX="${libzmq_install_prefix}" -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_STATIC=ON -DBUILD_TESTS=OFF -DBUILD_SHARED=OFF -DWITH_DOCS=OFF -DWITH_LIBSODIUM=OFF`
+  const cmake_configure = `cmake -S "${src_dir}" -B ./build ${build_options} -DCMAKE_BUILD_TYPE=${opts.zmq_build_type} -DCMAKE_INSTALL_PREFIX="${libzmq_install_prefix}" -DCMAKE_INSTALL_LIBDIR=lib -DBUILD_STATIC=ON -DBUILD_TESTS=OFF -DBUILD_SHARED=OFF -DWITH_DOCS=OFF -DWITH_LIBSODIUM=OFF`
   console.log(cmake_configure)
   exec(cmake_configure, execOptions)
 
-  const cmake_build = `cmake --build ./build --config ${CMAKE_BUILD_TYPE} --target install --parallel`
+  const cmake_build = `cmake --build ./build --config ${opts.zmq_build_type} --target install --parallel`
   console.log(cmake_build)
   exec(cmake_build, execOptions)
 
@@ -95,9 +142,8 @@ function main() {
 
 main()
 
-function archCMakeOptions() {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
-  const arch = (process.env.ARCH || process.arch).toLowerCase()
+function archCMakeOptions(opts: Options) {
+  const arch = opts.arch.toLowerCase()
 
   if (process.platform === "win32") {
     // CMAKE_GENERATOR_PLATFORM only supported on Windows
