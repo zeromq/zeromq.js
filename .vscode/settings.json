@@ -1,4 +1,8 @@
 {
   "mochaExplorer.parallel": true,
-  "mochaExplorer.globImplementation": "vscode"
+  "mochaExplorer.globImplementation": "vscode",
+  "mochaExplorer.nodeArgv": [
+    "--expose-gc"
+  ],
+  "mochaExplorer.debuggerConfig": "JS-Attach"
 }

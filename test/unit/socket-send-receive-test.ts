@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 import * as zmq from "../../src"
 
 import {assert} from "chai"
-import {testProtos, uniqAddress} from "./helpers"
+import {testProtos, uniqAddress, getGcOrSkipTest} from "./helpers"
 import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
@@ -91,51 +90,36 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should copy and release small buffers", async function () {
-        if (process.env.SKIP_GC_TESTS) {
-          this.skip()
-        }
-        const weak = require("weak-napi")
-
-        let released = false
+        const gc = getGcOrSkipTest(this)
+        let weakRef: undefined | WeakRef<Buffer>
         sockA.connect(await uniqAddress(proto))
         const send = async (size: number) => {
           const msg = Buffer.alloc(size)
-          weak(msg, () => {
-            released = true
-          })
+          weakRef = new WeakRef(msg)
           await sockA.send(msg)
         }
 
         await send(16)
-        global.gc?.()
-        await new Promise(resolve => {
-          setTimeout(resolve, 5)
-        })
-        assert.equal(released, true)
+        await gc()
+        assert.isDefined(weakRef)
+        assert.isUndefined(weakRef!.deref())
       })
 
       it("should retain large buffers", async function () {
-        if (process.env.SKIP_GC_TESTS) {
-          this.skip()
-        }
-        const weak = require("weak-napi")
+        const gc = getGcOrSkipTest(this)
+        let weakRef: undefined | WeakRef<Buffer>
 
-        let released = false
         sockA.connect(await uniqAddress(proto))
         const send = async (size: number) => {
           const msg = Buffer.alloc(size)
-          weak(msg, () => {
-            released = true
-          })
+          weakRef = new WeakRef(msg)
           await sockA.send(msg)
         }
 
         await send(1025)
-        global.gc?.()
-        await new Promise(resolve => {
-          setTimeout(resolve, 5)
-        })
-        assert.equal(released, false)
+        await gc()
+        assert.isDefined(weakRef)
+        assert.isDefined(weakRef.deref())
       })
     })
 
@@ -248,6 +232,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       it("should deliver messages coercible to string", async function () {
         const messages = [
           null,
+          // eslint-disable-next-line no-empty-function
           function () {},
           16.19,
           true,
@@ -342,20 +327,16 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should release buffers", async function () {
-        if (process.env.SKIP_GC_TESTS) {
-          this.skip()
-        }
-        const weak = require("weak-napi")
+        const gc = await getGcOrSkipTest(this)
+
+        const weakRefs: WeakRef<any>[] = []
 
         const n = 10
-        let released = 0
 
         const send = async (size: number) => {
           for (let i = 0; i < n; i++) {
             const msg = Buffer.alloc(size)
-            weak(msg, () => {
-              released++
-            })
+            weakRefs.push(new WeakRef(msg))
             await sockA.send(msg)
           }
         }
@@ -363,9 +344,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         const receive = async () => {
           for (let i = 0; i < n; i++) {
             const msg = await sockB.receive()
-            weak(msg, () => {
-              released++
-            })
+            weakRefs.push(new WeakRef(msg))
           }
         }
 
@@ -373,46 +352,41 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         /* Repeated GC to allow inproc messages from being collected. */
         for (let i = 0; i < 5; i++) {
-          global.gc?.()
+          await gc()
+
           await new Promise(resolve => {
             setTimeout(resolve, 2)
           })
         }
 
-        assert.equal(released, n * 2)
+        assert.equal(weakRefs.length, n * 2)
+        const unreleased = weakRefs.filter(x => x.deref() !== undefined)
+        assert.isEmpty(unreleased)
       })
 
       it("should release buffers after echo", async function () {
-        if (process.env.SKIP_GC_TESTS) {
-          this.skip()
-        }
-        const weak = require("weak-napi")
+        const gc = getGcOrSkipTest(this)
+
+        const weakRefs: WeakRef<any>[] = []
 
         const n = 10
-        let released = 0
 
         const echo = async () => {
           for (let i = 0; i < n; i++) {
             const [msg] = await sockB.receive()
             await sockB.send(msg)
-            weak(msg, () => {
-              released++
-            })
+            weakRefs.push(new WeakRef(msg))
           }
         }
 
         const send = async (size: number) => {
           for (let i = 0; i < n; i++) {
             const msg = Buffer.alloc(size)
-            weak(msg, () => {
-              released++
-            })
+            weakRefs.push(new WeakRef(msg))
             await sockA.send(msg)
 
             const [rep] = await sockA.receive()
-            weak(rep, () => {
-              released++
-            })
+            weakRefs.push(new WeakRef(rep))
           }
 
           sockA.close()
@@ -423,13 +397,14 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
         /* Repeated GC to allow inproc messages from being collected. */
         for (let i = 0; i < 5; i++) {
-          global.gc?.()
           await new Promise(resolve => {
             setTimeout(resolve, 2)
           })
+          await gc()
         }
 
-        assert.equal(released, n * 3)
+        assert.lengthOf(weakRefs, n * 3)
+        assert.isEmpty(weakRefs.filter(r => r.deref() !== undefined))
       })
 
       if (proto === "inproc") {

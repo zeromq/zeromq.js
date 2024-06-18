@@ -5,6 +5,7 @@
     "llvm-vs-code-extensions.vscode-clangd",
     "xadillax.gyp",
     "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "vadimcn.vscode-lldb"
   ]
 }
