@@ -189,6 +189,7 @@ jobs:
             pnpm install -g electron@latest
             xvfb-run --auto-servernum pnpm run test.electron.main
         continue-on-error: true
+
   merge-build:
     runs-on: ubuntu-latest
     needs: Build
@@ -199,3 +200,53 @@ jobs:
           name: build
           pattern: build-*
           delete-merged: true
+
+
+  smoke-test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        pm:
+          - npm
+          - yarn
+          - pnpm
+    steps:
+      - uses: actions/setup-node@v4
+      - run: |
+          npm init --init-module testproject -y
+          npm pkg set dependencies.zeromq='${{ github.repositoryUrl }}#${{ github.ref }}'
+
+      - if: ${{ matrix.pm == 'npm' }}
+        run: |
+          npm install
+        env:
+          NPM_CONFIG_LOGLEVEL: verbose
+
+      - if: ${{ matrix.pm == 'pnpm' }}
+        run: |
+          npm install -g pnpm
+          pnpm install
+        env:
+          NPM_CONFIG_LOGLEVEL: verbose
+
+      - if: ${{ matrix.pm == 'yarn' }}
+        run: |
+          npm install -g yarn
+          yarn set version stable
+          yarn install
+        env:
+          YARN_ENABLE_IMMUTABLE_INSTALLS: false
+          YARN_ENABLE_INLINE_BUILDS: true
+      - uses: actions/upload-artifact@v4
+        if: ${{ failure() && runner.os == 'Windows' }}
+        with:
+           name: logs-${{matrix.pm}}-${{runner.os}}
+           overwrite: true
+           path: |
+             C:\npm\cache\_logs\
+
