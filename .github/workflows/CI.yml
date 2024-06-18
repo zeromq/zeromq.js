@@ -148,7 +148,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: ./prebuilds
-          name: prebuilds-${{ github.run_number }}-${{ github.run_attempt }}
+          name: prebuilds-${{ github.run_number }}-${{ github.run_attempt }}-${{ github.job }}
 
       - name: Lint
         if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
