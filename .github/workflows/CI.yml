@@ -208,7 +208,6 @@ jobs:
           npm install -g yarn
           yarn set version stable
           yarn install
-          yarn config set logFilters --json '[{"pattern": "*", "level": "info"}]'
           yarn add zeromq@${{ github.workspace }}/repo
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
@@ -217,9 +216,11 @@ jobs:
         if: ${{ failure() }}
         with:
           name: logs-${{matrix.pm}}-${{runner.os}}
+          overwrite: true
           path: |
             .
             /npm/cache/_logs/
             /tmp/*/build.log
+            C:\npm\cache\_logs\
             
             
