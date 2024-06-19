@@ -19,7 +19,7 @@
     "script/*.js",
     "script/*.d.ts",
     "docs/",
-    "docs-raw/",
+    "doc-unminified/",
     "test/unit/compat/",
     "test/bench/"
   ]

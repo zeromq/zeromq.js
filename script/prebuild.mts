@@ -1,17 +1,9 @@
 import {execaCommandSync} from "execa"
+import * as buildUtils from "./utils.js"
+const {toString} = buildUtils
 
 type Options = {
   arch: string
-}
-
-function toString(value: string | undefined): string | undefined {
-  switch (value) {
-    case undefined:
-    case "":
-      return undefined
-    default:
-      return value
-  }
 }
 
 function parserOptions(): Options {

@@ -90,8 +90,10 @@ build_from_source=true
 When building from source, you can also specify additional build options in a
 `.npmrc` file in your project:
 
+### Available Build Options
+
 <details>
-<summary>Available Build Options</summary>
+<summary>👉🏻 Options</summary>
 
 #### Draft support
 
@@ -99,8 +101,17 @@ By default `libzmq` is built with support for `Draft` patterns (e.g.
 `server-client`, `radio-dish`, `scatter-gather`). If you want to build `libzmq`
 without support for `Draft`, you can specify the following in `.npmrc`:
 
-```
+```ini
 zmq_draft=false
+```
+
+#### Not Synchronous Resolve
+
+If you want to send/receive on the socket immediately, you can specify the
+following in `.npmrc`:
+
+```ini
+zmq_no_sync_resolve="true"
 ```
 
 #### Shared library support

@@ -5,5 +5,5 @@
     "moduleResolution": "node"
   },
   "include": ["./**/*.mts"],
-  "exclude": []
+  "exclude": ["./**/*.d.mts"]
 }
