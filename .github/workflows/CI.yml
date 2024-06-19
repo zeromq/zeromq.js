@@ -22,8 +22,6 @@ jobs:
           - x64
         cpp_arch:
           - x64
-        arch:
-          - x64
         docker:
           - ""
         docker_cmd:
@@ -32,8 +30,7 @@ jobs:
         include:
           - os: windows-2022
             node_version: 18
-            node_arch: x86
-            arch: x86
+            node_arch: ia32
             cpp_arch: amd64_x86
 
           # - os: windows-2022
@@ -45,13 +42,11 @@ jobs:
           - os: macos-13
             node_version: 18
             node_arch: x64
-            arch: x86_64
             cpp_arch: x64
 
           - os: macos-14
             node_version: 18
             node_arch: arm64
-            arch: arm64
             cpp_arch: amd64_arm64
 
           # Alpine
@@ -63,14 +58,13 @@ jobs:
               build.prebuild
             node_version: 18
             node_arch: x64
-            arch: x64
             cpp_arch: x64
 
     env:
       npm_config_zmq_draft: false
       npm_config_zmq_shared: false
-      npm_config_arch: ${{ matrix.arch }}
-      npm_config_target_arch: ${{ matrix.arch }}
+      npm_config_arch: ${{ matrix.node_arch }}
+      npm_config_target_arch: ${{ matrix.node_arch }}
     steps:
       - uses: actions/checkout@v4
 
@@ -81,9 +75,8 @@ jobs:
             ./node_modules/
             ./build/
           key:
-            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch
-            }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-Node:${{
-            matrix.node_version }}-${{ hashFiles('./package.json') }}"
+            # prettier-ignore
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-ZMQ_DRAFT:${{env.npm_config_zmq_draft }}-Node:${{ matrix.node_version}}-${{hashFiles('./package.json') }}"
           restore-keys: |
             "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-Node:${{ matrix.node_version }}-"
 
@@ -109,18 +102,17 @@ jobs:
           architecture: ${{ matrix.node_arch }}
 
       - name: Install Mac-OS x86_64 Dependencies
-        if: ${{ contains(matrix.os, 'macos') && matrix.arch == 'x86_64' }}
+        if: ${{ contains(matrix.os, 'macos') && matrix.node_arch == 'x64' }}
         run: |
           brew install libsodium gnutls
 
       - name: Install Mac-OS arm64 Dependencies
-        if: ${{ contains(matrix.os, 'macos') && matrix.arch == 'arm64' }}
+        if: ${{ contains(matrix.os, 'macos') && matrix.node_arch == 'arm64' }}
         run: |
           brew uninstall libsodium --force --ignore-dependencies
           source ./script/macos-arm-deps.sh
           echo "PATH=$PATH" >> $GITHUB_ENV
           echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
-          echo "npm_config_target_arch=$npm_config_target_arch" >> $GITHUB_ENV
 
       - name: Install Dependencies and Build
         if: ${{ !matrix.docker }}
