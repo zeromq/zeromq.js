@@ -209,7 +209,7 @@ jobs:
           yarn set version stable
           yarn install
           yarn config set logFilters --json '[{"pattern": "*", "level": "info"}]'
-          yarn add file://${{ github.workspace }}/repo
+          yarn add zeromq@${{ github.workspace }}/repo
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
 
