@@ -145,9 +145,11 @@ jobs:
           docker run --volume ${{ github.workspace }}:/app --workdir /app --privileged builder sh -c "${{ matrix.docker_cmd }}"
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           path: ./prebuilds
+          name: prebuilds-${{ strategy.job-index }}
+          overwrite: true
 
       - name: Lint
         if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
@@ -174,3 +176,13 @@ jobs:
             pnpm install -g electron@latest
             xvfb-run --auto-servernum pnpm run test.electron.main
         continue-on-error: true
+  merge-prebuilds:
+    runs-on: ubuntu-latest
+    needs: Build
+    steps:
+      - name: Merge Artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: prebuilds
+          pattern: prebuilds-*
+          delete-merged: true
