@@ -27,6 +27,11 @@ async function main() {
 
   const prebuildArch = getNodearch(opts)
 
+  process.env.ARCH = prebuildArch
+  process.env.npm_config_arch = prebuildArch
+  process.env.npm_config_target_arch = prebuildArch
+  process.env.PREBUILD_arch = prebuildArch
+
   // TODO test the triple feature
   if (typeof process.env.TRIPLE === "string") {
     const TRIPLE = process.env.TRIPLE
@@ -37,10 +42,6 @@ async function main() {
 
     const STRIP = `${TRIPLE}-strip`
     process.env.PREBUILD_STRIP_BIN = STRIP
-
-    process.env.npm_config_arch = prebuildArch
-    process.env.npm_config_target_arch = prebuildArch
-    process.env.PREBUILD_arch = prebuildArch
 
     process.env.ZMQ_BUILD_OPTIONS = `--host=${TRIPLE}`
   }
@@ -57,6 +58,7 @@ async function main() {
   }
 
   execaCommandSync(prebuildScript, {
+    env: process.env,
     shell: true,
     windowsHide: true,
     stdio: "inherit",
