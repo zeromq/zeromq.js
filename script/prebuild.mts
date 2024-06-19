@@ -1,10 +1,33 @@
 import {execaCommandSync} from "execa"
 
+type Options = {
+  arch: string
+}
+
+function toString(value: string | undefined): string | undefined {
+  switch (value) {
+    case undefined:
+    case "":
+      return undefined
+    default:
+      return value
+  }
+}
+
+function parserOptions(): Options {
+  return {
+    arch: toString(process.env.npm_config_arch) ?? process.arch,
+  }
+}
+
 async function main() {
-  console.log("Building distribution binary...")
+  const opts = parserOptions()
 
-  const prebuildArch = getNodearch()
+  console.log("Building distribution binary with options ", opts)
 
+  const prebuildArch = getNodearch(opts)
+
+  // TODO test the triple feature
   if (typeof process.env.TRIPLE === "string") {
     const TRIPLE = process.env.TRIPLE
 
@@ -45,10 +68,8 @@ main().catch(e => {
   throw e
 })
 
-function getNodearch(): string {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
-  const arch = process.env.ARCH || process.arch
-  switch (arch) {
+function getNodearch(opts: Options): string {
+  switch (opts.arch) {
     case "x86": {
       return "ia32"
     }
@@ -56,7 +77,7 @@ function getNodearch(): string {
       return "x64"
     }
     default: {
-      return arch
+      return opts.arch
     }
   }
 }
