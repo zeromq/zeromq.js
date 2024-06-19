@@ -196,7 +196,7 @@ jobs:
 
       - if: ${{ matrix.pm == 'npm' }}
         run: |
-          npm install {{ github.workspace }}/repo
+          npm install ${{ github.workspace }}/repo
         env:
           NPM_CONFIG_LOGLEVEL: verbose
 
