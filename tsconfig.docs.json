@@ -9,6 +9,7 @@
   "exclude": [
     "script/**/*",
     "test/**/*",
+    "build/**/*",
     "examples/**/*",
     "src/errors.ts",
     "src/util.ts"

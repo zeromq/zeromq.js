@@ -5,6 +5,7 @@
     "target": "es2020",
     "declaration": true,
     "module": "commonjs",
+    "moduleResolution": "node",
     "types": [
       "node",
       "mocha"
