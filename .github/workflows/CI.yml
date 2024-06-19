@@ -65,6 +65,7 @@ jobs:
       npm_config_zmq_shared: false
       npm_config_arch: ${{ matrix.node_arch }}
       npm_config_target_arch: ${{ matrix.node_arch }}
+      setup_node_arch: ${{ matrix.node_arch }}
     steps:
       - uses: actions/checkout@v4
 
@@ -79,6 +80,13 @@ jobs:
             "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-ZMQ_DRAFT:${{env.npm_config_zmq_draft }}-Node:${{ matrix.node_version}}-${{hashFiles('./package.json') }}"
           restore-keys: |
             "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-Node:${{ matrix.node_version }}-"
+
+      - name: Env map
+        run: |
+            if [ "${{ matrix.node_arch }}" = "ia32" ]; then
+              echo "setup_node_arch=x86" > $GITHUB_ENV
+            fi
+        shell: bash
 
       - name: Setup Cpp
         if: ${{ !matrix.docker }}
@@ -99,7 +107,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
-          architecture: ${{ matrix.node_arch }}
+          architecture: ${{ env.setup_node_arch }}
 
       - name: Install Mac-OS x86_64 Dependencies
         if: ${{ contains(matrix.os, 'macos') && matrix.node_arch == 'x64' }}
