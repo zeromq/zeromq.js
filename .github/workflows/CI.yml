@@ -196,16 +196,16 @@ jobs:
       - uses: actions/setup-node@v4
       - run: npm init -y
 
-      - if: ${{ matrix.pm == "npm" }}
+      - if: ${{ matrix.pm == 'npm' }}
         run: |
           npm install ${{ github.workspace }}/repo
 
-      - if: ${{ matrix.pm == "pnpm" }}
+      - if: ${{ matrix.pm == 'pnpm' }}
         run: |
           npm install -g pnpm
           pnpm add ${{ github.workspace }}/repo
 
-      - if: ${{ matrix.pm == "yarn" }}
+      - if: ${{ matrix.pm == 'yarn' }}
         run: |
           npm install -g yarn
           yarn set version stable
