@@ -192,7 +192,7 @@ jobs:
         with:
           path: repo
       - uses: actions/setup-node@v4
-      - run: npm init -y
+      - run: npm init --init-module testproject -y 
 
       - if: ${{ matrix.pm == 'npm' }}
         run: |
