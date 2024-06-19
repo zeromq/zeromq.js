@@ -175,6 +175,8 @@ jobs:
             xvfb-run --auto-servernum pnpm run test.electron.main
         continue-on-error: true
   smoke-test:
+    env:
+      DEBUG: '*'
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
