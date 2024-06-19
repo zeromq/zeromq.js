@@ -70,7 +70,7 @@ jobs:
       npm_config_zmq_draft: false
       npm_config_zmq_shared: false
       npm_config_arch: ${{ matrix.arch }}
-      ARCH: ${{ matrix.arch }}
+      npm_config_target_arch: ${{ matrix.arch }}
     steps:
       - uses: actions/checkout@v4
 

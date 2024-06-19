@@ -149,6 +149,7 @@ following in `.npmrc`:
 
 ```ini
 arch="arm64"
+target_arch="arm64"
 ```
 
 #### MacOS Deployment Target
