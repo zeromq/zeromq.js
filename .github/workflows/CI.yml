@@ -196,12 +196,16 @@ jobs:
 
       - if: ${{ matrix.pm == 'npm' }}
         run: |
-          npm install ${{ github.workspace }}/repo
+          npm install {{ github.workspace }}/repo
+        env:
+          NPM_CONFIG_LOGLEVEL: verbose
 
       - if: ${{ matrix.pm == 'pnpm' }}
         run: |
           npm install -g pnpm
           pnpm add ${{ github.workspace }}/repo
+        env:
+          NPM_CONFIG_LOGLEVEL: verbose
 
       - if: ${{ matrix.pm == 'yarn' }}
         run: |
@@ -211,6 +215,7 @@ jobs:
           yarn add zeromq@${{ github.workspace }}/repo
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
+          YARN_ENABLE_INLINE_BUILDS: true
 
       - uses: actions/upload-artifact@v4
         if: ${{ failure() }}
