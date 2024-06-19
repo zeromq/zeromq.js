@@ -15,18 +15,12 @@ importers:
       '@aminya/node-gyp-build':
         specifier: 4.8.1-aminya.1
         version: 4.8.1-aminya.1
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
       node-addon-api:
         specifier: ^7.1.0
         version: 7.1.0
       shelljs:
         specifier: ^0.8.5
         version: 0.8.5
-      shx:
-        specifier: ^0.3.4
-        version: 0.3.4
     devDependencies:
       '@types/chai':
         specifier: ^4.3.16
@@ -58,6 +52,9 @@ importers:
       chai:
         specifier: ^4.4.1
         version: 4.4.1
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       deasync:
         specifier: ^0.1.30
         version: 0.1.30
@@ -109,6 +106,9 @@ importers:
       semver:
         specifier: ^7.6.2
         version: 7.6.2
+      shx:
+        specifier: ^0.3.4
+        version: 0.3.4
       ts-node:
         specifier: ~10.9.2
         version: 10.9.2(@types/node@20.14.3)(typescript@4.9.5)
