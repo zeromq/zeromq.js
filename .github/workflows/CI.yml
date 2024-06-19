@@ -196,12 +196,12 @@ jobs:
 
       - if: ${{ matrix.pm == 'npm' }}
         run: |
-          npm install ${{ github.workspace }}/repo --loglevel verbose --foreground-scripts
+          npm install ${{ github.workspace }}/repo
 
       - if: ${{ matrix.pm == 'pnpm' }}
         run: |
           npm install -g pnpm
-          pnpm add ${{ github.workspace }}/repo --loglevel verbose
+          pnpm add ${{ github.workspace }}/repo
 
       - if: ${{ matrix.pm == 'yarn' }}
         run: |
@@ -209,6 +209,17 @@ jobs:
           yarn set version stable
           yarn install
           yarn config set logFilters --json '[{"pattern": "*", "level": "info"}]'
-          yarn add ${{ github.workspace }}/repo --loglevel verbose --foreground-scripts
+          yarn add file://${{ github.workspace }}/repo
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: logs-${{matrix.pm}}-${{runner.os}}
+          path: |
+            .
+            /npm/cache/_logs/
+            /tmp/*/build.log
+            
+            
