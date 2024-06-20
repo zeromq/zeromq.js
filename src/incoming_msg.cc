@@ -1,4 +1,4 @@
-/* Copyright (c) 2017-2019 Rolf Timmermans */
+
 #include "./incoming_msg.h"
 
 #include <cassert>

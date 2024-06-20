@@ -3,7 +3,7 @@
   "name": "zeromq.js",
   "entryPoints": ["./src/index.ts"],
   "tsconfig": "./tsconfig.docs.json",
-  "out": "docs-raw",
+  "out": "docs-unminified",
   "excludePrivate": true,
   "excludeExternals": false,
   "exclude": [

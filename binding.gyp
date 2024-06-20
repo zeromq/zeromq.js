@@ -12,24 +12,19 @@
     {
       'target_name': 'libzmq',
       'type': 'none',
-
-      'conditions': [
-        ["zmq_shared == 'false'", {
-          'actions': [{
-            'action_name': 'build_libzmq',
-            'inputs': [],
-            'conditions': [
-              ['OS != "win"', {
-                'outputs': ['<(module_root_dir)/build/libzmq/lib/libzmq.a', '<(module_root_dir)/build/libzmq/include/zmq.h', '<(module_root_dir)/build/libzmq/include/zmq_utils.h'],
-              }],
-              ['OS == "win"', {
-                'outputs': ['<(module_root_dir)/build/libzmq/lib/libzmq.lib', '<(module_root_dir)/build/libzmq/include/zmq.h', '<(module_root_dir)/build/libzmq/include/zmq_utils.h'],
-              }],
-            ],
-            'action': ['node', '<(module_root_dir)/script/build.js'],
+      'actions': [{
+        'action_name': 'build_libzmq',
+        'inputs': [],
+        'conditions': [
+          ['OS != "win"', {
+            'outputs': ['<(module_root_dir)/build/libzmq/lib/libzmq.a', '<(module_root_dir)/build/libzmq/include/zmq.h', '<(module_root_dir)/build/libzmq/include/zmq_utils.h'],
           }],
-        }],
-      ],
+          ['OS == "win"', {
+            'outputs': ['<(module_root_dir)/build/libzmq/lib/libzmq.lib', '<(module_root_dir)/build/libzmq/include/zmq.h', '<(module_root_dir)/build/libzmq/include/zmq_utils.h'],
+          }],
+        ],
+        'action': ['node', '<(module_root_dir)/script/build.js'],
+      }],
     },
 
     {

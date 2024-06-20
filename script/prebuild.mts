@@ -1,10 +1,30 @@
 import {execaCommandSync} from "execa"
+import * as buildUtils from "./utils.js"
+const {toString} = buildUtils
+
+type Options = {
+  arch: string
+}
+
+function parserOptions(): Options {
+  return {
+    arch: toString(process.env.npm_config_arch) ?? process.arch,
+  }
+}
 
 async function main() {
-  console.log("Building distribution binary...")
+  const opts = parserOptions()
 
-  const prebuildArch = getNodearch()
+  console.log("Building distribution binary with options ", opts)
 
+  const prebuildArch = getNodearch(opts)
+
+  process.env.ARCH = prebuildArch
+  process.env.npm_config_arch = prebuildArch
+  process.env.npm_config_target_arch = prebuildArch
+  process.env.PREBUILD_arch = prebuildArch
+
+  // TODO test the triple feature
   if (typeof process.env.TRIPLE === "string") {
     const TRIPLE = process.env.TRIPLE
 
@@ -14,10 +34,6 @@ async function main() {
 
     const STRIP = `${TRIPLE}-strip`
     process.env.PREBUILD_STRIP_BIN = STRIP
-
-    process.env.npm_config_arch = prebuildArch
-    process.env.npm_config_target_arch = prebuildArch
-    process.env.PREBUILD_arch = prebuildArch
 
     process.env.ZMQ_BUILD_OPTIONS = `--host=${TRIPLE}`
   }
@@ -34,6 +50,7 @@ async function main() {
   }
 
   execaCommandSync(prebuildScript, {
+    env: process.env,
     shell: true,
     windowsHide: true,
     stdio: "inherit",
@@ -45,10 +62,8 @@ main().catch(e => {
   throw e
 })
 
-function getNodearch(): string {
-  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing, @typescript-eslint/strict-boolean-expressions
-  const arch = process.env.ARCH || process.arch
-  switch (arch) {
+function getNodearch(opts: Options): string {
+  switch (opts.arch) {
     case "x86": {
       return "ia32"
     }
@@ -56,7 +71,7 @@ function getNodearch(): string {
       return "x64"
     }
     default: {
-      return arch
+      return opts.arch
     }
   }
 }
