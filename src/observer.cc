@@ -1,4 +1,4 @@
-/* Copyright (c) 2017-2019 Rolf Timmermans */
+
 #include "./observer.h"
 
 #include "./context.h"
