@@ -215,8 +215,7 @@ jobs:
           npm install -g yarn
           yarn set version stable
           yarn install
-          # seems like yarn doesn't like using pull request branches of the form #pull/<number>/merge
-          yarn add "zeromq@${{ github.repositoryUrl }}#${{ github.head_ref || github.ref}}"
+          yarn add "zeromq@${{ github.repositoryUrl }}#${{ github.ref }}"
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
           YARN_ENABLE_INLINE_BUILDS: true
