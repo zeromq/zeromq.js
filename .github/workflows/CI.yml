@@ -201,7 +201,7 @@ jobs:
           - pnpm
     steps:
       - uses: actions/setup-node@v4
-      - run: npm init --init-module testproject -y 
+      - run: npm init --init-module testproject -y
 
       - if: ${{ matrix.pm == 'npm' }}
         run: |
@@ -225,11 +225,11 @@ jobs:
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
           YARN_ENABLE_INLINE_BUILDS: true
-            - uses: actions/upload-artifact@v4
-       - if: ${{ failure() && runner.os == 'Windows' }}
-         with:
+      - uses: actions/upload-artifact@v4
+        if: ${{ failure() && runner.os == 'Windows' }}
+        with:
            name: logs-${{matrix.pm}}-${{runner.os}}
            overwrite: true
            path: |
              C:\npm\cache\_logs\
-            
+
