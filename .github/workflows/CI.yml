@@ -197,7 +197,7 @@ jobs:
       - uses: actions/setup-node@v4
       - run: |
           npm init --init-module testproject -y
-          npm pkg set dependencies.zeromq/"${{ github.repositoryUrl }}#refs/${{ github.ref }}"
+          npm pkg set dependencies.zeromq='${{ github.repositoryUrl }}#refs/${{ github.ref }}'
 
       - if: ${{ matrix.pm == 'npm' }}
         run: |
