@@ -195,18 +195,20 @@ jobs:
           - pnpm
     steps:
       - uses: actions/setup-node@v4
-      - run: npm init --init-module testproject -y
+      - run: |
+          npm init --init-module testproject -y
+          npm pkg set dependencies.zeromq/"${{ github.repositoryUrl }}#refs/${{ github.ref }}"
 
       - if: ${{ matrix.pm == 'npm' }}
         run: |
-          npm install "${{ github.repositoryUrl }}#${{ github.ref }}"
+          npm install
         env:
           NPM_CONFIG_LOGLEVEL: verbose
 
       - if: ${{ matrix.pm == 'pnpm' }}
         run: |
           npm install -g pnpm
-          pnpm add "${{ github.repositoryUrl }}#${{ github.ref }}"
+          pnpm install
         env:
           NPM_CONFIG_LOGLEVEL: verbose
 
@@ -215,7 +217,6 @@ jobs:
           npm install -g yarn
           yarn set version stable
           yarn install
-          yarn add "zeromq@${{ github.repositoryUrl }}#${{ github.ref }}"
         env:
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
           YARN_ENABLE_INLINE_BUILDS: true
