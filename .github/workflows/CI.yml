@@ -199,7 +199,7 @@ jobs:
 
       - if: ${{ matrix.pm == 'npm' }}
         run: |
-          npm install "git+${{ github.repositoryUrl }}#${{ github.ref }}"
+          npm install "${{ github.repositoryUrl }}#${{ github.ref }}"
         env:
           NPM_CONFIG_LOGLEVEL: verbose
 
