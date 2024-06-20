@@ -1,4 +1,4 @@
-/* Copyright (c) 2017-2019 Rolf Timmermans */
+
 #include "./outgoing_msg.h"
 
 #include "./module.h"

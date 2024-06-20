@@ -1,4 +1,4 @@
-/* Copyright (c) 2017-2019 Rolf Timmermans */
+
 
 #define NOMINMAX  // prevent minwindef.h from defining max macro in the debug build
 
