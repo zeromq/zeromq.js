@@ -64,7 +64,12 @@
 
         ["zmq_shared == 'true'", {
           'link_settings': {
-            'libraries': ['-lzmq'],
+            'ldflags': [
+              '<!(pkg-config --libs-only-other --libs-only-L libzmq)'
+            ],
+            'libraries': [
+              '<!(pkg-config --libs-only-l libzmq)'
+            ],
           },
         }, {
           'conditions': [
