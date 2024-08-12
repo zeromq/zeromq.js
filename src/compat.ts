@@ -901,6 +901,7 @@ export {
   version,
   Context,
   Socket,
+  SocketType,
   createSocket as socket,
   createSocket,
   curveKeypair,
