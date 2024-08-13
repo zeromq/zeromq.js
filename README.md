@@ -2,10 +2,6 @@
 
 [![Latest version](https://img.shields.io/npm/v/zeromq?label=version)](https://www.npmjs.com/package/zeromq)
 
-## ⚠️ Version 6.0.0 (in beta) features a brand new API that solves many fundamental issues and is recommended for new projects. ⚠️
-
-## ⚠️ For the current stable version see the [5.x branch](https://github.com/zeromq/zeromq.js/tree/5.x) ⚠️
-
 [ØMQ](http://zeromq.org) bindings for Node.js. The goals of this library are:
 
 - Semantically similar to the [native](https://github.com/zeromq/libzmq) ØMQ
@@ -43,7 +39,7 @@
 Install **ZeroMQ.js** with prebuilt binaries:
 
 ```sh
-npm install zeromq@6.0.0-beta.20
+npm install zeromq
 ```
 
 Requirements for using prebuilt binaries:
