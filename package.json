@@ -126,6 +126,6 @@
     "addon",
     "napi"
   ],
-  "license": "MIT",
+  "license": "MIT AND MPL-2.0",
   "author": "Amin Yahyaabadi <aminyahyaabadi74@gmail.com>, Rolf Timmermans <rolf@zxcv.nl>"
 }

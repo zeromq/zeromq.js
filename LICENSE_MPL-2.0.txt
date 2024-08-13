@@ -1,0 +1,7 @@
+This library ships `libzmq` binaries that are licensed under MPL-2.0:
+
+https://github.com/zeromq/libzmq/blob/master/LICENSE
+
+The source code for `libzmq` is available at:
+
+https://github.com/zeromq/libzmq
