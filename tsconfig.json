@@ -6,10 +6,7 @@
     "declaration": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "types": [
-      "node",
-      "mocha"
-    ],
+    "forceConsistentCasingInFileNames": true,
     "strictPropertyInitialization": false, // TODO
     "strict": true,
     "strictNullChecks": true,
