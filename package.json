@@ -3,10 +3,10 @@
   "version": "6.0.2",
   "description": "Next-generation ZeroMQ bindings for Node.js",
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
   "type": "commonjs",
+  "types": "lib/index.d.ts",
   "typesVersions": {
-    ">=3.7": {
+    "<=3.7": {
       "lib/*": [
         "lib/ts3.7/*"
       ]
@@ -82,11 +82,14 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "install": "(npm run build.js || echo __skipping_js_build__) && cross-env npm_config_build_from_source=true aminya-node-gyp-build",
-    "clean": "shx rm -rf ./build ./lib/ ./prebuilds ./script/*.js ./script/*.mjs ./script/*.js.map ./script/*.mjs.map ./script/*.d.ts ./script/*.d.mts ./script/*.cjs ./scripts/*.cjs.map ./scripts/*.d.cts ./script/*.tsbuildinfo",
+    "install": "cross-env npm_config_build_from_source=true aminya-node-gyp-build",
+    "prepare": "pnpm run build.js",
+    "clean": "shx rm -rf ./build ./lib/ ./prebuilds",
+    "clean.script": "shx rm -rf ./script/*.js ./script/*.mjs ./script/*.js.map ./script/*.mjs.map ./script/*.d.ts ./script/*.d.mts ./script/*.cjs ./scripts/*.cjs.map ./scripts/*.d.cts ./script/*.tsbuildinfo",
     "clean.release": "shx rm -rf ./build/Release",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp",
-    "build.library": "tsc -p ./src/tsconfig.json",
+    "build.library": "tsc -p ./src/tsconfig.json && run-s build.downlevel",
+    "build.downlevel": "downlevel-dts ./lib ./lib/ts3.7",
     "build.script": "tsc -p ./script/tsconfig.esm.json && tsc -p ./script/tsconfig.json",
     "build.js": "run-p build.script build.library",
     "build.doc": "typedoc --options ./typedoc.json && minify-all -s docs-unminified -d docs --jsCompressor terser && shx rm -rf docs-unminified",

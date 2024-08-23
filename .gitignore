@@ -13,7 +13,6 @@ build-tmp-napi-v*
 test.js
 .cache/
 test/typings-compatibility/
-/script/*js
 /script/*.d.ts
 /script/*.d.*ts
 /script/*js.map
