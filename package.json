@@ -21,7 +21,8 @@
   "dependencies": {
     "@aminya/node-gyp-build": "4.8.1-aminya.1",
     "node-addon-api": "^7.1.0",
-    "shelljs": "^0.8.5"
+    "shelljs": "^0.8.5",
+    "cross-env": "^7.0.3"
   },
   "devDependencies": {
     "@types/chai": "^4.3.16",
@@ -55,7 +56,6 @@
     "typedoc": "^0.25.13",
     "typescript": "~4.9.5",
     "which": "^4.0.0",
-    "cross-env": "^7.0.3",
     "shx": "^0.3.4"
   },
   "pnpm": {
@@ -82,7 +82,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "install": "(npm run build.js || echo ok) && cross-env npm_config_build_from_source=true aminya-node-gyp-build",
+    "install": "(npm run build.js || echo __skipping_js_build__) && cross-env npm_config_build_from_source=true aminya-node-gyp-build",
     "clean": "shx rm -rf ./build ./lib/ ./prebuilds ./script/*.js ./script/*.mjs ./script/*.js.map ./script/*.mjs.map ./script/*.d.ts ./script/*.d.mts ./script/*.cjs ./scripts/*.cjs.map ./scripts/*.d.cts ./script/*.tsbuildinfo",
     "clean.release": "shx rm -rf ./build/Release",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp",

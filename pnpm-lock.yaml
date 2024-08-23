@@ -15,6 +15,9 @@ importers:
       '@aminya/node-gyp-build':
         specifier: 4.8.1-aminya.1
         version: 4.8.1-aminya.1
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       node-addon-api:
         specifier: ^7.1.0
         version: 7.1.0
@@ -52,9 +55,6 @@ importers:
       chai:
         specifier: ^4.4.1
         version: 4.4.1
-      cross-env:
-        specifier: ^7.0.3
-        version: 7.0.3
       deasync:
         specifier: ^0.1.30
         version: 0.1.30
