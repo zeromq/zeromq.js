@@ -82,8 +82,10 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "install": "(npm run build.js || echo __skipping_js_build__) && cross-env npm_config_build_from_source=true aminya-node-gyp-build",
-    "clean": "shx rm -rf ./build ./lib/ ./prebuilds ./script/*.js ./script/*.mjs ./script/*.js.map ./script/*.mjs.map ./script/*.d.ts ./script/*.d.mts ./script/*.cjs ./scripts/*.cjs.map ./scripts/*.d.cts ./script/*.tsbuildinfo",
+    "install": "cross-env npm_config_build_from_source=true aminya-node-gyp-build",
+    "prepare": "pnpm run build.js",
+    "clean": "shx rm -rf ./build ./lib/ ./prebuilds",
+    "clean.script": "shx rm -rf ./script/*.js ./script/*.mjs ./script/*.js.map ./script/*.mjs.map ./script/*.d.ts ./script/*.d.mts ./script/*.cjs ./scripts/*.cjs.map ./scripts/*.d.cts ./script/*.tsbuildinfo",
     "clean.release": "shx rm -rf ./build/Release",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp",
     "build.library": "tsc -p ./src/tsconfig.json",
