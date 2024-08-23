@@ -8,7 +8,7 @@
   "typesVersions": {
     ">=3.7": {
       "lib/*": [
-        "lib/ts3.7/*"
+        "lib/*"
       ]
     }
   },
