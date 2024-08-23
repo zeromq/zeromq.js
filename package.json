@@ -6,7 +6,7 @@
   "type": "commonjs",
   "types": "lib/index.d.ts",
   "typesVersions": {
-    "<3.7": {
+    "<=3.7": {
       "lib/*": [
         "lib/ts3.7/*"
       ]
