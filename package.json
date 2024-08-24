@@ -22,7 +22,8 @@
     "@aminya/node-gyp-build": "4.8.1-aminya.1",
     "node-addon-api": "^7.1.0",
     "shelljs": "^0.8.5",
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "node-gyp": "^10.2.0"
   },
   "devDependencies": {
     "@types/chai": "^4.3.16",
@@ -46,7 +47,6 @@
     "gh-pages": "^6.1.1",
     "minify-all-cli": "^1.0.13",
     "mocha": "^10.4.0",
-    "node-gyp": "^10.1.0",
     "npm-run-all2": "^6.2.0",
     "prebuildify": "^6.0.1",
     "prettier": "^3.3.2",
@@ -84,11 +84,12 @@
   "scripts": {
     "install": "cross-env npm_config_build_from_source=true aminya-node-gyp-build",
     "prepare": "pnpm run build.js",
-    "clean": "shx rm -rf ./build ./lib/ ./prebuilds",
+    "clean": "shx rm -rf ./build ./prebuilds && run-p clean.lib clean.script clean.temp",
+    "clean.lib": "shx rm -rf ./lib/",
     "clean.script": "shx rm -rf ./script/*.js ./script/*.mjs ./script/*.js.map ./script/*.mjs.map ./script/*.d.ts ./script/*.d.mts ./script/*.cjs ./scripts/*.cjs.map ./scripts/*.d.cts ./script/*.tsbuildinfo",
     "clean.release": "shx rm -rf ./build/Release",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp",
-    "build.library": "tsc -p ./src/tsconfig.json && run-s build.downlevel",
+    "build.library": "run-s clean.lib && tsc -p ./src/tsconfig.json && run-s build.downlevel",
     "build.downlevel": "downlevel-dts ./lib ./lib/ts3.7",
     "build.script": "tsc -p ./script/tsconfig.esm.json && tsc -p ./script/tsconfig.json",
     "build.js": "run-p build.script build.library",
