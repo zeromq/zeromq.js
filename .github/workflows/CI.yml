@@ -13,9 +13,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          # - ubuntu-22.04
           - ubuntu-20.04
-          - windows-2022
+          - windows-2019
         node_version:
           - 18
         node_arch:
@@ -28,7 +27,7 @@ jobs:
           - ""
 
         include:
-          - os: windows-2022
+          - os: windows-2019
             node_version: 18
             node_arch: ia32
             cpp_arch: amd64_x86
