@@ -52,6 +52,12 @@ Requirements for using prebuilt binaries:
 
 The following platforms have a **prebuilt binary** available:
 
+- Windows on x86/x86-64
+
+  Zeromq binaries on Windows 10 or older need
+  [Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-microsoft-visual-c-redistributable-version)
+  to be installed.
+
 - Linux on x86-64 with libstdc++.so.6.0.21+ (glibc++ 3.4.21+), for example:
   - Debian 9+ (Stretch or later)
   - Ubuntu 16.04+ (Xenial or later)
@@ -59,7 +65,6 @@ The following platforms have a **prebuilt binary** available:
 - Linux on x86-64 with musl, for example:
   - Alpine 3.3+
 - MacOS 10.9+ on x86-64
-- Windows on x86/x86-64
 
 If a prebuilt binary is not available for your platform, installing will attempt
 to start a build from source.
