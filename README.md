@@ -10,6 +10,7 @@
   iterators.
 - High performance.
 - Fully usable with TypeScript (3+).
+- Compatible with Zeromq 4/5 via "zeromq/v5-compat"
 
 ## Useful links
 
@@ -161,11 +162,40 @@ macos_deployment_target="10.15"
 
 ## Examples
 
-**Note:** These examples assume the reader is familiar with ZeroMQ. If you are
-new to ZeroMQ, please start with the
+Here some examples of different features are provided. More examples can be
+found in the [examples directory](examples).
+
+You can also browse
+[the API reference documentation](http://zeromq.github.io/zeromq.js/globals.html)
+to see all socket types, methods & options as well as more detailed information
+about how to apply them.
+
+**Note:** If you are new to ZeroMQ, please start with the
 [ZeroMQ documentation](https://zeromq.org/get-started/).
 
-More examples can be found in the [examples directory](examples).
+### Basic Usage
+
+ES modules:
+
+```typescript
+import {Request} from "zeromq"
+// or as namespace
+import * as zmq from "zeromq"
+
+const reqSock = new Request()
+//...
+const repSock = new zmq.Reply()
+```
+
+Commonjs:
+
+```js
+const zmq = require("zeromq")
+
+const reqSock = new zmq.Request()
+//...
+const repSock = new zmq.Reply()
+```
 
 ### Push/Pull
 
@@ -177,7 +207,7 @@ how a worker pulls information from the socket.
 Creates a producer to push information onto a socket.
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Push()
@@ -201,7 +231,7 @@ run()
 Creates a worker to pull information from the socket.
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Pull()
@@ -227,7 +257,7 @@ Publisher/Subscriber, application.
 Create the publisher which sends messages.
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Publisher()
@@ -252,7 +282,7 @@ run()
 Create a subscriber to connect to a publisher's port to receive messages.
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Subscriber()
@@ -281,7 +311,7 @@ This example illustrates a request from a client and a reply from a server.
 #### `client.js`
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Request()
@@ -301,7 +331,7 @@ run()
 #### `server.js`
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Reply()
@@ -309,50 +339,14 @@ async function run() {
   await sock.bind("tcp://127.0.0.1:3000")
 
   for await (const [msg] of sock) {
-    await sock.send(2 * parseInt(msg, 10))
+    await sock.send((2 * parseInt(msg.toString(), 10)).toString())
   }
 }
 
 run()
 ```
 
-## TypeScript
-
-This library provides typings for TypeScript version 3.0.x and later.
-
-_Requirements_
-
-- For TypeScript version >= 3:
-  - [compilerOptions](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
-- For TypeScript version < 3.6:
-  - either set `compilerOptions.target` to `esnext` or later (e.g. `es2018`)
-  - or add the following, or similar, libraries to `compilerOptions.lib` (and
-    include their corresponding polyfills if needed): `es2015`,
-    `ESNext.AsyncIterable`
-
-_Example Usage_
-
-```typescript
-import {Request} from "zeromq"
-// or as namespace
-import * as zmq from "zeromq"
-
-const reqSock = new Request()
-//...
-const repSock = new zmq.Reply()
-```
-
-### More examples
-
-More advanced examples can be found in the [examples](examples) directory of
-this repository.
-
-Or you can
-[browse the API reference documentation](http://zeromq.github.io/zeromq.js/globals.html)
-to see all socket types, methods & options as well as more detailed information
-about how to apply them.
-
-### Compatibility layer for version 4/5
+## Zeromq 4 and 5 Compatibility layer
 
 The next generation version of the library features a compatibility layer for
 ZeroMQ.js versions 4 and 5. This is recommended for users upgrading from
@@ -378,6 +372,20 @@ pub.bind("tcp://*:3456", err => {
   })
 })
 ```
+
+## TypeScript
+
+This library provides typings for TypeScript version 3.0.x and later.
+
+_Requirements_
+
+- For TypeScript version >= 3:
+  - [compilerOptions](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
+- For TypeScript version < 3.6:
+  - either set `compilerOptions.target` to `esnext` or later (e.g. `es2018`)
+  - or add the following, or similar, libraries to `compilerOptions.lib` (and
+    include their corresponding polyfills if needed): `es2015`,
+    `ESNext.AsyncIterable`
 
 ## Contribution
 
