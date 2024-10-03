@@ -1,9 +1,7 @@
 {
   "mochaExplorer.parallel": true,
   "mochaExplorer.globImplementation": "vscode",
-  "mochaExplorer.nodeArgv": [
-    "--expose-gc"
-  ],
+  "mochaExplorer.nodeArgv": ["--expose-gc"],
   "mochaExplorer.debuggerConfig": "JS-Attach",
   "files.exclude": {
     "**/.git": true,
@@ -16,6 +14,6 @@
     "**/script/*.mjs.map": true,
     "**/script/*.d.ts": true,
     "**/script/*.d.mts": true,
-    "**/script/*.tsbuildinfo": true,
+    "**/script/*.tsbuildinfo": true
   }
 }

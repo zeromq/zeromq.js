@@ -82,9 +82,9 @@ jobs:
 
       - name: Env map
         run: |
-            if [ "${{ matrix.node_arch }}" = "ia32" ]; then
-              echo "setup_node_arch=x86" > $GITHUB_ENV
-            fi
+          if [ "${{ matrix.node_arch }}" = "ia32" ]; then
+            echo "setup_node_arch=x86" > $GITHUB_ENV
+          fi
         shell: bash
 
       - name: Setup Cpp
