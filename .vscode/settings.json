@@ -6,6 +6,6 @@
   "files.exclude": {
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
-    "**/.cache": true,
+    "**/.cache": true
   }
 }
