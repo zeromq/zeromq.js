@@ -52,9 +52,8 @@ jobs:
           - os: ubuntu-22.04
             docker: node:18-alpine
             docker_cmd:
-              apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake
-              musl-dev && npm i -g pnpm && pnpm install && pnpm run
-              build.prebuild
+              apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake git
+              musl-dev && npm i -g pnpm && pnpm install && pnpm run build
             node_version: 18
             node_arch: x64
             cpp_arch: x64
@@ -93,6 +92,7 @@ jobs:
         with:
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
           cmake: true
+          ninja: true
           python: true
           architecture: ${{ matrix.cpp_arch }}
 
@@ -121,13 +121,13 @@ jobs:
           echo "PATH=$PATH" >> $GITHUB_ENV
           echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
 
-      - name: Install Dependencies and Build
+      - name: Install Dependencies
         if: ${{ !matrix.docker }}
         run: pnpm install
 
-      - name: Prebuild
+      - name: Build
         if: ${{ !matrix.docker }}
-        run: pnpm run build.prebuild
+        run: pnpm run build
 
       - name: Prebuild Docker
         if: ${{ matrix.docker }}

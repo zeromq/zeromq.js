@@ -94,7 +94,6 @@
     "build.downlevel": "downlevel-dts ./lib ./lib/ts3.7",
     "build.doc": "typedoc --options ./typedoc.json && minify-all -s docs-unminified -d docs --jsCompressor terser && shx rm -rf docs-unminified",
     "deploy.doc": "run-s build.doc && gh-pages --dist \"./docs\"",
-    "build.prebuild": "run-s build.js && run-s build.native",
     "build.native": "cmake-ts nativeonly",
     "build.native.debug": "cmake-ts nativeonly",
     "build": "run-s build.js build.native",
