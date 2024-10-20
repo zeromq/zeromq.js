@@ -3,14 +3,14 @@ import fs from "fs"
 
 function findAddon(): any | undefined {
   try {
-    const addonParentDir = path.join(
+    const addonParentDir = path.resolve(path.join(
       __dirname,
       "..",
       "build",
       process.platform,
       process.arch,
       "node",
-    )
+    ))
     const addOnAbiDirs = fs.readdirSync(addonParentDir).sort((a, b) => {
       return Number.parseInt(b, 10) - Number.parseInt(a, 10)
     })
@@ -23,9 +23,13 @@ function findAddon(): any | undefined {
         addon = require(addonPath)
         break
       } catch (err) {
-        console.error(
-          `Failed to load addon at ${addonPath}: ${err}\nTrying others...`,
-        )
+        if (fs.existsSync(addonPath)) {
+          console.error(
+            `Failed to load addon at ${addonPath}: ${err}\nTrying others...`,
+          )
+        } else {
+          console.error(`No addon.node found in ${addonPath}\nTrying others...`)
+        }
       }
     }
 
