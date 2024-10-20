@@ -44,11 +44,12 @@ jobs:
 
           # Alpine
           - os: ubuntu-22.04
-            docker: node:14-alpine
+            docker: node:18-alpine
             docker_cmd:
-              apk add --no-cache bash build-base curl git g++ make ninja
-              pkgconfig unzip zip python3 tar cmake ninja musl-dev && npm i -g
-              pnpm && pnpm install && pnpm run build
+              apk add --no-cache bash build-base curl git g++ make ninja-build
+              pkgconfig unzip zip python3 tar cmake ninja musl-dev && cp
+              /usr/lib/ninja-build/bin/ninja /usr/bin/ninja && npm i -g pnpm &&
+              pnpm install && pnpm run build
             node_arch: x64
             cpp_arch: x64
 
@@ -109,11 +110,11 @@ jobs:
         with:
           version: 9
 
-      - name: Install Node 18
+      - name: Install Node 20
         if: ${{ !matrix.docker }}
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           architecture: ${{ env.setup_node_arch }}
 
       - name: Install Dependencies
@@ -144,11 +145,11 @@ jobs:
         run:
           node ./node_modules/cmake-ts/build/main.js named-configs windows-x86
 
-      - name: Use Node 18
+      - name: Use Node 20
         if: ${{ !matrix.docker }}
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
           architecture: ${{ env.setup_node_arch }}
 
       - name: Prebuild Docker
