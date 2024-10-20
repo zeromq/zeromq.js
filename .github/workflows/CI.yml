@@ -132,8 +132,17 @@ jobs:
           architecture: ${{ env.setup_node_arch }}
 
       - name: Build Native
-        if: ${{ !matrix.docker }}
+        if:
+          ${{ !matrix.docker && matrix.os != 'windows-2019' && matrix.node_arch
+          != 'ia32' }}
         run: npm run build.native
+
+      - name: Build Native Windows 32
+        if:
+          ${{ !matrix.docker && matrix.os == 'windows-2019' && matrix.node_arch
+          == 'ia32' }}
+        run:
+          node ./node_modules/cmake-ts/build/main.js named-configs windows-x86
 
       - name: Use Node 18
         if: ${{ !matrix.docker }}

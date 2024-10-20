@@ -136,6 +136,13 @@
         "runtimeVersion": "12.22.12"
       },
       {
+        "name": "windows-x86",
+        "os": "win32",
+        "arch": "ia32",
+        "runtime": "node",
+        "runtimeVersion": "12.22.12"
+      },
+      {
         "name": "darwin-x64",
         "os": "darwin",
         "arch": "x64",
