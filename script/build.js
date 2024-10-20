@@ -8,7 +8,7 @@ const root = (0, path_1.dirname)(__dirname);
 function parseOptions() {
     return {
         zmq_shared: (0, utils_js_1.toBool)(process.env.npm_config_zmq_shared) ?? false,
-        zmq_draft: (0, utils_js_1.toBool)(process.env.npm_config_zmq_draft) ?? false,
+        zmq_draft: (0, utils_js_1.toBool)(process.env.npm_config_zmq_draft) ?? true,
         zmq_version: (0, utils_js_1.toString)(process.env.npm_config_zmq_version) ??
             "5657b4586f24ec433930e8ece02ddba7afcf0fe0",
         zmq_build_type: (0, utils_js_1.toString)(process.env.npm_config_zmq_build_type) ?? "Release",

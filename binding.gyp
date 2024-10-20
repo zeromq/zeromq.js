@@ -1,7 +1,7 @@
 {
   'variables': {
     'zmq_shared%': 'false',
-    'zmq_draft%': 'false',
+    'zmq_draft%': 'true',
     'zmq_no_sync_resolve%': 'false',
     'sanitizers%': 'false',
     'openssl_fips': '',

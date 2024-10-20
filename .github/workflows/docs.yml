@@ -20,7 +20,7 @@ jobs:
         cpp_arch:
           - x64
     env:
-      npm_config_zmq_draft: false
+      npm_config_zmq_draft: true
       npm_config_zmq_shared: false
       npm_config_arch: ${{ matrix.node_arch }}
       npm_config_target_arch: ${{ matrix.node_arch }}
