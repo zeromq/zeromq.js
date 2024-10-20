@@ -10,7 +10,7 @@ try {
     const cmakeTsPath = require.resolve("cmake-ts/build/main.js")
 
     cp.execFileSync(
-        "node", [cmakeTsPath, "nativeonly"],
+        process.execPath, [cmakeTsPath, "nativeonly"],
         { stdio: "inherit" },
     )
 }
