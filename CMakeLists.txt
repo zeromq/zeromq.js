@@ -5,6 +5,14 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
   cmake_policy(SET CMP0135 NEW)
 endif()
 
+if(WIN32)
+  if(DEFINED ENV{PROCESSOR_ARCHITEW6432})
+    set(CMAKE_HOST_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITEW6432}")
+  else()
+    set(CMAKE_HOST_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITECTURE}")
+  endif()
+endif()
+
 # Add project_options from https://github.com/aminya/project_options Change the
 # version in the following URL to update the package (watch the releases of the
 # repository for future updates)
@@ -51,7 +59,7 @@ find_package(ZeroMQ CONFIG REQUIRED)
 target_link_system_libraries(addon PRIVATE libzmq libzmq-static)
 
 # Node specific
-target_include_directories(addon PRIVATE ${CMAKE_JS_INC})
+target_include_system_directories(addon PRIVATE ${CMAKE_JS_INC})
 target_link_system_libraries(addon ${CMAKE_JS_LIB})
 
 target_compile_definitions(addon PRIVATE V8_COMPRESS_POINTERS)
@@ -59,12 +67,6 @@ target_compile_definitions(addon PRIVATE V8_31BIT_SMIS_ON_64BIT_ARCH)
 target_compile_definitions(addon PRIVATE V8_REVERSE_JSARGS)
 target_compile_definitions(addon PRIVATE BUILDING_NODE_EXTENSION)
 target_compile_definitions(addon PRIVATE NAPI_CPP_EXCEPTIONS)
-
-# if(WIN32)
-#   target_compile_definitions(addon PRIVATE "NOMINMAX")
-#   target_compile_definitions(addon PRIVATE "NOGDI")
-#   target_compile_definitions(addon PRIVATE "WIN32_LEAN_AND_MEAN")
-# endif()
 
 # Use `.node` for the library without any "lib" prefix
 set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".node")

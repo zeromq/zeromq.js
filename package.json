@@ -96,7 +96,7 @@
     "deploy.doc": "run-s build.doc && gh-pages --dist \"./docs\"",
     "build.native": "cmake-ts nativeonly",
     "build.native.debug": "cmake-ts nativeonly",
-    "build": "run-s build.js build.native",
+    "build": "run-p build.js build.native",
     "build.debug": "run-s build.js build.native.debug",
     "test": "run-s clean.temp build && mocha",
     "test.skip_gc_tests": "run-s clean.temp build.debug && cross-env SKIP_GC_TESTS=true mocha",

@@ -52,8 +52,9 @@ jobs:
           - os: ubuntu-22.04
             docker: node:18-alpine
             docker_cmd:
-              apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake git
-              musl-dev && npm i -g pnpm && pnpm install && pnpm run build
+              apk add --no-cache pkgconfig tar python3 build-base cmake ninja
+              zip unzip curl git musl-dev && npm i -g pnpm && pnpm install &&
+              pnpm run build
             node_version: 18
             node_arch: x64
             cpp_arch: x64
@@ -94,6 +95,7 @@ jobs:
           cmake: true
           ninja: true
           python: true
+          vcpkg: true
           architecture: ${{ matrix.cpp_arch }}
 
       - uses: pnpm/action-setup@v4
