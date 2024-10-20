@@ -67,7 +67,7 @@ jobs:
         with:
           path: |
             ./node_modules/
-            ./build/
+            ./staging
           key:
             # prettier-ignore
             "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-ZMQ_DRAFT:${{env.npm_config_zmq_draft }}-${{hashFiles('./package.json') }}"
