@@ -47,8 +47,9 @@ jobs:
             docker: node:18-alpine
             docker_cmd:
               apk add --no-cache bash build-base curl git g++ make ninja-build
-              pkgconfig sudo unzip zip python3 tar cmake ninja musl-dev && npm i -g
-              pnpm && pnpm install && pnpm run build
+              pkgconfig unzip zip python3 tar cmake ninja musl-dev && cp
+              /usr/lib/ninja-build/bin/ninja /usr/bin/ninja && npm i -g pnpm &&
+              pnpm install && pnpm run build
             node_arch: x64
             cpp_arch: x64
 
