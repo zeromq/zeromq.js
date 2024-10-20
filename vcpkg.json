@@ -6,8 +6,64 @@
   "dependencies": [
     {
       "name": "zeromq",
-      "version>=": "4.3.5#2",
-      "features": []
+      "version>=": "4.3.5#2"
     }
-  ]
+  ],
+  "features": {
+    "curve": {
+      "description": "Enable CURVE security",
+      "dependencies": [
+        {
+          "name": "zeromq",
+          "features": [
+            "curve"
+          ]
+        }
+      ]
+    },
+    "draft": {
+      "description": "Build and install draft APIs",
+      "dependencies": [
+        {
+          "name": "zeromq",
+          "features": [
+            "draft"
+          ]
+        }
+      ]
+    },
+    "sodium": {
+      "description": "Using libsodium for CURVE security",
+      "dependencies": [
+        {
+          "name": "zeromq",
+          "features": [
+            "sodium"
+          ]
+        }
+      ]
+    },
+    "websockets": {
+      "description": "Enable WebSocket transport",
+      "dependencies": [
+        {
+          "name": "zeromq",
+          "features": [
+            "websockets"
+          ]
+        }
+      ]
+    },
+    "websockets-secure": {
+      "description": "Enable WebSocket transport with TSL (wss)",
+      "dependencies": [
+        {
+          "name": "zeromq",
+          "features": [
+            "websockets-secure"
+          ]
+        }
+      ]
+    }
+  }
 }

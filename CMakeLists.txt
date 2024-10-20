@@ -1,10 +1,54 @@
 cmake_minimum_required(VERSION 3.16)
 
-include(FetchContent)
-if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
-  cmake_policy(SET CMP0135 NEW)
+macro(set_option_from_env OPTION_NAME)
+  string(TOLOWER ${OPTION_NAME} OPTION_NAME_LOWER)
+  if(DEFINED ENV{npm_config_${OPTION_NAME_LOWER}})
+    if("$ENV{npm_config_${OPTION_NAME_LOWER}}" STREQUAL "true")
+      set("${OPTION_NAME}"
+          ON
+          CACHE BOOL "npm_config_${OPTION_NAME_LOWER}")
+    elseif("$ENV{npm_config_${OPTION_NAME_LOWER}}" STREQUAL "false")
+      set("${OPTION_NAME}"
+          OFF
+          CACHE BOOL "npm_config_${OPTION_NAME_LOWER}")
+    else()
+      set("${OPTION_NAME}"
+          "$ENV{npm_config_${OPTION_NAME_LOWER}}"
+          CACHE STRING "npm_config_${OPTION_NAME_LOWER}")
+    endif()
+  endif()
+  if(${OPTION_NAME})
+    string(REPLACE "zmq_" "" OPTION_NAME_LOWER "${OPTION_NAME_LOWER}")
+    string(REPLACE "_" "-" OPTION_NAME_LOWER "${OPTION_NAME_LOWER}")
+    list(APPEND VCPKG_MANIFEST_FEATURES ${OPTION_NAME_LOWER})
+  endif()
+  message(STATUS "${OPTION_NAME}: ${${OPTION_NAME}}")
+endmacro()
+
+option(ZMQ_DRAFT "Build and install draft APIs" OFF)
+set_option_from_env(ZMQ_DRAFT)
+
+option(ZMQ_CURVE "Enable CURVE security" OFF)
+set_option_from_env(ZMQ_CURVE)
+
+option(ZMQ_SODIUM "Using libsodium for CURVE security" OFF)
+set_option_from_env(ZMQ_SODIUM)
+
+option(ZMQ_WEBSOCKETS "Enable WebSocket transport" OFF)
+set_option_from_env(ZMQ_WEBSOCKETS)
+
+option(ZMQ_WEBSOCKETS_SECURE "Enable WebSocket transport with TSL (wss)" OFF)
+set_option_from_env(ZMQ_WEBSOCKETS_SECURE)
+
+option(ZMQ_NO_SYNC_RESOLVE "send/receive on the socket immediately" OFF)
+set_option_from_env(ZMQ_NO_SYNC_RESOLVE)
+
+if(APPLE)
+  option(MACOSX_DEPLOYMENT_TARGET "MacOS deployment target" "10.15")
+  set_option_from_env(MACOSX_DEPLOYMENT_TARGET)
 endif()
 
+# MacOS deployment target
 if(WIN32)
   if("${PLATFORM}" STREQUAL "x86")
     set(CMAKE_SYSTEM_PROCESSOR "x86")
@@ -17,6 +61,11 @@ if(WIN32)
     set(CMAKE_SYSTEM_HOST_PROCESSOR "$ENV{PROCESSOR_ARCHITECTURE}")
   endif()
   set(CMAKE_TOOLCHAIN_FILE ";")
+endif()
+
+include(FetchContent)
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+  cmake_policy(SET CMP0135 NEW)
 endif()
 
 # Add project_options from https://github.com/aminya/project_options Change the
@@ -59,6 +108,13 @@ add_library(
   "src/socket.cc")
 
 target_link_libraries(addon PRIVATE project_options project_warnings)
+
+if(ZMQ_DRAFT)
+  target_compile_definitions(addon PRIVATE ZMQ_BUILD_DRAFT_API)
+endif()
+if(ZMQ_NO_SYNC_RESOLVE)
+  target_compile_definitions(addon PRIVATE ZMQ_NO_SYNC_RESOLVE)
+endif()
 
 # ZeroMQ
 find_package(ZeroMQ CONFIG REQUIRED)

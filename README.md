@@ -22,18 +22,39 @@
 
 ## Table of contents
 
-- [Installation](#installation)
-  - [Prebuilt binaries](#prebuilt-binaries)
-  - [Building from source](#building-from-source)
-- [Examples](#examples)
-  - [Push/Pull](#pushpull)
-  - [Pub/Sub](#pubsub)
-  - [Req/Rep](#reqrep)
+- [ZeroMQ.js Next Generation](#zeromqjs-next-generation)
+  - [Useful links](#useful-links)
+  - [Table of contents](#table-of-contents)
+  - [Installation](#installation)
+    - [Prebuilt binaries](#prebuilt-binaries)
+    - [Building from source](#building-from-source)
+    - [Available Build Options](#available-build-options)
+    - [Curve support](#curve-support)
+    - [Libsodium for Curve](#libsodium-for-curve)
+      - [Draft support](#draft-support)
+      - [Websocket support](#websocket-support)
+      - [Secure Websocket support](#secure-websocket-support)
+      - [Not Synchronous Resolve](#not-synchronous-resolve)
+      - [MacOS Deployment Target](#macos-deployment-target)
+  - [Examples](#examples)
+    - [Basic Usage](#basic-usage)
+    - [Push/Pull](#pushpull)
+      - [`producer.js`](#producerjs)
+      - [`worker.js`](#workerjs)
+    - [Pub/Sub](#pubsub)
+      - [`publisher.js`](#publisherjs)
+      - [`subscriber.js`](#subscriberjs)
+    - [Req/Rep](#reqrep)
+      - [`client.js`](#clientjs)
+      - [`server.js`](#serverjs)
+  - [Zeromq 4 and 5 Compatibility layer](#zeromq-4-and-5-compatibility-layer)
   - [TypeScript](#typescript)
-  - [More examples](#more-examples)
-  - [Compatibility layer for version 4/5](#compatibility-layer-for-version-45)
-- [Contribution](#contribution)
-- [History](#history)
+  - [Contribution](#contribution)
+    - [Dependencies](#dependencies)
+    - [Defining new options](#defining-new-options)
+    - [Testing](#testing)
+    - [Publishing](#publishing)
+  - [History](#history)
 
 ## Installation
 
@@ -76,9 +97,9 @@ during build, you can build this package from source.
 Make sure you have the following installed before attempting to build from
 source:
 
-- Node.js 10+ or Electron 3+
+- Node.js 12+ or Electron
 - A working C++17 compiler toolchain with make
-- Python 3 with Node 12.13+ (or legacy Python 2.7)
+- Python 3 with Node 12+ (or legacy Python 2.7)
 - CMake 2.8+
 - curl
 
@@ -96,6 +117,22 @@ When building from source, you can also specify additional build options in a
 <details>
 <summary>👉🏻 Options</summary>
 
+### Curve support
+
+Enables CURVE security for encrypted communications. To enable CURVE support, add the following to your .npmrc:
+
+```ini
+zmq_curve="true"
+```
+
+### Libsodium for Curve
+
+Enable libsodium for CURVE security instead of the built-in tweetnacl implementation. This can provide better performance for CURVE operations. To use libsodium, add the following to your .npmrc:
+
+```ini
+zmq_sodium="true"
+```
+
 #### Draft support
 
 By default `libzmq` is built with support for `Draft` patterns (e.g.
@@ -106,57 +143,36 @@ without support for `Draft`, you can specify the following in `.npmrc`:
 zmq_draft=false
 ```
 
+#### Websocket support
+
+Enables WebSocket transport, allowing ZeroMQ to communicate over WebSockets. To enable WebSocket support, add the following to your .npmrc:
+
+```ini
+zmq_websockets="true"
+```
+
+#### Secure Websocket support
+
+Enables WebSocket transport with TLS (wss), providing secure WebSocket communications. To enable secure WebSocket support, add the following to your .npmrc:
+
+```ini
+zmq_websockets_secure="true"
+```
+
 #### Not Synchronous Resolve
 
-If you want to send/receive on the socket immediately, you can specify the
-following in `.npmrc`:
+Enables immediate send/receive on the socket without synchronous resolution.
+This option can improve performance in certain scenarios by allowing operations
+to proceed without waiting for synchronous resolution. To enable this feature,
+add the following to your `.npmrc`:
 
 ```ini
 zmq_no_sync_resolve="true"
 ```
 
-#### Shared library support
-
-If you want to link against a shared ZeroMQ library installed on your system,
-you can build skip downloading `libzmq` and link with the installed library
-instead by specifying the following in `.npmrc`:
-
-```ini
-zmq_shared=true
-```
-
-#### Alternative libzmq version
-
-You can specify an alternative version or Git revision of `libzmq` to build
-against by specifying the following in `.npmrc`:
-
-```ini
-zmq_version="4.3.5"
-```
-
-#### Debug build of libzmq
-
-If you want to build `libzmq` with debug symbols, you can specify the following
-in `.npmrc`:
-
-```ini
-zmq_build_type="Debug"
-```
-
-#### Cross-compilation for different architectures
-
-If you want to cross-compile for a different architecture, you can specify the
-following in `.npmrc`:
-
-```ini
-arch="arm64"
-target_arch="arm64"
-```
-
 #### MacOS Deployment Target
 
-If you want to specify the MacOS deployment target, you can specify the
-following in `.npmrc`:
+Specifies the minimum macOS version that the binary will be compatible with. This is particularly useful when building for different macOS versions. To set this, add the following to your .npmrc, replacing 10.15 with your desired minimum macOS version:
 
 ```ini
 macos_deployment_target="10.15"
