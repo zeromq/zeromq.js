@@ -153,8 +153,8 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: ./prebuilds
-          name: prebuilds-${{ strategy.job-index }}
+          path: ./build
+          name: build-${{ strategy.job-index }}
           overwrite: true
 
       - name: Lint
@@ -182,13 +182,13 @@ jobs:
             pnpm install -g electron@latest
             xvfb-run --auto-servernum pnpm run test.electron.main
         continue-on-error: true
-  merge-prebuilds:
+  merge-build:
     runs-on: ubuntu-latest
     needs: Build
     steps:
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          name: prebuilds
-          pattern: prebuilds-*
+          name: build
+          pattern: build-*
           delete-merged: true
