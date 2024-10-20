@@ -22,3 +22,5 @@ tsconfig.*.tsbuildinfo
 .DS_Store
 .idea
 /staging
+!/lib/load-addon.js
+!/lib/load-addon.js.map
