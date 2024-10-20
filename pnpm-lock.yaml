@@ -12,9 +12,6 @@ importers:
 
   .:
     dependencies:
-      '@aminya/node-gyp-build':
-        specifier: 4.8.1-aminya.1
-        version: 4.8.1-aminya.1
       cmake-ts:
         specifier: ^0.3.0
         version: 0.3.0(rollup@4.24.0)(typescript@4.9.5)
@@ -136,10 +133,6 @@ packages:
   '@aminya/eslint-plugin-only-warn@1.2.2':
     resolution: {integrity: sha512-0VdfoicL+dorb0WrbbhsFsH8xH+8X2Y6CrO/3br68kimkMNOJB/5DFGRraVDYHfCIQgMnlv5Q9GX1yI7V4GcgQ==}
     engines: {node: '>=6'}
-
-  '@aminya/node-gyp-build@4.8.1-aminya.1':
-    resolution: {integrity: sha512-r5eD8cvhlXpr5H2TKKsDBlPUzmK8FaWQG4QQ0+AbHyGra2a1uZBa7r9DXCe4FSADw1sU9RAMRJH5/POm4lojFQ==}
-    hasBin: true
 
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
@@ -4253,8 +4246,6 @@ packages:
 snapshots:
 
   '@aminya/eslint-plugin-only-warn@1.2.2': {}
-
-  '@aminya/node-gyp-build@4.8.1-aminya.1': {}
 
   '@ampproject/remapping@2.3.0':
     dependencies:

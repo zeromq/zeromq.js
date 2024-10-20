@@ -1,19 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 /* Declare all native C++ classes and methods in this file. */
-import path from "path"
-import fs from "fs"
-const addonParentDir = path.join(
-  __dirname,
-  "..",
-  "build",
-  process.platform,
-  process.arch,
-  "node",
-)
-const addOnAbiDir = fs.readdirSync(addonParentDir)[0]
-const addonPath = path.join(addonParentDir, addOnAbiDir, "addon.node")
-module.exports = require(addonPath)
+module.exports = require("./load-addon")
 
 /**
  * The version of the ØMQ library the bindings were built with. Formatted as
