@@ -43,10 +43,9 @@ Install **ZeroMQ.js** with prebuilt binaries:
 npm install zeromq
 ```
 
-Requirements for using prebuilt binaries:
+Supported versions:
 
-- Node.js 10.2+ or Electron 3+ (requires a
-  [N-API](https://nodejs.org/api/n-api.html) version 3+)
+- Node.js v12 (requires a [N-API](https://nodejs.org/api/n-api.html))
 
 ### Prebuilt binaries
 

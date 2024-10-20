@@ -74,5 +74,5 @@ set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".node")
 # Windows workaround
 if(WIN32)
   set_property(TARGET addon PROPERTY LINK_FLAGS "-Xlinker /DELAYLOAD:NODE.EXE")
-  target_link_libraries(addon "ShLwApi.lib" "delayimp.lib")
+  target_link_libraries(addon PRIVATE "ShLwApi.lib" "delayimp.lib")
 endif()

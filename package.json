@@ -68,7 +68,7 @@
     }
   },
   "engines": {
-    "node": ">= 10.2",
+    "node": ">= 12",
     "pnpm": ">= 9"
   },
   "files": [
@@ -123,67 +123,59 @@
     "configurations": [
       {
         "name": "linux-x64",
-        "dev": true,
         "os": "linux",
         "arch": "x64",
         "runtime": "node",
-        "runtimeVersion": "14.20.0"
+        "runtimeVersion": "12.22.12"
       },
       {
-        "name": "win-x64",
-        "dev": true,
+        "name": "windows-x64",
         "os": "win32",
         "arch": "x64",
         "runtime": "node",
-        "runtimeVersion": "14.20.0"
+        "runtimeVersion": "12.22.12"
       },
       {
-        "name": "macos-x64",
-        "dev": true,
+        "name": "darwin-x64",
         "os": "darwin",
         "arch": "x64",
         "runtime": "node",
-        "runtimeVersion": "14.20.0"
+        "runtimeVersion": "12.22.12"
       },
       {
-        "name": "macos-arm64",
-        "dev": true,
+        "name": "darwin-arm64",
         "os": "darwin",
         "arch": "arm64",
         "runtime": "node",
-        "runtimeVersion": "14.20.0"
+        "runtimeVersion": "12.22.12"
       },
       {
-        "name": "linux-x64",
-        "dev": true,
+        "name": "linux-x64-electron",
         "os": "linux",
         "arch": "x64",
         "runtime": "electron",
-        "runtimeVersion": "14.20.0"
+        "runtimeVersion": "12.22.12"
       },
       {
-        "name": "win-x64",
-        "dev": true,
+        "name": "windows-x64-electron",
         "os": "win32",
         "arch": "x64",
         "runtime": "electron",
-        "runtimeVersion": "14.20.0"
+        "runtimeVersion": "12.22.12"
       },
       {
-        "name": "macos-x64",
-        "dev": true,
+        "name": "darwin-x64-electron",
         "os": "darwin",
         "arch": "x64",
         "runtime": "electron",
-        "runtimeVersion": "14.20.0"
+        "runtimeVersion": "12.22.12"
       },
       {
-        "name": "macos-arm64",
-        "dev": true,
+        "name": "darwin-arm64-electron",
         "os": "darwin",
         "arch": "arm64",
         "runtime": "electron",
-        "runtimeVersion": "14.20.0"
+        "runtimeVersion": "12.22.12"
       }
     ],
     "targetDirectory": "build",

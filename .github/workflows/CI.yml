@@ -15,8 +15,6 @@ jobs:
         os:
           - ubuntu-20.04
           - windows-2019
-        node_version:
-          - 18
         node_arch:
           - x64
         cpp_arch:
@@ -28,23 +26,19 @@ jobs:
 
         include:
           - os: windows-2019
-            node_version: 18
             node_arch: ia32
             cpp_arch: amd64_x86
 
           # - os: windows-2022
-          #   node_version: 18
           #   node_arch: x64
           #   arch: arm64
           #   cpp_arch: amd64_arm64
 
           - os: macos-13
-            node_version: 18
             node_arch: x64
             cpp_arch: x64
 
           - os: macos-14
-            node_version: 18
             node_arch: arm64
             cpp_arch: amd64_arm64
 
@@ -53,9 +47,8 @@ jobs:
             docker: node:18-alpine
             docker_cmd:
               apk add --no-cache pkgconfig tar python3 build-base cmake ninja
-              zip unzip curl git musl-dev && npm i -g pnpm && pnpm install &&
-              pnpm run build
-            node_version: 18
+              zip unzip curl git musl-dev gcc g++ && npm i -g pnpm && pnpm
+              install && pnpm run build
             node_arch: x64
             cpp_arch: x64
 
@@ -76,9 +69,9 @@ jobs:
             ./build/
           key:
             # prettier-ignore
-            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-ZMQ_DRAFT:${{env.npm_config_zmq_draft }}-Node:${{ matrix.node_version}}-${{hashFiles('./package.json') }}"
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-ZMQ_DRAFT:${{env.npm_config_zmq_draft }}-${{hashFiles('./package.json') }}"
           restore-keys: |
-            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-Node:${{ matrix.node_version }}-"
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-"
 
       - name: Env map
         run: |
@@ -98,18 +91,6 @@ jobs:
           vcpkg: true
           architecture: ${{ matrix.cpp_arch }}
 
-      - uses: pnpm/action-setup@v4
-        if: ${{ !matrix.docker }}
-        with:
-          version: 9
-
-      - name: Install Node
-        if: ${{ !matrix.docker }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node_version }}
-          architecture: ${{ env.setup_node_arch }}
-
       - name: Install Mac-OS x86_64 Dependencies
         if: ${{ contains(matrix.os, 'macos') && matrix.node_arch == 'x64' }}
         run: |
@@ -123,13 +104,43 @@ jobs:
           echo "PATH=$PATH" >> $GITHUB_ENV
           echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
 
+      - uses: pnpm/action-setup@v4
+        if: ${{ !matrix.docker }}
+        with:
+          version: 9
+
+      - name: Install Node 18
+        if: ${{ !matrix.docker }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          architecture: ${{ env.setup_node_arch }}
+
       - name: Install Dependencies
         if: ${{ !matrix.docker }}
         run: pnpm install
 
-      - name: Build
+      - name: Build JavaScript
         if: ${{ !matrix.docker }}
-        run: pnpm run build
+        run: pnpm run build.js
+
+      - name: Install Node 12
+        if: ${{ !matrix.docker }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 12
+          architecture: ${{ env.setup_node_arch }}
+
+      - name: Build Native with Node 12
+        if: ${{ !matrix.docker }}
+        run: npm run build.native
+
+      - name: Use Node 18
+        if: ${{ !matrix.docker }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          architecture: ${{ env.setup_node_arch }}
 
       - name: Prebuild Docker
         if: ${{ matrix.docker }}
