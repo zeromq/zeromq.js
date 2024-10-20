@@ -15,9 +15,7 @@
       "dependencies": [
         {
           "name": "zeromq",
-          "features": [
-            "curve"
-          ]
+          "features": ["curve"]
         }
       ]
     },
@@ -26,9 +24,7 @@
       "dependencies": [
         {
           "name": "zeromq",
-          "features": [
-            "draft"
-          ]
+          "features": ["draft"]
         }
       ]
     },
@@ -37,9 +33,7 @@
       "dependencies": [
         {
           "name": "zeromq",
-          "features": [
-            "sodium"
-          ]
+          "features": ["sodium"]
         }
       ]
     },
@@ -48,9 +42,7 @@
       "dependencies": [
         {
           "name": "zeromq",
-          "features": [
-            "websockets"
-          ]
+          "features": ["websockets"]
         }
       ]
     },
@@ -59,9 +51,7 @@
       "dependencies": [
         {
           "name": "zeromq",
-          "features": [
-            "websockets-secure"
-          ]
+          "features": ["websockets-secure"]
         }
       ]
     }

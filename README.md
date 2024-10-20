@@ -119,7 +119,8 @@ When building from source, you can also specify additional build options in a
 
 ### Curve support
 
-Enables CURVE security for encrypted communications. To enable CURVE support, add the following to your .npmrc:
+Enables CURVE security for encrypted communications. To enable CURVE support,
+add the following to your .npmrc:
 
 ```ini
 zmq_curve="true"
@@ -127,7 +128,9 @@ zmq_curve="true"
 
 ### Libsodium for Curve
 
-Enable libsodium for CURVE security instead of the built-in tweetnacl implementation. This can provide better performance for CURVE operations. To use libsodium, add the following to your .npmrc:
+Enable libsodium for CURVE security instead of the built-in tweetnacl
+implementation. This can provide better performance for CURVE operations. To use
+libsodium, add the following to your .npmrc:
 
 ```ini
 zmq_sodium="true"
@@ -145,7 +148,8 @@ zmq_draft=false
 
 #### Websocket support
 
-Enables WebSocket transport, allowing ZeroMQ to communicate over WebSockets. To enable WebSocket support, add the following to your .npmrc:
+Enables WebSocket transport, allowing ZeroMQ to communicate over WebSockets. To
+enable WebSocket support, add the following to your .npmrc:
 
 ```ini
 zmq_websockets="true"
@@ -153,7 +157,9 @@ zmq_websockets="true"
 
 #### Secure Websocket support
 
-Enables WebSocket transport with TLS (wss), providing secure WebSocket communications. To enable secure WebSocket support, add the following to your .npmrc:
+Enables WebSocket transport with TLS (wss), providing secure WebSocket
+communications. To enable secure WebSocket support, add the following to your
+.npmrc:
 
 ```ini
 zmq_websockets_secure="true"
@@ -172,7 +178,10 @@ zmq_no_sync_resolve="true"
 
 #### MacOS Deployment Target
 
-Specifies the minimum macOS version that the binary will be compatible with. This is particularly useful when building for different macOS versions. To set this, add the following to your .npmrc, replacing 10.15 with your desired minimum macOS version:
+Specifies the minimum macOS version that the binary will be compatible with.
+This is particularly useful when building for different macOS versions. To set
+this, add the following to your .npmrc, replacing 10.15 with your desired
+minimum macOS version:
 
 ```ini
 macos_deployment_target="10.15"
