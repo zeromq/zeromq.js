@@ -19,7 +19,7 @@ function main() {
     try {
       require("../lib/load-addon.js")
     } catch (error) {
-      console.error("Failed to load ZMQ addon:", error)
+      console.error(error)
       cmakeTs()
     }
   }
