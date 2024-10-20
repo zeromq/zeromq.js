@@ -125,13 +125,13 @@ jobs:
         run: pnpm run build.js
 
       - name: Install Node 12
-        if: ${{ !matrix.docker }}
+        if: ${{ !matrix.docker && matrix.os != 'macos-14' }}
         uses: actions/setup-node@v4
         with:
           node-version: 12
           architecture: ${{ env.setup_node_arch }}
 
-      - name: Build Native with Node 12
+      - name: Build Native
         if: ${{ !matrix.docker }}
         run: npm run build.native
 

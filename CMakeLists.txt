@@ -60,7 +60,7 @@ target_link_system_libraries(addon PRIVATE libzmq libzmq-static)
 
 # Node specific
 target_include_system_directories(addon PRIVATE ${CMAKE_JS_INC})
-target_link_system_libraries(addon ${CMAKE_JS_LIB})
+target_link_system_libraries(addon PRIVATE ${CMAKE_JS_LIB})
 
 target_compile_definitions(addon PRIVATE V8_COMPRESS_POINTERS)
 target_compile_definitions(addon PRIVATE V8_31BIT_SMIS_ON_64BIT_ARCH)
@@ -73,6 +73,6 @@ set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".node")
 
 # Windows workaround
 if(WIN32)
-  set_property(TARGET addon PROPERTY LINK_FLAGS "-Xlinker /DELAYLOAD:NODE.EXE")
+  set_property(TARGET addon PROPERTY DELAY_LOAD_DLLS "NODE.EXE")
   target_link_libraries(addon PRIVATE "ShLwApi.lib" "delayimp.lib")
 endif()
