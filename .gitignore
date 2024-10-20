@@ -24,3 +24,5 @@ tsconfig.*.tsbuildinfo
 /staging
 !/lib/load-addon.js
 !/lib/load-addon.js.map
+
+compile_commands.json

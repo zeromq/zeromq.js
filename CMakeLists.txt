@@ -43,7 +43,7 @@ run_vcpkg(VCPKG_URL "https://github.com/microsoft/vcpkg.git" VCPKG_REV
 # Name of the project (will be the name of the plugin)
 project(addon LANGUAGES C CXX)
 
-project_options(ENABLE_CACHE)
+project_options(ENABLE_CACHE ENABLE_COMPILE_COMMANDS_SYMLINK)
 
 add_library(
   addon SHARED
