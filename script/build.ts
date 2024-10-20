@@ -17,7 +17,7 @@ type Options = {
 function parseOptions(): Options {
   return {
     zmq_shared: toBool(process.env.npm_config_zmq_shared) ?? false,
-    zmq_draft: toBool(process.env.npm_config_zmq_draft) ?? false,
+    zmq_draft: toBool(process.env.npm_config_zmq_draft) ?? true,
     zmq_version:
       toString(process.env.npm_config_zmq_version) ??
       "5657b4586f24ec433930e8ece02ddba7afcf0fe0",
