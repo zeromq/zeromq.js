@@ -10,6 +10,9 @@ const addonParentDir = path.join(
     "node",
 )
 const addOnAbiDirs = fs.readdirSync(addonParentDir)
+    .sort((a, b) => {
+        return Number.parseInt(b, 10) - Number.parseInt(a, 10)
+    })
 
 let addon: undefined | any
 // try each available addon ABI
