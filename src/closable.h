@@ -4,6 +4,7 @@
    up ZMQ resources at agent exit. */
 namespace zmq {
 struct Closable {
+    virtual ~Closable() = default;
     virtual void Close() = 0;
 };
 }
