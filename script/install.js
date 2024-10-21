@@ -12,6 +12,12 @@ function cmakeTs() {
   })
 }
 
+function devWarn(message) {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(message)
+  }
+}
+
 function main() {
   if (process.env.npm_config_build_from_source === "true") {
     cmakeTs()
@@ -19,7 +25,7 @@ function main() {
     try {
       require("../lib/load-addon.js")
     } catch (error) {
-      console.error(error)
+      devWarn(error)
       cmakeTs()
     }
   }

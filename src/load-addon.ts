@@ -1,22 +1,36 @@
 import path from "path"
 import fs from "fs"
 
+function errStr(error: unknown) {
+  return error instanceof Error
+    ? `${error.name}: ${error.message}\n${error.stack}`
+    : String(error)
+}
+
+function devWarn(message: string) {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(message)
+  }
+}
+
 function findAddon(): any | undefined {
+  let addon: undefined | any = undefined
   try {
-    const addonParentDir = path.resolve(path.join(
-      __dirname,
-      "..",
-      "build",
-      process.platform,
-      process.arch,
-      "node",
-    ))
+    const addonParentDir = path.resolve(
+      path.join(
+        __dirname,
+        "..",
+        "build",
+        process.platform,
+        process.arch,
+        "node",
+      ),
+    )
     const addOnAbiDirs = fs.readdirSync(addonParentDir).sort((a, b) => {
       return Number.parseInt(b, 10) - Number.parseInt(a, 10)
     })
 
     // try each available addon ABI
-    let addon: undefined | any
     for (const addOnAbiDir of addOnAbiDirs) {
       const addonPath = path.join(addonParentDir, addOnAbiDir, "addon.node")
       try {
@@ -24,25 +38,23 @@ function findAddon(): any | undefined {
         break
       } catch (err) {
         if (fs.existsSync(addonPath)) {
-          console.error(
-            `Failed to load addon at ${addonPath}: ${err}\nTrying others...`,
+          devWarn(
+            `Failed to load addon at ${addonPath}: ${errStr(err)}\nTrying others...`,
           )
         } else {
-          console.error(`No addon.node found in ${addonPath}\nTrying others...`)
+          devWarn(`No addon.node found in ${addonPath}\nTrying others...`)
         }
       }
     }
-
-    if (addon === undefined) {
-      throw new Error(
-        `No compatible zeromq.js addon found in ${addonParentDir} folder`,
-      )
-    }
-
-    return addon
   } catch (err) {
-    throw new Error(`Failed to load zeromq.js addon.node: ${err}`)
+    throw new Error(`Failed to load zeromq.js addon.node: ${errStr(err)}`)
   }
+
+  if (addon === undefined) {
+    throw new Error("No compatible zeromq.js addon found")
+  }
+
+  return addon
 }
 
 module.exports = findAddon()
