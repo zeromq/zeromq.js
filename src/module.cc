@@ -118,7 +118,7 @@ NAPI_MODULE_INIT(/* env, exports */) {
     auto terminate = [](void* data) { delete reinterpret_cast<zmq::Module*>(data); };
 
     /* Tear down the module class when the env/agent/thread is closed.*/
-    auto status = napi_add_env_cleanup_hook(env, terminate, module);
+    [[maybe_unused]] auto status = napi_add_env_cleanup_hook(env, terminate, module);
     assert(status == napi_ok);
     return exports;
 }

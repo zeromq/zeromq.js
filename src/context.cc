@@ -66,7 +66,7 @@ void Context::Close() {
                termination may block depending on ZMQ_BLOCKY/ZMQ_LINGER. This
                should definitely be avoided during GC and may only be acceptable
                at process exit. */
-            auto err = zmq_ctx_shutdown(context);
+            [[maybe_unused]] auto err =zmq_ctx_shutdown(context);
             assert(err == 0);
 
             /* Pass the ZMQ context on to terminator for cleanup at exit. */

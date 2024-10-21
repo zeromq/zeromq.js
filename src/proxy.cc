@@ -131,10 +131,10 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
             front->Close();
             back->Close();
 
-            auto err1 = zmq_close(control_pub);
+            [[maybe_unused]] auto err1 = zmq_close(control_pub);
             assert(err1 == 0);
 
-            auto err2 = zmq_close(control_sub);
+            [[maybe_unused]] auto err2 = zmq_close(control_sub);
             assert(err2 == 0);
 
             control_pub = nullptr;
