@@ -6,7 +6,9 @@ namespace zmq {
 /* Provide an alternative, simplified std::to_string implementation for
    integers to work around https://bugs.alpinelinux.org/issues/8626. */
 static inline std::string to_string(int64_t val) {
-    if (val == 0) return "0";
+    if (val == 0) {
+        return "0";
+    }
     std::string str;
 
     while (val > 0) {
@@ -16,4 +18,4 @@ static inline std::string to_string(int64_t val) {
 
     return str;
 }
-}
+}  // namespace zmq

@@ -15,7 +15,7 @@ public:
     static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Socket(const Napi::CallbackInfo& info);
-    virtual ~Socket();
+    ~Socket() override;
 
     void Close() override;
 
@@ -55,8 +55,8 @@ protected:
 
 private:
     inline void WarnUnlessImmediateOption(int32_t option) const;
-    inline bool ValidateOpen() const;
-    bool HasEvents(int32_t events) const;
+    [[nodiscard]] inline bool ValidateOpen() const;
+    [[nodiscard]] bool HasEvents(int32_t events) const;
 
     /* Send/receive are usually in a hot path and will benefit slightly
        from being inlined. They are used in more than one location and are
@@ -76,19 +76,19 @@ private:
         Napi::Value ReadPromise();
         Napi::Value WritePromise(OutgoingMsg::Parts&& parts);
 
-        inline bool Reading() const {
+        [[nodiscard]] bool Reading() const {
             return read_deferred.has_value();
         }
 
-        inline bool Writing() const {
+        [[nodiscard]] bool Writing() const {
             return write_deferred.has_value();
         }
 
-        inline bool ValidateReadable() const {
+        [[nodiscard]] bool ValidateReadable() const {
             return socket.HasEvents(ZMQ_POLLIN);
         }
 
-        inline bool ValidateWritable() const {
+        [[nodiscard]] bool ValidateWritable() const {
             return socket.HasEvents(ZMQ_POLLOUT);
         }
 
@@ -117,7 +117,7 @@ private:
     friend class Observer;
     friend class Proxy;
 };
-}
+}  // namespace zmq
 
-static_assert(!std::is_copy_constructible<zmq::Socket>::value, "not copyable");
-static_assert(!std::is_move_constructible<zmq::Socket>::value, "not movable");
+static_assert(!std::is_copy_constructible_v<zmq::Socket>, "not copyable");
+static_assert(!std::is_move_constructible_v<zmq::Socket>, "not movable");
