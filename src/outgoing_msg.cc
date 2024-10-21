@@ -81,7 +81,7 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
             }
             /* Fall through */
 
-        default:
+        [[fallthrough]]; default:
             string_send(new std::string(value.ToString()));
         }
     }
