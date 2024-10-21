@@ -184,7 +184,7 @@ this, add the following to your .npmrc, replacing 10.15 with your desired
 minimum macOS version:
 
 ```ini
-macos_deployment_target="10.15"
+macosx_deployment_target="10.15"
 ```
 
 </details>

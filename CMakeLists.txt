@@ -46,9 +46,7 @@ set_option_from_env(ZMQ_NO_SYNC_RESOLVE)
 if(APPLE)
   option(MACOSX_DEPLOYMENT_TARGET "MacOS deployment target" "10.15")
   set_option_from_env(MACOSX_DEPLOYMENT_TARGET)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET
-      ${MACOSX_DEPLOYMENT_TARGET}
-      CACHE STRING "MacOS deployment target")
+  set(CMAKE_OSX_DEPLOYMENT_TARGET ${MACOSX_DEPLOYMENT_TARGET})
 endif()
 
 # Set the target system on Windows (for cross-compiling x86)
