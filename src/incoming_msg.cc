@@ -26,7 +26,7 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
             return env.Undefined();
         }
     }
-    auto data = reinterpret_cast<uint8_t*>(zmq_msg_data(*ref));
+    auto* data = reinterpret_cast<uint8_t*>(zmq_msg_data(*ref));
     auto length = zmq_msg_size(*ref);
 
     if (noElectronMemoryCage) {
@@ -41,7 +41,7 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
             Napi::MemoryManagement::AdjustExternalMemory(env, length);
 
             auto release = [](const Napi::Env& env, uint8_t*, Reference* ref) {
-                ptrdiff_t length = zmq_msg_size(*ref);
+                ptrdiff_t const length = zmq_msg_size(*ref);
                 Napi::MemoryManagement::AdjustExternalMemory(env, -length);
                 delete ref;
             };
@@ -66,4 +66,4 @@ IncomingMsg::Reference::~Reference() {
     auto err = zmq_msg_close(&msg);
     assert(err == 0);
 }
-}
+}  // namespace zmq

@@ -9,8 +9,8 @@ bool hasRun = false;
 bool hasElectronMemoryCageCache = false;
 
 static inline std::string first_component(std::string const& value) {
-    std::string::size_type pos = value.find('.');
-    return pos == value.npos ? value : value.substr(0, pos);
+    std::string::size_type const pos = value.find('.');
+    return pos == std::string::npos ? value : value.substr(0, pos);
 }
 
 /* Check if runtime is Electron. */
@@ -35,7 +35,7 @@ static inline bool hasElectronMemoryCage(const Napi::Env& env) {
                                     .Get("electron")
                                     .ToString()
                                     .Utf8Value();
-            int majorVer = stoi(first_component(electronVers));
+            int const majorVer = stoi(first_component(electronVers));
             if (majorVer >= 21) {
                 hasElectronMemoryCageCache = true;
             }
@@ -44,4 +44,4 @@ static inline bool hasElectronMemoryCage(const Napi::Env& env) {
     }
     return hasElectronMemoryCageCache;
 }
-}
+}  // namespace zmq

@@ -10,7 +10,7 @@
 #include "util/take.h"
 
 namespace zmq {
-static inline constexpr const char* EventName(uint32_t val) {
+static constexpr const char* EventName(uint32_t val) {
     switch (val) {
     case ZMQ_EVENT_CONNECTED:
         return "connect";
@@ -74,7 +74,7 @@ static inline constexpr const char* EventName(uint32_t val) {
 }
 
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_AUTH
-static inline constexpr const char* AuthError(uint32_t val) {
+static constexpr const char* AuthError(uint32_t val) {
     switch (val) {
     case 300:
         return "Temporary error";
@@ -126,14 +126,18 @@ static inline std::pair<const char*, const char*> ProtoError(uint32_t val) {
 Observer::Observer(const Napi::CallbackInfo& info)
     : Napi::ObjectWrap<Observer>(info), async_context(Env(), "Observer"), poller(*this),
       module(*reinterpret_cast<Module*>(info.Data())) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Object>("Socket must be a socket object"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) {
+        return;
+    }
 
-    auto target = Socket::Unwrap(info[0].As<Napi::Object>());
-    if (Env().IsExceptionPending()) return;
+    auto* target = Socket::Unwrap(info[0].As<Napi::Object>());
+    if (Env().IsExceptionPending()) {
+        return;
+    }
 
     /* Use `this` pointer as unique identifier for monitoring socket. */
     auto address = std::string("inproc://zmq.monitor.")
@@ -144,14 +148,14 @@ Observer::Observer(const Napi::CallbackInfo& info)
         return;
     }
 
-    auto context = Context::Unwrap(target->context_ref.Value());
+    auto* context = Context::Unwrap(target->context_ref.Value());
     socket = zmq_socket(context->context, ZMQ_PAIR);
     if (socket == nullptr) {
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
         return;
     }
 
-    uv_os_sock_t fd;
+    uv_os_sock_t fd = 0;
     size_t length = sizeof(fd);
 
     if (zmq_connect(socket, address.c_str()) < 0) {
@@ -179,7 +183,6 @@ error:
     assert(err == 0);
 
     socket = nullptr;
-    return;
 }
 
 Observer::~Observer() {
@@ -196,22 +199,24 @@ bool Observer::ValidateOpen() const {
 }
 
 bool Observer::HasEvents() const {
-    int32_t events;
+    int32_t events = 0;
     size_t events_size = sizeof(events);
 
     while (zmq_getsockopt(socket, ZMQ_EVENTS, &events, &events_size) < 0) {
         /* Ignore errors. */
-        if (zmq_errno() != EINTR) return 0;
+        if (zmq_errno() != EINTR) {
+            return 0;
+        }
     }
 
-    return events & ZMQ_POLLIN;
+    return (events & ZMQ_POLLIN) != 0;
 }
 
 void Observer::Close() {
     if (socket != nullptr) {
         module.ObjectReaper.Remove(this);
 
-        Napi::HandleScope scope(Env());
+        Napi::HandleScope const scope(Env());
 
         /* Close succeeds unless socket is invalid. */
         auto err = zmq_close(socket);
@@ -240,7 +245,7 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
         }
     }
 
-    auto data1 = static_cast<uint8_t*>(zmq_msg_data(&msg1));
+    auto* data1 = static_cast<uint8_t*>(zmq_msg_data(&msg1));
     auto event_id = *reinterpret_cast<uint16_t*>(data1);
     auto value = *reinterpret_cast<uint32_t*>(data1 + 2);
     zmq_msg_close(&msg1);
@@ -254,7 +259,7 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
         }
     }
 
-    auto data2 = reinterpret_cast<char*>(zmq_msg_data(&msg2));
+    auto* data2 = reinterpret_cast<char*>(zmq_msg_data(&msg2));
     auto length = zmq_msg_size(&msg2);
 
     auto event = Napi::Object::New(Env());
@@ -306,15 +311,21 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
 }
 
 void Observer::Close(const Napi::CallbackInfo& info) {
-    if (Arg::Validator{}.ThrowIfInvalid(info)) return;
+    if (Arg::Validator{}.ThrowIfInvalid(info)) {
+        return;
+    }
 
     Close();
 }
 
 Napi::Value Observer::Receive(const Napi::CallbackInfo& info) {
-    if (Arg::Validator{}.ThrowIfInvalid(info)) return Env().Undefined();
+    if (Arg::Validator{}.ThrowIfInvalid(info)) {
+        return Env().Undefined();
+    }
 
-    if (!ValidateOpen()) return Env().Undefined();
+    if (!ValidateOpen()) {
+        return Env().Undefined();
+    }
 
     if (poller.Reading()) {
         ErrnoException(Env(), EBUSY,
@@ -329,13 +340,12 @@ Napi::Value Observer::Receive(const Napi::CallbackInfo& info) {
         auto res = Napi::Promise::Deferred::New(Env());
         Receive(res);
         return res.Promise();
-    } else {
-        poller.PollReadable(0);
-        return poller.ReadPromise();
     }
+    poller.PollReadable(0);
+    return poller.ReadPromise();
 }
 
-Napi::Value Observer::GetClosed(const Napi::CallbackInfo& info) {
+Napi::Value Observer::GetClosed(const Napi::CallbackInfo& /*info*/) {
     return Napi::Boolean::New(Env(), socket == nullptr);
 }
 
@@ -354,7 +364,7 @@ void Observer::Initialize(Module& module, Napi::Object& exports) {
 void Observer::Poller::ReadableCallback() {
     assert(read_deferred);
 
-    AsyncScope scope(socket.Env(), socket.async_context);
+    AsyncScope const scope(socket.Env(), socket.async_context);
     socket.Receive(take(read_deferred));
 }
 
@@ -364,4 +374,4 @@ Napi::Value Observer::Poller::ReadPromise() {
     read_deferred = Napi::Promise::Deferred(socket.Env());
     return read_deferred->Promise();
 }
-}
+}  // namespace zmq

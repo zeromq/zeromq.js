@@ -37,9 +37,10 @@ template <>
 uint64_t NumberCast<uint64_t>(const Napi::Number& num) {
     auto value = num.DoubleValue();
 
-    if (std::nextafter(value, -0.0) < 0) return 0;
+    if (std::nextafter(value, -0.0) < 0) { return 0;
+}
 
-    if (value > static_cast<double>((1ull << 53) - 1)) {
+    if (value > static_cast<double>((1ULL << 53) - 1)) {
         Warn(num.Env(),
             "Value is larger than Number.MAX_SAFE_INTEGER and may have been rounded "
             "inaccurately.");
@@ -65,12 +66,13 @@ struct AddressContext {
 Socket::Socket(const Napi::CallbackInfo& info)
     : Napi::ObjectWrap<Socket>(info), async_context(Env(), "Socket"), poller(*this),
       module(*reinterpret_cast<Module*>(info.Data())) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Number>("Socket type must be a number"),
         Arg::Optional<Arg::Object>("Options must be an object"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) { return;
+}
 
     type = info[0].As<Napi::Number>().Uint32Value();
 
@@ -86,8 +88,9 @@ Socket::Socket(const Napi::CallbackInfo& info)
         context_ref.Reset(module.GlobalContext.Value(), 1);
     }
 
-    auto context = Context::Unwrap(context_ref.Value());
-    if (Env().IsExceptionPending()) return;
+    auto *context = Context::Unwrap(context_ref.Value());
+    if (Env().IsExceptionPending()) { return;
+}
 
     socket = zmq_socket(context->context, type);
     if (socket == nullptr) {
@@ -95,8 +98,8 @@ Socket::Socket(const Napi::CallbackInfo& info)
         return;
     }
 
-    uv_os_sock_t fd;
-    std::function<void()> finalize = nullptr;
+    uv_os_sock_t fd = 0;
+    std::function<void()> const finalize = nullptr;
 
 #ifdef ZMQ_THREAD_SAFE
     {
@@ -107,7 +110,7 @@ Socket::Socket(const Napi::CallbackInfo& info)
             goto error;
         }
 
-        thread_safe = value;
+        thread_safe = (value != 0);
     }
 #endif
 
@@ -178,7 +181,6 @@ error:
     assert(err == 0);
 
     socket = nullptr;
-    return;
 }
 
 Socket::~Socket() {
@@ -217,8 +219,10 @@ void Socket::WarnUnlessImmediateOption(int32_t option) const {
         ZMQ_RCVTIMEO,
     };
 
-    if (immediate.count(option) != 0) return;
-    if (endpoints == 0 && state == State::Open) return;
+    if (immediate.contains(option)) { return;
+}
+    if (endpoints == 0 && state == State::Open) { return;
+}
     Warn(Env(), "Socket option will not take effect until next connect/bind.");
 }
 
@@ -237,22 +241,23 @@ bool Socket::ValidateOpen() const {
 }
 
 bool Socket::HasEvents(int32_t requested) const {
-    int32_t events;
+    int32_t events = 0;
     size_t events_size = sizeof(events);
 
     while (zmq_getsockopt(socket, ZMQ_EVENTS, &events, &events_size) < 0) {
         /* Ignore errors. */
-        if (zmq_errno() != EINTR) return 0;
+        if (zmq_errno() != EINTR) { return 0;
+}
     }
 
-    return events & requested;
+    return (events & requested) != 0;
 }
 
 void Socket::Close() {
     if (socket != nullptr) {
         module.ObjectReaper.Remove(this);
 
-        Napi::HandleScope scope(Env());
+        Napi::HandleScope const scope(Env());
 
         /* Clear endpoint count. */
         endpoints = 0;
@@ -283,7 +288,7 @@ void Socket::Send(const Napi::Promise::Deferred& res, OutgoingMsg::Parts& parts)
         auto& part = *iter;
         iter++;
 
-        uint32_t flags = iter == end ? ZMQ_DONTWAIT : ZMQ_DONTWAIT | ZMQ_SNDMORE;
+        uint32_t const flags = iter == end ? ZMQ_DONTWAIT : ZMQ_DONTWAIT | ZMQ_SNDMORE;
         while (zmq_msg_send(part, socket, flags) < 0) {
             if (zmq_errno() != EINTR) {
                 res.Reject(ErrnoException(Env(), zmq_errno()).Value());
@@ -332,20 +337,23 @@ void Socket::Receive(const Napi::Promise::Deferred& res) {
         }
 #endif
 
-        if (!zmq_msg_more(part)) break;
+        if (zmq_msg_more(part) == 0) { break;
+}
     }
 
     res.Resolve(list);
 }
 
 Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::String>("Address must be a string"),
     };
 
-    if (args.ThrowIfInvalid(info)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) { return Env().Undefined();
+}
 
-    if (!ValidateOpen()) return Env().Undefined();
+    if (!ValidateOpen()) { return Env().Undefined();
+}
 
     state = Socket::State::Blocked;
     auto res = Napi::Promise::Deferred::New(Env());
@@ -353,7 +361,7 @@ Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
 
     auto status = UvQueue(
         Env(),
-        [=]() {
+        [this, run_ctx]() {
             /* Don't access V8 internals here! Executed in worker thread. */
             while (zmq_bind(socket, run_ctx->address.c_str()) < 0) {
                 if (zmq_errno() != EINTR) {
@@ -362,8 +370,8 @@ Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
                 }
             }
         },
-        [=]() {
-            AsyncScope scope(Env(), async_context);
+        [this, run_ctx, res]() {
+            AsyncScope const scope(Env(), async_context);
 
             state = Socket::State::Open;
             endpoints++;
@@ -390,13 +398,15 @@ Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
 }
 
 Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::String>("Address must be a string"),
     };
 
-    if (args.ThrowIfInvalid(info)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) { return Env().Undefined();
+}
 
-    if (!ValidateOpen()) return Env().Undefined();
+    if (!ValidateOpen()) { return Env().Undefined();
+}
 
     state = Socket::State::Blocked;
     auto res = Napi::Promise::Deferred::New(Env());
@@ -404,7 +414,7 @@ Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
 
     auto status = UvQueue(
         Env(),
-        [=]() {
+        [this, run_ctx]() {
             /* Don't access V8 internals here! Executed in worker thread. */
             while (zmq_unbind(socket, run_ctx->address.c_str()) < 0) {
                 if (zmq_errno() != EINTR) {
@@ -413,8 +423,8 @@ Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
                 }
             }
         },
-        [=]() {
-            AsyncScope scope(Env(), async_context);
+        [this, run_ctx, res]() {
+            AsyncScope const scope(Env(), async_context);
 
             state = Socket::State::Open;
             --endpoints;
@@ -441,15 +451,17 @@ Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
 }
 
 void Socket::Connect(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::String>("Address must be a string"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) { return;
+}
 
-    if (!ValidateOpen()) return;
+    if (!ValidateOpen()) { return;
+}
 
-    std::string address = info[0].As<Napi::String>();
+    std::string const address = info[0].As<Napi::String>();
     if (zmq_connect(socket, address.c_str()) < 0) {
         ErrnoException(Env(), zmq_errno(), address).ThrowAsJavaScriptException();
         return;
@@ -459,15 +471,17 @@ void Socket::Connect(const Napi::CallbackInfo& info) {
 }
 
 void Socket::Disconnect(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::String>("Address must be a string"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) { return;
+}
 
-    if (!ValidateOpen()) return;
+    if (!ValidateOpen()) { return;
+}
 
-    std::string address = info[0].As<Napi::String>();
+    std::string const address = info[0].As<Napi::String>();
     if (zmq_disconnect(socket, address.c_str()) < 0) {
         ErrnoException(Env(), zmq_errno(), address).ThrowAsJavaScriptException();
         return;
@@ -477,7 +491,8 @@ void Socket::Disconnect(const Napi::CallbackInfo& info) {
 }
 
 void Socket::Close(const Napi::CallbackInfo& info) {
-    if (Arg::Validator{}.ThrowIfInvalid(info)) return;
+    if (Arg::Validator{}.ThrowIfInvalid(info)) { return;
+}
 
     /* We can't access the socket when it is blocked, delay closing. */
     if (state == State::Blocked) {
@@ -505,15 +520,17 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
 
 #endif
     default: {
-        Arg::Validator args{
+        Arg::Validator const args{
             Arg::Required<Arg::NotUndefined>("Message must be present"),
         };
 
-        if (args.ThrowIfInvalid(info)) return Env().Undefined();
+        if (args.ThrowIfInvalid(info)) { return Env().Undefined();
+}
     }
     }
 
-    if (!ValidateOpen()) return Env().Undefined();
+    if (!ValidateOpen()) { return Env().Undefined();
+}
 
     if (poller.Writing()) {
         ErrnoException(Env(), EBUSY,
@@ -568,7 +585,8 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
            avoid starving the event loop. Writes will be delayed. */
         UvScheduleDelayed(Env(), [&]() {
             poller.WritableCallback();
-            if (socket == nullptr) return;
+            if (socket == nullptr) { return;
+}
             poller.TriggerReadable();
         });
     } else {
@@ -579,9 +597,11 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
 }
 
 Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
-    if (Arg::Validator{}.ThrowIfInvalid(info)) return Env().Undefined();
+    if (Arg::Validator{}.ThrowIfInvalid(info)) { return Env().Undefined();
+}
 
-    if (!ValidateOpen()) return Env().Undefined();
+    if (!ValidateOpen()) { return Env().Undefined();
+}
 
     if (poller.Reading()) {
         ErrnoException(Env(), EBUSY,
@@ -612,7 +632,8 @@ Napi::Value Socket::Receive(const Napi::CallbackInfo& info) {
            avoid starving the event loop. Reads will be delayed. */
         UvScheduleDelayed(Env(), [&]() {
             poller.ReadableCallback();
-            if (socket == nullptr) return;
+            if (socket == nullptr) { return;
+}
             poller.TriggerWritable();
         });
     } else {
@@ -680,13 +701,14 @@ void Socket::Leave(const Napi::CallbackInfo& info) {
 
 template <>
 Napi::Value Socket::GetSockOpt<bool>(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Number>("Identifier must be a number"),
     };
 
-    if (args.ThrowIfInvalid(info)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) { return Env().Undefined();
+}
 
-    uint32_t option = info[0].As<Napi::Number>();
+    uint32_t const option = info[0].As<Napi::Number>();
 
     int32_t value = 0;
     size_t length = sizeof(value);
@@ -695,22 +717,23 @@ Napi::Value Socket::GetSockOpt<bool>(const Napi::CallbackInfo& info) {
         return Env().Undefined();
     }
 
-    return Napi::Boolean::New(Env(), value);
+    return Napi::Boolean::New(Env(), value != 0);
 }
 
 template <>
 void Socket::SetSockOpt<bool>(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Number>("Identifier must be a number"),
         Arg::Required<Arg::Boolean>("Option value must be a boolean"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) { return;
+}
 
-    int32_t option = info[0].As<Napi::Number>();
+    int32_t const option = info[0].As<Napi::Number>();
     WarnUnlessImmediateOption(option);
 
-    int32_t value = info[1].As<Napi::Boolean>();
+    int32_t value = static_cast<int32_t>(info[1].As<Napi::Boolean>());
     if (zmq_setsockopt(socket, option, &value, sizeof(value)) < 0) {
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
         return;
@@ -719,13 +742,14 @@ void Socket::SetSockOpt<bool>(const Napi::CallbackInfo& info) {
 
 template <>
 Napi::Value Socket::GetSockOpt<char*>(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Number>("Identifier must be a number"),
     };
 
-    if (args.ThrowIfInvalid(info)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) { return Env().Undefined();
+}
 
-    uint32_t option = info[0].As<Napi::Number>();
+    uint32_t const option = info[0].As<Napi::Number>();
 
     char value[1024];
     size_t length = sizeof(value) - 1;
@@ -736,38 +760,39 @@ Napi::Value Socket::GetSockOpt<char*>(const Napi::CallbackInfo& info) {
 
     if (length == 0 || (length == 1 && value[0] == 0)) {
         return Env().Null();
-    } else {
-        value[length] = '\0';
+    }         value[length] = '\0';
         return Napi::String::New(Env(), value);
-    }
+   
 }
 
 template <>
 void Socket::SetSockOpt<char*>(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Number>("Identifier must be a number"),
         Arg::Required<Arg::String, Arg::Buffer, Arg::Null>(
             "Option value must be a string or buffer"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) {
+        return;
+    }
 
-    int32_t option = info[0].As<Napi::Number>();
+    int32_t const option = info[0].As<Napi::Number>();
     WarnUnlessImmediateOption(option);
 
-    int32_t err;
+    int32_t err = 0;
     if (info[1].IsBuffer()) {
-        Napi::Object buf = info[1].As<Napi::Object>();
+        auto const buf = info[1].As<Napi::Object>();
         auto length = buf.As<Napi::Buffer<char>>().Length();
-        auto value = buf.As<Napi::Buffer<char>>().Data();
+        auto *value = buf.As<Napi::Buffer<char>>().Data();
         err = zmq_setsockopt(socket, option, value, length);
     } else if (info[1].IsString()) {
         std::string str = info[1].As<Napi::String>();
         auto length = str.length();
-        auto value = str.data();
+        auto *value = str.data();
         err = zmq_setsockopt(socket, option, value, length);
     } else {
-        auto length = 0u;
+        auto length = 0U;
         auto value = nullptr;
         err = zmq_setsockopt(socket, option, value, length);
     }
@@ -780,13 +805,14 @@ void Socket::SetSockOpt<char*>(const Napi::CallbackInfo& info) {
 
 template <typename T>
 Napi::Value Socket::GetSockOpt(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Number>("Identifier must be a number"),
     };
 
-    if (args.ThrowIfInvalid(info)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) { return Env().Undefined();
+}
 
-    uint32_t option = info[0].As<Napi::Number>();
+    uint32_t const option = info[0].As<Napi::Number>();
 
     T value = 0;
     size_t length = sizeof(value);
@@ -800,14 +826,15 @@ Napi::Value Socket::GetSockOpt(const Napi::CallbackInfo& info) {
 
 template <typename T>
 void Socket::SetSockOpt(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Number>("Identifier must be a number"),
         Arg::Required<Arg::Number>("Option value must be a number"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) { return;
+}
 
-    int32_t option = info[0].As<Napi::Number>();
+    int32_t const option = info[0].As<Napi::Number>();
     WarnUnlessImmediateOption(option);
 
     T value = NumberCast<T>(info[1].As<Napi::Number>());
@@ -827,7 +854,7 @@ void Socket::SetSockOpt(const Napi::CallbackInfo& info) {
     }
 }
 
-Napi::Value Socket::GetEvents(const Napi::CallbackInfo& info) {
+Napi::Value Socket::GetEvents(const Napi::CallbackInfo&  /*info*/) {
     /* Reuse the same observer object every time it is accessed. */
     if (observer_ref.IsEmpty()) {
         observer_ref.Reset(module.Observer.New({Value()}), 1);
@@ -836,19 +863,19 @@ Napi::Value Socket::GetEvents(const Napi::CallbackInfo& info) {
     return observer_ref.Value();
 }
 
-Napi::Value Socket::GetContext(const Napi::CallbackInfo& info) {
+Napi::Value Socket::GetContext(const Napi::CallbackInfo&  /*info*/) {
     return context_ref.Value();
 }
 
-Napi::Value Socket::GetClosed(const Napi::CallbackInfo& info) {
+Napi::Value Socket::GetClosed(const Napi::CallbackInfo&  /*info*/) {
     return Napi::Boolean::New(Env(), state == State::Closed);
 }
 
-Napi::Value Socket::GetReadable(const Napi::CallbackInfo& info) {
+Napi::Value Socket::GetReadable(const Napi::CallbackInfo&  /*info*/) {
     return Napi::Boolean::New(Env(), HasEvents(ZMQ_POLLIN));
 }
 
-Napi::Value Socket::GetWritable(const Napi::CallbackInfo& info) {
+Napi::Value Socket::GetWritable(const Napi::CallbackInfo&  /*info*/) {
     return Napi::Boolean::New(Env(), HasEvents(ZMQ_POLLOUT));
 }
 
@@ -897,7 +924,7 @@ void Socket::Poller::ReadableCallback() {
     assert(read_deferred);
     socket.sync_operations = 0;
 
-    AsyncScope scope(socket.Env(), socket.async_context);
+    AsyncScope const scope(socket.Env(), socket.async_context);
     socket.Receive(take(read_deferred));
 }
 
@@ -905,7 +932,7 @@ void Socket::Poller::WritableCallback() {
     assert(write_deferred);
     socket.sync_operations = 0;
 
-    AsyncScope scope(socket.Env(), socket.async_context);
+    AsyncScope const scope(socket.Env(), socket.async_context);
     socket.Send(take(write_deferred), write_value);
     write_value.Clear();
 }
@@ -924,4 +951,4 @@ Napi::Value Socket::Poller::WritePromise(OutgoingMsg::Parts&& value) {
     write_deferred = Napi::Promise::Deferred(socket.Env());
     return write_deferred->Promise();
 }
-}
+}  // namespace zmq

@@ -22,34 +22,46 @@ struct ProxyContext {
 Proxy::Proxy(const Napi::CallbackInfo& info)
     : Napi::ObjectWrap<Proxy>(info), async_context(Env(), "Proxy"),
       module(*reinterpret_cast<Module*>(info.Data())) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Object>("Front-end must be a socket object"),
         Arg::Required<Arg::Object>("Back-end must be a socket object"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) {
+        return;
+    }
 
     front_ref.Reset(info[0].As<Napi::Object>(), 1);
     Socket::Unwrap(front_ref.Value());
-    if (Env().IsExceptionPending()) return;
+    if (Env().IsExceptionPending()) {
+        return;
+    }
 
     back_ref.Reset(info[1].As<Napi::Object>(), 1);
     Socket::Unwrap(back_ref.Value());
-    if (Env().IsExceptionPending()) return;
+    if (Env().IsExceptionPending()) {
+        return;
+    }
 }
 
-Proxy::~Proxy() {}
+Proxy::~Proxy() = default;
 
 void Proxy::Close() {}
 
 Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
-    if (Arg::Validator{}.ThrowIfInvalid(info)) return Env().Undefined();
+    if (Arg::Validator{}.ThrowIfInvalid(info)) {
+        return Env().Undefined();
+    }
 
-    auto front = Socket::Unwrap(front_ref.Value());
-    if (Env().IsExceptionPending()) return Env().Undefined();
+    auto* front = Socket::Unwrap(front_ref.Value());
+    if (Env().IsExceptionPending()) {
+        return Env().Undefined();
+    }
 
-    auto back = Socket::Unwrap(back_ref.Value());
-    if (Env().IsExceptionPending()) return Env().Undefined();
+    auto* back = Socket::Unwrap(back_ref.Value());
+    if (Env().IsExceptionPending()) {
+        return Env().Undefined();
+    }
 
     if (front->endpoints == 0) {
         ErrnoException(Env(), EINVAL, "Front-end socket must be bound or connected")
@@ -63,8 +75,10 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
         return Env().Undefined();
     }
 
-    auto context = Context::Unwrap(front->context_ref.Value());
-    if (Env().IsExceptionPending()) return Env().Undefined();
+    auto* context = Context::Unwrap(front->context_ref.Value());
+    if (Env().IsExceptionPending()) {
+        return Env().Undefined();
+    }
 
     control_sub = zmq_socket(context->context, ZMQ_DEALER);
     if (control_sub == nullptr) {
@@ -94,12 +108,12 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
     auto res = Napi::Promise::Deferred::New(Env());
     auto run_ctx = std::make_shared<ProxyContext>(std::move(address));
 
-    auto front_ptr = front->socket;
-    auto back_ptr = back->socket;
+    auto* front_ptr = front->socket;
+    auto* back_ptr = back->socket;
 
     auto status = UvQueue(
         Env(),
-        [=]() {
+        [this, run_ctx, front_ptr, back_ptr]() {
             /* Don't access V8 internals here! Executed in worker thread. */
             if (zmq_bind(control_sub, run_ctx->address.c_str()) < 0) {
                 run_ctx->error = zmq_errno();
@@ -111,8 +125,8 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
                 return;
             }
         },
-        [=]() {
-            AsyncScope scope(Env(), async_context);
+        [this, front, back, run_ctx, res]() {
+            AsyncScope const scope(Env(), async_context);
 
             front->Close();
             back->Close();
@@ -158,28 +172,34 @@ void Proxy::SendCommand(const char* command) {
 }
 
 void Proxy::Pause(const Napi::CallbackInfo& info) {
-    if (Arg::Validator{}.ThrowIfInvalid(info)) return;
+    if (Arg::Validator{}.ThrowIfInvalid(info)) {
+        return;
+    }
 
     SendCommand("PAUSE");
 }
 
 void Proxy::Resume(const Napi::CallbackInfo& info) {
-    if (Arg::Validator{}.ThrowIfInvalid(info)) return;
+    if (Arg::Validator{}.ThrowIfInvalid(info)) {
+        return;
+    }
 
     SendCommand("RESUME");
 }
 
 void Proxy::Terminate(const Napi::CallbackInfo& info) {
-    if (Arg::Validator{}.ThrowIfInvalid(info)) return;
+    if (Arg::Validator{}.ThrowIfInvalid(info)) {
+        return;
+    }
 
     SendCommand("TERMINATE");
 }
 
-Napi::Value Proxy::GetFrontEnd(const Napi::CallbackInfo& info) {
+Napi::Value Proxy::GetFrontEnd(const Napi::CallbackInfo& /*info*/) {
     return front_ref.Value();
 }
 
-Napi::Value Proxy::GetBackEnd(const Napi::CallbackInfo& info) {
+Napi::Value Proxy::GetBackEnd(const Napi::CallbackInfo& /*info*/) {
     return back_ref.Value();
 }
 
@@ -198,6 +218,6 @@ void Proxy::Initialize(Module& module, Napi::Object& exports) {
     module.Proxy = Napi::Persistent(constructor);
     exports.Set("Proxy", constructor);
 }
-}
+}  // namespace zmq
 
 #endif

@@ -24,6 +24,7 @@ public:
     explicit OutgoingMsg(Napi::Value value, Module& module);
     ~OutgoingMsg();
 
+    // NOLINTNEXTLINE(*-explicit-*)
     inline operator zmq_msg_t*() {
         return &msg;
     }
@@ -34,13 +35,13 @@ private:
         Module& module;
 
     public:
-        inline explicit Reference(Napi::Value val, Module& module)
+        explicit Reference(Napi::Value val, Module& module)
             : persistent(Napi::Persistent(val)), module(module) {}
 
         void Recycle();
     };
 
-    zmq_msg_t msg;
+    zmq_msg_t msg{};
 
     friend class Module;
 };
@@ -51,14 +52,14 @@ class OutgoingMsg::Parts {
     std::forward_list<OutgoingMsg> parts;
 
 public:
-    inline Parts() {}
+    Parts() = default;
     explicit Parts(Napi::Value value, Module& module);
 
-    inline std::forward_list<OutgoingMsg>::iterator begin() {
+    std::forward_list<OutgoingMsg>::iterator begin() {
         return parts.begin();
     }
 
-    inline std::forward_list<OutgoingMsg>::iterator end() {
+    std::forward_list<OutgoingMsg>::iterator end() {
         return parts.end();
     }
 
@@ -67,11 +68,11 @@ public:
     bool SetRoutingId(Napi::Value value);
 #endif
 
-    inline void Clear() {
+    void Clear() {
         parts.clear();
     }
 };
-}
+}  // namespace zmq
 
-static_assert(!std::is_copy_constructible<zmq::OutgoingMsg>::value, "not copyable");
-static_assert(!std::is_move_constructible<zmq::OutgoingMsg>::value, "not movable");
+static_assert(!std::is_copy_constructible_v<zmq::OutgoingMsg>, "not copyable");
+static_assert(!std::is_move_constructible_v<zmq::OutgoingMsg>, "not movable");

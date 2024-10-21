@@ -18,7 +18,7 @@ struct Terminator {
         assert(context != nullptr);
 
 #ifdef ZMQ_BLOCKY
-        bool blocky = zmq_ctx_get(context, ZMQ_BLOCKY);
+        bool const blocky = zmq_ctx_get(context, ZMQ_BLOCKY) != 0;
 #else
         /* If the option cannot be set, don't suggest to set it. */
         bool blocky = false;
@@ -69,7 +69,7 @@ class Module {
 public:
     explicit Module(Napi::Object exports);
 
-    inline class Global& Global() {
+    class Global& Global() {
         return *global;
     }
 
@@ -103,7 +103,7 @@ public:
     Napi::FunctionReference Observer;
     Napi::FunctionReference Proxy;
 };
-}
+}  // namespace zmq
 
-static_assert(!std::is_copy_constructible<zmq::Module>::value, "not copyable");
-static_assert(!std::is_move_constructible<zmq::Module>::value, "not movable");
+static_assert(!std::is_copy_constructible_v<zmq::Module>, "not copyable");
+static_assert(!std::is_move_constructible_v<zmq::Module>, "not movable");

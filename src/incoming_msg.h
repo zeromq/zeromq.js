@@ -15,18 +15,20 @@ public:
 
     Napi::Value IntoBuffer(const Napi::Env& env);
 
+    // NOLINTNEXTLINE(*-explicit-*)
     inline operator zmq_msg_t*() {
         return *ref;
     }
 
 private:
     class Reference {
-        zmq_msg_t msg;
+        zmq_msg_t msg{};
 
     public:
         Reference();
         ~Reference();
 
+        // NOLINTNEXTLINE(*-explicit-*)
         inline operator zmq_msg_t*() {
             return &msg;
         }
@@ -35,7 +37,7 @@ private:
     Reference* ref = nullptr;
     bool moved = false;
 };
-}
+}  // namespace zmq
 
-static_assert(!std::is_copy_constructible<zmq::IncomingMsg>::value, "not copyable");
-static_assert(!std::is_move_constructible<zmq::IncomingMsg>::value, "not movable");
+static_assert(!std::is_copy_constructible_v<zmq::IncomingMsg>, "not copyable");
+static_assert(!std::is_move_constructible_v<zmq::IncomingMsg>, "not movable");

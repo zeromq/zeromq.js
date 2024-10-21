@@ -8,7 +8,7 @@ class AsyncScope {
     Napi::CallbackScope callback_scope;
 
 public:
-    inline explicit AsyncScope(Napi::Env env, const Napi::AsyncContext& context)
+    explicit AsyncScope(Napi::Env env, const Napi::AsyncContext& context)
         : handle_scope(env), callback_scope(env, context) {}
 };
 }

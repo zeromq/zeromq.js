@@ -32,12 +32,12 @@ public:
         }
     }
 
-    inline void Add(T* ptr) {
+    void Add(T* ptr) {
         assert(ptr);
         pointers.insert(ptr);
     }
 
-    inline void Remove(T* ptr) {
+    void Remove(T* ptr) {
         assert(ptr);
         pointers.erase(ptr);
     }
@@ -49,14 +49,14 @@ class ThreadSafeReaper : Reaper<T, Deleter> {
     std::mutex lock;
 
 public:
-    inline void Add(T* ptr) {
+    void Add(T* ptr) {
         std::lock_guard<std::mutex> guard(lock);
         Reaper<T, Deleter>::Add(ptr);
     }
 
-    inline void Remove(T* ptr) {
+    void Remove(T* ptr) {
         std::lock_guard<std::mutex> guard(lock);
         Reaper<T, Deleter>::Remove(ptr);
     }
 };
-}
+}  // namespace zmq
