@@ -1,6 +1,8 @@
 
 #include "./proxy.h"
 
+#include <cstdint>
+
 #include "./context.h"
 #include "./module.h"
 #include "./socket.h"
@@ -116,12 +118,12 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
         [this, run_ctx, front_ptr, back_ptr]() {
             /* Don't access V8 internals here! Executed in worker thread. */
             if (zmq_bind(control_sub, run_ctx->address.c_str()) < 0) {
-                run_ctx->error = zmq_errno();
+                run_ctx->error = static_cast<uint32_t>(zmq_errno());
                 return;
             }
 
             if (zmq_proxy_steerable(front_ptr, back_ptr, nullptr, control_sub) < 0) {
-                run_ctx->error = zmq_errno();
+                run_ctx->error = static_cast<uint32_t>(zmq_errno());
                 return;
             }
         },
@@ -141,7 +143,8 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
             control_sub = nullptr;
 
             if (run_ctx->error != 0) {
-                res.Reject(ErrnoException(Env(), run_ctx->error).Value());
+                res.Reject(
+                    ErrnoException(Env(), static_cast<int32_t>(run_ctx->error)).Value());
                 return;
             }
 

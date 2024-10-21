@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <utility>
 
 #include "util/uvhandle.h"
@@ -70,20 +71,20 @@ public:
         assert((events & UV_READABLE) == 0);
 
         if (timeout > 0) {
-            [[maybe_unused]] auto err =uv_timer_start(
+            [[maybe_unused]] auto err = uv_timer_start(
                 readable_timer,
                 [](uv_timer_t* timer) {
                     auto& poller = *reinterpret_cast<Poller*>(timer->data);
                     poller.Trigger(UV_READABLE);
                 },
-                timeout, 0);
+                static_cast<uint64_t>(timeout), 0);
 
             assert(err == 0);
         }
 
         if (events == 0) {
             /* Only start polling if we were not polling already. */
-            [[maybe_unused]] auto err =uv_poll_start(poll, UV_READABLE, Callback);
+            [[maybe_unused]] auto err = uv_poll_start(poll, UV_READABLE, Callback);
             assert(err == 0);
         }
 
@@ -94,13 +95,13 @@ public:
         assert((events & UV_WRITABLE) == 0);
 
         if (timeout > 0) {
-            [[maybe_unused]] auto err =uv_timer_start(
+            [[maybe_unused]] auto err = uv_timer_start(
                 writable_timer,
                 [](uv_timer_t* timer) {
                     auto& poller = *reinterpret_cast<Poller*>(timer->data);
                     poller.Trigger(UV_WRITABLE);
                 },
-                timeout, 0);
+                static_cast<uint64_t>(timeout), 0);
 
             assert(err == 0);
         }
@@ -109,7 +110,7 @@ public:
            events on the socket in an edge-triggered fashion by making the
            file descriptor become ready for READING." */
         if (events == 0) {
-            [[maybe_unused]] auto err =uv_poll_start(poll, UV_READABLE, Callback);
+            [[maybe_unused]] auto err = uv_poll_start(poll, UV_READABLE, Callback);
             assert(err == 0);
         }
 
@@ -141,18 +142,18 @@ private:
     void Trigger(int32_t triggered) {
         events &= ~triggered;
         if (events == 0) {
-            [[maybe_unused]] auto err =uv_poll_stop(poll);
+            [[maybe_unused]] auto err = uv_poll_stop(poll);
             assert(err == 0);
         }
 
         if ((triggered & UV_READABLE) != 0) {
-            [[maybe_unused]] auto err =uv_timer_stop(readable_timer);
+            [[maybe_unused]] auto err = uv_timer_stop(readable_timer);
             assert(err == 0);
             static_cast<T*>(this)->ReadableCallback();
         }
 
         if ((triggered & UV_WRITABLE) != 0) {
-            [[maybe_unused]] auto err =uv_timer_stop(writable_timer);
+            [[maybe_unused]] auto err = uv_timer_stop(writable_timer);
             assert(err == 0);
             static_cast<T*>(this)->WritableCallback();
         }

@@ -27,7 +27,7 @@ struct Terminator {
         /* Start termination asynchronously so we can detect if it takes long
            and should warn the user about this default blocking behaviour. */
         auto terminate = std::async(std::launch::async, [&] {
-            [[maybe_unused]] auto err =zmq_ctx_term(context);
+            [[maybe_unused]] auto err = zmq_ctx_term(context);
             assert(err == 0);
         });
 

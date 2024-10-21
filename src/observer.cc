@@ -179,7 +179,7 @@ Observer::Observer(const Napi::CallbackInfo& info)
     return;
 
 error:
-    [[maybe_unused]] auto err =zmq_close(socket);
+    [[maybe_unused]] auto err = zmq_close(socket);
     assert(err == 0);
 
     socket = nullptr;
@@ -219,7 +219,7 @@ void Observer::Close() {
         Napi::HandleScope const scope(Env());
 
         /* Close succeeds unless socket is invalid. */
-        [[maybe_unused]] auto err =zmq_close(socket);
+        [[maybe_unused]] auto err = zmq_close(socket);
         assert(err == 0);
 
         /* Reset pointer to avoid double close. */

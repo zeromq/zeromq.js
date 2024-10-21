@@ -2,6 +2,7 @@
 #include "./incoming_msg.h"
 
 #include <cassert>
+#include <cstdint>
 
 #include "util/electron_helper.h"
 #include "util/error.h"
@@ -41,7 +42,7 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
             Napi::MemoryManagement::AdjustExternalMemory(env, length);
 
             auto release = [](const Napi::Env& env, uint8_t*, Reference* ref) {
-                ptrdiff_t const length = zmq_msg_size(*ref);
+                const auto length = static_cast<int64_t>(zmq_msg_size(*ref));
                 Napi::MemoryManagement::AdjustExternalMemory(env, -length);
                 delete ref;
             };
@@ -58,12 +59,12 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
 }
 
 IncomingMsg::Reference::Reference() {
-    [[maybe_unused]] auto err =zmq_msg_init(&msg);
+    [[maybe_unused]] auto err = zmq_msg_init(&msg);
     assert(err == 0);
 }
 
 IncomingMsg::Reference::~Reference() {
-    [[maybe_unused]] auto err =zmq_msg_close(&msg);
+    [[maybe_unused]] auto err = zmq_msg_close(&msg);
     assert(err == 0);
 }
 }  // namespace zmq
