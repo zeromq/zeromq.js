@@ -66,7 +66,7 @@ void Context::Close() {
                termination may block depending on ZMQ_BLOCKY/ZMQ_LINGER. This
                should definitely be avoided during GC and may only be acceptable
                at process exit. */
-            [[maybe_unused]] auto err =zmq_ctx_shutdown(context);
+            [[maybe_unused]] auto err = zmq_ctx_shutdown(context);
             assert(err == 0);
 
             /* Pass the ZMQ context on to terminator for cleanup at exit. */
@@ -88,7 +88,7 @@ Napi::Value Context::GetCtxOpt<bool>(const Napi::CallbackInfo& info) {
         return Env().Undefined();
     }
 
-    uint32_t const option = info[0].As<Napi::Number>();
+    const auto option = info[0].As<Napi::Number>();
 
     int32_t const value = zmq_ctx_get(context, option);
     if (value < 0) {
@@ -110,7 +110,7 @@ void Context::SetCtxOpt<bool>(const Napi::CallbackInfo& info) {
         return;
     }
 
-    uint32_t const option = info[0].As<Napi::Number>();
+    const auto option = info[0].As<Napi::Number>();
 
     int32_t const value = static_cast<int32_t>(info[1].As<Napi::Boolean>());
     if (zmq_ctx_set(context, option, value) < 0) {
@@ -129,7 +129,7 @@ Napi::Value Context::GetCtxOpt(const Napi::CallbackInfo& info) {
         return Env().Undefined();
     }
 
-    uint32_t const option = info[0].As<Napi::Number>();
+    const auto option = info[0].As<Napi::Number>();
 
     T value = zmq_ctx_get(context, option);
     if (value < 0) {
@@ -151,7 +151,7 @@ void Context::SetCtxOpt(const Napi::CallbackInfo& info) {
         return;
     }
 
-    uint32_t const option = info[0].As<Napi::Number>();
+    const auto option = info[0].As<Napi::Number>();
 
     T value = info[1].As<Napi::Number>();
     if (zmq_ctx_set(context, option, value) < 0) {

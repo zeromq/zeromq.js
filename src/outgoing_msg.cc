@@ -81,14 +81,15 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
             }
             /* Fall through */
 
-        [[fallthrough]]; default:
+            [[fallthrough]];
+        default:
             string_send(new std::string(value.ToString()));
         }
     }
 }
 
 OutgoingMsg::~OutgoingMsg() {
-    [[maybe_unused]] auto err =zmq_msg_close(&msg);
+    [[maybe_unused]] auto err = zmq_msg_close(&msg);
     assert(err == 0);
 }
 
