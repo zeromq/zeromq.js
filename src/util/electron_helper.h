@@ -5,8 +5,8 @@
 #include <string>
 
 namespace zmq {
-bool hasRun = false;
-bool hasElectronMemoryCageCache = false;
+static bool hasRun = false;
+static bool hasElectronMemoryCageCache = false;
 
 static inline std::string first_component(std::string const& value) {
     std::string::size_type const pos = value.find('.');
