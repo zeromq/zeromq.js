@@ -46,21 +46,33 @@ set_option_from_env(ZMQ_NO_SYNC_RESOLVE)
 if(APPLE)
   option(MACOSX_DEPLOYMENT_TARGET "MacOS deployment target" "10.15")
   set_option_from_env(MACOSX_DEPLOYMENT_TARGET)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET
+      ${MACOSX_DEPLOYMENT_TARGET}
+      CACHE STRING "MacOS deployment target")
 endif()
 
-# MacOS deployment target
+# Set the target system on Windows (for cross-compiling x86)
 if(WIN32)
   if("${PLATFORM}" STREQUAL "x86")
     set(CMAKE_SYSTEM_PROCESSOR "x86")
     set(CMAKE_SYSTEM_HOST_PROCESSOR "x86")
+    # static linking for vcpkg
+    set(VCPKG_TARGET_TRIPLET "x86-windows-static")
   elseif(NOT "$ENV{PROCESSOR_ARCHITEW6432}" STREQUAL "")
     set(CMAKE_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITEW6432}")
     set(CMAKE_SYSTEM_HOST_PROCESSOR "$ENV{PROCESSOR_ARCHITEW6432}")
+    # static linking for vcpkg
+    set(VCPKG_TARGET_TRIPLET "x86-windows-static")
   else()
     set(CMAKE_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITECTURE}")
     set(CMAKE_SYSTEM_HOST_PROCESSOR "$ENV{PROCESSOR_ARCHITECTURE}")
+    # static linking for vcpkg
+    set(VCPKG_TARGET_TRIPLET "x64-windows-static")
   endif()
+  # Avoid loading of project_optinos/WindowsToolchain
   set(CMAKE_TOOLCHAIN_FILE ";")
+  # use static runtime library
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
 include(FetchContent)
@@ -82,13 +94,9 @@ FetchContent_MakeAvailable(_project_options)
 include(${_project_options_SOURCE_DIR}/Index.cmake)
 
 # MacOS flags that should be set prior to any project calls
-if(DEFINED APPLE AND APPLE)
+if(APPLE)
   set(CMAKE_SHARED_LINKER_FLAGS
       "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
-  set(CMAKE_OSX_DEPLOYMENT_TARGET
-      "10.15"
-      CACHE STRING "Minimum OS X deployment version")
-  add_definitions(-DMAC_OS_X_VERSION_MIN_REQUIRED=101500)
 endif()
 
 run_vcpkg(VCPKG_URL "https://github.com/microsoft/vcpkg.git" VCPKG_REV
@@ -133,7 +141,7 @@ endif()
 # Use `.node` for the library without any "lib" prefix
 set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".node")
 
-# Windows workaround
+# Windows
 if(WIN32)
   set_property(TARGET addon PROPERTY LINK_FLAGS "-Xlinker /DELAYLOAD:NODE.EXE")
   target_link_libraries(addon PRIVATE "ShLwApi.lib" "delayimp.lib")
