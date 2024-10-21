@@ -1,0 +1,59 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "zeromqjs",
+  "version-string": "6.0.8",
+  "builtin-baseline": "ee2d2a100103e0f3613c60655dcf15be7d5157b8",
+  "dependencies": [
+    {
+      "name": "zeromq",
+      "version>=": "4.3.5#2"
+    }
+  ],
+  "features": {
+    "curve": {
+      "description": "Enable CURVE security",
+      "dependencies": [
+        {
+          "name": "zeromq",
+          "features": ["curve"]
+        }
+      ]
+    },
+    "draft": {
+      "description": "Build and install draft APIs",
+      "dependencies": [
+        {
+          "name": "zeromq",
+          "features": ["draft"]
+        }
+      ]
+    },
+    "sodium": {
+      "description": "Using libsodium for CURVE security",
+      "dependencies": [
+        {
+          "name": "zeromq",
+          "features": ["sodium"]
+        }
+      ]
+    },
+    "websockets": {
+      "description": "Enable WebSocket transport",
+      "dependencies": [
+        {
+          "name": "zeromq",
+          "features": ["websockets"]
+        }
+      ]
+    },
+    "websockets-secure": {
+      "description": "Enable WebSocket transport with TSL (wss)",
+      "dependencies": [
+        {
+          "name": "zeromq",
+          "features": ["websockets-secure"]
+        }
+      ]
+    }
+  }
+}

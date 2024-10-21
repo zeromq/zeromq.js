@@ -15,8 +15,6 @@ jobs:
         os:
           - ubuntu-20.04
           - windows-2019
-        node_version:
-          - 18
         node_arch:
           - x64
         cpp_arch:
@@ -28,23 +26,19 @@ jobs:
 
         include:
           - os: windows-2019
-            node_version: 18
             node_arch: ia32
             cpp_arch: amd64_x86
 
           # - os: windows-2022
-          #   node_version: 18
           #   node_arch: x64
           #   arch: arm64
           #   cpp_arch: amd64_arm64
 
           - os: macos-13
-            node_version: 18
             node_arch: x64
             cpp_arch: x64
 
           - os: macos-14
-            node_version: 18
             node_arch: arm64
             cpp_arch: amd64_arm64
 
@@ -52,10 +46,10 @@ jobs:
           - os: ubuntu-22.04
             docker: node:18-alpine
             docker_cmd:
-              apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake
-              musl-dev && npm i -g pnpm && pnpm install && pnpm run
-              build.prebuild
-            node_version: 18
+              apk add --no-cache bash build-base curl git g++ make ninja-build
+              pkgconfig unzip zip python3 tar cmake ninja musl-dev && cp
+              /usr/lib/ninja-build/bin/ninja /usr/bin/ninja && npm i -g pnpm &&
+              pnpm install && pnpm run build
             node_arch: x64
             cpp_arch: x64
 
@@ -73,12 +67,12 @@ jobs:
         with:
           path: |
             ./node_modules/
-            ./build/
+            ~/vcpkg
           key:
             # prettier-ignore
-            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-ZMQ_DRAFT:${{env.npm_config_zmq_draft }}-Node:${{ matrix.node_version}}-${{hashFiles('./package.json') }}"
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-ZMQ_DRAFT:${{env.npm_config_zmq_draft }}-${{hashFiles('./package.json') }}"
           restore-keys: |
-            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-Node:${{ matrix.node_version }}-"
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-"
 
       - name: Env map
         run: |
@@ -93,20 +87,10 @@ jobs:
         with:
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
           cmake: true
+          ninja: true
           python: true
+          vcpkg: true
           architecture: ${{ matrix.cpp_arch }}
-
-      - uses: pnpm/action-setup@v4
-        if: ${{ !matrix.docker }}
-        with:
-          version: 9
-
-      - name: Install Node
-        if: ${{ !matrix.docker }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node_version }}
-          architecture: ${{ env.setup_node_arch }}
 
       - name: Install Mac-OS x86_64 Dependencies
         if: ${{ contains(matrix.os, 'macos') && matrix.node_arch == 'x64' }}
@@ -121,13 +105,52 @@ jobs:
           echo "PATH=$PATH" >> $GITHUB_ENV
           echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
 
-      - name: Install Dependencies and Build
+      - uses: pnpm/action-setup@v4
+        if: ${{ !matrix.docker }}
+        with:
+          version: 9
+
+      - name: Install Node 20
+        if: ${{ !matrix.docker }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          architecture: ${{ env.setup_node_arch }}
+
+      - name: Install Dependencies
         if: ${{ !matrix.docker }}
         run: pnpm install
 
-      - name: Prebuild
+      - name: Build JavaScript
         if: ${{ !matrix.docker }}
-        run: pnpm run build.prebuild
+        run: pnpm run build.js
+
+      - name: Install Node 12
+        if: ${{ !matrix.docker && matrix.os != 'macos-14' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 12
+          architecture: ${{ env.setup_node_arch }}
+
+      - name: Build Native
+        if:
+          ${{ !matrix.docker && matrix.os != 'windows-2019' && matrix.node_arch
+          != 'ia32' }}
+        run: npm run build.native
+
+      - name: Build Native Windows 32
+        if:
+          ${{ !matrix.docker && matrix.os == 'windows-2019' && matrix.node_arch
+          == 'ia32' }}
+        run:
+          node ./node_modules/cmake-ts/build/main.js named-configs windows-x86
+
+      - name: Use Node 20
+        if: ${{ !matrix.docker }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          architecture: ${{ env.setup_node_arch }}
 
       - name: Prebuild Docker
         if: ${{ matrix.docker }}
@@ -140,8 +163,8 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          path: ./prebuilds
-          name: prebuilds-${{ strategy.job-index }}
+          path: ./build
+          name: build-${{ strategy.job-index }}
           overwrite: true
 
       - name: Lint
@@ -169,13 +192,13 @@ jobs:
             pnpm install -g electron@latest
             xvfb-run --auto-servernum pnpm run test.electron.main
         continue-on-error: true
-  merge-prebuilds:
+  merge-build:
     runs-on: ubuntu-latest
     needs: Build
     steps:
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          name: prebuilds
-          pattern: prebuilds-*
+          name: build
+          pattern: build-*
           delete-merged: true

@@ -19,11 +19,8 @@
   },
   "homepage": "http://zeromq.github.io/zeromq.js/",
   "dependencies": {
-    "@aminya/node-gyp-build": "4.8.1-aminya.1",
-    "cross-env": "^7.0.3",
-    "node-addon-api": "^8.2.0",
-    "node-gyp": "10.2.0",
-    "shelljs": "^0.8.5"
+    "cmake-ts": "^0.3.0",
+    "node-addon-api": "^8.2.1"
   },
   "devDependencies": {
     "@types/benchmark": "~2.1.5",
@@ -68,7 +65,7 @@
     }
   },
   "engines": {
-    "node": ">= 10.2",
+    "node": ">= 12",
     "pnpm": ">= 9"
   },
   "files": [
@@ -85,37 +82,106 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "install": "cross-env npm_config_build_from_source=true aminya-node-gyp-build",
+    "install": "node ./script/install.js",
     "prepare": "pnpm run build.js",
-    "clean": "shx rm -rf ./build ./prebuilds && run-p clean.lib clean.script clean.temp",
+    "clean": "shx rm -rf ./build ./prebuilds && run-p clean.lib clean.temp",
     "clean.lib": "shx rm -rf ./lib/",
-    "clean.script": "shx rm -rf ./script/*.js ./script/*.mjs ./script/*.js.map ./script/*.mjs.map ./script/*.d.ts ./script/*.d.mts ./script/*.cjs ./scripts/*.cjs.map ./scripts/*.d.cts ./script/*.tsbuildinfo",
     "clean.release": "shx rm -rf ./build/Release",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp",
-    "build.library": "run-s clean.lib && tsc -p ./src/tsconfig.json && run-s build.downlevel",
+    "build.js": "run-s clean.lib && tsc -p ./src/tsconfig.json && run-s build.downlevel",
     "build.downlevel": "downlevel-dts ./lib ./lib/ts3.7",
-    "build.script": "tsc -p ./script/tsconfig.esm.json && tsc -p ./script/tsconfig.json",
-    "build.js": "run-p build.script build.library",
     "build.doc": "typedoc --options ./typedoc.json && minify-all -s docs-unminified -d docs --jsCompressor terser && shx rm -rf docs-unminified",
     "deploy.doc": "run-s build.doc && gh-pages --dist \"./docs\"",
-    "build.prebuild": "run-s build.js && node ./script/prebuild.mjs",
-    "build.native": "node-gyp configure --release && node-gyp configure --release -- -f compile_commands_json && node-gyp build --release",
-    "build.native.debug": "node-gyp configure --debug && node-gyp configure --debug -- -f compile_commands_json && cross-env CMAKE_BUILD_TYPE=Debug node-gyp build --debug",
-    "build": "run-s build.js build.native",
+    "build.native": "cmake-ts nativeonly",
+    "build.native.debug": "cmake-ts nativeonly",
+    "build": "run-p build.js build.native",
     "build.debug": "run-s build.js build.native.debug",
     "test": "run-s clean.temp build && mocha",
     "test.skip_gc_tests": "run-s clean.temp build.debug && cross-env SKIP_GC_TESTS=true mocha",
     "test.electron.main": "run-s clean.temp build && electron-mocha",
-    "format": "prettier --write .",
+    "format": "run-s format.prettier format.clang-format",
+    "format.prettier": "prettier --write .",
+    "format.clang-format": "clang-format -i -style=file ./src/*.cc ./src/*.h ./src/util/*.h",
     "test.electron.renderer": "run-s build && electron-mocha --renderer",
-    "lint.clang-format": "clang-format -i -style=file ./src/*.cc ./src/*.h ./src/util/*.h",
     "lint-test.eslint": "eslint ./**/*.{ts,tsx,js,jsx,cjs,mjs,json,yaml} --no-error-on-unmatched-pattern --cache --cache-location ./.cache/eslint/",
     "lint.eslint": "pnpm run lint-test.eslint --fix",
-    "lint": "run-p lint.eslint lint.clang-format",
+    "lint.clang-tidy": "git ls-files --exclude-standard | grep -E '\\.(cpp|hpp|c|cc|cxx|hxx|h|ixx)$' | xargs -n 1 -P $(nproc) clang-tidy --fix ",
+    "lint": "run-p format lint.eslint format",
     "lint-test": "run-s lint-test.eslint",
     "bench": "node --expose-gc test/bench",
     "prepublishOnly": "pnpm run build.js",
     "bump": "pnpx npm-check-updates -u -x typescript,eslint,chai && pnpx typesync && pnpm update"
+  },
+  "cmake-ts": {
+    "nodeAPI": "node-addon-api",
+    "configurations": [
+      {
+        "name": "linux-x64",
+        "os": "linux",
+        "arch": "x64",
+        "runtime": "node",
+        "runtimeVersion": "12.22.12"
+      },
+      {
+        "name": "windows-x64",
+        "os": "win32",
+        "arch": "x64",
+        "runtime": "node",
+        "runtimeVersion": "12.22.12"
+      },
+      {
+        "name": "windows-x86",
+        "os": "win32",
+        "arch": "ia32",
+        "runtime": "node",
+        "runtimeVersion": "12.22.12"
+      },
+      {
+        "name": "darwin-x64",
+        "os": "darwin",
+        "arch": "x64",
+        "runtime": "node",
+        "runtimeVersion": "12.22.12"
+      },
+      {
+        "name": "darwin-arm64",
+        "os": "darwin",
+        "arch": "arm64",
+        "runtime": "node",
+        "runtimeVersion": "12.22.12"
+      },
+      {
+        "name": "linux-x64-electron",
+        "os": "linux",
+        "arch": "x64",
+        "runtime": "electron",
+        "runtimeVersion": "12.22.12"
+      },
+      {
+        "name": "windows-x64-electron",
+        "os": "win32",
+        "arch": "x64",
+        "runtime": "electron",
+        "runtimeVersion": "12.22.12"
+      },
+      {
+        "name": "darwin-x64-electron",
+        "os": "darwin",
+        "arch": "x64",
+        "runtime": "electron",
+        "runtimeVersion": "12.22.12"
+      },
+      {
+        "name": "darwin-arm64-electron",
+        "os": "darwin",
+        "arch": "arm64",
+        "runtime": "electron",
+        "runtimeVersion": "12.22.12"
+      }
+    ],
+    "targetDirectory": "build",
+    "buildType": "Release",
+    "projectName": "addon"
   },
   "keywords": [
     "zeromq",

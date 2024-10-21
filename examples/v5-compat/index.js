@@ -4,7 +4,9 @@ const pub = zmq.socket("pub")
 const sub = zmq.socket("sub")
 
 pub.bind("tcp://*:3456", err => {
-  if (err) throw err
+  if (err) {
+    throw err
+  }
 
   sub.connect("tcp://127.0.0.1:3456")
 
