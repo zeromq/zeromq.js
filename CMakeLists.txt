@@ -49,22 +49,16 @@ if(APPLE)
   set(CMAKE_OSX_DEPLOYMENT_TARGET ${MACOSX_DEPLOYMENT_TARGET})
 endif()
 
-# Set the target system on Windows (for cross-compiling x86)
+# target system on Windows (for cross-compiling x86) and static linking runtimes
 if(WIN32)
-  if("${PLATFORM}" STREQUAL "x86")
+  if("$ENV{Platform}" STREQUAL "x86")
     set(CMAKE_SYSTEM_PROCESSOR "x86")
-    set(CMAKE_SYSTEM_HOST_PROCESSOR "x86")
-    # static linking for vcpkg
     set(VCPKG_TARGET_TRIPLET "x86-windows-static")
   elseif(NOT "$ENV{PROCESSOR_ARCHITEW6432}" STREQUAL "")
     set(CMAKE_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITEW6432}")
-    set(CMAKE_SYSTEM_HOST_PROCESSOR "$ENV{PROCESSOR_ARCHITEW6432}")
-    # static linking for vcpkg
     set(VCPKG_TARGET_TRIPLET "x86-windows-static")
   else()
     set(CMAKE_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITECTURE}")
-    set(CMAKE_SYSTEM_HOST_PROCESSOR "$ENV{PROCESSOR_ARCHITECTURE}")
-    # static linking for vcpkg
     set(VCPKG_TARGET_TRIPLET "x64-windows-static")
   endif()
   # Avoid loading of project_optinos/WindowsToolchain

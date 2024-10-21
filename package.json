@@ -113,12 +113,6 @@
     "bump": "pnpx npm-check-updates -u -x typescript,eslint,chai && pnpx typesync && pnpm update"
   },
   "cmake-ts": {
-    "globalCMakeOptions": [
-      {
-        "name": "CMAKE_EXPORT_COMPILE_COMMANDS",
-        "value": "1"
-      }
-    ],
     "nodeAPI": "node-addon-api",
     "configurations": [
       {
