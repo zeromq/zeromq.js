@@ -88,7 +88,7 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
 }
 
 OutgoingMsg::~OutgoingMsg() {
-    auto err = zmq_msg_close(&msg);
+    [[maybe_unused]] auto err =zmq_msg_close(&msg);
     assert(err == 0);
 }
 

@@ -128,7 +128,7 @@ Socket::Socket(const Napi::CallbackInfo& info)
         /* Callback to free the underlying poller. Move the poller to transfer
            ownership after the constructor has completed. */
         finalize = [=]() mutable {
-            auto err = zmq_poller_destroy(&poll);
+            [[maybe_unused]] auto err =zmq_poller_destroy(&poll);
             assert(err == 0);
         };
 
@@ -177,7 +177,7 @@ Socket::Socket(const Napi::CallbackInfo& info)
     return;
 
 error:
-    auto err = zmq_close(socket);
+    [[maybe_unused]] auto err =zmq_close(socket);
     assert(err == 0);
 
     socket = nullptr;
@@ -266,7 +266,7 @@ void Socket::Close() {
         poller.Close();
 
         /* Close succeeds unless socket is invalid. */
-        auto err = zmq_close(socket);
+        [[maybe_unused]] auto err =zmq_close(socket);
         assert(err == 0);
 
         /* Release reference to context and observer. */
@@ -762,7 +762,7 @@ Napi::Value Socket::GetSockOpt<char*>(const Napi::CallbackInfo& info) {
         return Env().Null();
     }         value[length] = '\0';
         return Napi::String::New(Env(), value);
-   
+
 }
 
 template <>

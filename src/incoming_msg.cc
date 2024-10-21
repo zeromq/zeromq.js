@@ -58,12 +58,12 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
 }
 
 IncomingMsg::Reference::Reference() {
-    auto err = zmq_msg_init(&msg);
+    [[maybe_unused]] auto err =zmq_msg_init(&msg);
     assert(err == 0);
 }
 
 IncomingMsg::Reference::~Reference() {
-    auto err = zmq_msg_close(&msg);
+    [[maybe_unused]] auto err =zmq_msg_close(&msg);
     assert(err == 0);
 }
 }  // namespace zmq

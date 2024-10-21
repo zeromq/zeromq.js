@@ -29,7 +29,7 @@ public:
             reinterpret_cast<Trash*>(async->data)->Clear();
         };
 
-        auto err = uv_async_init(loop, async, clear);
+        [[maybe_unused]] auto err =uv_async_init(loop, async, clear);
         assert(err == 0);
 
         /* Immediately unreference this handle in order to prevent the async
@@ -47,7 +47,7 @@ public:
            that calls are coalesced if they occur frequently. This is good
            news for us, since that means frequent additions do not cause
            unnecessary trash cycle operations. */
-        auto err = uv_async_send(this->async);
+        [[maybe_unused]] auto err =uv_async_send(this->async);
         assert(err == 0);
     }
 
