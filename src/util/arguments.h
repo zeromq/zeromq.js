@@ -6,9 +6,9 @@
 
 #include "to_string.h"
 
-namespace zmq {
-namespace Arg {
-typedef bool (Napi::Value::*ValueMethod)() const;
+namespace zmq::Arg {
+
+using ValueMethod = bool (Napi::Value::*)() const;
 
 template <ValueMethod M>
 struct VerifyWithMethod {
@@ -33,11 +33,14 @@ class Verify {
     const std::string_view msg;
 
 public:
-    constexpr Verify(std::string_view msg) noexcept : msg(msg) {}
+    constexpr explicit Verify(std::string_view msg) noexcept : msg(msg) {}
 
-    std::optional<Napi::Error> operator()(uint32_t, const Napi::Value& value) const {
+    std::optional<Napi::Error> operator()(
+        uint32_t /*unused*/, const Napi::Value& value) const {
         auto valid = ((F()(value)) || ...);
-        if (valid) return {};
+        if (valid) {
+            return {};
+        }
         return Napi::TypeError::New(value.Env(), std::string(msg));
     }
 };
@@ -64,10 +67,10 @@ class Validator {
     std::tuple<F...> validators;
 
 public:
-    constexpr Validator(F&&... validators) noexcept
+    constexpr explicit Validator(F&&... validators) noexcept
         : validators(std::forward<F>(validators)...) {}
 
-    bool ThrowIfInvalid(const Napi::CallbackInfo& info) const {
+    [[nodiscard]] bool ThrowIfInvalid(const Napi::CallbackInfo& info) const {
         if (auto err = Validate(info)) {
             err->ThrowAsJavaScriptException();
             return true;
@@ -76,13 +79,14 @@ public:
         return false;
     }
 
-    std::optional<Napi::Error> Validate(const Napi::CallbackInfo& info) const {
+    [[nodiscard]] std::optional<Napi::Error> Validate(
+        const Napi::CallbackInfo& info) const {
         return eval(info);
     }
 
 private:
     template <size_t I = 0>
-    std::optional<Napi::Error> eval(const Napi::CallbackInfo& info) const {
+    [[nodiscard]] std::optional<Napi::Error> eval(const Napi::CallbackInfo& info) const {
         if constexpr (I == N) {
             if (info.Length() > N) {
                 auto msg = "Expected " + to_string(N) + " argument" + (N != 1 ? "s" : "");
@@ -91,10 +95,12 @@ private:
 
             return {};
         } else {
-            if (auto err = std::get<I>(validators)(I, info[I])) return err;
+            if (auto err = std::get<I>(validators)(I, info[I])) {
+                return err;
+            }
             return eval<I + 1>(info);
         }
     }
 };
-}
-}
+}  // namespace zmq::Arg
+   // namespace zmq

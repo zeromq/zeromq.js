@@ -13,8 +13,8 @@ class UvDelayed {
 public:
     UvDelayed(const Napi::Env& env, C&& callback)
         : delayed_callback(std::move(callback)) {
-        auto loop = UvLoop(env);
-        int32_t err;
+        auto* loop = UvLoop(env);
+        [[maybe_unused]] int32_t err = 0;
 
         check->data = this;
         err = uv_check_init(loop, check);
@@ -25,8 +25,8 @@ public:
         assert(err == 0);
     }
 
-    inline void Schedule() {
-        int32_t err;
+    void Schedule() {
+        [[maybe_unused]] int32_t err = 0;
 
         /* Idle handle is needed to stop the event loop from blocking in poll. */
         err = uv_idle_start(idle, [](uv_idle_t* idle) {});
@@ -50,4 +50,4 @@ static inline void UvScheduleDelayed(const Napi::Env& env, C callback) {
     auto immediate = new UvDelayed<C>(env, std::move(callback));
     return immediate->Schedule();
 }
-}
+}  // namespace zmq

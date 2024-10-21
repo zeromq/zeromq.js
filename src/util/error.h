@@ -1,15 +1,15 @@
 #pragma once
 
-#include <errno.h>
 #include <napi.h>
 
+#include <cerrno>
 #include <string>
 
 #include "../zmq_inc.h"
 
 namespace zmq {
-static inline constexpr const char* ErrnoMessage(int32_t errorno);
-static inline constexpr const char* ErrnoCode(int32_t errorno);
+static constexpr const char* ErrnoMessage(int32_t errorno);
+static constexpr const char* ErrnoCode(int32_t errorno);
 
 /* Generates a process warning message. */
 static inline void Warn(const Napi::Env& env, const std::string& msg) {
@@ -21,7 +21,7 @@ static inline void Warn(const Napi::Env& env, const std::string& msg) {
 
 static inline Napi::Error StatusException(
     const Napi::Env& env, const std::string& msg, uint32_t status) {
-    Napi::HandleScope scope(env);
+    Napi::HandleScope const scope(env);
     auto exception = Napi::Error::New(env, msg);
     exception.Set("status", Napi::Number::New(env, status));
     return exception;
@@ -29,7 +29,7 @@ static inline Napi::Error StatusException(
 
 static inline Napi::Error CodedException(
     const Napi::Env& env, const std::string& msg, const std::string& code) {
-    Napi::HandleScope scope(env);
+    Napi::HandleScope const scope(env);
     auto exception = Napi::Error::New(env, msg);
     exception.Set("code", Napi::String::New(env, code));
     return exception;
@@ -38,8 +38,9 @@ static inline Napi::Error CodedException(
 /* This mostly duplicates node::ErrnoException, but it is not public. */
 static inline Napi::Error ErrnoException(
     const Napi::Env& env, int32_t error, const char* message = nullptr) {
-    Napi::HandleScope scope(env);
-    auto exception = Napi::Error::New(env, message ? message : ErrnoMessage(error));
+    Napi::HandleScope const scope(env);
+    auto exception =
+        Napi::Error::New(env, (message != nullptr) ? message : ErrnoMessage(error));
     exception.Set("errno", Napi::Number::New(env, error));
     exception.Set("code", Napi::String::New(env, ErrnoCode(error)));
     return exception;
@@ -53,7 +54,7 @@ static inline Napi::Error ErrnoException(
 }
 
 /* Convert errno to human readable error message. */
-static inline constexpr const char* ErrnoMessage(int32_t errorno) {
+static constexpr const char* ErrnoMessage(int32_t errorno) {
     /* Clarify a few confusing default messages; otherwise rely on zmq. */
     switch (errorno) {
     case EFAULT:
@@ -78,7 +79,7 @@ static inline constexpr const char* ErrnoMessage(int32_t errorno) {
 
 /* This is copied from Node.js; the mapping is not in a public API. */
 /* Copyright Node.js contributors. All rights reserved. */
-static inline constexpr const char* ErrnoCode(int32_t errorno) {
+static constexpr const char* ErrnoCode(int32_t errorno) {
 #define ERRNO_CASE(e)                                                                    \
     case e:                                                                              \
         return #e;
@@ -424,4 +425,4 @@ static inline constexpr const char* ErrnoCode(int32_t errorno) {
         return "";
     }
 }
-}
+}  // namespace zmq

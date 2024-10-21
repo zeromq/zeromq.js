@@ -13,17 +13,21 @@ Context::Context(const Napi::CallbackInfo& info)
     /* If this module has no global context, then create one with a process
        wide context pointer that is shared between threads/agents. */
     if (module.GlobalContext.IsEmpty()) {
-        if (Arg::Validator{}.ThrowIfInvalid(info)) return;
+        if (Arg::Validator{}.ThrowIfInvalid(info)) {
+            return;
+        }
 
         /* Just use the same shared global context pointer. Contexts are
            threadsafe anyway. */
         context = module.Global().SharedContext;
     } else {
-        Arg::Validator args{
+        Arg::Validator const args{
             Arg::Optional<Arg::Object>("Options must be an object"),
         };
 
-        if (args.ThrowIfInvalid(info)) return;
+        if (args.ThrowIfInvalid(info)) {
+            return;
+        }
 
         context = zmq_ctx_new();
     }
@@ -62,7 +66,7 @@ void Context::Close() {
                termination may block depending on ZMQ_BLOCKY/ZMQ_LINGER. This
                should definitely be avoided during GC and may only be acceptable
                at process exit. */
-            auto err = zmq_ctx_shutdown(context);
+            [[maybe_unused]] auto err = zmq_ctx_shutdown(context);
             assert(err == 0);
 
             /* Pass the ZMQ context on to terminator for cleanup at exit. */
@@ -76,35 +80,39 @@ void Context::Close() {
 
 template <>
 Napi::Value Context::GetCtxOpt<bool>(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Number>("Identifier must be a number"),
     };
 
-    if (args.ThrowIfInvalid(info)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) {
+        return Env().Undefined();
+    }
 
-    uint32_t option = info[0].As<Napi::Number>();
+    const auto option = info[0].As<Napi::Number>();
 
-    int32_t value = zmq_ctx_get(context, option);
+    int32_t const value = zmq_ctx_get(context, option);
     if (value < 0) {
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
         return Env().Undefined();
     }
 
-    return Napi::Boolean::New(Env(), value);
+    return Napi::Boolean::New(Env(), value != 0);
 }
 
 template <>
 void Context::SetCtxOpt<bool>(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Number>("Identifier must be a number"),
         Arg::Required<Arg::Boolean>("Option value must be a boolean"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) {
+        return;
+    }
 
-    uint32_t option = info[0].As<Napi::Number>();
+    const auto option = info[0].As<Napi::Number>();
 
-    int32_t value = info[1].As<Napi::Boolean>();
+    int32_t const value = static_cast<int32_t>(info[1].As<Napi::Boolean>());
     if (zmq_ctx_set(context, option, value) < 0) {
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
         return;
@@ -113,13 +121,15 @@ void Context::SetCtxOpt<bool>(const Napi::CallbackInfo& info) {
 
 template <typename T>
 Napi::Value Context::GetCtxOpt(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Number>("Identifier must be a number"),
     };
 
-    if (args.ThrowIfInvalid(info)) return Env().Undefined();
+    if (args.ThrowIfInvalid(info)) {
+        return Env().Undefined();
+    }
 
-    uint32_t option = info[0].As<Napi::Number>();
+    const auto option = info[0].As<Napi::Number>();
 
     T value = zmq_ctx_get(context, option);
     if (value < 0) {
@@ -132,14 +142,16 @@ Napi::Value Context::GetCtxOpt(const Napi::CallbackInfo& info) {
 
 template <typename T>
 void Context::SetCtxOpt(const Napi::CallbackInfo& info) {
-    Arg::Validator args{
+    Arg::Validator const args{
         Arg::Required<Arg::Number>("Identifier must be a number"),
         Arg::Required<Arg::Number>("Option value must be a number"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) {
+        return;
+    }
 
-    uint32_t option = info[0].As<Napi::Number>();
+    const auto option = info[0].As<Napi::Number>();
 
     T value = info[1].As<Napi::Number>();
     if (zmq_ctx_set(context, option, value) < 0) {
@@ -166,4 +178,4 @@ void Context::Initialize(Module& module, Napi::Object& exports) {
     module.Context = Napi::Persistent(constructor);
     exports.Set("Context", constructor);
 }
-}
+}  // namespace zmq

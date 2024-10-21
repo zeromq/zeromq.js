@@ -18,7 +18,7 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
                message is sent by ZeroMQ on an *arbitrary* thread. It will add
                the reference to the global trash, which will schedule a callback
                on the main v8 thread in order to safely dispose of the reference. */
-            auto ref = new Reference(value, module);
+            auto* ref = new Reference(value, module);
             auto recycle = [](void*, void* item) {
                 static_cast<Reference*>(item)->Recycle();
             };
@@ -44,7 +44,7 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
        but once converted we do not have to copy a second time. */
     auto string_send = [&](std::string* str) {
         auto length = str->size();
-        auto data = const_cast<char*>(str->data());
+        auto* data = const_cast<char*>(str->data());
 
         auto release = [](void*, void* str) {
             delete reinterpret_cast<std::string*>(str);
@@ -81,6 +81,7 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
             }
             /* Fall through */
 
+            [[fallthrough]];
         default:
             string_send(new std::string(value.ToString()));
         }
@@ -88,7 +89,7 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
 }
 
 OutgoingMsg::~OutgoingMsg() {
-    auto err = zmq_msg_close(&msg);
+    [[maybe_unused]] auto err = zmq_msg_close(&msg);
     assert(err == 0);
 }
 
@@ -100,7 +101,7 @@ OutgoingMsg::Parts::Parts(Napi::Value value, Module& module) {
     if (value.IsArray()) {
         /* Reverse insert parts into outgoing message list. */
         auto arr = value.As<Napi::Array>();
-        for (auto i = arr.Length(); i--;) {
+        for (auto i = arr.Length(); (i--) != 0U;) {
             parts.emplace_front(arr[i], module);
         }
     } else {
@@ -157,4 +158,4 @@ bool OutgoingMsg::Parts::SetRoutingId(Napi::Value value) {
 }
 #endif
 
-}
+}  // namespace zmq

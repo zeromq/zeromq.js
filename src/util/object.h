@@ -17,4 +17,4 @@ static inline void Assign(Napi::Object object, Napi::Object options) {
         global.Get("Object").As<Napi::Object>().Get("assign").As<Napi::Function>();
     assign.Call({object, options});
 }
-}
+}  // namespace zmq
