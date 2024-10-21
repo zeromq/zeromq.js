@@ -1,7 +1,3 @@
-
-
-#define NOMINMAX  // prevent minwindef.h from defining max macro in the debug build
-
 #include "./socket.h"
 
 #include <cmath>
