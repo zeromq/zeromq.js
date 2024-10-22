@@ -39,7 +39,8 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
             moved = true;
 
             /* Put appropriate GC pressure according to the size of the buffer. */
-            Napi::MemoryManagement::AdjustExternalMemory(env, length);
+            Napi::MemoryManagement::AdjustExternalMemory(
+                env, static_cast<int64_t>(length));
 
             auto release = [](const Napi::Env& env, uint8_t*, Reference* ref) {
                 const auto length = static_cast<int64_t>(zmq_msg_size(*ref));

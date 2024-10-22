@@ -29,7 +29,7 @@ public:
         [[maybe_unused]] int32_t err = 0;
 
         /* Idle handle is needed to stop the event loop from blocking in poll. */
-        err = uv_idle_start(idle, [](uv_idle_t* idle) {});
+        err = uv_idle_start(idle, []([[maybe_unused]] uv_idle_t* idle) {});
         assert(err == 0);
 
         err = uv_check_start(check, [](uv_check_t* check) {

@@ -1,6 +1,8 @@
 
 #include "./observer.h"
 
+#include <cstdint>
+
 #include "./context.h"
 #include "./module.h"
 #include "./socket.h"
@@ -283,7 +285,7 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL
     case ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL:
 #endif
-        event["error"] = ErrnoException(Env(), value).Value();
+        event["error"] = ErrnoException(Env(), static_cast<int32_t>(value)).Value();
         break;
 
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL
@@ -305,6 +307,8 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
         Close();
         break;
     }
+    default:
+        break;
     }
 
     res.Resolve(event);

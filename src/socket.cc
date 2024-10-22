@@ -872,10 +872,12 @@ void Socket::SetSockOpt(const Napi::CallbackInfo& info) {
     /* Mirror a few options that are used internally. */
     switch (option) {
     case ZMQ_SNDTIMEO:
-        send_timeout = value;
+        send_timeout = static_cast<int64_t>(value);
         break;
     case ZMQ_RCVTIMEO:
-        receive_timeout = value;
+        receive_timeout = static_cast<int64_t>(value);
+        break;
+    default:
         break;
     }
 }
