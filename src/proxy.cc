@@ -96,7 +96,7 @@ Napi::Value Proxy::Run(const Napi::CallbackInfo& info) {
 
     /* Use `this` pointer as unique identifier for control socket. */
     auto address = std::string("inproc://zmq.proxycontrol.")
-        + to_string(reinterpret_cast<uintptr_t>(this));
+        + std::to_string(reinterpret_cast<uintptr_t>(this));
 
     /* Connect publisher so we can start queueing control messages. */
     if (zmq_connect(control_pub, address.c_str()) < 0) {

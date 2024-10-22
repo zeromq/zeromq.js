@@ -143,7 +143,7 @@ Observer::Observer(const Napi::CallbackInfo& info)
 
     /* Use `this` pointer as unique identifier for monitoring socket. */
     auto address = std::string("inproc://zmq.monitor.")
-        + to_string(reinterpret_cast<uintptr_t>(this));
+        + std::to_string(reinterpret_cast<uintptr_t>(this));
 
     if (zmq_socket_monitor(target->socket, address.c_str(), ZMQ_EVENT_ALL) < 0) {
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();

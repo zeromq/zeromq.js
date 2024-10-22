@@ -4,8 +4,6 @@
 
 #include <optional>
 
-#include "to_string.h"
-
 namespace zmq::Arg {
 
 using ValueMethod = bool (Napi::Value::*)() const;
@@ -89,7 +87,8 @@ private:
     [[nodiscard]] std::optional<Napi::Error> eval(const Napi::CallbackInfo& info) const {
         if constexpr (I == N) {
             if (info.Length() > N) {
-                auto msg = "Expected " + to_string(N) + " argument" + (N != 1 ? "s" : "");
+                auto msg =
+                    "Expected " + std::to_string(N) + " argument" + (N != 1 ? "s" : "");
                 return Napi::TypeError::New(info.Env(), msg);
             }
 

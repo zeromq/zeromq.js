@@ -8,7 +8,6 @@
 #include "./socket.h"
 #include "./zmq_inc.h"
 #include "util/error.h"
-#include "util/to_string.h"
 
 namespace zmq {
 static inline Napi::String Version(const Napi::Env& env) {
@@ -17,8 +16,9 @@ static inline Napi::String Version(const Napi::Env& env) {
     int32_t patch = 0;
     zmq_version(&major, &minor, &patch);
 
-    return Napi::String::New(
-        env, to_string(major) + "." + to_string(minor) + "." + to_string(patch));
+    return Napi::String::New(env,
+        std::to_string(major) + "." + std::to_string(minor) + "."
+            + std::to_string(patch));
 }
 
 static inline Napi::Object Capabilities(const Napi::Env& env) {
