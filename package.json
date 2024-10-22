@@ -1,6 +1,6 @@
 {
   "name": "zeromq",
-  "version": "6.0.8",
+  "version": "6.1.0",
   "description": "Next-generation ZeroMQ bindings for Node.js",
   "main": "lib/index.js",
   "type": "commonjs",
@@ -70,15 +70,17 @@
   },
   "files": [
     "CHANGELOG.md",
-    "LICENSE",
+    "LICENSE.txt",
+    "LICENSE_MPL-2.0.txt",
     "README.md",
-    "binding.gyp",
+    "CMakeLists.txt",
+    "vcpkg.json",
     "*.d.ts",
     "*.js",
     "lib",
     "src",
+    "build",
     "script",
-    "prebuilds",
     "tsconfig.json"
   ],
   "scripts": {
