@@ -112,7 +112,7 @@ private:
     State state = State::Open;
     bool request_close = false;
     bool thread_safe = false;
-    uint8_t type = 0;
+    int type = 0;
 
     friend class Observer;
     friend class Proxy;

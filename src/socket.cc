@@ -76,7 +76,7 @@ Socket::Socket(const Napi::CallbackInfo& info)
         return;
     }
 
-    type = info[0].As<Napi::Number>().Uint32Value();
+    type = info[0].As<Napi::Number>().Int32Value();
 
     if (info[1].IsObject()) {
         auto options = info[1].As<Napi::Object>();
