@@ -38,7 +38,8 @@ uint64_t NumberCast<uint64_t>(const Napi::Number& num) {
         return 0;
     }
 
-    if (value > static_cast<double>((1ULL << 53) - 1)) {
+    static constexpr auto max_safe_integer = static_cast<double>((1ULL << 53) - 1);
+    if (value > max_safe_integer) {
         Warn(num.Env(),
             "Value is larger than Number.MAX_SAFE_INTEGER and may have been rounded "
             "inaccurately.");
@@ -46,8 +47,10 @@ uint64_t NumberCast<uint64_t>(const Napi::Number& num) {
 
     /* If the next representable value of the double is beyond the maximum
        integer, then assume the maximum integer. */
+    static constexpr auto max_uint64_as_double =
+        static_cast<double>(std::numeric_limits<uint64_t>::max());
     if (std::nextafter(value, std::numeric_limits<double>::infinity())
-        > std::numeric_limits<uint64_t>::max()) {
+        > max_uint64_as_double) {
         return std::numeric_limits<uint64_t>::max();
     }
 
