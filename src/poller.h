@@ -24,11 +24,11 @@ public:
        ZMQ style edge-triggered, with READABLE state indicating that ANY
        event may be present on the corresponding ZMQ socket. */
     int32_t Initialize(
-        Napi::Env env, uv_os_sock_t& fd, std::function<void()> finalizer = nullptr) {
+        Napi::Env env, uv_os_sock_t& file_descriptor, std::function<void()> finalizer = nullptr) {
         auto* loop = UvLoop(env);
 
         poll->data = this;
-        if (auto err = uv_poll_init_socket(loop, poll.get(), fd); err != 0) {
+        if (auto err = uv_poll_init_socket(loop, poll.get(), file_descriptor); err != 0) {
             return err;
         }
 

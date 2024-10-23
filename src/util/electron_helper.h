@@ -36,7 +36,8 @@ inline bool hasElectronMemoryCage(const Napi::Env& env) {
                                     .ToString()
                                     .Utf8Value();
             int const majorVer = stoi(first_component(electronVers));
-            if (majorVer >= 21) {
+            static constexpr auto electron_memory_cage_version = 21;
+            if (majorVer >= electron_memory_cage_version) {
                 hasElectronMemoryCageCache = true;
             }
         }

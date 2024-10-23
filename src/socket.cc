@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <limits>
 #include <unordered_set>
+#include <array>
 
 #include "./context.h"
 #include "./incoming_msg.h"
@@ -778,9 +779,10 @@ Napi::Value Socket::GetSockOpt<char*>(const Napi::CallbackInfo& info) {
 
     auto const option = info[0].As<Napi::Number>();
 
-    char value[1024];
-    size_t length = sizeof(value) - 1;
-    if (zmq_getsockopt(socket, option, value, &length) < 0) {
+    static constexpr auto max_value_length = 1024;  //+
+    auto value = std::array<char, max_value_length>();  //+
+    size_t length = value.size();  //+
+    if (zmq_getsockopt(socket, option, value.data(), &length) < 0) {  //+
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
         return Env().Undefined();
     }
@@ -788,8 +790,9 @@ Napi::Value Socket::GetSockOpt<char*>(const Napi::CallbackInfo& info) {
     if (length == 0 || (length == 1 && value[0] == 0)) {
         return Env().Null();
     }
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-constant-array-index)
     value[length] = '\0';
-    return Napi::String::New(Env(), value);
+    return Napi::String::New(Env(), value.data());
 }
 
 template <>

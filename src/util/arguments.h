@@ -28,7 +28,7 @@ struct Not {
 
 template <typename... F>
 class Verify {
-    const std::string_view msg;
+    /* const */ std::string_view msg;
 
 public:
     constexpr explicit Verify(std::string_view msg) noexcept : msg(msg) {}

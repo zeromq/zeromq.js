@@ -1,4 +1,6 @@
 
+#include <array>
+
 #include "./module.h"
 
 #include "./context.h"
@@ -58,16 +60,19 @@ Napi::Object Capabilities(const Napi::Env& env) {
 }
 
 Napi::Value CurveKeyPair(const Napi::CallbackInfo& info) {
-    char public_key[41];
-    char secret_key[41];
-    if (zmq_curve_keypair(public_key, secret_key) < 0) {
+    static constexpr auto max_key_length = 41;
+
+    std::array<char, max_key_length> public_key{};
+    std::array<char, max_key_length> secret_key{};
+
+    if (zmq_curve_keypair(public_key.data(), secret_key.data()) < 0) {
         ErrnoException(info.Env(), zmq_errno()).ThrowAsJavaScriptException();
         return info.Env().Undefined();
     }
 
     auto result = Napi::Object::New(info.Env());
-    result["publicKey"] = Napi::String::New(info.Env(), public_key);
-    result["secretKey"] = Napi::String::New(info.Env(), secret_key);
+    result["publicKey"] = Napi::String::New(info.Env(), public_key.data());
+    result["secretKey"] = Napi::String::New(info.Env(), secret_key.data());
     return result;
 }
 
