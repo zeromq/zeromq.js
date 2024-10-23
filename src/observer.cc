@@ -95,6 +95,7 @@ constexpr const char* AuthError(uint32_t val) {
 
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL
 std::pair<const char*, const char*> ProtoError(uint32_t val) {
+// NOLINTNEXTLINE(*-macro-usage)
 #define PROTO_ERROR_CASE(_prefix, _err)                                                  \
     case ZMQ_PROTOCOL_ERROR_##_prefix##_##_err:                                          \
         return std::make_pair(#_prefix " protocol error", "ERR_" #_prefix "_" #_err);

@@ -8,8 +8,8 @@
 #include "../zmq_inc.h"
 
 namespace zmq {
-static constexpr const char* ErrnoMessage(int32_t errorno);
-static constexpr const char* ErrnoCode(int32_t errorno);
+constexpr const char* ErrnoMessage(int32_t errorno);
+constexpr const char* ErrnoCode(int32_t errorno);
 
 /* Generates a process warning message. */
 inline void Warn(const Napi::Env& env, const std::string& msg) {
@@ -54,7 +54,7 @@ inline Napi::Error ErrnoException(
 }
 
 /* Convert errno to human readable error message. */
-static constexpr const char* ErrnoMessage(int32_t errorno) {
+constexpr const char* ErrnoMessage(int32_t errorno) {
     /* Clarify a few confusing default messages; otherwise rely on zmq. */
     switch (errorno) {
     case EFAULT:
@@ -79,346 +79,424 @@ static constexpr const char* ErrnoMessage(int32_t errorno) {
 
 /* This is copied from Node.js; the mapping is not in a public API. */
 /* Copyright Node.js contributors. All rights reserved. */
-static constexpr const char* ErrnoCode(int32_t errorno) {
-#define ERRNO_CASE(e)                                                                    \
-    case e:                                                                              \
-        return #e;
-
+constexpr const char* ErrnoCode(int32_t errorno) {
     switch (errorno) {
 /* ZMQ specific codes. */
 #ifdef EFSM
-        ERRNO_CASE(EFSM);
+    case EFSM:
+        return "EFSM";
 #endif
 
 #ifdef ENOCOMPATPROTO
-        ERRNO_CASE(ENOCOMPATPROTO);
+    case ENOCOMPATPROTO:
+        return "ENOCOMPATPROTO";
 #endif
 
 #ifdef ETERM
-        ERRNO_CASE(ETERM);
+    case ETERM:
+        return "ETERM";
 #endif
 
 #ifdef EMTHREAD
-        ERRNO_CASE(EMTHREAD);
+    case EMTHREAD:
+        return "EMTHREAD";
 #endif
 
 /* Generic codes. */
 #ifdef EACCES
-        ERRNO_CASE(EACCES);
+    case EACCES:
+        return "EACCES";
 #endif
 
 #ifdef EADDRINUSE
-        ERRNO_CASE(EADDRINUSE);
+    case EADDRINUSE:
+        return "EADDRINUSE";
 #endif
 
 #ifdef EADDRNOTAVAIL
-        ERRNO_CASE(EADDRNOTAVAIL);
+    case EADDRNOTAVAIL:
+        return "EADDRNOTAVAIL";
 #endif
 
 #ifdef EAFNOSUPPORT
-        ERRNO_CASE(EAFNOSUPPORT);
+    case EAFNOSUPPORT:
+        return "EAFNOSUPPORT";
 #endif
 
 #ifdef EAGAIN
-        ERRNO_CASE(EAGAIN);
+    case EAGAIN:
+        return "EAGAIN";
 #endif
 
 #ifdef EWOULDBLOCK
 #if EAGAIN != EWOULDBLOCK
-        ERRNO_CASE(EWOULDBLOCK);
+    case EWOULDBLOCK:
+        return "EWOULDBLOCK";
 #endif
 #endif
 
 #ifdef EALREADY
-        ERRNO_CASE(EALREADY);
+    case EALREADY:
+        return "EALREADY";
 #endif
 
 #ifdef EBADF
-        ERRNO_CASE(EBADF);
+    case EBADF:
+        return "EBADF";
 #endif
 
 #ifdef EBADMSG
-        ERRNO_CASE(EBADMSG);
+    case EBADMSG:
+        return "EBADMSG";
 #endif
 
 #ifdef EBUSY
-        ERRNO_CASE(EBUSY);
+    case EBUSY:
+        return "EBUSY";
 #endif
 
 #ifdef ECANCELED
-        ERRNO_CASE(ECANCELED);
+    case ECANCELED:
+        return "ECANCELED";
 #endif
 
 #ifdef ECHILD
-        ERRNO_CASE(ECHILD);
+    case ECHILD:
+        return "ECHILD";
 #endif
 
 #ifdef ECONNABORTED
-        ERRNO_CASE(ECONNABORTED);
+    case ECONNABORTED:
+        return "ECONNABORTED";
 #endif
 
 #ifdef ECONNREFUSED
-        ERRNO_CASE(ECONNREFUSED);
+    case ECONNREFUSED:
+        return "ECONNREFUSED";
 #endif
 
 #ifdef ECONNRESET
-        ERRNO_CASE(ECONNRESET);
+    case ECONNRESET:
+        return "ECONNRESET";
 #endif
 
 #ifdef EDEADLK
-        ERRNO_CASE(EDEADLK);
+    case EDEADLK:
+        return "EDEADLK";
 #endif
 
 #ifdef EDESTADDRREQ
-        ERRNO_CASE(EDESTADDRREQ);
+    case EDESTADDRREQ:
+        return "EDESTADDRREQ";
 #endif
 
 #ifdef EDOM
-        ERRNO_CASE(EDOM);
+    case EDOM:
+        return "EDOM";
 #endif
 
 #ifdef EDQUOT
-        ERRNO_CASE(EDQUOT);
+    case EDQUOT:
+        return "EDQUOT";
 #endif
 
 #ifdef EEXIST
-        ERRNO_CASE(EEXIST);
+    case EEXIST:
+        return "EEXIST";
 #endif
 
 #ifdef EFAULT
-        ERRNO_CASE(EFAULT);
+    case EFAULT:
+        return "EFAULT";
 #endif
 
 #ifdef EFBIG
-        ERRNO_CASE(EFBIG);
+    case EFBIG:
+        return "EFBIG";
 #endif
 
 #ifdef EHOSTUNREACH
-        ERRNO_CASE(EHOSTUNREACH);
+    case EHOSTUNREACH:
+        return "EHOSTUNREACH";
 #endif
 
 #ifdef EIDRM
-        ERRNO_CASE(EIDRM);
+    case EIDRM:
+        return "EIDRM";
 #endif
 
 #ifdef EILSEQ
-        ERRNO_CASE(EILSEQ);
+    case EILSEQ:
+        return "EILSEQ";
 #endif
 
 #ifdef EINPROGRESS
-        ERRNO_CASE(EINPROGRESS);
+    case EINPROGRESS:
+        return "EINPROGRESS";
 #endif
 
 #ifdef EINTR
-        ERRNO_CASE(EINTR);
+    case EINTR:
+        return "EINTR";
 #endif
 
 #ifdef EINVAL
-        ERRNO_CASE(EINVAL);
+    case EINVAL:
+        return "EINVAL";
 #endif
 
 #ifdef EIO
-        ERRNO_CASE(EIO);
+    case EIO:
+        return "EIO";
 #endif
 
 #ifdef EISCONN
-        ERRNO_CASE(EISCONN);
+    case EISCONN:
+        return "EISCONN";
 #endif
 
 #ifdef EISDIR
-        ERRNO_CASE(EISDIR);
+    case EISDIR:
+        return "EISDIR";
 #endif
 
 #ifdef ELOOP
-        ERRNO_CASE(ELOOP);
+    case ELOOP:
+        return "ELOOP";
 #endif
 
 #ifdef EMFILE
-        ERRNO_CASE(EMFILE);
+    case EMFILE:
+        return "EMFILE";
 #endif
 
 #ifdef EMLINK
-        ERRNO_CASE(EMLINK);
+    case EMLINK:
+        return "EMLINK";
 #endif
 
 #ifdef EMSGSIZE
-        ERRNO_CASE(EMSGSIZE);
+    case EMSGSIZE:
+        return "EMSGSIZE";
 #endif
 
 #ifdef EMULTIHOP
-        ERRNO_CASE(EMULTIHOP);
+    case EMULTIHOP:
+        return "EMULTIHOP";
 #endif
 
 #ifdef ENAMETOOLONG
-        ERRNO_CASE(ENAMETOOLONG);
+    case ENAMETOOLONG:
+        return "ENAMETOOLONG";
 #endif
 
 #ifdef ENETDOWN
-        ERRNO_CASE(ENETDOWN);
+    case ENETDOWN:
+        return "ENETDOWN";
 #endif
 
 #ifdef ENETRESET
-        ERRNO_CASE(ENETRESET);
+    case ENETRESET:
+        return "ENETRESET";
 #endif
 
 #ifdef ENETUNREACH
-        ERRNO_CASE(ENETUNREACH);
+    case ENETUNREACH:
+        return "ENETUNREACH";
 #endif
 
 #ifdef ENFILE
-        ERRNO_CASE(ENFILE);
+    case ENFILE:
+        return "ENFILE";
 #endif
 
 #ifdef ENOBUFS
-        ERRNO_CASE(ENOBUFS);
+    case ENOBUFS:
+        return "ENOBUFS";
 #endif
 
 #ifdef ENODATA
-        ERRNO_CASE(ENODATA);
+    case ENODATA:
+        return "ENODATA";
 #endif
 
 #ifdef ENODEV
-        ERRNO_CASE(ENODEV);
+    case ENODEV:
+        return "ENODEV";
 #endif
 
 #ifdef ENOENT
-        ERRNO_CASE(ENOENT);
+    case ENOENT:
+        return "ENOENT";
 #endif
 
 #ifdef ENOEXEC
-        ERRNO_CASE(ENOEXEC);
+    case ENOEXEC:
+        return "ENOEXEC";
 #endif
 
 #ifdef ENOLINK
-        ERRNO_CASE(ENOLINK);
+    case ENOLINK:
+        return "ENOLINK";
 #endif
 
 #ifdef ENOLCK
 #if ENOLINK != ENOLCK
-        ERRNO_CASE(ENOLCK);
+    case ENOLCK:
+        return "ENOLCK";
 #endif
 #endif
 
 #ifdef ENOMEM
-        ERRNO_CASE(ENOMEM);
+    case ENOMEM:
+        return "ENOMEM";
 #endif
 
 #ifdef ENOMSG
-        ERRNO_CASE(ENOMSG);
+    case ENOMSG:
+        return "ENOMSG";
 #endif
 
 #ifdef ENOPROTOOPT
-        ERRNO_CASE(ENOPROTOOPT);
+    case ENOPROTOOPT:
+        return "ENOPROTOOPT";
 #endif
 
 #ifdef ENOSPC
-        ERRNO_CASE(ENOSPC);
+    case ENOSPC:
+        return "ENOSPC";
 #endif
 
 #ifdef ENOSR
-        ERRNO_CASE(ENOSR);
+    case ENOSR:
+        return "ENOSR";
 #endif
 
 #ifdef ENOSTR
-        ERRNO_CASE(ENOSTR);
+    case ENOSTR:
+        return "ENOSTR";
 #endif
 
 #ifdef ENOSYS
-        ERRNO_CASE(ENOSYS);
+    case ENOSYS:
+        return "ENOSYS";
 #endif
 
 #ifdef ENOTCONN
-        ERRNO_CASE(ENOTCONN);
+    case ENOTCONN:
+        return "ENOTCONN";
 #endif
 
 #ifdef ENOTDIR
-        ERRNO_CASE(ENOTDIR);
+    case ENOTDIR:
+        return "ENOTDIR";
 #endif
 
 #ifdef ENOTEMPTY
 #if ENOTEMPTY != EEXIST
-        ERRNO_CASE(ENOTEMPTY);
+    case ENOTEMPTY:
+        return "ENOTEMPTY";
 #endif
 #endif
 
 #ifdef ENOTSOCK
-        ERRNO_CASE(ENOTSOCK);
+    case ENOTSOCK:
+        return "ENOTSOCK";
 #endif
 
 #ifdef ENOTSUP
-        ERRNO_CASE(ENOTSUP);
+    case ENOTSUP:
+        return "ENOTSUP";
 #else
 #ifdef EOPNOTSUPP
-        ERRNO_CASE(EOPNOTSUPP);
+    case EOPNOTSUPP:
+        return "EOPNOTSUPP";
 #endif
 #endif
 
 #ifdef ENOTTY
-        ERRNO_CASE(ENOTTY);
+    case ENOTTY:
+        return "ENOTTY";
 #endif
 
 #ifdef ENXIO
-        ERRNO_CASE(ENXIO);
+    case ENXIO:
+        return "ENXIO";
 #endif
 
 #ifdef EOVERFLOW
-        ERRNO_CASE(EOVERFLOW);
+    case EOVERFLOW:
+        return "EOVERFLOW";
 #endif
 
 #ifdef EPERM
-        ERRNO_CASE(EPERM);
+    case EPERM:
+        return "EPERM";
 #endif
 
 #ifdef EPIPE
-        ERRNO_CASE(EPIPE);
+    case EPIPE:
+        return "EPIPE";
 #endif
 
 #ifdef EPROTO
-        ERRNO_CASE(EPROTO);
+    case EPROTO:
+        return "EPROTO";
 #endif
 
 #ifdef EPROTONOSUPPORT
-        ERRNO_CASE(EPROTONOSUPPORT);
+    case EPROTONOSUPPORT:
+        return "EPROTONOSUPPORT";
 #endif
 
 #ifdef EPROTOTYPE
-        ERRNO_CASE(EPROTOTYPE);
+    case EPROTOTYPE:
+        return "EPROTOTYPE";
 #endif
 
 #ifdef ERANGE
-        ERRNO_CASE(ERANGE);
+    case ERANGE:
+        return "ERANGE";
 #endif
 
 #ifdef EROFS
-        ERRNO_CASE(EROFS);
+    case EROFS:
+        return "EROFS";
 #endif
 
 #ifdef ESPIPE
-        ERRNO_CASE(ESPIPE);
+    case ESPIPE:
+        return "ESPIPE";
 #endif
 
 #ifdef ESRCH
-        ERRNO_CASE(ESRCH);
+    case ESRCH:
+        return "ESRCH";
 #endif
 
 #ifdef ESTALE
-        ERRNO_CASE(ESTALE);
+    case ESTALE:
+        return "ESTALE";
 #endif
 
 #ifdef ETIME
-        ERRNO_CASE(ETIME);
+    case ETIME:
+        return "ETIME";
 #endif
 
 #ifdef ETIMEDOUT
-        ERRNO_CASE(ETIMEDOUT);
+    case ETIMEDOUT:
+        return "ETIMEDOUT";
 #endif
 
 #ifdef ETXTBSY
-        ERRNO_CASE(ETXTBSY);
+    case ETXTBSY:
+        return "ETXTBSY";
 #endif
 
 #ifdef EXDEV
-        ERRNO_CASE(EXDEV);
+    case EXDEV:
+        return "EXDEV";
 #endif
 
     default:
