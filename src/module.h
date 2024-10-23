@@ -18,10 +18,10 @@ struct Terminator {
         assert(context != nullptr);
 
 #ifdef ZMQ_BLOCKY
-        bool const blocky = zmq_ctx_get(context, ZMQ_BLOCKY) != 0;
+        const bool blocky = zmq_ctx_get(context, ZMQ_BLOCKY) != 0;
 #else
         /* If the option cannot be set, don't suggest to set it. */
-        bool blocky = false;
+        const bool blocky = false;
 #endif
 
         /* Start termination asynchronously so we can detect if it takes long
@@ -35,7 +35,7 @@ struct Terminator {
         if (terminate.wait_for(500ms) == std::future_status::timeout) {
             /* We can't use process.emitWarning, because the Node.js runtime
                has already shut down. So we mimic it instead. */
-            fprintf(stderr,
+            (void)fprintf(stderr,
                 "(node:%d) WARNING: Waiting for queued ZeroMQ messages to be "
                 "delivered.%s\n",
                 uv_os_getpid(),

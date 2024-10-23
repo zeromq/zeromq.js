@@ -74,6 +74,7 @@ public:
             [[maybe_unused]] auto err = uv_timer_start(
                 readable_timer.get(),
                 [](uv_timer_t* timer) {
+                    // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
                     auto& poller = *reinterpret_cast<Poller*>(timer->data);
                     poller.Trigger(UV_READABLE);
                 },
@@ -98,6 +99,7 @@ public:
             [[maybe_unused]] auto err = uv_timer_start(
                 writable_timer.get(),
                 [](uv_timer_t* timer) {
+                    // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
                     auto& poller = *reinterpret_cast<Poller*>(timer->data);
                     poller.Trigger(UV_WRITABLE);
                 },
@@ -164,6 +166,7 @@ private:
        There is no guarantee that any events are available. */
     static void Callback(uv_poll_t* poll, int32_t status, int32_t /*events*/) {
         if (status == 0) {
+            // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
             auto& poller = *reinterpret_cast<Poller*>(poll->data);
             poller.TriggerReadable();
             poller.TriggerWritable();
