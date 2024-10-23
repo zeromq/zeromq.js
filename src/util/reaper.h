@@ -21,6 +21,12 @@ class Reaper {
     std::set<T*> pointers;
 
 public:
+    Reaper() = default;
+    Reaper(const Reaper&) = delete;
+    Reaper(Reaper&&) = delete;
+    Reaper& operator=(const Reaper&) = delete;
+    Reaper& operator=(Reaper&&) = delete;
+
     ~Reaper() {
         /* Copy pointers to vector to avoid issues with callbacks deregistering
            themselves from the reaper while we are still iterating. We iterate

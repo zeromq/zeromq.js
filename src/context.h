@@ -12,10 +12,12 @@ public:
     static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Context(const Napi::CallbackInfo& info);
-    ~Context() override;
 
+    Context(const Context&) = delete;
+    Context& operator=(const Context&) = delete;
     Context(Context&&) = delete;
     Context& operator=(Context&&) = delete;
+    ~Context() override;
 
     void Close() override;
 

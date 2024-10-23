@@ -16,6 +16,11 @@ public:
     static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Observer(const Napi::CallbackInfo& info);
+
+    Observer(const Observer&) = delete;
+    Observer(Observer&&) = delete;
+    Observer& operator=(const Observer&) = delete;
+    Observer& operator=(Observer&&) = delete;
     ~Observer() override;
 
     void Close() override;

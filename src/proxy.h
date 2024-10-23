@@ -15,6 +15,11 @@ public:
     static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Proxy(const Napi::CallbackInfo& info);
+
+    Proxy(const Proxy&) = delete;
+    Proxy(Proxy&&) = delete;
+    Proxy& operator=(const Proxy&) = delete;
+    Proxy& operator=(Proxy&&) = delete;
     ~Proxy() override;
 
     void Close() override;

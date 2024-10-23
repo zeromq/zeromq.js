@@ -17,6 +17,8 @@ public:
        nor should we have to copy messages with the right STL containers. */
     OutgoingMsg(const OutgoingMsg&) = delete;
     OutgoingMsg& operator=(const OutgoingMsg&) = delete;
+    OutgoingMsg(OutgoingMsg&&) = delete;
+    OutgoingMsg& operator=(OutgoingMsg&&) = delete;
 
     /* Outgoing message. Takes a string or buffer argument and releases
        the underlying V8 resources whenever the message is sent, or earlier

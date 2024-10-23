@@ -12,6 +12,8 @@ public:
 
     IncomingMsg(const IncomingMsg&) = delete;
     IncomingMsg& operator=(const IncomingMsg&) = delete;
+    IncomingMsg(IncomingMsg&&) = delete;
+    IncomingMsg& operator=(IncomingMsg&&) = delete;
 
     Napi::Value IntoBuffer(const Napi::Env& env);
 
@@ -25,6 +27,10 @@ private:
 
     public:
         Reference();
+        Reference(const Reference&) = delete;
+        Reference(Reference&&) = delete;
+        Reference& operator=(const Reference&) = delete;
+        Reference& operator=(Reference&&) = delete;
         ~Reference();
 
         zmq_msg_t* get() {

@@ -15,6 +15,11 @@ public:
     static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Socket(const Napi::CallbackInfo& info);
+
+    Socket(const Socket&) = delete;
+    Socket(Socket&&) = delete;
+    Socket& operator=(const Socket&) = delete;
+    Socket& operator=(Socket&&) = delete;
     ~Socket() override;
 
     void Close() override;
