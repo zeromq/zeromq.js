@@ -29,12 +29,12 @@ public:
             reinterpret_cast<Trash*>(async->data)->Clear();
         };
 
-        [[maybe_unused]] auto err = uv_async_init(loop, async, clear);
+        [[maybe_unused]] auto err = uv_async_init(loop, async.get(), clear);
         assert(err == 0);
 
         /* Immediately unreference this handle in order to prevent the async
            callback from preventing the Node.js process to exit. */
-        uv_unref(this->async);
+        uv_unref(this->async.get_handle());
     }
 
     /* Add given item to the trash, marking it for deletion next time the
@@ -47,7 +47,7 @@ public:
            that calls are coalesced if they occur frequently. This is good
            news for us, since that means frequent additions do not cause
            unnecessary trash cycle operations. */
-        [[maybe_unused]] auto err = uv_async_send(this->async);
+        [[maybe_unused]] auto err = uv_async_send(this->async.get());
         assert(err == 0);
     }
 

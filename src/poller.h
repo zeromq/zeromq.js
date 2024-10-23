@@ -28,17 +28,17 @@ public:
         auto* loop = UvLoop(env);
 
         poll->data = this;
-        if (auto err = uv_poll_init_socket(loop, poll, fd); err != 0) {
+        if (auto err = uv_poll_init_socket(loop, poll.get(), fd); err != 0) {
             return err;
         }
 
         readable_timer->data = this;
-        if (auto err = uv_timer_init(loop, readable_timer); err != 0) {
+        if (auto err = uv_timer_init(loop, readable_timer.get()); err != 0) {
             return err;
         }
 
         writable_timer->data = this;
-        if (auto err = uv_timer_init(loop, writable_timer); err != 0) {
+        if (auto err = uv_timer_init(loop, writable_timer.get()); err != 0) {
             return err;
         }
 
@@ -72,7 +72,7 @@ public:
 
         if (timeout > 0) {
             [[maybe_unused]] auto err = uv_timer_start(
-                readable_timer,
+                readable_timer.get(),
                 [](uv_timer_t* timer) {
                     auto& poller = *reinterpret_cast<Poller*>(timer->data);
                     poller.Trigger(UV_READABLE);
@@ -84,7 +84,7 @@ public:
 
         if (events == 0) {
             /* Only start polling if we were not polling already. */
-            [[maybe_unused]] auto err = uv_poll_start(poll, UV_READABLE, Callback);
+            [[maybe_unused]] auto err = uv_poll_start(poll.get(), UV_READABLE, Callback);
             assert(err == 0);
         }
 
@@ -96,7 +96,7 @@ public:
 
         if (timeout > 0) {
             [[maybe_unused]] auto err = uv_timer_start(
-                writable_timer,
+                writable_timer.get(),
                 [](uv_timer_t* timer) {
                     auto& poller = *reinterpret_cast<Poller*>(timer->data);
                     poller.Trigger(UV_WRITABLE);
@@ -110,7 +110,7 @@ public:
            events on the socket in an edge-triggered fashion by making the
            file descriptor become ready for READING." */
         if (events == 0) {
-            [[maybe_unused]] auto err = uv_poll_start(poll, UV_READABLE, Callback);
+            [[maybe_unused]] auto err = uv_poll_start(poll.get(), UV_READABLE, Callback);
             assert(err == 0);
         }
 
@@ -142,18 +142,18 @@ private:
     void Trigger(uint32_t triggered) {
         events &= ~triggered;
         if (events == 0) {
-            [[maybe_unused]] auto err = uv_poll_stop(poll);
+            [[maybe_unused]] auto err = uv_poll_stop(poll.get());
             assert(err == 0);
         }
 
         if ((triggered & UV_READABLE) != 0) {
-            [[maybe_unused]] auto err = uv_timer_stop(readable_timer);
+            [[maybe_unused]] auto err = uv_timer_stop(readable_timer.get());
             assert(err == 0);
             static_cast<T*>(this)->ReadableCallback();
         }
 
         if ((triggered & UV_WRITABLE) != 0) {
-            [[maybe_unused]] auto err = uv_timer_stop(writable_timer);
+            [[maybe_unused]] auto err = uv_timer_stop(writable_timer.get());
             assert(err == 0);
             static_cast<T*>(this)->WritableCallback();
         }

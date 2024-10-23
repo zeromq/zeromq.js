@@ -35,18 +35,15 @@ public:
     using handle_ptr<T>::reset;
     using handle_ptr<T>::operator->;
 
-    // NOLINTNEXTLINE(*-explicit-*)
-    inline operator bool() {
+    explicit operator bool() {
         return handle_ptr<T>::operator bool() && handle_ptr<T>::get()->type != 0;
     }
 
-    // NOLINTNEXTLINE(*-explicit-*)
-    inline operator T*() {
+    T* get() {
         return handle_ptr<T>::get();
     }
 
-    // NOLINTNEXTLINE(*-explicit-*)
-    inline operator uv_handle_t*() {
+    uv_handle_t* get_handle() {
         return reinterpret_cast<uv_handle_t*>(handle_ptr<T>::get());
     }
 };
