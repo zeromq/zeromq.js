@@ -1,10 +1,10 @@
 #include "./socket.h"
 
+#include <array>
 #include <cmath>
 #include <cstdint>
 #include <limits>
 #include <unordered_set>
-#include <array>
 
 #include "./context.h"
 #include "./incoming_msg.h"
@@ -105,13 +105,20 @@ Socket::Socket(const Napi::CallbackInfo& info)
     uv_os_sock_t file_descriptor = 0;
     std::function<void()> const finalize = nullptr;
 
+    const auto error = [this]() {
+        [[maybe_unused]] auto err = zmq_close(socket);
+        assert(err == 0);
+
+        socket = nullptr;
+    };
+
 #ifdef ZMQ_THREAD_SAFE
     {
         int value = 0;
         size_t length = sizeof(value);
         if (zmq_getsockopt(socket, ZMQ_THREAD_SAFE, &value, &length) < 0) {
             ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
-            goto error;
+            error();
         }
 
         thread_safe = (value != 0);
@@ -126,7 +133,7 @@ Socket::Socket(const Napi::CallbackInfo& info)
         auto poll = zmq_poller_new();
         if (poll == nullptr) {
             ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
-            goto error;
+            error();
         }
 
         /* Callback to free the underlying poller. Move the poller to transfer
@@ -139,31 +146,31 @@ Socket::Socket(const Napi::CallbackInfo& info)
         if (zmq_poller_add(poll, socket, nullptr, ZMQ_POLLIN | ZMQ_POLLOUT) < 0) {
             ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
             finalize();
-            goto error;
+            error();
         }
 
         if (zmq_poller_fd(poll, &fd) < 0) {
             ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
             finalize();
-            goto error;
+            error();
         }
 #else
         /* A thread safe socket was requested, but there is no support for
            retrieving a poller FD, so we cannot construct them. */
         ErrnoException(Env(), EINVAL).ThrowAsJavaScriptException();
-        goto error;
+        error();
 #endif
     } else {
         size_t length = sizeof(file_descriptor);
         if (zmq_getsockopt(socket, ZMQ_FD, &file_descriptor, &length) < 0) {
             ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
-            goto error;
+            error();
         }
     }
 
     if (poller.Initialize(Env(), file_descriptor, finalize) < 0) {
         ErrnoException(Env(), errno).ThrowAsJavaScriptException();
-        goto error;
+        error();
     }
 
     /* Initialization was successful, register the socket for cleanup. */
@@ -177,14 +184,6 @@ Socket::Socket(const Napi::CallbackInfo& info)
     if (info[1].IsObject()) {
         Assign(info.This().As<Napi::Object>(), info[1].As<Napi::Object>());
     }
-
-    return;
-
-error:
-    [[maybe_unused]] auto err = zmq_close(socket);
-    assert(err == 0);
-
-    socket = nullptr;
 }
 
 Socket::~Socket() {

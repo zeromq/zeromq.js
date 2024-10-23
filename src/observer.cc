@@ -162,31 +162,30 @@ Observer::Observer(const Napi::CallbackInfo& info)
     uv_os_sock_t file_descriptor = 0;
     size_t length = sizeof(file_descriptor);
 
+    const auto error = [this]() {
+        [[maybe_unused]] auto err = zmq_close(socket);
+        assert(err == 0);
+
+        socket = nullptr;
+    };
+
     if (zmq_connect(socket, address.c_str()) < 0) {
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
-        goto error;
+        error();
     }
 
     if (zmq_getsockopt(socket, ZMQ_FD, &file_descriptor, &length) < 0) {
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
-        goto error;
+        error();
     }
 
     if (poller.Initialize(Env(), file_descriptor) < 0) {
         ErrnoException(Env(), errno).ThrowAsJavaScriptException();
-        goto error;
+        error();
     }
 
     /* Initialization was successful, register the observer for cleanup. */
     module.ObjectReaper.Add(this);
-
-    return;
-
-error:
-    [[maybe_unused]] auto err = zmq_close(socket);
-    assert(err == 0);
-
-    socket = nullptr;
 }
 
 Observer::~Observer() {
