@@ -42,21 +42,22 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
             Napi::MemoryManagement::AdjustExternalMemory(
                 env, static_cast<int64_t>(length));
 
-            auto release = [](const Napi::Env& env, uint8_t*, Reference* ref) {
+            const auto release = [](const Napi::Env& env, uint8_t*, Reference* ref) {
                 const auto length = static_cast<int64_t>(zmq_msg_size(ref->get()));
                 Napi::MemoryManagement::AdjustExternalMemory(env, -length);
                 delete ref;
             };
 
-            return Napi::Buffer<uint8_t>::New(env, data, length, release, ref);
+            return Napi::Buffer<uint8_t>::New(env, data, length, release, ref)
+                .As<Napi::Value>();
         }
     }
 
     if (length > 0) {
-        return Napi::Buffer<uint8_t>::Copy(env, data, length);
+        return Napi::Buffer<uint8_t>::Copy(env, data, length).As<Napi::Value>();
     }
 
-    return Napi::Buffer<uint8_t>::New(env, 0);
+    return Napi::Buffer<uint8_t>::New(env, 0).As<Napi::Value>();
 }
 
 IncomingMsg::Reference::Reference() {
