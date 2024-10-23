@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@aminya/cmake-ts':
-        specifier: ^0.3.0-aminya.3
-        version: 0.3.0-aminya.3
+        specifier: ^0.3.0-aminya.4
+        version: 0.3.0-aminya.4
       node-addon-api:
         specifier: ^8.2.1
         version: 8.2.1
@@ -124,8 +124,8 @@ importers:
 
 packages:
 
-  '@aminya/cmake-ts@0.3.0-aminya.3':
-    resolution: {integrity: sha512-OsAuo5Xnn7E2H/hzu6QOcmmpPGcNSttwohskukYkl2mHWZshxawW5vT7HTQsL21bSA09+AJIgWdXJnHAbJMcBQ==}
+  '@aminya/cmake-ts@0.3.0-aminya.4':
+    resolution: {integrity: sha512-P/XtNKb4uP6UGAoQ3UlK04WVBIMq2vu/bnEJTkL3EIiqXHfRDyK6/r/40kUsPCOyGh4A8hAJONXeLTqzAUEbKw==}
     hasBin: true
 
   '@aminya/eslint-plugin-only-warn@1.2.2':
@@ -3490,7 +3490,7 @@ packages:
 
 snapshots:
 
-  '@aminya/cmake-ts@0.3.0-aminya.3':
+  '@aminya/cmake-ts@0.3.0-aminya.4':
     dependencies:
       '@cypress/request': 3.0.5
       fast-glob: 3.3.2
