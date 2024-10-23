@@ -77,6 +77,7 @@ constexpr const char* EventName(uint32_t val) {
 
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_AUTH
 constexpr const char* AuthError(uint32_t val) {
+    // NOLINTBEGIN(*-magic-numbers)
     switch (val) {
     case 300:
         return "Temporary error";
@@ -88,6 +89,7 @@ constexpr const char* AuthError(uint32_t val) {
         /* Fallback if the auth error was unknown, which should not happen. */
         return "Unknown error";
     }
+    // NOLINTEND(*-magic-numbers)
 }
 #endif
 
@@ -201,13 +203,13 @@ bool Observer::ValidateOpen() const {
 }
 
 bool Observer::HasEvents() const {
-    int32_t events = 0;
+    uint32_t events = 0;
     size_t events_size = sizeof(events);
 
     while (zmq_getsockopt(socket, ZMQ_EVENTS, &events, &events_size) < 0) {
         /* Ignore errors. */
         if (zmq_errno() != EINTR) {
-            return 0;
+            return false;
         }
     }
 

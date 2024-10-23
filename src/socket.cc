@@ -20,7 +20,7 @@
 namespace zmq {
 /* The maximum number of sync I/O operations that are allowed before the I/O
    methods will force the returned promise to be resolved in the next tick. */
-[[maybe_unused]] auto constexpr max_sync_operations = 1 << 9;
+[[maybe_unused]] auto constexpr max_sync_operations = 1U << 9U;
 
 /* Ordinary static cast for all available numeric types. */
 template <typename T>
@@ -38,7 +38,7 @@ uint64_t NumberCast<uint64_t>(const Napi::Number& num) {
         return 0;
     }
 
-    static constexpr auto max_safe_integer = static_cast<double>((1ULL << 53) - 1);
+    static constexpr auto max_safe_integer = static_cast<double>((1ULL << 53U) - 1);
     if (value > max_safe_integer) {
         Warn(num.Env(),
             "Value is larger than Number.MAX_SAFE_INTEGER and may have been rounded "
@@ -245,8 +245,8 @@ bool Socket::ValidateOpen() const {
     }
 }
 
-bool Socket::HasEvents(int32_t requested) const {
-    int32_t events = 0;
+bool Socket::HasEvents(uint32_t requested_events) const {
+    uint32_t events = 0;
     size_t events_size = sizeof(events);
 
     while (zmq_getsockopt(socket, ZMQ_EVENTS, &events, &events_size) < 0) {
@@ -256,7 +256,7 @@ bool Socket::HasEvents(int32_t requested) const {
         }
     }
 
-    return (events & requested) != 0;
+    return (events & requested_events) != 0;
 }
 
 void Socket::Close() {

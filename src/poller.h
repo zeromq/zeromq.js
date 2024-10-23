@@ -16,7 +16,7 @@ class Poller {
     UvHandle<uv_timer_t> readable_timer;
     UvHandle<uv_timer_t> writable_timer;
 
-    int32_t events{0};
+    uint32_t events{0};
     std::function<void()> finalize = nullptr;
 
 public:
@@ -139,7 +139,7 @@ private:
     /* Trigger one or more specific events manually. No validation is
        performed, which means these will cause EAGAIN errors if no events
        were actually available. */
-    void Trigger(int32_t triggered) {
+    void Trigger(uint32_t triggered) {
         events &= ~triggered;
         if (events == 0) {
             [[maybe_unused]] auto err = uv_poll_stop(poll);

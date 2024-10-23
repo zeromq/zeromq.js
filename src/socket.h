@@ -56,7 +56,7 @@ protected:
 private:
     inline void WarnUnlessImmediateOption(int32_t option) const;
     [[nodiscard]] inline bool ValidateOpen() const;
-    [[nodiscard]] bool HasEvents(int32_t events) const;
+    [[nodiscard]] bool HasEvents(uint32_t requested_events) const;
 
     /* Send/receive are usually in a hot path and will benefit slightly
        from being inlined. They are used in more than one location and are

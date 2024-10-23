@@ -31,7 +31,7 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
     auto length = zmq_msg_size(*ref);
 
     if (noElectronMemoryCage) {
-        static auto constexpr zero_copy_threshold = 1 << 7;
+        static auto constexpr zero_copy_threshold = 1U << 7U;
         if (length > zero_copy_threshold) {
             /* Reuse existing buffer for external storage. This avoids copying but
                does include an overhead in having to call a finalizer when the
