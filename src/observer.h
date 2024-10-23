@@ -2,6 +2,7 @@
 
 #include <napi.h>
 
+#include <functional>
 #include <optional>
 
 #include "./closable.h"
@@ -38,11 +39,11 @@ private:
     force_inline void Receive(const Napi::Promise::Deferred& res);
 
     class Poller : public zmq::Poller<Poller> {
-        Observer& socket;
+        std::reference_wrapper<Observer> socket;
         std::optional<Napi::Promise::Deferred> read_deferred;
 
     public:
-        explicit Poller(Observer& observer) : socket(observer) {}
+        explicit Poller(std::reference_wrapper<Observer> observer) : socket(observer) {}
 
         Napi::Value ReadPromise();
 
@@ -51,7 +52,7 @@ private:
         }
 
         [[nodiscard]] bool ValidateReadable() const {
-            return socket.HasEvents();
+            return socket.get().HasEvents();
         }
 
         [[nodiscard]] static bool ValidateWritable() {

@@ -311,7 +311,7 @@ void Socket::Receive(const Napi::Promise::Deferred& res) {
        followed by a metadata object. */
     auto list = Napi::Array::New(Env(), 1);
 
-    uint32_t i = 0;
+    uint32_t i_part = 0;
     while (true) {
         IncomingMsg part;
         while (zmq_msg_recv(part.get(), socket, ZMQ_DONTWAIT) < 0) {
@@ -321,7 +321,7 @@ void Socket::Receive(const Napi::Promise::Deferred& res) {
             }
         }
 
-        list[i++] = part.IntoBuffer(Env());
+        list[i_part++] = part.IntoBuffer(Env());
 
 #ifdef ZMQ_HAS_POLLABLE_THREAD_SAFE
         switch (type) {
@@ -953,25 +953,25 @@ void Socket::Initialize(Module& module, Napi::Object& exports) {
 
 void Socket::Poller::ReadableCallback() {
     assert(read_deferred);
-    socket.sync_operations = 0;
+    socket.get().sync_operations = 0;
 
-    AsyncScope const scope(socket.Env(), socket.async_context);
-    socket.Receive(take(read_deferred));
+    AsyncScope const scope(socket.get().Env(), socket.get().async_context);
+    socket.get().Receive(take(read_deferred));
 }
 
 void Socket::Poller::WritableCallback() {
     assert(write_deferred);
-    socket.sync_operations = 0;
+    socket.get().sync_operations = 0;
 
-    AsyncScope const scope(socket.Env(), socket.async_context);
-    socket.Send(take(write_deferred), write_value);
+    AsyncScope const scope(socket.get().Env(), socket.get().async_context);
+    socket.get().Send(take(write_deferred), write_value);
     write_value.Clear();
 }
 
 Napi::Value Socket::Poller::ReadPromise() {
     assert(!read_deferred);
 
-    read_deferred = Napi::Promise::Deferred(socket.Env());
+    read_deferred = Napi::Promise::Deferred(socket.get().Env());
     return read_deferred->Promise();
 }
 
@@ -979,7 +979,7 @@ Napi::Value Socket::Poller::WritePromise(OutgoingMsg::Parts&& parts) {
     assert(!write_deferred);
 
     write_value = std::move(parts);
-    write_deferred = Napi::Promise::Deferred(socket.Env());
+    write_deferred = Napi::Promise::Deferred(socket.get().Env());
     return write_deferred->Promise();
 }
 }  // namespace zmq

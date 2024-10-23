@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <optional>
 
 #include "./closable.h"
@@ -70,13 +71,13 @@ private:
     force_inline void Receive(const Napi::Promise::Deferred& res);
 
     class Poller : public zmq::Poller<Poller> {
-        Socket& socket;
+        std::reference_wrapper<Socket> socket;
         std::optional<Napi::Promise::Deferred> read_deferred;
         std::optional<Napi::Promise::Deferred> write_deferred;
         OutgoingMsg::Parts write_value;
 
     public:
-        explicit Poller(Socket& socket) : socket(socket) {}
+        explicit Poller(std::reference_wrapper<Socket> socket) : socket(socket) {}
 
         Napi::Value ReadPromise();
         Napi::Value WritePromise(OutgoingMsg::Parts&& parts);
@@ -90,11 +91,11 @@ private:
         }
 
         [[nodiscard]] bool ValidateReadable() const {
-            return socket.HasEvents(ZMQ_POLLIN);
+            return socket.get().HasEvents(ZMQ_POLLIN);
         }
 
         [[nodiscard]] bool ValidateWritable() const {
-            return socket.HasEvents(ZMQ_POLLOUT);
+            return socket.get().HasEvents(ZMQ_POLLOUT);
         }
 
         void ReadableCallback();

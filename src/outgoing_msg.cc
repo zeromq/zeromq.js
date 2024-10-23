@@ -1,11 +1,12 @@
 
 #include "./outgoing_msg.h"
 
+#include <functional>
 #include "./module.h"
 #include "util/error.h"
 
 namespace zmq {
-OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
+OutgoingMsg::OutgoingMsg(Napi::Value value, std::reference_wrapper<Module> module) {
     static auto constexpr zero_copy_threshold = 1U << 7U;
 
     auto buffer_send = [&](uint8_t* data, size_t length) {
@@ -94,7 +95,7 @@ OutgoingMsg::~OutgoingMsg() {
 }
 
 void OutgoingMsg::Reference::Recycle() {
-    module.MsgTrash.Add(this);
+    module.get().MsgTrash.Add(this);
 }
 
 OutgoingMsg::Parts::Parts(Napi::Value value, Module& module) {

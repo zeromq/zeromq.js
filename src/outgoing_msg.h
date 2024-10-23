@@ -3,6 +3,7 @@
 #include <napi.h>
 
 #include <forward_list>
+#include <functional>
 
 #include "./zmq_inc.h"
 
@@ -23,7 +24,7 @@ public:
     /* Outgoing message. Takes a string or buffer argument and releases
        the underlying V8 resources whenever the message is sent, or earlier
        if the message was copied (small buffers & strings). */
-    explicit OutgoingMsg(Napi::Value value, Module& module);
+    explicit OutgoingMsg(Napi::Value value, std::reference_wrapper<Module> module);
     ~OutgoingMsg();
 
     zmq_msg_t* get() {
@@ -33,10 +34,10 @@ public:
 private:
     class Reference {
         Napi::Reference<Napi::Value> persistent;
-        Module& module;
+        std::reference_wrapper<Module> module;
 
     public:
-        explicit Reference(Napi::Value val, Module& module)
+        explicit Reference(Napi::Value val, std::reference_wrapper<Module> module)
             : persistent(Napi::Persistent(val)), module(module) {}
 
         void Recycle();

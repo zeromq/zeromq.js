@@ -61,7 +61,7 @@ using Optional = Verify<F..., Undefined>;
 
 template <typename... F>
 class Validator {
-    static constexpr size_t N = sizeof...(F);
+    static constexpr size_t NumArgs = sizeof...(F);
     std::tuple<F...> validators;
 
 public:
@@ -85,10 +85,10 @@ public:
 private:
     template <size_t I = 0>
     [[nodiscard]] std::optional<Napi::Error> eval(const Napi::CallbackInfo& info) const {
-        if constexpr (I == N) {
-            if (info.Length() > N) {
-                auto msg =
-                    "Expected " + std::to_string(N) + " argument" + (N != 1 ? "s" : "");
+        if constexpr (I == NumArgs) {
+            if (info.Length() > NumArgs) {
+                auto msg = "Expected " + std::to_string(NumArgs) + " argument"
+                    + (NumArgs != 1 ? "s" : "");
                 return Napi::TypeError::New(info.Env(), msg);
             }
 

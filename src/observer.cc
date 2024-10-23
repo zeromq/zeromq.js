@@ -370,14 +370,14 @@ void Observer::Initialize(Module& module, Napi::Object& exports) {
 void Observer::Poller::ReadableCallback() {
     assert(read_deferred);
 
-    AsyncScope const scope(socket.Env(), socket.async_context);
-    socket.Receive(take(read_deferred));
+    AsyncScope const scope(socket.get().Env(), socket.get().async_context);
+    socket.get().Receive(take(read_deferred));
 }
 
 Napi::Value Observer::Poller::ReadPromise() {
     assert(!read_deferred);
 
-    read_deferred = Napi::Promise::Deferred(socket.Env());
+    read_deferred = Napi::Promise::Deferred(socket.get().Env());
     return read_deferred->Promise();
 }
 }  // namespace zmq
