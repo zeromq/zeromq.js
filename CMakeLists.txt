@@ -102,7 +102,7 @@ project_options(ENABLE_CACHE ENABLE_COMPILE_COMMANDS_SYMLINK)
 file(GLOB_RECURSE SOURCES "./src/*.cc")
 add_library(addon SHARED ${SOURCES})
 
-target_link_libraries(addon PRIVATE project_options project_warnings)
+target_link_libraries(addon PRIVATE project_options) # project_warnings
 
 if(ZMQ_DRAFT)
   target_compile_definitions(addon PRIVATE ZMQ_BUILD_DRAFT_API)
@@ -135,6 +135,5 @@ set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".node")
 
 # Windows
 if(WIN32)
-  set_property(TARGET addon PROPERTY LINK_FLAGS "-Xlinker /DELAYLOAD:NODE.EXE")
   target_link_libraries(addon PRIVATE "ShLwApi.lib" "delayimp.lib")
 endif()

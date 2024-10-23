@@ -125,11 +125,11 @@ jobs:
         if: ${{ !matrix.docker }}
         run: pnpm run build.js
 
-      - name: Install Node 12
+      - name: Install Node 10
         if: ${{ !matrix.docker && matrix.os != 'macos-14' }}
         uses: actions/setup-node@v4
         with:
-          node-version: 12
+          node-version: 10
           architecture: ${{ env.setup_node_arch }}
 
       - name: Build Native
@@ -139,7 +139,7 @@ jobs:
       - name: Build Native Windows 32
         if: ${{ matrix.os == 'windows-2019' && matrix.node_arch == 'ia32' }}
         run:
-          node ./node_modules/cmake-ts/build/main.js named-configs windows-x86
+          node ./node_modules/@aminya/cmake-ts/build/main.js named-configs windows-x86
 
       - name: Use Node 20
         if: ${{ !matrix.docker }}
