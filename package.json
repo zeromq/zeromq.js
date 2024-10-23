@@ -107,7 +107,7 @@
     "test.electron.renderer": "run-s build && electron-mocha --renderer",
     "lint-test.eslint": "eslint ./**/*.{ts,tsx,js,jsx,cjs,mjs,json,yaml} --no-error-on-unmatched-pattern --cache --cache-location ./.cache/eslint/",
     "lint.eslint": "pnpm run lint-test.eslint --fix",
-    "lint.clang-tidy": "git ls-files --exclude-standard | grep -E '\\.(cpp|hpp|c|cc|cxx|hxx|h|ixx)$' | xargs -n 1 -P $(nproc) clang-tidy --fix ",
+    "lint.clang-tidy": "git ls-files --exclude-standard | grep -E '\\.(cpp|hpp|c|cc|cxx|hxx|h|ixx)$' | xargs -n 1 -P $(nproc) clang-tidy",
     "lint": "run-p format lint.eslint format",
     "lint-test": "run-s lint-test.eslint",
     "bench": "node --expose-gc test/bench",

@@ -12,14 +12,14 @@ static constexpr const char* ErrnoMessage(int32_t errorno);
 static constexpr const char* ErrnoCode(int32_t errorno);
 
 /* Generates a process warning message. */
-static inline void Warn(const Napi::Env& env, const std::string& msg) {
+inline void Warn(const Napi::Env& env, const std::string& msg) {
     auto global = env.Global();
-    auto fn =
+    auto emitWarning =
         global.Get("process").As<Napi::Object>().Get("emitWarning").As<Napi::Function>();
-    fn.Call({Napi::String::New(env, msg)});
+    emitWarning.Call({Napi::String::New(env, msg)});
 }
 
-static inline Napi::Error StatusException(
+inline Napi::Error StatusException(
     const Napi::Env& env, const std::string& msg, uint32_t status) {
     Napi::HandleScope const scope(env);
     auto exception = Napi::Error::New(env, msg);
@@ -27,7 +27,7 @@ static inline Napi::Error StatusException(
     return exception;
 }
 
-static inline Napi::Error CodedException(
+inline Napi::Error CodedException(
     const Napi::Env& env, const std::string& msg, const std::string& code) {
     Napi::HandleScope const scope(env);
     auto exception = Napi::Error::New(env, msg);
@@ -36,7 +36,7 @@ static inline Napi::Error CodedException(
 }
 
 /* This mostly duplicates node::ErrnoException, but it is not public. */
-static inline Napi::Error ErrnoException(
+inline Napi::Error ErrnoException(
     const Napi::Env& env, int32_t error, const char* message = nullptr) {
     Napi::HandleScope const scope(env);
     auto exception =
@@ -46,7 +46,7 @@ static inline Napi::Error ErrnoException(
     return exception;
 }
 
-static inline Napi::Error ErrnoException(
+inline Napi::Error ErrnoException(
     const Napi::Env& env, int32_t error, const std::string& address) {
     auto exception = ErrnoException(env, error, nullptr);
     exception.Set("address", Napi::String::New(env, address));

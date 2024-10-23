@@ -46,7 +46,7 @@ public:
 
 /* This is similar to JS setImmediate(). */
 template <typename C>
-static inline void UvScheduleDelayed(const Napi::Env& env, C callback) {
+inline void UvScheduleDelayed(const Napi::Env& env, C callback) {
     auto immediate = new UvDelayed<C>(env, std::move(callback));
     return immediate->Schedule();
 }

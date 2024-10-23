@@ -10,7 +10,7 @@
 #include "util/error.h"
 
 namespace zmq {
-static inline Napi::String Version(const Napi::Env& env) {
+Napi::String Version(const Napi::Env& env) {
     int32_t major = 0;
     int32_t minor = 0;
     int32_t patch = 0;
@@ -21,7 +21,7 @@ static inline Napi::String Version(const Napi::Env& env) {
             + std::to_string(patch));
 }
 
-static inline Napi::Object Capabilities(const Napi::Env& env) {
+Napi::Object Capabilities(const Napi::Env& env) {
     auto result = Napi::Object::New(env);
 
 #ifdef ZMQ_HAS_CAPABILITIES
@@ -57,7 +57,7 @@ static inline Napi::Object Capabilities(const Napi::Env& env) {
     return result;
 }
 
-static inline Napi::Value CurveKeyPair(const Napi::CallbackInfo& info) {
+Napi::Value CurveKeyPair(const Napi::CallbackInfo& info) {
     char public_key[41];
     char secret_key[41];
     if (zmq_curve_keypair(public_key, secret_key) < 0) {

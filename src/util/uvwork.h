@@ -41,7 +41,7 @@ public:
 };
 
 template <typename E, typename C>
-static inline int32_t UvQueue(const Napi::Env& env, E execute, C complete) {
+inline int32_t UvQueue(const Napi::Env& env, E execute, C complete) {
     auto* loop = UvLoop(env);
     auto work = new UvWork<E, C>(std::move(execute), std::move(complete));
     return work->Schedule(loop);

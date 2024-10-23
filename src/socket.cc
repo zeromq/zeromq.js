@@ -101,7 +101,7 @@ Socket::Socket(const Napi::CallbackInfo& info)
         return;
     }
 
-    uv_os_sock_t fd = 0;
+    uv_os_sock_t file_descriptor = 0;
     std::function<void()> const finalize = nullptr;
 
 #ifdef ZMQ_THREAD_SAFE
@@ -153,14 +153,14 @@ Socket::Socket(const Napi::CallbackInfo& info)
         goto error;
 #endif
     } else {
-        size_t length = sizeof(fd);
-        if (zmq_getsockopt(socket, ZMQ_FD, &fd, &length) < 0) {
+        size_t length = sizeof(file_descriptor);
+        if (zmq_getsockopt(socket, ZMQ_FD, &file_descriptor, &length) < 0) {
             ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
             goto error;
         }
     }
 
-    if (poller.Initialize(Env(), fd, finalize) < 0) {
+    if (poller.Initialize(Env(), file_descriptor, finalize) < 0) {
         ErrnoException(Env(), errno).ThrowAsJavaScriptException();
         goto error;
     }

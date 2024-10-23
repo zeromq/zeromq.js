@@ -12,7 +12,7 @@
 #include "util/take.h"
 
 namespace zmq {
-static constexpr const char* EventName(uint32_t val) {
+constexpr const char* EventName(uint32_t val) {
     switch (val) {
     case ZMQ_EVENT_CONNECTED:
         return "connect";
@@ -76,7 +76,7 @@ static constexpr const char* EventName(uint32_t val) {
 }
 
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_AUTH
-static constexpr const char* AuthError(uint32_t val) {
+constexpr const char* AuthError(uint32_t val) {
     switch (val) {
     case 300:
         return "Temporary error";
@@ -92,7 +92,7 @@ static constexpr const char* AuthError(uint32_t val) {
 #endif
 
 #ifdef ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL
-static inline std::pair<const char*, const char*> ProtoError(uint32_t val) {
+std::pair<const char*, const char*> ProtoError(uint32_t val) {
 #define PROTO_ERROR_CASE(_prefix, _err)                                                  \
     case ZMQ_PROTOCOL_ERROR_##_prefix##_##_err:                                          \
         return std::make_pair(#_prefix " protocol error", "ERR_" #_prefix "_" #_err);
@@ -157,20 +157,20 @@ Observer::Observer(const Napi::CallbackInfo& info)
         return;
     }
 
-    uv_os_sock_t fd = 0;
-    size_t length = sizeof(fd);
+    uv_os_sock_t file_descriptor = 0;
+    size_t length = sizeof(file_descriptor);
 
     if (zmq_connect(socket, address.c_str()) < 0) {
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
         goto error;
     }
 
-    if (zmq_getsockopt(socket, ZMQ_FD, &fd, &length) < 0) {
+    if (zmq_getsockopt(socket, ZMQ_FD, &file_descriptor, &length) < 0) {
         ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
         goto error;
     }
 
-    if (poller.Initialize(Env(), fd) < 0) {
+    if (poller.Initialize(Env(), file_descriptor) < 0) {
         ErrnoException(Env(), errno).ThrowAsJavaScriptException();
         goto error;
     }
