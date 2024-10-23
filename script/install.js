@@ -5,7 +5,7 @@ function cmakeTs() {
   console.log(
     "Building addon node via cmake-ts (requires cmake, ninja, and the vcpkg dependencies)",
   )
-  const cmakeTsPath = require.resolve("cmake-ts/build/main.js")
+  const cmakeTsPath = require.resolve("@aminya/cmake-ts/build/main.js")
 
   cp.execFileSync(process.execPath, [cmakeTsPath, "nativeonly"], {
     stdio: "inherit",
