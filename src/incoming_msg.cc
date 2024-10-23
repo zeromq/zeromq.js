@@ -27,8 +27,8 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
             return env.Undefined();
         }
     }
-    auto* data = reinterpret_cast<uint8_t*>(zmq_msg_data(*ref));
-    auto length = zmq_msg_size(*ref);
+    auto* data = reinterpret_cast<uint8_t*>(zmq_msg_data(ref->get()));
+    auto length = zmq_msg_size(ref->get());
 
     if (noElectronMemoryCage) {
         static auto constexpr zero_copy_threshold = 1U << 7U;
@@ -43,7 +43,7 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
                 env, static_cast<int64_t>(length));
 
             auto release = [](const Napi::Env& env, uint8_t*, Reference* ref) {
-                const auto length = static_cast<int64_t>(zmq_msg_size(*ref));
+                const auto length = static_cast<int64_t>(zmq_msg_size(ref->get()));
                 Napi::MemoryManagement::AdjustExternalMemory(env, -length);
                 delete ref;
             };

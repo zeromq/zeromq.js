@@ -295,7 +295,7 @@ void Socket::Send(const Napi::Promise::Deferred& res, OutgoingMsg::Parts& parts)
         iter++;
 
         auto const flags = iter == end ? ZMQ_DONTWAIT : ZMQ_DONTWAIT | ZMQ_SNDMORE;
-        while (zmq_msg_send(part, socket, flags) < 0) {
+        while (zmq_msg_send(part.get(), socket, flags) < 0) {
             if (zmq_errno() != EINTR) {
                 res.Reject(ErrnoException(Env(), zmq_errno()).Value());
                 return;
@@ -314,7 +314,7 @@ void Socket::Receive(const Napi::Promise::Deferred& res) {
     uint32_t i = 0;
     while (true) {
         IncomingMsg part;
-        while (zmq_msg_recv(part, socket, ZMQ_DONTWAIT) < 0) {
+        while (zmq_msg_recv(part.get(), socket, ZMQ_DONTWAIT) < 0) {
             if (zmq_errno() != EINTR) {
                 res.Reject(ErrnoException(Env(), zmq_errno()).Value());
                 return;
@@ -343,7 +343,7 @@ void Socket::Receive(const Napi::Promise::Deferred& res) {
         }
 #endif
 
-        if (zmq_msg_more(part) == 0) {
+        if (zmq_msg_more(part.get()) == 0) {
             break;
         }
     }

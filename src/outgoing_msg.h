@@ -24,8 +24,7 @@ public:
     explicit OutgoingMsg(Napi::Value value, Module& module);
     ~OutgoingMsg();
 
-    // NOLINTNEXTLINE(*-explicit-*)
-    inline operator zmq_msg_t*() {
+    zmq_msg_t* get() {
         return &msg;
     }
 

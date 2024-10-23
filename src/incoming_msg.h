@@ -15,9 +15,8 @@ public:
 
     Napi::Value IntoBuffer(const Napi::Env& env);
 
-    // NOLINTNEXTLINE(*-explicit-*)
-    inline operator zmq_msg_t*() {
-        return *ref;
+    zmq_msg_t* get() {
+        return ref->get();
     }
 
 private:
@@ -28,8 +27,7 @@ private:
         Reference();
         ~Reference();
 
-        // NOLINTNEXTLINE(*-explicit-*)
-        inline operator zmq_msg_t*() {
+        zmq_msg_t* get() {
             return &msg;
         }
     };
