@@ -1,12 +1,13 @@
 
 #include "./outgoing_msg.h"
 
+#include <functional>
 #include "./module.h"
 #include "util/error.h"
 
 namespace zmq {
-OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
-    static auto constexpr zero_copy_threshold = 1 << 7;
+OutgoingMsg::OutgoingMsg(Napi::Value value, std::reference_wrapper<Module> module) {
+    static auto constexpr zero_copy_threshold = 1U << 7U;
 
     auto buffer_send = [&](uint8_t* data, size_t length) {
         /* Zero-copy heuristic. There's an overhead in releasing the buffer with an
@@ -18,7 +19,7 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
                message is sent by ZeroMQ on an *arbitrary* thread. It will add
                the reference to the global trash, which will schedule a callback
                on the main v8 thread in order to safely dispose of the reference. */
-            auto ref = new Reference(value, module);
+            auto* ref = new Reference(value, module);
             auto recycle = [](void*, void* item) {
                 static_cast<Reference*>(item)->Recycle();
             };
@@ -44,7 +45,7 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
        but once converted we do not have to copy a second time. */
     auto string_send = [&](std::string* str) {
         auto length = str->size();
-        auto data = const_cast<char*>(str->data());
+        auto* data = str->data();
 
         auto release = [](void*, void* str) {
             delete reinterpret_cast<std::string*>(str);
@@ -81,6 +82,7 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
             }
             /* Fall through */
 
+            [[fallthrough]];
         default:
             string_send(new std::string(value.ToString()));
         }
@@ -88,19 +90,19 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
 }
 
 OutgoingMsg::~OutgoingMsg() {
-    auto err = zmq_msg_close(&msg);
+    [[maybe_unused]] auto err = zmq_msg_close(&msg);
     assert(err == 0);
 }
 
 void OutgoingMsg::Reference::Recycle() {
-    module.MsgTrash.Add(this);
+    module.get().MsgTrash.Add(this);
 }
 
 OutgoingMsg::Parts::Parts(Napi::Value value, Module& module) {
     if (value.IsArray()) {
         /* Reverse insert parts into outgoing message list. */
         auto arr = value.As<Napi::Array>();
-        for (auto i = arr.Length(); i--;) {
+        for (auto i = arr.Length(); (i--) != 0U;) {
             parts.emplace_front(arr[i], module);
         }
     } else {
@@ -157,4 +159,4 @@ bool OutgoingMsg::Parts::SetRoutingId(Napi::Value value) {
 }
 #endif
 
-}
+}  // namespace zmq

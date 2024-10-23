@@ -5,16 +5,16 @@
 #include <string>
 
 namespace zmq {
-bool hasRun = false;
-bool hasElectronMemoryCageCache = false;
+static bool hasRun = false;
+static bool hasElectronMemoryCageCache = false;
 
-static inline std::string first_component(std::string const& value) {
-    std::string::size_type pos = value.find('.');
-    return pos == value.npos ? value : value.substr(0, pos);
+inline std::string first_component(std::string const& value) {
+    std::string::size_type const pos = value.find('.');
+    return pos == std::string::npos ? value : value.substr(0, pos);
 }
 
 /* Check if runtime is Electron. */
-static inline bool IsElectron(const Napi::Env& env) {
+inline bool IsElectron(const Napi::Env& env) {
     auto global = env.Global();
     auto isElectron = global.Get("process")
                           .As<Napi::Object>()
@@ -24,7 +24,7 @@ static inline bool IsElectron(const Napi::Env& env) {
     return isElectron;
 }
 
-static inline bool hasElectronMemoryCage(const Napi::Env& env) {
+inline bool hasElectronMemoryCage(const Napi::Env& env) {
     if (!hasRun) {
         if (IsElectron(env)) {
             auto electronVers = env.Global()
@@ -35,8 +35,9 @@ static inline bool hasElectronMemoryCage(const Napi::Env& env) {
                                     .Get("electron")
                                     .ToString()
                                     .Utf8Value();
-            int majorVer = stoi(first_component(electronVers));
-            if (majorVer >= 21) {
+            int const majorVer = stoi(first_component(electronVers));
+            static constexpr auto electron_memory_cage_version = 21;
+            if (majorVer >= electron_memory_cage_version) {
                 hasElectronMemoryCageCache = true;
             }
         }
@@ -44,4 +45,4 @@ static inline bool hasElectronMemoryCage(const Napi::Env& env) {
     }
     return hasElectronMemoryCageCache;
 }
-}
+}  // namespace zmq

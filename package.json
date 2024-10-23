@@ -95,7 +95,7 @@
     "build.doc": "typedoc --options ./typedoc.json && minify-all -s docs-unminified -d docs --jsCompressor terser && shx rm -rf docs-unminified",
     "deploy.doc": "run-s build.doc && gh-pages --dist \"./docs\"",
     "build.native": "cmake-ts nativeonly",
-    "build.native.debug": "cmake-ts nativeonly",
+    "build.native.debug": "cmake-ts dev-os-only",
     "build": "run-p build.js build.native",
     "build.debug": "run-s build.js build.native.debug",
     "test": "run-s clean.temp build && mocha",
@@ -107,7 +107,7 @@
     "test.electron.renderer": "run-s build && electron-mocha --renderer",
     "lint-test.eslint": "eslint ./**/*.{ts,tsx,js,jsx,cjs,mjs,json,yaml} --no-error-on-unmatched-pattern --cache --cache-location ./.cache/eslint/",
     "lint.eslint": "pnpm run lint-test.eslint --fix",
-    "lint.clang-tidy": "git ls-files --exclude-standard | grep -E '\\.(cpp|hpp|c|cc|cxx|hxx|h|ixx)$' | xargs -n 1 -P $(nproc) clang-tidy --fix ",
+    "lint.clang-tidy": "git ls-files --exclude-standard | grep -E '\\.(cpp|hpp|c|cc|cxx|hxx|h|ixx)$' | xargs -n 1 -P $(nproc) clang-tidy",
     "lint": "run-p format lint.eslint format",
     "lint-test": "run-s lint-test.eslint",
     "bench": "node --expose-gc test/bench",
@@ -119,6 +119,15 @@
     "configurations": [
       {
         "name": "linux-x64",
+        "os": "linux",
+        "arch": "x64",
+        "runtime": "node",
+        "runtimeVersion": "12.22.12"
+      },
+      {
+        "name": "linux-x64-dev",
+        "dev": true,
+        "buildType": "Debug",
         "os": "linux",
         "arch": "x64",
         "runtime": "node",

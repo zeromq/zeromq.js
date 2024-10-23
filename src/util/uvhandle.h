@@ -7,13 +7,13 @@
 namespace zmq {
 template <typename T>
 struct UvDeleter {
-    constexpr UvDeleter() {};
+    constexpr UvDeleter() = default;
 
-    inline void operator()(T* handle) {
+    void operator()(T* handle) {
         /* If uninitialized, simply delete the memory. We
            may not call uv_close() on uninitialized handles. */
         if (handle->type == 0) {
-            delete reinterpret_cast<T*>(handle);
+            delete handle;
             return;
         }
 
@@ -30,21 +30,21 @@ using handle_ptr = std::unique_ptr<T, UvDeleter<T>>;
 template <typename T>
 class UvHandle : handle_ptr<T> {
 public:
-    inline UvHandle() : handle_ptr<T>{new T{}, UvDeleter<T>()} {};
+    UvHandle() : handle_ptr<T>{new T{}, UvDeleter<T>()} {}
 
     using handle_ptr<T>::reset;
     using handle_ptr<T>::operator->;
 
-    inline operator bool() {
+    explicit operator bool() {
         return handle_ptr<T>::operator bool() && handle_ptr<T>::get()->type != 0;
     }
 
-    inline operator T*() {
+    T* get() {
         return handle_ptr<T>::get();
     }
 
-    inline operator uv_handle_t*() {
+    uv_handle_t* get_handle() {
         return reinterpret_cast<uv_handle_t*>(handle_ptr<T>::get());
     }
 };
-}
+}  // namespace zmq

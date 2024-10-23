@@ -2,6 +2,7 @@
 
 #include <napi.h>
 
+#include <functional>
 #include <optional>
 
 #include "./closable.h"
@@ -16,7 +17,12 @@ public:
     static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Observer(const Napi::CallbackInfo& info);
-    virtual ~Observer();
+
+    Observer(const Observer&) = delete;
+    Observer(Observer&&) = delete;
+    Observer& operator=(const Observer&) = delete;
+    Observer& operator=(Observer&&) = delete;
+    ~Observer() override;
 
     void Close() override;
 
@@ -27,34 +33,34 @@ protected:
     inline Napi::Value GetClosed(const Napi::CallbackInfo& info);
 
 private:
-    inline bool ValidateOpen() const;
-    bool HasEvents() const;
+    [[nodiscard]] inline bool ValidateOpen() const;
+    [[nodiscard]] bool HasEvents() const;
 
     force_inline void Receive(const Napi::Promise::Deferred& res);
 
     class Poller : public zmq::Poller<Poller> {
-        Observer& socket;
+        std::reference_wrapper<Observer> socket;
         std::optional<Napi::Promise::Deferred> read_deferred;
 
     public:
-        explicit Poller(Observer& observer) : socket(observer) {}
+        explicit Poller(std::reference_wrapper<Observer> observer) : socket(observer) {}
 
         Napi::Value ReadPromise();
 
-        inline bool Reading() const {
+        [[nodiscard]] bool Reading() const {
             return read_deferred.has_value();
         }
 
-        inline bool ValidateReadable() const {
-            return socket.HasEvents();
+        [[nodiscard]] bool ValidateReadable() const {
+            return socket.get().HasEvents();
         }
 
-        inline bool ValidateWritable() const {
+        [[nodiscard]] static bool ValidateWritable() {
             return false;
         }
 
         void ReadableCallback();
-        inline void WritableCallback() {}
+        void WritableCallback() {}
     };
 
     Napi::AsyncContext async_context;
@@ -65,7 +71,7 @@ private:
 
     friend class Socket;
 };
-}
+}  // namespace zmq
 
-static_assert(!std::is_copy_constructible<zmq::Observer>::value, "not copyable");
-static_assert(!std::is_move_constructible<zmq::Observer>::value, "not movable");
+static_assert(!std::is_copy_constructible_v<zmq::Observer>, "not copyable");
+static_assert(!std::is_move_constructible_v<zmq::Observer>, "not movable");
