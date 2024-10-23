@@ -44,7 +44,7 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, Module& module) {
        but once converted we do not have to copy a second time. */
     auto string_send = [&](std::string* str) {
         auto length = str->size();
-        auto* data = const_cast<char*>(str->data());
+        auto* data = str->data();
 
         auto release = [](void*, void* str) {
             delete reinterpret_cast<std::string*>(str);

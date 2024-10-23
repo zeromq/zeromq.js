@@ -102,7 +102,11 @@ project_options(ENABLE_CACHE ENABLE_COMPILE_COMMANDS_SYMLINK)
 file(GLOB_RECURSE SOURCES "./src/*.cc")
 add_library(addon SHARED ${SOURCES})
 
-target_link_libraries(addon PRIVATE project_options) # project_warnings
+if(CMAKE_CXX_COMPILER_ID STREQUAL GNU)
+  target_compile_options(project_warnings INTERFACE "-Wno-shadow")
+endif()
+target_link_libraries(addon PRIVATE project_options project_warnings)
+
 
 if(ZMQ_DRAFT)
   target_compile_definitions(addon PRIVATE ZMQ_BUILD_DRAFT_API)
