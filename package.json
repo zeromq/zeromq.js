@@ -1,6 +1,6 @@
 {
   "name": "zeromq",
-  "version": "6.1.0",
+  "version": "6.1.1",
   "description": "Next-generation ZeroMQ bindings for Node.js",
   "main": "lib/index.js",
   "type": "commonjs",
@@ -65,7 +65,7 @@
     }
   },
   "engines": {
-    "node": ">= 12",
+    "node": ">= 10",
     "pnpm": ">= 9"
   },
   "files": [
