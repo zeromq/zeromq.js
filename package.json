@@ -19,7 +19,7 @@
   },
   "homepage": "http://zeromq.github.io/zeromq.js/",
   "dependencies": {
-    "@aminya/cmake-ts": "^0.3.0-aminya.2",
+    "@aminya/cmake-ts": "^0.3.0-aminya.3",
     "node-addon-api": "^8.2.1"
   },
   "devDependencies": {

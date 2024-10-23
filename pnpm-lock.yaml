@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@aminya/cmake-ts':
-        specifier: ^0.3.0-aminya.1
-        version: 0.3.0-aminya.1
+        specifier: ^0.3.0-aminya.3
+        version: 0.3.0-aminya.3
       node-addon-api:
         specifier: ^8.2.1
         version: 8.2.1
@@ -124,8 +124,8 @@ importers:
 
 packages:
 
-  '@aminya/cmake-ts@0.3.0-aminya.1':
-    resolution: {integrity: sha512-AgZStUYw5DHE4aFA1Bic9+nVVhpHuquK65peczPS/va6ng1wRSX1bfjzgqIBMuogYUr+vpa0WBO+mMkD/Gplug==}
+  '@aminya/cmake-ts@0.3.0-aminya.3':
+    resolution: {integrity: sha512-OsAuo5Xnn7E2H/hzu6QOcmmpPGcNSttwohskukYkl2mHWZshxawW5vT7HTQsL21bSA09+AJIgWdXJnHAbJMcBQ==}
     hasBin: true
 
   '@aminya/eslint-plugin-only-warn@1.2.2':
@@ -1524,9 +1524,6 @@ packages:
   fast-levenshtein@2.0.6:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
 
-  fast-list@1.0.3:
-    resolution: {integrity: sha512-Lm56Ci3EqefHNdIneRFuzhpPcpVVBz9fgqVmG3UQIxAefJv1mEYsZ1WQLTWqmdqeGEwbI2t6fbZgp9TqTYARuA==}
-
   fastq@1.17.1:
     resolution: {integrity: sha512-sRVD3lWVIXWg6By68ZN7vho9a1pQcN/WBFaAAsDDFzlJjvoGx0P8z7V1t72grFJfJhu3YPZBuu25f7Kaw2jN1w==}
 
@@ -2752,10 +2749,6 @@ packages:
   queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
 
-  queueable@5.3.2:
-    resolution: {integrity: sha512-/2ZxV1PJh7J9Q/h9ewZ4fLMmDreUlbwrWsBnluvDoKW6Nw0gbWm5hN+kiWfdDMw1o/QTAFxV9wx4KpuN5IA7OA==}
-    engines: {node: '>=18'}
-
   randombytes@2.1.0:
     resolution: {integrity: sha512-vYl3iOX+4CKUWuxGi9Ukhie6fsqXqS9FE2Zaic4tNFD2N2QQaXOMFbuKK4QmDHC0JO6B1Zp41J0LpT0oR68amQ==}
 
@@ -3492,24 +3485,20 @@ packages:
     resolution: {integrity: sha512-GQHQqAopRhwU8Kt1DDM8NjibDXHC8eoh1erhGAJPEyveY9qqVeXvVikNKrDz69sHowPMorbPUrH/mx8c50eiBQ==}
     engines: {node: '>=18'}
 
-  zlib@1.0.5:
-    resolution: {integrity: sha512-40fpE2II+Cd3k8HWTWONfeKE2jL+P42iWJ1zzps5W51qcTsOUKM5Q5m2PFb0CLxlmFAaUuUdJGc3OfZy947v0w==}
-    engines: {node: '>=0.2.0'}
-
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
 
-  '@aminya/cmake-ts@0.3.0-aminya.1':
+  '@aminya/cmake-ts@0.3.0-aminya.3':
     dependencies:
       '@cypress/request': 3.0.5
       fast-glob: 3.3.2
       fs-extra: 11.2.0
       lodash: 4.17.21
       memory-stream: 1.0.0
+      minizlib: 3.0.1
       npmlog: 7.0.1
-      queueable: 5.3.2
       resolve: 1.22.8
       semver: 7.6.3
       splitargs2: 0.1.3
@@ -3517,7 +3506,6 @@ snapshots:
       unzipper: 0.12.3
       url-join: 4.0.1
       which: 5.0.0
-      zlib: 1.0.5
 
   '@aminya/eslint-plugin-only-warn@1.2.2': {}
 
@@ -5361,8 +5349,6 @@ snapshots:
 
   fast-levenshtein@2.0.6: {}
 
-  fast-list@1.0.3: {}
-
   fastq@1.17.1:
     dependencies:
       reusify: 1.0.4
@@ -6615,10 +6601,6 @@ snapshots:
 
   queue-microtask@1.2.3: {}
 
-  queueable@5.3.2:
-    dependencies:
-      fast-list: 1.0.3
-
   randombytes@2.1.0:
     dependencies:
       safe-buffer: 5.2.1
@@ -7475,7 +7457,5 @@ snapshots:
   yocto-queue@0.1.0: {}
 
   yoctocolors@2.1.1: {}
-
-  zlib@1.0.5: {}
 
   zwitch@2.0.4: {}
