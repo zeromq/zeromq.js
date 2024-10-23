@@ -97,9 +97,9 @@ during build, you can build this package from source.
 Make sure you have the following installed before attempting to build from
 source:
 
-- Node.js 12+ or Electron
+- Node.js 10+ or Electron
 - A working C++17 compiler toolchain with make
-- Python 3 with Node 12+ (or legacy Python 2.7)
+- Python 3 with Node 10+ (or legacy Python 2.7)
 - CMake 2.8+
 - curl
 
