@@ -1,7 +1,7 @@
 
-#include <array>
-
 #include "./module.h"
+
+#include <array>
 
 #include "./context.h"
 #include "./observer.h"

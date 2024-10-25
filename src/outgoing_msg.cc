@@ -2,6 +2,7 @@
 #include "./outgoing_msg.h"
 
 #include <functional>
+
 #include "./module.h"
 #include "util/error.h"
 

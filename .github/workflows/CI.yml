@@ -189,7 +189,8 @@ jobs:
             pnpm install -g electron@latest
             xvfb-run --auto-servernum pnpm run test.electron.main
         continue-on-error: true
-  merge-build:
+
+  MergeBuild:
     runs-on: ubuntu-latest
     needs: Build
     steps:
@@ -199,3 +200,42 @@ jobs:
           name: build
           pattern: build-*
           delete-merged: true
+
+  SmokeTest:
+    runs-on: ${{ matrix.os }}
+    needs: MergeBuild
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - windows-2022
+          - macos-14
+          - macos-13
+        node-version:
+          - 10
+          - 22
+    steps:
+      - uses: actions/setup-node@v4
+
+      - name: Place Builds
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: ./build
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install Yarn
+        run: |
+          npm i -g yarn
+          yarn set version stable
+
+      - name: Smoke Test
+        run: npm run test.smoke
