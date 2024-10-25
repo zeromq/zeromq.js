@@ -107,8 +107,6 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         if: ${{ !matrix.docker }}
-        with:
-          version: 9
 
       - name: Install Node 20
         if: ${{ !matrix.docker }}

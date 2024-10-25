@@ -64,6 +64,7 @@
       "node-gyp": "10.0.1"
     }
   },
+  "packageManager": "pnpm@9.12.1",
   "engines": {
     "node": ">= 10",
     "pnpm": ">= 9"
