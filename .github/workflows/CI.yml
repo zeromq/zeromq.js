@@ -225,15 +225,29 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install Yarn
+      - name: Install Yarn 2
+        if: matrix.node-version == 10
         run: |
-          npm i -g yarn
-          yarn set version stable
+          npm i -g yarn@^2
+
+      - name: Install Yarn Latest
+        if: matrix.node-version == 22
+        run: |
+          npm i -g yarn@latest
+
+      - name: Install Pnpm 5
+        if: matrix.node-version == 10
+        uses: pnpm/action-setup@v4
+        with:
+          version: 5
+
+      - name: Install Pnpm 9
+        if: matrix.node-version == 22
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
 
       - name: Smoke Test
         run: npm run test.smoke
