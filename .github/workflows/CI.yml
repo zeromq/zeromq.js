@@ -165,6 +165,7 @@ jobs:
       - name: Pack Zeromq
         if: matrix.os == 'ubuntu-20.04'
         run: |
+          pnpm run build.js
           pnpm pack
 
       - name: Upload Pack
