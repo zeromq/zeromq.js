@@ -236,17 +236,15 @@ jobs:
         os:
           - ubuntu-24.04
           - windows-2022
-          - macos-14
           - macos-13
         node-version:
-          # - 10
+          - 10
           - 22
-    steps:
-      - name: Download Pack
-        uses: actions/download-artifact@v4
-        with:
-          name: pack
 
+        include:
+          - os: macos-14
+            node-version: 22
+    steps:
       - name: Install Node
         uses: actions/setup-node@v4
         with:
@@ -275,6 +273,11 @@ jobs:
           version: 9
 
       - uses: actions/checkout@v4
+
+      - name: Download Pack
+        uses: actions/download-artifact@v4
+        with:
+          name: pack
 
       - name: Smoke Test
         run: bash ./script/smoke-test.bash

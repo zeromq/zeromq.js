@@ -6,7 +6,7 @@ echo "Pack zeromq.js if needed"
 version=$(node -e 'console.log(require("./package.json").version)')
 pack_name="zeromq-${version}.tgz"
 echo "${pack_name}"
-test -f "${pack_name}" || ls -R
+test -f "${pack_name}" || npm pack
 
 init_smoke_test() {
     local pm=$1
@@ -15,8 +15,8 @@ init_smoke_test() {
     rm -rf "./smoke-test-${pm}"
     mkdir "./smoke-test-${pm}"
     cd "./smoke-test-${pm}"
-    npm init -q --init-module "smoke-test-${pm}" -y
-    npm pkg set dependencies.zeromq="file:../${pack_name}" || (jq '.dependencies.zeromq = "file:../${pack_name}"' package.json >temp.json && mv temp.json package.json)
+    npm init -y
+    npm pkg set dependencies.zeromq="file:../${pack_name}" || (jq ".dependencies.zeromq = \"file:../${pack_name}\"" package.json >temp.json && mv temp.json package.json)
 }
 
 package_managers=(npm pnpm yarn)
