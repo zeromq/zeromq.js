@@ -5,6 +5,6 @@
     "noEmit": true,
     "strict": true,
     "module": "commonjs",
-    "types": ["node", "mocha"]
+    "types": ["node", "vitest/globals"],
   }
 }
