@@ -57,4 +57,5 @@ function findAddon(): any | undefined {
   return addon
 }
 
-module.exports = findAddon()
+const addon = findAddon()
+export default addon
