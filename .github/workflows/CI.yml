@@ -199,9 +199,6 @@ jobs:
           pattern: build-*
           delete-merged: true
 
-      - run: |
-          ls -R
-
       - uses: actions/checkout@v4
 
       - name: Place build
@@ -249,7 +246,6 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: pack
-          path: ./
 
       - name: Install Node
         uses: actions/setup-node@v4

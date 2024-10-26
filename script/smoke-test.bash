@@ -15,7 +15,7 @@ init_smoke_test() {
     mkdir "./smoke-test-${pm}"
     cd "./smoke-test-${pm}"
     npm init -q --init-module "smoke-test-${pm}" -y
-    npm pkg set dependencies.zeromq="file:../${pack_name}"
+    npm pkg set dependencies.zeromq="file:../${pack_name}" || (jq '.dependencies.zeromq = "file:../${pack_name}"' package.json >temp.json && mv temp.json package.json)
 }
 
 package_managers=(npm pnpm yarn)
