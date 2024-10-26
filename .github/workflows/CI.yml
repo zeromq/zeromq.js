@@ -214,10 +214,6 @@ jobs:
           - 10
           - 22
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
-
       - name: Place Builds
         uses: actions/download-artifact@v4
         with:
@@ -229,13 +225,15 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-
       - name: Install Yarn
         run: |
           npm i -g yarn
           yarn set version stable
+
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
 
       - name: Smoke Test
         run: npm run test.smoke
