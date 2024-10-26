@@ -2,11 +2,10 @@
 set -ev
 set -o pipefail
 
-echo "Pack zeromq.js"
+echo "Pack zeromq.js if needed"
 version=$(npm pkg get version | tr -d '"')
 pack_name="zeromq-${version}.tgz"
-rm -f "${pack_name}"
-npm pack
+test -f "${pack_name}" || npm pack
 
 init_smoke_test() {
     local pm=$1
