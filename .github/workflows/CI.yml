@@ -239,7 +239,7 @@ jobs:
           - macos-14
           - macos-13
         node-version:
-          - 10
+          # - 10
           - 22
     steps:
       - name: Download Pack

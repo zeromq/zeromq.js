@@ -5,7 +5,8 @@ set -o pipefail
 echo "Pack zeromq.js if needed"
 version=$(node -e 'console.log(require("./package.json").version)')
 pack_name="zeromq-${version}.tgz"
-test -f "${pack_name}" || npm pack
+echo "${pack_name}"
+test -f "${pack_name}" || ls -R
 
 init_smoke_test() {
     local pm=$1
@@ -25,8 +26,6 @@ for pm in "${package_managers[@]}"; do
 
     echo "Install with ${pm}"
     ${pm} install
-
-    ls -R ./node_modules/zeromq
 
     echo "Require zeromq"
     node -e "console.log(require('zeromq'))"
