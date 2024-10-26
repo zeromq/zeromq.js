@@ -269,4 +269,4 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Smoke Test
-        run: npm run test.smoke
+        run: bash ./script/smoke-test.bash
