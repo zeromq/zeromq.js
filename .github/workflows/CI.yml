@@ -155,11 +155,19 @@ jobs:
           docker tag ${{ matrix.docker }} builder
           docker run --volume ${{ github.workspace }}:/app --workdir /app --privileged builder sh -c "${{ matrix.docker_cmd }}"
 
-      - name: Upload artifacts
+      - name: Upload build
         uses: actions/upload-artifact@v4
         with:
           path: ./build
           name: build-${{ strategy.job-index }}
+          overwrite: true
+
+      - name: Upload lib
+        if: matrix.os == 'ubuntu-20.04'
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./lib
+          name: lib
           overwrite: true
 
       - name: Lint
@@ -214,11 +222,17 @@ jobs:
           - 10
           - 22
     steps:
-      - name: Place Builds
+      - name: Place build
         uses: actions/download-artifact@v4
         with:
           name: build
           path: ./build
+
+      - name: Place lib
+        uses: actions/download-artifact@v4
+        with:
+          name: lib
+          path: ./lib
 
       - name: Install Node
         uses: actions/setup-node@v4
