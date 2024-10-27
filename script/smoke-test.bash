@@ -6,25 +6,21 @@ root="${PWD}"
 
 echo "Pack zeromq.js if needed"
 version=$(node -e 'console.log(require("./package.json").version)')
-pack_path="${root}/zeromq-${version}.tgz"
-test -f "${pack_path}" || npm pack
-
-
-init_smoke_test() {
-    local pm=$1
-    echo "Init Smoke Test Project ${pm}"
-
-    rm -rf "../zeromq-smoke-test-${pm}"
-    mkdir "../zeromq-smoke-test-${pm}"
-    cd "../zeromq-smoke-test-${pm}"
-    npm init -y
-    npm pkg set dependencies.zeromq="file:${pack_path}" || (jq ".dependencies.zeromq = \"file:${pack_path}\"" package.json >temp.json && mv temp.json package.json)
-}
+pack_name="zeromq-${version}.tgz"
+test -f "./${pack_name}" || npm pack
 
 package_managers=(npm pnpm yarn)
 
 for pm in "${package_managers[@]}"; do
-    init_smoke_test "${pm}"
+    dir="../zeromq-smoke-test-${pm}"
+
+    echo "Init Smoke Test Project ${pm}"
+    rm -rf "${dir}"
+    mkdir "${dir}"
+    cp "./${pack_name}" "${dir}"
+    cd "${dir}"
+    npm init -y
+    npm pkg set dependencies.zeromq="file:./${pack_name}" || (jq ".dependencies.zeromq = \"file:./${pack_name}\"" package.json >temp.json && mv temp.json package.json)
 
     echo "Install with ${pm}"
     ${pm} install
@@ -36,4 +32,4 @@ for pm in "${package_managers[@]}"; do
     rm -rf "../zeromq-smoke-test-${pm}"
 done
 
-rm -f "${pack_path}"
+rm -f "${pack_name}"
