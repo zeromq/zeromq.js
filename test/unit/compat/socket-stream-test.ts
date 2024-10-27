@@ -1,15 +1,15 @@
+import * as zmq from "../../../v5-compat"
+import {assert} from "chai"
+import {uniqAddress} from "../helpers"
+import http from "http"
+
 if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const {assert} = require("chai")
-  const {testProtos, uniqAddress} = require("../helpers")
-  const http = require("http")
-
   describe("compat socket stream", function () {
-    it("should support a stream socket type", function (done) {
+    it("should support a stream socket type", async function (done) {
       const stream = zmq.socket("stream")
-      const address = uniqAddress("tcp")
+      const address = await uniqAddress("tcp")
 
-      stream.on("message", function (id, msg) {
+      stream.on("message", function (id: string, msg: string) {
         assert.instanceOf(msg, Buffer)
         if (msg.length == 0) {
           return
@@ -37,7 +37,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         stream.send([id, httpProtocolString])
       })
 
-      stream.bind(address, err => {
+      stream.bind(address, (err: Error | undefined) => {
         if (err) {
           throw err
         }
@@ -46,9 +46,10 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         http.get(
           `${address.replace("tcp:", "http:")}/aRandomRequestPath`,
           function (httpMsg) {
+            // @ts-expect-error
             assert.equal(httpMsg.socket._readableState.reading, false)
 
-            httpMsg.on("data", function (msg) {
+            httpMsg.on("data", function (msg: string) {
               assert.instanceOf(msg, Buffer)
               assert.equal(
                 msg.toString(),
