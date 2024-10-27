@@ -1,4 +1,5 @@
 import * as zmq from "../../../v5-compat"
+import {capability} from "../../../src"
 import semver from "semver"
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "../helpers"
@@ -94,9 +95,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       })
 
       it("should support curve", function (done) {
-        // TODO fix the capability type
-        // @ts-expect-error
-        if (!zmq.capability.curve) {
+        if (!capability.curve) {
           this.skip()
         }
 
