@@ -175,7 +175,19 @@ jobs:
           timeout_minutes: 5
           max_attempts: 1
           command: |
-            pnpm run test
+            pnpm run clean.temp
+            pnpm run test.unit
+        continue-on-error: true
+
+      - name: Test Compatibility 
+        if: ${{ !matrix.docker }}
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 1
+          command: |
+            pnpm run clean.temp
+            pnpm run test.compat
         continue-on-error: true
 
       - name: Test Electron (Main)
