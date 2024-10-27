@@ -24,5 +24,6 @@
       // only used in tests
       "ES2021.WeakRef"
     ]
-  }
+  },
+  "compileOnSave": true
 }
