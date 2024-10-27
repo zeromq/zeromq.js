@@ -1,4 +1,4 @@
-The tests in this directory have been copied from the original ZeroMQ.js version
+The tests in this directory have been modified from the original ZeroMQ.js version
 (up to 5.x) for which the license and copyright notice is reproduced below.
 
 Copyright (c) 2011 TJ Holowaychuk Copyright (c) 2010, 2011 Justin Tulloss

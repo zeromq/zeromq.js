@@ -1,15 +1,15 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const {assert} = require("chai")
-  const {testProtos, uniqAddress} = require("../helpers")
+import * as zmq from "../../../v5-compat"
+import {assert} from "chai"
+import {testProtos, uniqAddress} from "../helpers"
 
+if (process.env.INCLUDE_COMPAT_TESTS) {
   for (const proto of testProtos("tcp")) {
     describe(`compat socket with ${proto} pair`, function () {
-      it("should support pair-pair", function (done) {
+      it("should support pair-pair", async function (done) {
         const pairA = zmq.socket("pair")
         const pairB = zmq.socket("pair")
 
-        const address = uniqAddress(proto)
+        const address = await uniqAddress(proto)
 
         let n = 0
         pairA.monitor()
