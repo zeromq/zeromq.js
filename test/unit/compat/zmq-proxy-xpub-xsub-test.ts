@@ -1,22 +1,30 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const {assert} = require("chai")
-  const {testProtos, uniqAddress} = require("../helpers")
+import * as zmq from "../../../v5-compat"
+import {assert} from "chai"
+import {testProtos, uniqAddress} from "../helpers"
+import {isFullError} from "../../../src/errors"
 
+if (process.env.INCLUDE_COMPAT_TESTS) {
   for (const proto of testProtos("tcp")) {
     describe(`compat proxy with ${proto} xpub-xsub`, function () {
-      const sockets = []
+      const sockets: zmq.Socket[] = []
+
+      let frontendAddr: string
+      let backendAddr: string
+      let captureAddr: string
+
+      beforeEach(async function () {
+        frontendAddr = await uniqAddress(proto)
+        backendAddr = await uniqAddress(proto)
+        captureAddr = await uniqAddress(proto)
+      })
 
       afterEach(function () {
         while (sockets.length) {
-          sockets.pop().close()
+          sockets.pop()?.close()
         }
       })
 
       it("should proxy pub-sub connected to xpub-xsub", function (done) {
-        const frontendAddr = uniqAddress(proto)
-        const backendAddr = uniqAddress(proto)
-
         const frontend = zmq.socket("xpub")
         const backend = zmq.socket("xsub")
 
@@ -50,10 +58,6 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       })
 
       it("should proxy connections with capture", function (done) {
-        const frontendAddr = uniqAddress(proto)
-        const backendAddr = uniqAddress(proto)
-        const captureAddr = uniqAddress(proto)
-
         const frontend = zmq.socket("xpub")
         const backend = zmq.socket("xsub")
 
@@ -119,6 +123,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         try {
           zmq.proxy(backend, frontend)
         } catch (err) {
+          assert(isFullError(err))
           assert.include(
             [
               "wrong socket order to proxy",
