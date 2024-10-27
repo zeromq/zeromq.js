@@ -13,9 +13,7 @@
   },
   "mochaExplorer.parallel": true,
   "mochaExplorer.globImplementation": "vscode",
-  "mochaExplorer.nodeArgv": [
-    "--expose-gc"
-  ],
+  "mochaExplorer.nodeArgv": ["--expose-gc"],
   "mochaExplorer.debuggerConfig": "JS-Attach",
   "files.exclude": {
     "**/.DS_Store": true,

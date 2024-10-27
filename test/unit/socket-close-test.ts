@@ -108,7 +108,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
 
       it("should release reference to context", async function () {
         const gc = getGcOrSkipTest(this)
-        this.slow(200)
 
         let weakRef: undefined | WeakRef<zmq.Context>
 
@@ -138,7 +137,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
     //     if (process.env.SKIP_GC_FINALIZER_TESTS) {
     //       this.skip()
     //     }
-    //     this.slow(200)
+    //
 
     //     let weakRef: undefined | WeakRef<zmq.Context>
     //     const task = async () => {

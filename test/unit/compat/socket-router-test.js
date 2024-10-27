@@ -72,7 +72,6 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       })
 
       it("should handle router-dealer message bursts", function (done) {
-        this.slow(150)
         // tests https://github.com/JustinTulloss/zeromq.node/issues/523
         // based on https://gist.github.com/messa/862638ab44ca65f712fe4d6ef79aeb67
 
