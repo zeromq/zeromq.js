@@ -23,7 +23,11 @@ for pm in "${package_managers[@]}"; do
     npm pkg set dependencies.zeromq="file:./${pack_name}" || (jq ".dependencies.zeromq = \"file:./${pack_name}\"" package.json >temp.json && mv temp.json package.json)
 
     echo "Install with ${pm}"
-    ${pm} install
+    if [[ "${pm}" == "yarn" ]]; then
+        yarn install --ignore-engines
+    else
+        ${pm} install
+    fi
 
     echo "Require zeromq"
     node -e "console.log(require('zeromq'))"
