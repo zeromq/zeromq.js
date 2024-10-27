@@ -254,10 +254,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install Yarn 2
+      - name: Install Yarn 1
         if: matrix.node-version == 10
         run: |
-          npm i -g yarn@^2
+          npm i -g yarn@^1
 
       - name: Install Yarn Latest
         if: matrix.node-version == 22
