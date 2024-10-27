@@ -6,6 +6,9 @@
 import {EventEmitter} from "events"
 import * as zmq from "."
 import {FullError} from "./errors"
+import * as longOptions from "./compat/long-options"
+import * as pollStates from "./compat/poll-states"
+import * as sendOptions from "./compat/send-options"
 
 type AnySocket =
   | zmq.Pair
@@ -22,99 +25,6 @@ type AnySocket =
   | zmq.Stream
 
 let count = 1
-const types = {
-  ZMQ_PAIR: 0,
-  ZMQ_PUB: 1,
-  ZMQ_SUB: 2,
-  ZMQ_REQ: 3,
-  ZMQ_REP: 4,
-  ZMQ_DEALER: 5,
-  ZMQ_XREQ: 5,
-  ZMQ_ROUTER: 6,
-  ZMQ_XREP: 6,
-  ZMQ_PULL: 7,
-  ZMQ_PUSH: 8,
-  ZMQ_XPUB: 9,
-  ZMQ_XSUB: 10,
-  ZMQ_STREAM: 11,
-}
-
-const longOptions = {
-  ZMQ_AFFINITY: 4,
-  ZMQ_IDENTITY: 5,
-  ZMQ_SUBSCRIBE: 6,
-  ZMQ_UNSUBSCRIBE: 7,
-  ZMQ_RATE: 8,
-  ZMQ_RECOVERY_IVL: 9,
-  ZMQ_RECOVERY_IVL_MSEC: 9,
-  ZMQ_SNDBUF: 11,
-  ZMQ_RCVBUF: 12,
-  ZMQ_RCVMORE: 13,
-  ZMQ_FD: 14,
-  ZMQ_EVENTS: 15,
-  ZMQ_TYPE: 16,
-  ZMQ_LINGER: 17,
-  ZMQ_RECONNECT_IVL: 18,
-  ZMQ_BACKLOG: 19,
-  ZMQ_RECONNECT_IVL_MAX: 21,
-  ZMQ_MAXMSGSIZE: 22,
-  ZMQ_SNDHWM: 23,
-  ZMQ_RCVHWM: 24,
-  ZMQ_MULTICAST_HOPS: 25,
-  ZMQ_RCVTIMEO: 27,
-  ZMQ_SNDTIMEO: 28,
-  ZMQ_IPV4ONLY: 31,
-  ZMQ_LAST_ENDPOINT: 32,
-  ZMQ_ROUTER_MANDATORY: 33,
-  ZMQ_TCP_KEEPALIVE: 34,
-  ZMQ_TCP_KEEPALIVE_CNT: 35,
-  ZMQ_TCP_KEEPALIVE_IDLE: 36,
-  ZMQ_TCP_KEEPALIVE_INTVL: 37,
-  ZMQ_TCP_ACCEPT_FILTER: 38,
-  ZMQ_DELAY_ATTACH_ON_CONNECT: 39,
-  ZMQ_XPUB_VERBOSE: 40,
-  ZMQ_ROUTER_RAW: 41,
-  ZMQ_IPV6: 42,
-  ZMQ_MECHANISM: 43,
-  ZMQ_PLAIN_SERVER: 44,
-  ZMQ_PLAIN_USERNAME: 45,
-  ZMQ_PLAIN_PASSWORD: 46,
-  ZMQ_CURVE_SERVER: 47,
-  ZMQ_CURVE_PUBLICKEY: 48,
-  ZMQ_CURVE_SECRETKEY: 49,
-  ZMQ_CURVE_SERVERKEY: 50,
-  ZMQ_ZAP_DOMAIN: 55,
-  ZMQ_HEARTBEAT_IVL: 75,
-  ZMQ_HEARTBEAT_TTL: 76,
-  ZMQ_HEARTBEAT_TIMEOUT: 77,
-  ZMQ_CONNECT_TIMEOUT: 79,
-  ZMQ_IO_THREADS: 1,
-  ZMQ_MAX_SOCKETS: 2,
-  ZMQ_ROUTER_HANDOVER: 56,
-}
-
-const pollStates = {
-  ZMQ_POLLIN: 1,
-  ZMQ_POLLOUT: 2,
-  ZMQ_POLLERR: 4,
-}
-
-const sendOptions = {
-  ZMQ_SNDMORE: 2,
-}
-
-const capabilities = {
-  ZMQ_CAN_MONITOR: 1,
-  ZMQ_CAN_DISCONNECT: 1,
-  ZMQ_CAN_UNBIND: 1,
-  ZMQ_CAN_SET_CTX: 1,
-}
-
-const socketStates = {
-  STATE_READY: 0,
-  STATE_BUSY: 1,
-  STATE_CLOSED: 2,
-}
 
 const shortOptions = {
   _fd: longOptions.ZMQ_FD,
@@ -909,11 +819,9 @@ export {
   shortOptions as options,
 }
 
-/* Unfortunately there is no easy way to include these in the resulting
-   TS definitions. */
-Object.assign(module.exports, longOptions)
-Object.assign(module.exports, types)
-Object.assign(module.exports, pollStates)
-Object.assign(module.exports, sendOptions)
-Object.assign(module.exports, socketStates)
-Object.assign(module.exports, capabilities)
+export * from "./compat/long-options"
+export * from "./compat/types"
+export * from "./compat/poll-states"
+export * from "./compat/send-options"
+export * from "./compat/capabilities"
+export * from "./compat/socket-states"
