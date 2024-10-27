@@ -2,21 +2,23 @@
 set -ev
 set -o pipefail
 
+root="${PWD}"
+
 echo "Pack zeromq.js if needed"
 version=$(node -e 'console.log(require("./package.json").version)')
-pack_name="zeromq-${version}.tgz"
-echo "${pack_name}"
-test -f "${pack_name}" || npm pack
+pack_path="${root}/zeromq-${version}.tgz"
+test -f "${pack_path}" || npm pack
+
 
 init_smoke_test() {
     local pm=$1
     echo "Init Smoke Test Project ${pm}"
 
-    rm -rf "./smoke-test-${pm}"
-    mkdir "./smoke-test-${pm}"
-    cd "./smoke-test-${pm}"
+    rm -rf "../zeromq-smoke-test-${pm}"
+    mkdir "../zeromq-smoke-test-${pm}"
+    cd "../zeromq-smoke-test-${pm}"
     npm init -y
-    npm pkg set dependencies.zeromq="file:../${pack_name}" || (jq ".dependencies.zeromq = \"file:../${pack_name}\"" package.json >temp.json && mv temp.json package.json)
+    npm pkg set dependencies.zeromq="file:${pack_path}" || (jq ".dependencies.zeromq = \"file:${pack_path}\"" package.json >temp.json && mv temp.json package.json)
 }
 
 package_managers=(npm pnpm yarn)
@@ -30,8 +32,8 @@ for pm in "${package_managers[@]}"; do
     echo "Require zeromq"
     node -e "console.log(require('zeromq'))"
 
-    cd ../
-    rm -rf "./smoke-test-${pm}"
+    cd "${root}"
+    rm -rf "../zeromq-smoke-test-${pm}"
 done
 
-rm -f "${pack_name}"
+rm -f "${pack_path}"
