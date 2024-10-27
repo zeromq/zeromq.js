@@ -19,7 +19,7 @@ if (semver.satisfies(zmq.version, ">= 4.2")) {
  */
 let idFallback = 5000
 async function getUniqueId() {
-  const idPath = path.resolve(__dirname, "../../tmp/id")
+  const idPath = path.resolve(__dirname, "../../tmp/port-id.lock")
   await fs.promises.mkdir(path.dirname(idPath), {recursive: true})
 
   try {

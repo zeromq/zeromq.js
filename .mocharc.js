@@ -8,8 +8,9 @@ const config = {
   "v8-expose-gc": true,
   exit: true,
   parallel: true,
-  timeout: 10000,
-  retries: 3,
+  timeout: 5000,
+  retries: 2,
+  fullTrace: true
 }
 
 module.exports = config
