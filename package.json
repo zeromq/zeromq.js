@@ -112,7 +112,7 @@
     "lint": "run-p format lint.eslint format",
     "lint-test": "run-s lint-test.eslint",
     "bench": "node --expose-gc test/bench",
-    "prepublishOnly": "pnpm run build.js",
+    "prepare": "pnpm run build.js",
     "bump": "pnpx npm-check-updates -u -x typescript,eslint,chai && pnpx typesync && pnpm update"
   },
   "cmake-ts": {
