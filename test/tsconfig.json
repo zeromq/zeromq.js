@@ -2,11 +2,6 @@
   "extends": "../tsconfig.json",
   "include": ["**/*.ts"],
   "compilerOptions": {
-    "skipLibCheck": true,
-    "lib": [
-      "ES2020",
-      // only used in tests
-      "ES2021.WeakRef"
-    ]
+    "skipLibCheck": true
   }
 }

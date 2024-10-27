@@ -19,6 +19,10 @@
     "incremental": true,
     "sourceMap": true,
     "esModuleInterop": true,
-    "lib": ["ES2020"]
+    "lib": [
+      "ES2020",
+      // only used in tests
+      "ES2021.WeakRef"
+    ]
   }
 }
