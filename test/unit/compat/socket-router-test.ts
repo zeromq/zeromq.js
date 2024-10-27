@@ -5,6 +5,11 @@ import {testProtos, uniqAddress} from "../helpers"
 if (process.env.INCLUDE_COMPAT_TESTS) {
   for (const proto of testProtos("tcp", "inproc")) {
     describe(`compat socket with ${proto} router`, function () {
+      let address: string
+      beforeEach(async () => {
+        address = await uniqAddress(proto)
+      })
+
       it("should handle unroutable messages", function (done) {
         let complete = 0
 
@@ -74,14 +79,12 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         }
       })
 
-      it("should handle router-dealer message bursts", async function (done) {
+      it("should handle router-dealer message bursts", function (done) {
         // tests https://github.com/JustinTulloss/zeromq.node/issues/523
         // based on https://gist.github.com/messa/862638ab44ca65f712fe4d6ef79aeb67
 
         const router = zmq.socket("router")
         const dealer = zmq.socket("dealer")
-
-        const address = await uniqAddress(proto)
 
         const expected = 1000
         let counted = 0

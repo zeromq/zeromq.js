@@ -7,14 +7,14 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
     describe(`compat socket with ${proto} pub-sub`, function () {
       let pub: zmq.Socket
       let sub: zmq.Socket
-
-      beforeEach(function () {
+      let address: string
+      beforeEach(async function () {
         pub = zmq.socket("pub")
         sub = zmq.socket("sub")
+        address = await uniqAddress(proto)
       })
 
-      it("should support pub-sub", async function (done) {
-        const address = await uniqAddress(proto)
+      it("should support pub-sub", function (done) {
         let n = 0
 
         sub.subscribe("")
@@ -59,8 +59,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       })
 
-      it("should support pub-sub filter", async function (done) {
-        const address = await uniqAddress(proto)
+      it("should support pub-sub filter", function (done) {
         let n = 0
 
         sub.subscribe("js")
@@ -112,13 +111,12 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           }
         })
 
-        it("should continue to deliver messages in message handler", async function (done) {
+        it("should continue to deliver messages in message handler", function (done) {
           let error: Error
           process.once("uncaughtException", err => {
             error = err
           })
 
-          const address = await uniqAddress(proto)
           let n = 0
 
           sub.subscribe("")

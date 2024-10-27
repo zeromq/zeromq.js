@@ -5,11 +5,14 @@ import {testProtos, uniqAddress} from "../helpers"
 if (process.env.INCLUDE_COMPAT_TESTS) {
   for (const proto of testProtos("tcp")) {
     describe(`compat socket with ${proto} pair`, function () {
-      it("should support pair-pair", async function (done) {
+      let address: string
+      beforeEach(async () => {
+        address = await uniqAddress(proto)
+      })
+
+      it("should support pair-pair", function (done) {
         const pairA = zmq.socket("pair")
         const pairB = zmq.socket("pair")
-
-        const address = await uniqAddress(proto)
 
         let n = 0
         pairA.monitor()

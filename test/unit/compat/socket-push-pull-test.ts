@@ -5,11 +5,14 @@ import {testProtos, uniqAddress} from "../helpers"
 if (process.env.INCLUDE_COMPAT_TESTS) {
   for (const proto of testProtos("tcp", "inproc")) {
     describe(`compat socket with ${proto} push-pull`, function () {
-      it("should support push-pull", async function (done) {
+      let address: string
+      beforeEach(async () => {
+        address = await uniqAddress(proto)
+      })
+
+      it("should support push-pull", function (done) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
-
-        const address = await uniqAddress(proto)
 
         let n = 0
         pull.on("message", function (msg) {
@@ -42,11 +45,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       })
 
-      it("should not emit messages after pause", async function (done) {
+      it("should not emit messages after pause", function (done) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
-
-        const address = await uniqAddress(proto)
 
         let n = 0
 
@@ -77,11 +78,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         }, 15)
       })
 
-      it("should be able to read messages after pause", async function (done) {
+      it("should be able to read messages after pause", function (done) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
-
-        const address = await uniqAddress(proto)
 
         const messages = ["bar", "foo"]
         pull.bind(address, err => {
@@ -108,11 +107,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         }, 15)
       })
 
-      it("should emit messages after resume", async function (done) {
+      it("should emit messages after resume", function (done) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
-
-        const address = await uniqAddress(proto)
 
         let n = 0
 

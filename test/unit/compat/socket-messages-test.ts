@@ -7,15 +7,15 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
     describe(`compat socket with ${proto} messages`, function () {
       let push: zmq.Socket
       let pull: zmq.Socket
+      let address: string
 
-      beforeEach(function () {
+      beforeEach(async function () {
         push = zmq.socket("push")
         pull = zmq.socket("pull")
+        address = await uniqAddress(proto)
       })
 
-      it("should support messages", async function (done) {
-        const address = await uniqAddress(proto)
-
+      it("should support messages", function (done) {
         let n = 0
 
         pull.on("message", function (msg) {
@@ -43,9 +43,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         push.send(Buffer.from("buffer"))
       })
 
-      it("should support multipart messages", async function (done) {
-        const address = await uniqAddress(proto)
-
+      it("should support multipart messages", function (done) {
         pull.on("message", function (msg1, msg2, msg3) {
           assert.equal(msg1.toString(), "string")
           assert.equal(msg2.toString(), "15.99")
@@ -60,9 +58,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         push.send(["string", 15.99, Buffer.from("buffer")])
       })
 
-      it("should support sndmore", async function (done) {
-        const address = await uniqAddress(proto)
-
+      it("should support sndmore", function (done) {
         pull.on("message", function (a, b, c, d, e) {
           assert.equal(a.toString(), "tobi")
           assert.equal(b.toString(), "loki")
@@ -82,8 +78,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       })
 
       if (proto != "inproc") {
-        it("should handle late connect", async function (done) {
-          const address = await uniqAddress(proto)
+        it("should handle late connect", function (done) {
           let n = 0
 
           pull.on("message", function (msg) {
@@ -115,8 +110,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       }
 
-      it("should call send callbacks", async function (done) {
-        const address = await uniqAddress(proto)
+      it("should call send callbacks", function (done) {
         let received = 0
         let callbacks = 0
 

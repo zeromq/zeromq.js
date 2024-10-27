@@ -5,11 +5,14 @@ import {testProtos, uniqAddress} from "../helpers"
 if (process.env.INCLUDE_COMPAT_TESTS) {
   for (const proto of testProtos("tcp", "inproc")) {
     describe(`compat socket with ${proto} req-rep`, function () {
-      it("should support req-rep", async function (done) {
+      let address: string
+      beforeEach(async () => {
+        address = await uniqAddress(proto)
+      })
+
+      it("should support req-rep", function (done) {
         const rep = zmq.socket("rep")
         const req = zmq.socket("req")
-
-        const address = await uniqAddress(proto)
 
         rep.on("message", function (msg: string) {
           assert.instanceOf(msg, Buffer)
@@ -33,11 +36,11 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       })
 
-      it("should support multiple", function (done) {
-        const n = 5
-
-        for (let i = 0; i < n; i++) {
-          ;(async function (n) {
+      it("should support multiple", function () {
+        return new Promise<void>(async resolve => {
+          const n = 5
+          for (let i = 0; i < n; i++) {
+            let n = i
             const rep = zmq.socket("rep")
             const req = zmq.socket("req")
 
@@ -61,19 +64,17 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
                 req.close()
                 rep.close()
                 if (!--n) {
-                  done()
+                  resolve()
                 }
               })
             })
-          })(i)
-        }
+          }
+        })
       })
 
-      it("should support a burst", async function (done) {
+      it("should support a burst", function (done) {
         const rep = zmq.socket("rep")
         const req = zmq.socket("req")
-
-        const address = await uniqAddress(proto)
 
         const n = 10
 

@@ -8,6 +8,11 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
   /* This test case only seems to work reliably with TCP. */
   for (const proto of testProtos("tcp")) {
     describe(`compat socket with ${proto} monitor`, function () {
+      let address: string
+      beforeEach(async () => {
+        address = await uniqAddress(proto)
+      })
+
       beforeEach(function () {
         /* ZMQ < 4.2 occasionally fails with assertion errors. */
         if (semver.satisfies(zmq.version, "< 4.2")) {
@@ -24,11 +29,9 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         }
       })
 
-      it("should be able to monitor the socket", async function (done) {
+      it("should be able to monitor the socket", function (done) {
         const rep = zmq.socket("rep")
         const req = zmq.socket("req")
-
-        const address = await uniqAddress(proto)
 
         rep.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)

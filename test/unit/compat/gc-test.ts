@@ -1,12 +1,16 @@
 import * as zmq from "../../../v5-compat"
 import {assert} from "chai"
-import { testProtos, uniqAddress } from "../helpers"
+import {testProtos, uniqAddress} from "../helpers"
 
 if (process.env.INCLUDE_COMPAT_TESTS) {
-
   for (const proto of testProtos("tcp", "inproc")) {
     describe(`compat socket with ${proto}`, function () {
-      it("should cooperate with gc", async function (done) {
+      let address: string
+      beforeEach(async () => {
+        address = await uniqAddress(proto)
+      })
+
+      it("should cooperate with gc", function (done) {
         const sockA = zmq.socket("dealer")
         const sockB = zmq.socket("dealer")
 
@@ -29,7 +33,6 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
         let bound = false
 
-        const address = await uniqAddress(proto)
         sockA.bind(address, err => {
           if (err) {
             clearInterval(interval)

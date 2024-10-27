@@ -5,9 +5,13 @@ import http from "http"
 
 if (process.env.INCLUDE_COMPAT_TESTS) {
   describe("compat socket stream", function () {
-    it("should support a stream socket type", async function (done) {
+    let address: string
+    beforeEach(async () => {
+      address = await uniqAddress("tcp")
+    })
+
+    it("should support a stream socket type", function (done) {
       const stream = zmq.socket("stream")
-      const address = await uniqAddress("tcp")
 
       stream.on("message", function (id: string, msg: string) {
         assert.instanceOf(msg, Buffer)
