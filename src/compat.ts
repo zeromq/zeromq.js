@@ -374,7 +374,7 @@ class Socket extends EventEmitter {
     return this._socket.closed
   }
 
-  monitor(interval: number, num: number) {
+  monitor(interval?: number, num?: number) {
     this._count = count++
 
     /* eslint-disable-next-line no-unused-expressions */
