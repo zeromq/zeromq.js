@@ -1,9 +1,10 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const {assert} = require("chai")
+import * as zmq from "../../../v5-compat"
+import type {Socket} from "../../../v5-compat"
+import {isFullError} from "../../../src/errors"
 
+if (process.env.INCLUDE_COMPAT_TESTS) {
   describe("compat socket error callback", function () {
-    let sock
+    let sock: Socket
 
     beforeEach(function () {
       sock = zmq.socket("router")
