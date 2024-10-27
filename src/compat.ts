@@ -301,8 +301,12 @@ class Socket extends EventEmitter {
     return this
   }
 
-  send(message: zmq.MessageLike[] | zmq.MessageLike, flags = 0, cb?: Callback) {
-    flags = flags | 0
+  send(
+    message: zmq.MessageLike[] | zmq.MessageLike,
+    flags: number | undefined | null = 0,
+    cb: Callback | undefined = undefined,
+  ) {
+    flags = (flags ?? 0) | 0
     this._msg = this._msg.concat(message)
     if ((flags & sendOptions.ZMQ_SNDMORE) === 0) {
       this._sendQueue.push([this._msg, cb])
