@@ -5,6 +5,7 @@
     "@typescript-eslint/quotes": ["error", "double"],
     "require-await": "off",
     "@typescript-eslint/strict-boolean-expressions": "off",
+    "@typescript-eslint/no-extraneous-class": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "no-await-in-loop": "off",
     "class-methods-use-this": "off"

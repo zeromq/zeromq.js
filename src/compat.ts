@@ -151,9 +151,11 @@ class Socket extends EventEmitter {
       case "stream":
         this._socket = new zmq.Stream()
         break
+      default:
+        throw new Error(`Invalid socket type: ${type}`)
     }
 
-    const recv = async () => {
+    const recv = () => {
       this.once("_flushRecv", async () => {
         while (!this._socket.closed && !this._paused) {
           await this._recv()
@@ -257,7 +259,7 @@ class Socket extends EventEmitter {
       .catch(err => {
         process.nextTick(() => {
           if (cb) {
-            cb(err)
+            cb(err as Error)
           } else {
             this.emit("error", err)
           }
@@ -281,7 +283,7 @@ class Socket extends EventEmitter {
       .catch(err => {
         process.nextTick(() => {
           if (cb) {
-            cb(err)
+            cb(err as Error)
           } else {
             this.emit("error", err)
           }
@@ -303,10 +305,10 @@ class Socket extends EventEmitter {
 
   send(
     message: zmq.MessageLike[] | zmq.MessageLike,
-    flags: number | undefined | null = 0,
+    givenFlags: number | undefined | null = 0,
     cb: Callback | undefined = undefined,
   ) {
-    flags = (flags ?? 0) | 0
+    const flags = (givenFlags ?? 0) | 0
     this._msg = this._msg.concat(message)
     if ((flags & sendOptions.ZMQ_SNDMORE) === 0) {
       this._sendQueue.push([this._msg, cb])
@@ -474,8 +476,9 @@ class Socket extends EventEmitter {
     }
   }
 
-  setsockopt(option: number | keyof typeof shortOptions, value: any) {
-    option = typeof option !== "number" ? shortOptions[option] : option
+  setsockopt(givenOption: number | keyof typeof shortOptions, value: any) {
+    const option =
+      typeof givenOption === "number" ? givenOption : shortOptions[givenOption]
 
     switch (option) {
       case longOptions.ZMQ_AFFINITY:
@@ -613,8 +616,9 @@ class Socket extends EventEmitter {
     return this
   }
 
-  getsockopt(option: number | keyof typeof shortOptions) {
-    option = typeof option !== "number" ? shortOptions[option] : option
+  getsockopt(givenOption: number | keyof typeof shortOptions) {
+    const option =
+      typeof givenOption !== "number" ? shortOptions[givenOption] : givenOption
 
     switch (option) {
       case longOptions.ZMQ_AFFINITY:
@@ -736,10 +740,9 @@ for (const key in shortOptions) {
     get(this: Socket) {
       return this.getsockopt(shortOptions[key as keyof typeof shortOptions])
     },
-    set(this: Socket, val: string | Buffer) {
-      if ("string" === typeof val) {
-        val = Buffer.from(val, "utf8")
-      }
+    set(this: Socket, givenVal: string | Buffer) {
+      const val =
+        typeof givenVal === "string" ? Buffer.from(givenVal, "utf8") : givenVal
       return this.setsockopt(
         shortOptions[key as keyof typeof shortOptions],
         val,
