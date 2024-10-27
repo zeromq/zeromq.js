@@ -1,6 +1,7 @@
 import * as zmq from "../../../v5-compat"
 import type {Socket} from "../../../v5-compat"
 import {isFullError} from "../../../src/errors"
+import {assert} from "chai"
 
 if (process.env.INCLUDE_COMPAT_TESTS) {
   describe("compat socket error callback", function () {
@@ -21,9 +22,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
     it("should callback with error when not connected", function (done) {
       sock.send(["foo", "bar"], null, err => {
-        if (!isFullError(err)) {
-          throw err
-        }
+        assert.isUndefined(err)
         sock.close()
         done()
       })
