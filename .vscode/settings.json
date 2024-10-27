@@ -15,6 +15,9 @@
   "mochaExplorer.globImplementation": "vscode",
   "mochaExplorer.nodeArgv": ["--expose-gc"],
   "mochaExplorer.debuggerConfig": "JS-Attach",
+  "mochaExplorer.env": {
+    "INCLUDE_COMPAT_TESTS": "true"
+  },
   "files.exclude": {
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
