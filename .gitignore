@@ -26,3 +26,6 @@ tsconfig.*.tsbuildinfo
 !/lib/load-addon.js.map
 
 compile_commands.json
+
+/smoke-test-*
+/*.tgz

@@ -1,7 +1,21 @@
 {
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "mochaExplorer.parallel": true,
   "mochaExplorer.globImplementation": "vscode",
-  "mochaExplorer.nodeArgv": ["--expose-gc"],
+  "mochaExplorer.nodeArgv": [
+    "--expose-gc"
+  ],
   "mochaExplorer.debuggerConfig": "JS-Attach",
   "files.exclude": {
     "**/.DS_Store": true,
