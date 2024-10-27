@@ -1,9 +1,17 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const {assert} = require("chai")
-  const {testProtos, uniqAddress} = require("../helpers")
+import * as zmq from "../../../v5-compat"
+import {assert} from "chai"
+import {testProtos, uniqAddress} from "../helpers"
 
+if (process.env.INCLUDE_COMPAT_TESTS) {
   for (const proto of testProtos("tcp", "inproc")) {
+    let address1: string
+    let address2: string
+
+    beforeEach(async function () {
+      address1 = await uniqAddress(proto)
+      address2 = await uniqAddress(proto)
+    })
+
     describe(`compat socket with ${proto} xpub-xsub`, function () {
       it("should support pub-sub tracing and filtering", function (done) {
         let n = 0
@@ -12,9 +20,6 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         const sub = zmq.socket("sub")
         const xpub = zmq.socket("xpub")
         const xsub = zmq.socket("xsub")
-
-        const address1 = uniqAddress(proto)
-        const address2 = uniqAddress(proto)
 
         pub.bind(address1, err => {
           if (err) {
