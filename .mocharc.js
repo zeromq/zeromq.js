@@ -2,7 +2,7 @@
  * @type {import('mocha').MochaOptions}
  */
 const config = {
-  require: ["ts-node/register"],
+  loader: "ts-node/esm",
   "expose-gc": true,
   "v8-expose-gc": true,
   exit: true,

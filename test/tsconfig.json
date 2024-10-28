@@ -2,7 +2,9 @@
   "extends": "../tsconfig.json",
   "include": ["./unit/**/*.ts", "./*.ts"],
   "compilerOptions": {
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
   },
   "compileOnSave": false
 }

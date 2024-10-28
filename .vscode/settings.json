@@ -13,7 +13,7 @@
   },
   "mochaExplorer.parallel": true,
   "mochaExplorer.globImplementation": "vscode",
-  "mochaExplorer.nodeArgv": ["--expose-gc"],
+  "mochaExplorer.nodeArgv": ["--expose-gc", "--loader", "ts-node/esm"],
   "mochaExplorer.debuggerConfig": "JS-Attach",
   "mochaExplorer.env": {
     "INCLUDE_COMPAT_TESTS": "true"
