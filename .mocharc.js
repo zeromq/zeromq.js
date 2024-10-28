@@ -8,8 +8,9 @@ const config = {
   exit: true,
   parallel: true,
   timeout: 5000,
-  retries: 2,
-  fullTrace: true
+  retries: 1,
+  fullTrace: true,
+  bail: false,
 }
 
 module.exports = config

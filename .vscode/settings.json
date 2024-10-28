@@ -19,6 +19,7 @@
     "INCLUDE_COMPAT_TESTS": "true"
   },
   "mochaExplorer.files": "test/unit/**/*-test.ts",
+  "mochaExplorer.mochaPath": "./node_modules/mocha",
   "files.exclude": {
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
