@@ -1,6 +1,14 @@
 import * as zmq from "../../src/index.js"
 
-import {assert} from "chai"
+import {
+  assert,
+  describe,
+  it,
+  beforeEach,
+  beforeAll,
+  afterEach,
+  afterAll,
+} from "vitest"
 import {isFullError} from "../../src/errors.js"
 
 describe("socket construction", function () {

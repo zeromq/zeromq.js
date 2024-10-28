@@ -1,7 +1,15 @@
 import * as semver from "semver"
 import * as zmq from "../../src/index.js"
 
-import {assert} from "chai"
+import {
+  assert,
+  describe,
+  it,
+  beforeEach,
+  beforeAll,
+  afterEach,
+  afterAll,
+} from "vitest"
 import {createProcess} from "./helpers.js"
 
 describe("context process exit", function () {

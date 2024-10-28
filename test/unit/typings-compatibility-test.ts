@@ -10,7 +10,15 @@ import {
 } from "fs-extra"
 import which from "which"
 
-import {assert} from "chai"
+import {
+  assert,
+  describe,
+  it,
+  beforeEach,
+  beforeAll,
+  afterEach,
+  afterAll,
+} from "vitest"
 
 /**
  * Testing typings compatibility for TypeScript versions, i.e. when zeromq.js is

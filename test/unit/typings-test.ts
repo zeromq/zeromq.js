@@ -1,5 +1,15 @@
 import * as zmq from "../../src/index.js"
 
+import {
+  assert,
+  describe,
+  it,
+  beforeEach,
+  beforeAll,
+  afterEach,
+  afterAll,
+} from "vitest"
+
 describe("typings", function () {
   it("should compile successfully", function () {
     /* To test the TypeScript typings this file should compile successfully.

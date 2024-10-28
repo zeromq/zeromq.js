@@ -1,6 +1,14 @@
 import * as zmq from "../../../v5-compat.js"
 import semver from "semver"
-import {assert} from "chai"
+import {
+  assert,
+  describe,
+  it,
+  beforeEach,
+  beforeAll,
+  afterEach,
+  afterAll,
+} from "vitest"
 import {testProtos, uniqAddress} from "../helpers.js"
 import {isFullError} from "../../../src/errors.js"
 

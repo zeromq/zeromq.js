@@ -1,6 +1,14 @@
 import * as zmq from "../../src/index.js"
 
-import {assert} from "chai"
+import {
+  assert,
+  describe,
+  it,
+  beforeEach,
+  beforeAll,
+  afterEach,
+  afterAll,
+} from "vitest"
 import {testProtos, uniqAddress} from "./helpers.js"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {

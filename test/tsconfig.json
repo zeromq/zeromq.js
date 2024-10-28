@@ -2,8 +2,7 @@
   "extends": "../tsconfig.json",
   "include": ["./unit/**/*.ts", "./*.ts"],
   "compilerOptions": {
-    "skipLibCheck": true,
-    "types": ["vitest/globals"]
+    "skipLibCheck": true
   },
   "compileOnSave": false
 }

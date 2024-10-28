@@ -22,9 +22,6 @@ importers:
       '@types/benchmark':
         specifier: ~2.1.5
         version: 2.1.5
-      '@types/chai':
-        specifier: ^5
-        version: 5.0.0
       '@types/deasync':
         specifier: ~0.1.5
         version: 0.1.5
@@ -52,9 +49,6 @@ importers:
       benchmark:
         specifier: ^2.1.4
         version: 2.1.4
-      chai:
-        specifier: ^5
-        version: 5.1.2
       cross-env:
         specifier: ^7.0.3
         version: 7.0.3
@@ -583,9 +577,6 @@ packages:
 
   '@types/benchmark@2.1.5':
     resolution: {integrity: sha512-cKio2eFB3v7qmKcvIHLUMw/dIx/8bhWPuzpzRT4unCPRTD8VdA9Zb0afxpcxOqR4PixRS7yT42FqGS8BYL8g1w==}
-
-  '@types/chai@5.0.0':
-    resolution: {integrity: sha512-+DwhEHAaFPPdJ2ral3kNHFQXnTfscEEFsUxzD+d7nlcLrFK23JtNjH71RGasTcHb88b4vVi4mTyfpf8u2L8bdA==}
 
   '@types/deasync@0.1.5':
     resolution: {integrity: sha512-mLov/tw+fOX4ZsrT9xuHOJv8xToOpNsp6W4gp8VDHy2qniJ58izyOzHlisnz5r8HdZ+WItDHtANWZy/W0JEJwg==}
@@ -4245,8 +4236,6 @@ snapshots:
   '@tsconfig/node16@1.0.4': {}
 
   '@types/benchmark@2.1.5': {}
-
-  '@types/chai@5.0.0': {}
 
   '@types/deasync@0.1.5': {}
 

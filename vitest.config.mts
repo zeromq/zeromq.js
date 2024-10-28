@@ -4,7 +4,6 @@ export default defineConfig({
   test: {
     include: ["test/unit/**/*-test.{ts,js}"],
     watch: false,
-    globals: true,
     passWithNoTests: true,
     poolOptions: {
       forks: {
