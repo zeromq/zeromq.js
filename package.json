@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/benchmark": "~2.1.5",
-    "@types/chai": "^4",
+    "@types/chai": "^5",
     "@types/deasync": "~0.1.5",
     "@types/fs-extra": "^11.0.4",
     "@types/gh-pages": "~6.1.0",
@@ -34,7 +34,7 @@
     "@types/shelljs": "^0.8.15",
     "@types/which": "^3.0.4",
     "benchmark": "^2.1.4",
-    "chai": "^4",
+    "chai": "^5",
     "cross-env": "^7.0.3",
     "deasync": "^0.1.30",
     "downlevel-dts": "^0.11.0",
