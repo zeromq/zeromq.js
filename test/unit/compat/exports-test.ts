@@ -1,5 +1,5 @@
-import * as zmq from "../../../v5-compat"
-import {capability} from "../../../src"
+import * as zmq from "../../../v5-compat.js"
+import {capability} from "../../../src/index.js"
 import {assert} from "chai"
 import semver from "semver"
 

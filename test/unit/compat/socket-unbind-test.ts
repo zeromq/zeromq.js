@@ -1,9 +1,9 @@
 /* This test is very unreliable in practice, especially in CI.
    It is disabled by default. */
-import * as zmq from "../../../v5-compat"
+import * as zmq from "../../../v5-compat.js"
 import semver from "semver"
 import {assert} from "chai"
-import {testProtos, uniqAddress} from "../helpers"
+import {testProtos, uniqAddress} from "../helpers.js"
 
 if (
   process.env.INCLUDE_COMPAT_TESTS === "true" &&

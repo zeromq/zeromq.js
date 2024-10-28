@@ -1,5 +1,5 @@
-import * as zmq from "../../src"
-import * as draft from "../../src/draft"
+import * as zmq from "../../src/index.js"
+import * as draft from "../../src/draft.js"
 
 import {assert} from "chai"
 

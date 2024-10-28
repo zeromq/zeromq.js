@@ -1,8 +1,8 @@
 import * as semver from "semver"
-import * as zmq from "../../src"
+import * as zmq from "../../src/index.js"
 
 import {assert} from "chai"
-import {createProcess} from "./helpers"
+import {createProcess} from "./helpers.js"
 
 describe("context process exit", function () {
   describe("with default context", function () {

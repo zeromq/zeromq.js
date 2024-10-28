@@ -1,9 +1,9 @@
-import * as zmq from "../../src"
-import * as draft from "../../src/draft"
+import * as zmq from "../../src/index.js"
+import * as draft from "../../src/draft.js"
 
 import {assert} from "chai"
 import {createSocket} from "dgram"
-import {testProtos, uniqAddress} from "./helpers"
+import {testProtos, uniqAddress} from "./helpers.js"
 
 for (const proto of testProtos("udp")) {
   describe(`draft socket with ${proto} dgram`, function () {

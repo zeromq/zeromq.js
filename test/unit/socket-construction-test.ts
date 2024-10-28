@@ -1,7 +1,7 @@
-import * as zmq from "../../src"
+import * as zmq from "../../src/index.js"
 
 import {assert} from "chai"
-import {isFullError} from "../../src/errors"
+import {isFullError} from "../../src/errors.js"
 
 describe("socket construction", function () {
   afterEach(function () {

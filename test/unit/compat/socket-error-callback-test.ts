@@ -1,6 +1,5 @@
-import * as zmq from "../../../v5-compat"
-import type {Socket} from "../../../v5-compat"
-import {isFullError} from "../../../src/errors"
+import * as zmq from "../../../v5-compat.js"
+import type {Socket} from "../../../v5-compat.js"
 import {assert} from "chai"
 
 if (process.env.INCLUDE_COMPAT_TESTS === "true") {

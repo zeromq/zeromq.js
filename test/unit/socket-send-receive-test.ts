@@ -1,8 +1,8 @@
-import * as zmq from "../../src"
+import * as zmq from "../../src/index.js"
 
 import {assert} from "chai"
-import {testProtos, uniqAddress, getGcOrSkipTest} from "./helpers"
-import {isFullError} from "../../src/errors"
+import {testProtos, uniqAddress, getGcOrSkipTest} from "./helpers.js"
+import {isFullError} from "../../src/errors.js"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} send/receive`, function () {

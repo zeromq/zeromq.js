@@ -5,7 +5,7 @@ import * as lockfile from "proper-lockfile"
 import type {TaskContext} from "vitest"
 import {spawn} from "child_process"
 
-import * as zmq from "../../src"
+import * as zmq from "../../src/index.js"
 
 console.log(`ZeroMQ version ${zmq.version}`)
 if (semver.satisfies(zmq.version, ">= 4.2")) {
