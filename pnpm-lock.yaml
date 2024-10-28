@@ -23,8 +23,8 @@ importers:
         specifier: ~2.1.5
         version: 2.1.5
       '@types/chai':
-        specifier: ^5.0.0
-        version: 5.0.0
+        specifier: ^4
+        version: 4.3.20
       '@types/deasync':
         specifier: ~0.1.5
         version: 0.1.5
@@ -369,8 +369,8 @@ packages:
   '@types/benchmark@2.1.5':
     resolution: {integrity: sha512-cKio2eFB3v7qmKcvIHLUMw/dIx/8bhWPuzpzRT4unCPRTD8VdA9Zb0afxpcxOqR4PixRS7yT42FqGS8BYL8g1w==}
 
-  '@types/chai@5.0.0':
-    resolution: {integrity: sha512-+DwhEHAaFPPdJ2ral3kNHFQXnTfscEEFsUxzD+d7nlcLrFK23JtNjH71RGasTcHb88b4vVi4mTyfpf8u2L8bdA==}
+  '@types/chai@4.3.20':
+    resolution: {integrity: sha512-/pC9HAB5I/xMlc5FP77qjCnI16ChlJfW0tGa0IUcFn38VJrTV6DeZ60NU5KZBtaOZqjdpwTWohz5HU1RrhiYxQ==}
 
   '@types/deasync@0.1.5':
     resolution: {integrity: sha512-mLov/tw+fOX4ZsrT9xuHOJv8xToOpNsp6W4gp8VDHy2qniJ58izyOzHlisnz5r8HdZ+WItDHtANWZy/W0JEJwg==}
@@ -3772,7 +3772,7 @@ snapshots:
 
   '@types/benchmark@2.1.5': {}
 
-  '@types/chai@5.0.0': {}
+  '@types/chai@4.3.20': {}
 
   '@types/deasync@0.1.5': {}
 

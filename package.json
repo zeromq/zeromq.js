@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@types/benchmark": "~2.1.5",
-    "@types/chai": "^5.0.0",
+    "@types/chai": "^4",
     "@types/deasync": "~0.1.5",
     "@types/fs-extra": "^11.0.4",
     "@types/gh-pages": "~6.1.0",
