@@ -1,9 +1,10 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const semver = require("semver")
-  const {assert} = require("chai")
-  const {testProtos, uniqAddress} = require("../helpers")
+import * as zmq from "../../../v5-compat"
+import {capability} from "../../../src"
+import semver from "semver"
+import {assert} from "chai"
+import {testProtos, uniqAddress} from "../helpers"
 
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   function start() {
     const zap = zmq.socket("router")
 
@@ -49,7 +50,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       )
     })
 
-    return new Promise((resolve, reject) => {
+    return new Promise<zmq.Socket>((resolve, reject) => {
       zap.bind("inproc://zeromq.zap.01", err => {
         if (err) {
           return reject(err)
@@ -61,9 +62,10 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
   for (const proto of testProtos("tcp", "inproc")) {
     describe(`compat socket with ${proto} zap`, function () {
-      let zapSocket
-      let rep
-      let req
+      let zapSocket: zmq.Socket
+      let rep: zmq.Socket
+      let req: zmq.Socket
+      let address: string
 
       before(async function () {
         zapSocket = await start()
@@ -76,7 +78,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
       })
 
-      beforeEach(function () {
+      beforeEach(async function () {
         /* Since ZAP uses inproc transport, it does not work reliably. */
         if (semver.satisfies(zmq.version, "< 4.2")) {
           this.skip()
@@ -84,6 +86,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
         rep = zmq.socket("rep")
         req = zmq.socket("req")
+        address = await uniqAddress(proto)
       })
 
       afterEach(function () {
@@ -92,11 +95,10 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       })
 
       it("should support curve", function (done) {
-        if (!zmq.capability.curve) {
+        if (!capability.curve) {
           this.skip()
         }
 
-        const address = uniqAddress(proto)
         const serverPublicKey = Buffer.from(
           "7f188e5244b02bf497b86de417515cf4d4053ce4eb977aee91a55354655ec33a",
           "hex",
@@ -114,7 +116,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
           "hex",
         )
 
-        rep.on("message", function (msg) {
+        rep.on("message", function (msg: unknown) {
           assert.instanceOf(msg, Buffer)
           assert.equal(msg.toString(), "hello")
           rep.send("world")
@@ -125,7 +127,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         rep.curve_secretkey = serverPrivateKey
         assert.equal(rep.mechanism, 2)
 
-        rep.bind(address, err => {
+        rep.bind(address, (err: any) => {
           if (err) {
             throw err
           }
@@ -136,7 +138,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
           req.connect(address)
           req.send("hello")
-          req.on("message", function (msg) {
+          req.on("message", function (msg: unknown) {
             assert.instanceOf(msg, Buffer)
             assert.equal(msg.toString(), "world")
             done()
@@ -145,9 +147,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       })
 
       it("should support null", function (done) {
-        const address = uniqAddress(proto)
-
-        rep.on("message", function (msg) {
+        rep.on("message", function (msg: unknown) {
           assert.instanceOf(msg, Buffer)
           assert.equal(msg.toString(), "hello")
           rep.send("world")
@@ -156,14 +156,14 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         rep.zap_domain = "test"
         assert.equal(rep.mechanism, 0)
 
-        rep.bind(address, err => {
+        rep.bind(address, (err: any) => {
           if (err) {
             throw err
           }
           assert.equal(req.mechanism, 0)
           req.connect(address)
           req.send("hello")
-          req.on("message", function (msg) {
+          req.on("message", function (msg: unknown) {
             assert.instanceOf(msg, Buffer)
             assert.equal(msg.toString(), "world")
             done()
@@ -172,9 +172,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       })
 
       it("should support plain", function (done) {
-        const address = uniqAddress(proto)
-
-        rep.on("message", function (msg) {
+        rep.on("message", function (msg: unknown) {
           assert.instanceOf(msg, Buffer)
           assert.equal(msg.toString(), "hello")
           rep.send("world")
@@ -184,7 +182,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         rep.plain_server = 1
         assert.equal(rep.mechanism, 1)
 
-        rep.bind(address, err => {
+        rep.bind(address, (err: any) => {
           if (err) {
             throw err
           }
@@ -194,7 +192,7 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
           req.connect(address)
           req.send("hello")
-          req.on("message", function (msg) {
+          req.on("message", function (msg: unknown) {
             assert.instanceOf(msg, Buffer)
             assert.equal(msg.toString(), "world")
             done()

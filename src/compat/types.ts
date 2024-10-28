@@ -1,0 +1,14 @@
+export const ZMQ_PAIR = 0
+export const ZMQ_PUB = 1
+export const ZMQ_SUB = 2
+export const ZMQ_REQ = 3
+export const ZMQ_REP = 4
+export const ZMQ_DEALER = 5
+export const ZMQ_XREQ = 5
+export const ZMQ_ROUTER = 6
+export const ZMQ_XREP = 6
+export const ZMQ_PULL = 7
+export const ZMQ_PUSH = 8
+export const ZMQ_XPUB = 9
+export const ZMQ_XSUB = 10
+export const ZMQ_STREAM = 11

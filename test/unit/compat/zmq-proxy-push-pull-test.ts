@@ -1,22 +1,28 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const {assert} = require("chai")
-  const {testProtos, uniqAddress} = require("../helpers")
+import * as zmq from "../../../v5-compat"
+import {assert} from "chai"
+import {testProtos, uniqAddress} from "../helpers"
 
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   for (const proto of testProtos("tcp")) {
     describe(`compat proxy with ${proto} push-pull`, function () {
-      const sockets = []
+      const sockets: zmq.Socket[] = []
+      let frontendAddr: string
+      let backendAddr: string
+      let captureAddr: string
+
+      beforeEach(async function () {
+        frontendAddr = await uniqAddress(proto)
+        backendAddr = await uniqAddress(proto)
+        captureAddr = await uniqAddress(proto)
+      })
 
       afterEach(function () {
-        while (sockets.length) {
-          sockets.pop().close()
+        if (sockets.length) {
+          sockets.pop()?.close()
         }
       })
 
       it("should proxy push-pull connected to pull-push", function (done) {
-        const frontendAddr = uniqAddress(proto)
-        const backendAddr = uniqAddress(proto)
-
         const frontend = zmq.socket("pull")
         const backend = zmq.socket("push")
 
@@ -48,10 +54,6 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       })
 
       it("should proxy pull-push connected to push-pull with capture", function (done) {
-        const frontendAddr = uniqAddress(proto)
-        const backendAddr = uniqAddress(proto)
-        const captureAddr = uniqAddress(proto)
-
         const frontend = zmq.socket("push")
         const backend = zmq.socket("pull")
 

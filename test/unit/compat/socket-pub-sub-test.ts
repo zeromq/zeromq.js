@@ -1,20 +1,20 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const {assert} = require("chai")
-  const {testProtos, uniqAddress} = require("../helpers")
+import * as zmq from "../../../v5-compat"
+import {assert} from "chai"
+import {testProtos, uniqAddress} from "../helpers"
 
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   for (const proto of testProtos("tcp", "inproc")) {
     describe(`compat socket with ${proto} pub-sub`, function () {
-      let pub
-      let sub
-
-      beforeEach(function () {
+      let pub: zmq.Socket
+      let sub: zmq.Socket
+      let address: string
+      beforeEach(async function () {
         pub = zmq.socket("pub")
         sub = zmq.socket("sub")
+        address = await uniqAddress(proto)
       })
 
       it("should support pub-sub", function (done) {
-        const address = uniqAddress(proto)
         let n = 0
 
         sub.subscribe("")
@@ -60,7 +60,6 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       })
 
       it("should support pub-sub filter", function (done) {
-        const address = uniqAddress(proto)
         let n = 0
 
         sub.subscribe("js")
@@ -113,12 +112,11 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         })
 
         it("should continue to deliver messages in message handler", function (done) {
-          let error
+          let error: Error
           process.once("uncaughtException", err => {
             error = err
           })
 
-          const address = uniqAddress(proto)
           let n = 0
 
           sub.subscribe("")

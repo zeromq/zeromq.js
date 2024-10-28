@@ -89,13 +89,16 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
           rep.close()
         }
 
-        console.log("waiting for messages")
+        console.log(
+          `waiting for messages for proxy with ${proto} router/dealer...`,
+        )
 
         await Promise.all([echo(), send()])
         assert.deepEqual(received, messages)
 
         proxy.terminate()
         await done
+        console.log(`Done proxying with ${proto} router/dealer`)
       })
     })
   })

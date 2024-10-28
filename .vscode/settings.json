@@ -13,10 +13,13 @@
   },
   "mochaExplorer.parallel": true,
   "mochaExplorer.globImplementation": "vscode",
-  "mochaExplorer.nodeArgv": [
-    "--expose-gc"
-  ],
+  "mochaExplorer.nodeArgv": ["--expose-gc"],
   "mochaExplorer.debuggerConfig": "JS-Attach",
+  "mochaExplorer.env": {
+    "INCLUDE_COMPAT_TESTS": "true"
+  },
+  "mochaExplorer.files": "test/unit/**/*-test.ts",
+  "mochaExplorer.mochaPath": "./node_modules/mocha",
   "files.exclude": {
     "**/.DS_Store": true,
     "**/Thumbs.db": true,

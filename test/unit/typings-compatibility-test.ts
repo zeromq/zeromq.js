@@ -100,7 +100,6 @@ describe("compatibility of typings for typescript versions", async function () {
   let execCmd: string
 
   before(async function () {
-    this.timeout(10000)
     if (/^true$/.test(process.env.EXCLUDE_TYPINGS_COMPAT_TESTS as string)) {
       this.skip()
     }
@@ -110,7 +109,6 @@ describe("compatibility of typings for typescript versions", async function () {
   for (const tsVer of tsVersions) {
     // must increase timeout for allowing `npm install`'ing the version of
     // the typescript package to complete
-    this.timeout(30000)
 
     const tscTargetPath = path.resolve(
       tscTestBasePath,

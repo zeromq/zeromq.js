@@ -1,10 +1,15 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const {assert} = require("chai")
-  const {testProtos, uniqAddress} = require("../helpers")
+import * as zmq from "../../../v5-compat"
+import {assert} from "chai"
+import {testProtos, uniqAddress} from "../helpers"
 
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   for (const proto of testProtos("tcp", "inproc")) {
     describe(`compat socket with ${proto}`, function () {
+      let address: string
+      beforeEach(async () => {
+        address = await uniqAddress(proto)
+      })
+
       it("should cooperate with gc", function (done) {
         const sockA = zmq.socket("dealer")
         const sockB = zmq.socket("dealer")
@@ -28,7 +33,6 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
 
         let bound = false
 
-        const address = uniqAddress(proto)
         sockA.bind(address, err => {
           if (err) {
             clearInterval(interval)

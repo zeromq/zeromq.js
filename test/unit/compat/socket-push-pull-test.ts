@@ -1,15 +1,18 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const {assert} = require("chai")
-  const {testProtos, uniqAddress} = require("../helpers")
+import * as zmq from "../../../v5-compat"
+import {assert} from "chai"
+import {testProtos, uniqAddress} from "../helpers"
 
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   for (const proto of testProtos("tcp", "inproc")) {
     describe(`compat socket with ${proto} push-pull`, function () {
+      let address: string
+      beforeEach(async () => {
+        address = await uniqAddress(proto)
+      })
+
       it("should support push-pull", function (done) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
-
-        const address = uniqAddress(proto)
 
         let n = 0
         pull.on("message", function (msg) {
@@ -46,8 +49,6 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
 
-        const address = uniqAddress(proto)
-
         let n = 0
 
         pull.on("message", function (msg) {
@@ -81,8 +82,6 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
 
-        const address = uniqAddress(proto)
-
         const messages = ["bar", "foo"]
         pull.bind(address, err => {
           if (err) {
@@ -112,15 +111,13 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
         const push = zmq.socket("push")
         const pull = zmq.socket("pull")
 
-        const address = uniqAddress(proto)
-
         let n = 0
 
-        function checkNoMessages(msg) {
+        function checkNoMessages(msg: string) {
           assert.equal(msg, undefined)
         }
 
-        function checkMessages(msg) {
+        function checkMessages(msg: string) {
           assert.instanceOf(msg, Buffer)
           switch (n++) {
             case 0:

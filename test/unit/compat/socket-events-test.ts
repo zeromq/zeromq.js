@@ -1,15 +1,18 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const {assert} = require("chai")
-  const {testProtos, uniqAddress} = require("../helpers")
+import * as zmq from "../../../v5-compat"
+import {assert} from "chai"
+import {testProtos, uniqAddress} from "../helpers"
 
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   for (const proto of testProtos("tcp", "inproc")) {
     describe(`compat socket with ${proto} events`, function () {
+      let address: string
+      beforeEach(async () => {
+        address = await uniqAddress(proto)
+      })
+
       it("should support events", function (done) {
         const rep = zmq.socket("rep")
         const req = zmq.socket("req")
-
-        const address = uniqAddress(proto)
 
         rep.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)

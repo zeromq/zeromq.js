@@ -6,9 +6,6 @@ import {createWorker, testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} in thread`, function () {
-    this.slow(2000)
-    this.timeout(5000)
-
     beforeEach(function () {
       /* Node.js worker support introduced in version 10.5. */
       if (semver.satisfies(process.versions.node, "< 10.5")) {

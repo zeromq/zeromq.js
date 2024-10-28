@@ -54,7 +54,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         })
 
         it("should receive connect events", async function () {
-          this.slow(250)
           const address = await uniqAddress(proto)
 
           const [event] = await Promise.all([

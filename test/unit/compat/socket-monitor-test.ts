@@ -1,13 +1,18 @@
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  const zmq = require("./load")
-  const semver = require("semver")
-  const {assert} = require("chai")
-  const {testProtos, uniqAddress} = require("../helpers")
-  const {isFullError} = require("../../src/errors")
+import * as zmq from "../../../v5-compat"
+import semver from "semver"
+import {assert} from "chai"
+import {testProtos, uniqAddress} from "../helpers"
+import {isFullError} from "../../../src/errors"
 
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   /* This test case only seems to work reliably with TCP. */
   for (const proto of testProtos("tcp")) {
     describe(`compat socket with ${proto} monitor`, function () {
+      let address: string
+      beforeEach(async () => {
+        address = await uniqAddress(proto)
+      })
+
       beforeEach(function () {
         /* ZMQ < 4.2 occasionally fails with assertion errors. */
         if (semver.satisfies(zmq.version, "< 4.2")) {
@@ -27,8 +32,6 @@ if (process.env.INCLUDE_COMPAT_TESTS) {
       it("should be able to monitor the socket", function (done) {
         const rep = zmq.socket("rep")
         const req = zmq.socket("req")
-
-        const address = uniqAddress(proto)
 
         rep.on("message", function (msg) {
           assert.instanceOf(msg, Buffer)
