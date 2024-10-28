@@ -1,8 +1,8 @@
 import * as semver from "semver"
-import * as zmq from "../../src"
+import * as zmq from "../../src/index.js"
 
 import {assert} from "chai"
-import {testProtos, uniqAddress} from "./helpers"
+import {testProtos, uniqAddress} from "./helpers.js"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} xpub/xsub`, function () {

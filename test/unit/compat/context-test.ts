@@ -1,4 +1,4 @@
-import * as zmq from "../../../v5-compat"
+import * as zmq from "../../../v5-compat.js"
 import {assert} from "chai"
 
 if (process.env.INCLUDE_COMPAT_TESTS === "true") {

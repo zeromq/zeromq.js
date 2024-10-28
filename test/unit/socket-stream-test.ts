@@ -1,8 +1,8 @@
-import * as zmq from "../../src"
+import * as zmq from "../../src/index.js"
 
 import {assert} from "chai"
 import {createServer, get, Server} from "http"
-import {testProtos, uniqAddress} from "./helpers"
+import {testProtos, uniqAddress} from "./helpers.js"
 
 for (const proto of testProtos("tcp")) {
   describe(`socket with ${proto} stream`, function () {

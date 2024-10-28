@@ -1,8 +1,8 @@
 import * as semver from "semver"
-import * as zmq from "../../src"
+import * as zmq from "../../src/index.js"
 
 import {assert} from "chai"
-import {uniqAddress} from "./helpers"
+import {uniqAddress} from "./helpers.js"
 
 describe("socket options", function () {
   let warningListeners: NodeJS.WarningListener[]

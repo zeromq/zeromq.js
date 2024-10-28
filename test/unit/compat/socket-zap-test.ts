@@ -1,8 +1,8 @@
-import * as zmq from "../../../v5-compat"
-import {capability} from "../../../src"
+import * as zmq from "../../../v5-compat.js"
+import {capability} from "../../../src/index.js"
 import semver from "semver"
 import {assert} from "chai"
-import {testProtos, uniqAddress} from "../helpers"
+import {testProtos, uniqAddress} from "../helpers.js"
 
 if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   function start() {

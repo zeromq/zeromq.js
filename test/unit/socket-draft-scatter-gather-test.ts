@@ -1,8 +1,8 @@
-import * as zmq from "../../src"
-import * as draft from "../../src/draft"
+import * as zmq from "../../src/index.js"
+import * as draft from "../../src/draft.js"
 
 import {assert} from "chai"
-import {testProtos, uniqAddress} from "./helpers"
+import {testProtos, uniqAddress} from "./helpers.js"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} scatter/gather`, function () {

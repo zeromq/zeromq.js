@@ -1,7 +1,7 @@
-import * as zmq from "../../src"
+import * as zmq from "../../src/index.js"
 
 import {assert} from "chai"
-import {createProcess} from "./helpers"
+import {createProcess} from "./helpers.js"
 
 describe("socket process exit", function () {
   /* Reported: https://github.com/nodejs/node-addon-api/issues/591 */

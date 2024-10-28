@@ -1,4 +1,4 @@
-import * as zmq from "../../src"
+import * as zmq from "../../src/index.js"
 
 import {assert} from "chai"
 import {
@@ -6,8 +6,8 @@ import {
   captureEventsUntil,
   testProtos,
   uniqAddress,
-} from "./helpers"
-import {isFullError} from "../../src/errors"
+} from "./helpers.js"
+import {isFullError} from "../../src/errors.js"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`socket with ${proto} events`, function () {

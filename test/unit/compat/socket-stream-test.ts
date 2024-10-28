@@ -1,6 +1,6 @@
-import * as zmq from "../../../v5-compat"
+import * as zmq from "../../../v5-compat.js"
 import {assert} from "chai"
-import {uniqAddress} from "../helpers"
+import {uniqAddress} from "../helpers.js"
 import http from "http"
 
 if (process.env.INCLUDE_COMPAT_TESTS === "true") {

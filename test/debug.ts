@@ -1,6 +1,6 @@
-import * as zmq from "../src"
+import * as zmq from "../src/index.js"
 
-import {getGcOrSkipTest} from "./unit/helpers"
+import {getGcOrSkipTest} from "./unit/helpers.js"
 
 async function main() {
   const gc = getGcOrSkipTest()

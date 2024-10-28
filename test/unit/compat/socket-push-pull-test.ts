@@ -1,6 +1,6 @@
-import * as zmq from "../../../v5-compat"
+import * as zmq from "../../../v5-compat.js"
 import {assert} from "chai"
-import {testProtos, uniqAddress} from "../helpers"
+import {testProtos, uniqAddress} from "../helpers.js"
 
 if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   for (const proto of testProtos("tcp", "inproc")) {
