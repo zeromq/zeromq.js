@@ -247,10 +247,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         sub2.close()
       })
 
-      it("should forward all subscriptions/unsubscriptions", async function () {
+      it("should forward all subscriptions/unsubscriptions", async function (ctx) {
         /* ZMQ 4.2 first introduced ZMQ_XPUB_VERBOSER. */
         if (semver.satisfies(zmq.version, "< 4.2")) {
-          this.skip()
+          return ctx.skip()
         }
 
         const address = await uniqAddress(proto)

@@ -5,10 +5,10 @@ import {assert} from "chai"
 import {isFullError} from "../../src/errors"
 
 describe("proxy construction", function () {
-  beforeEach(function () {
+  beforeEach(function (ctx) {
     /* ZMQ < 4.0.5 has no steerable proxy support. */
     if (semver.satisfies(zmq.version, "< 4.0.5")) {
-      this.skip()
+      return ctx.skip()
     }
   })
 

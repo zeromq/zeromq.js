@@ -171,11 +171,11 @@ describe("socket options", function () {
   })
 
   describe("warnings", function () {
-    beforeEach(function () {
+    beforeEach(function (ctx) {
       /* ZMQ < 4.2 fails with assertion errors with inproc.
          See: https://github.com/zeromq/libzmq/pull/2123/files */
       if (semver.satisfies(zmq.version, "< 4.2")) {
-        this.skip()
+        return ctx.skip()
       }
 
       warningListeners = process.listeners("warning")

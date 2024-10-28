@@ -159,9 +159,9 @@ describe("socket construction", function () {
       )
     })
 
-    it("should throw with draft type", function () {
+    it("should throw with draft type", function (ctx) {
       if (zmq.capability.draft === true) {
-        this.skip()
+        return ctx.skip()
       }
       assert.throws(
         () => new (zmq.Socket as any)(14),

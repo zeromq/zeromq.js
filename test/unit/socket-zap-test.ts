@@ -54,10 +54,10 @@ for (const proto of testProtos("tcp", "ipc")) {
         )
       })
 
-      it("should report authentication error", async function () {
+      it("should report authentication error", async function (ctx) {
         /* ZMQ < 4.3.0 does not have these event details. */
         if (semver.satisfies(zmq.version, "< 4.3.0")) {
-          this.skip()
+          return ctx.skip()
         }
 
         handler = new ValidatingZapHandler({
@@ -97,10 +97,10 @@ for (const proto of testProtos("tcp", "ipc")) {
         assert.equal(eventB.error.status, 400)
       })
 
-      it("should report protocol version error", async function () {
+      it("should report protocol version error", async function (ctx) {
         /* ZMQ < 4.3.0 does not have these event details. */
         if (semver.satisfies(zmq.version, "< 4.3.0")) {
-          this.skip()
+          return ctx.skip()
         }
 
         handler = new CustomZapHandler(
@@ -128,10 +128,10 @@ for (const proto of testProtos("tcp", "ipc")) {
         assert.equal(eventA.error.code, "ERR_ZAP_BAD_VERSION")
       })
 
-      it("should report protocol format error", async function () {
+      it("should report protocol format error", async function (ctx) {
         /* ZMQ < 4.3.0 does not have these event details. */
         if (semver.satisfies(zmq.version, "< 4.3.0")) {
-          this.skip()
+          return ctx.skip()
         }
 
         handler = new CustomZapHandler(([path, delim, ...rest]) => {
@@ -157,14 +157,14 @@ for (const proto of testProtos("tcp", "ipc")) {
         assert.equal(eventA.error.code, "ERR_ZAP_MALFORMED_REPLY")
       })
 
-      it("should report mechanism mismatch error", async function () {
+      it("should report mechanism mismatch error", async function (ctx) {
         /* ZMQ < 4.3.0 does not have these event details. */
         if (semver.satisfies(zmq.version, "< 4.3.0")) {
-          this.skip()
+          return ctx.skip()
         }
         if (zmq.capability.curve !== true) {
           console.warn("Curve not supported by this zmq build")
-          this.skip()
+          return ctx.skip()
         }
 
         sockA.plainServer = true

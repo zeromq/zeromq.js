@@ -106,8 +106,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.equal(sock.closed, true)
       })
 
-      it("should release reference to context", async function () {
-        const gc = getGcOrSkipTest(this)
+      it("should release reference to context", async function (ctx) {
+        const gc = getGcOrSkipTest(ctx)
 
         let weakRef: undefined | WeakRef<zmq.Context>
 
@@ -125,17 +125,17 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await gc()
 
         assert.isDefined(weakRef)
-        assert.isUndefined(weakRef.deref())
+        assert.isUndefined(weakRef?.deref())
       })
     })
 
     // // Because context is shared in the global module, it is not GC'd until the end of the process
     // // Unless dealer is closed explicitly.
     // describe("in gc finalizer", function () {
-    //   it("should release reference to context", async function () {
-    //     const gc = getGcOrSkipTest(this)
+    //   it("should release reference to context", async function (ctx) {
+    //     const gc = getGcOrSkipTest(ctx)
     //     if (process.env.SKIP_GC_FINALIZER_TESTS) {
-    //       this.skip()
+    //       return ctx.skip()
     //     }
     //
 

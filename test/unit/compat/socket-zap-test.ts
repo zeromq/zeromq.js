@@ -78,10 +78,10 @@ if (process.env.INCLUDE_COMPAT_TESTS === "true") {
         })
       })
 
-      beforeEach(async function () {
+      beforeEach(async function (ctx) {
         /* Since ZAP uses inproc transport, it does not work reliably. */
         if (semver.satisfies(zmq.version, "< 4.2")) {
-          this.skip()
+          ctx.skip()
         }
 
         rep = zmq.socket("rep")
@@ -94,9 +94,9 @@ if (process.env.INCLUDE_COMPAT_TESTS === "true") {
         rep.close()
       })
 
-      it("should support curve", function (done) {
+      it("should support curve", function (ctx) {
         if (!capability.curve) {
-          this.skip()
+          ctx.skip()
         }
 
         const serverPublicKey = Buffer.from(

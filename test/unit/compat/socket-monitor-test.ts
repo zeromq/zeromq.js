@@ -9,22 +9,23 @@ if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   for (const proto of testProtos("tcp")) {
     describe(`compat socket with ${proto} monitor`, function () {
       let address: string
+      let warningListeners: NodeJS.WarningListener[]
       beforeEach(async () => {
         address = await uniqAddress(proto)
       })
 
-      beforeEach(function () {
+      beforeEach(function (ctx) {
         /* ZMQ < 4.2 occasionally fails with assertion errors. */
         if (semver.satisfies(zmq.version, "< 4.2")) {
-          this.skip()
+          return ctx.skip()
         }
 
-        this.warningListeners = process.listeners("warning")
+        warningListeners = process.listeners("warning")
       })
 
       afterEach(function () {
         process.removeAllListeners("warning")
-        for (const listener of this.warningListeners) {
+        for (const listener of warningListeners) {
           process.on("warning", listener)
         }
       })

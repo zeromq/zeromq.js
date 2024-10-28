@@ -43,8 +43,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should fail iterating", async function () {
-        this.test?.skip() // TODO this test timeouts
+      it("should fail iterating", async function (ctx) {
+        ctx.skip() // TODO this test timeouts
 
         try {
           /* eslint-disable-next-line no-empty */
@@ -89,8 +89,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should copy and release small buffers", async function () {
-        const gc = getGcOrSkipTest(this)
+      it("should copy and release small buffers", async function (ctx) {
+        const gc = getGcOrSkipTest(ctx)
         let weakRef: undefined | WeakRef<Buffer>
         sockA.connect(await uniqAddress(proto))
         const send = async (size: number) => {
@@ -105,8 +105,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.isUndefined(weakRef!.deref())
       })
 
-      it("should retain large buffers", async function () {
-        const gc = getGcOrSkipTest(this)
+      it("should retain large buffers", async function (ctx) {
+        const gc = getGcOrSkipTest(ctx)
         let weakRef: undefined | WeakRef<Buffer>
 
         sockA.connect(await uniqAddress(proto))
@@ -119,7 +119,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         await send(1025)
         await gc()
         assert.isDefined(weakRef)
-        assert.isDefined(weakRef.deref())
+        assert.isDefined(weakRef?.deref())
       })
     })
 
@@ -324,8 +324,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         }
       })
 
-      it("should release buffers", async function () {
-        const gc = await getGcOrSkipTest(this)
+      it("should release buffers", async function (ctx) {
+        const gc = await getGcOrSkipTest(ctx)
 
         const weakRefs: WeakRef<any>[] = []
 
@@ -362,8 +362,8 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
         assert.isEmpty(unreleased)
       })
 
-      it("should release buffers after echo", async function () {
-        const gc = getGcOrSkipTest(this)
+      it("should release buffers after echo", async function (ctx) {
+        const gc = getGcOrSkipTest(ctx)
 
         const weakRefs: WeakRef<any>[] = []
 

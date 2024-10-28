@@ -9,9 +9,9 @@ if (process.env.INCLUDE_COMPAT_TESTS === "true") {
       assert.ok(semver.valid(zmq.version))
     })
 
-    it("should generate valid curve keypair", function () {
+    it("should generate valid curve keypair", function (ctx) {
       if (!capability.curve) {
-        this.skip()
+        ctx.skip()
       }
 
       const curve = zmq.curveKeypair()

@@ -5,10 +5,10 @@ import {assert} from "chai"
 import {createWorker} from "./helpers"
 
 describe("context in thread", function () {
-  beforeEach(function () {
+  beforeEach(function (ctx) {
     /* Node.js worker support introduced in version 10.5. */
     if (semver.satisfies(process.versions.node, "< 10.5")) {
-      this.skip()
+      return ctx.skip()
     }
   })
 

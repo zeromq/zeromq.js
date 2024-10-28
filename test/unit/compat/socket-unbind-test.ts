@@ -11,10 +11,10 @@ if (
 ) {
   for (const proto of testProtos("tcp")) {
     describe(`compat socket with ${proto} unbind`, function () {
-      beforeEach(function () {
+      beforeEach(function (ctx) {
         /* Seems < 4.2 is affected by https://github.com/zeromq/libzmq/issues/1583 */
         if (semver.satisfies(zmq.version, "< 4.2")) {
-          this.skip()
+          return ctx.skip()
         }
       })
 

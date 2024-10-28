@@ -2,7 +2,7 @@ import * as path from "path"
 import * as semver from "semver"
 import * as fs from "fs"
 import * as lockfile from "proper-lockfile"
-
+import type {TaskContext} from "vitest"
 import {spawn} from "child_process"
 
 import * as zmq from "../../src"
@@ -259,15 +259,18 @@ interface GCFunction {
   }): void | Promise<void>
 }
 
-export function getGcOrSkipTest(test?: Mocha.Context) {
+export function getGcOrSkipTest(test?: TaskContext) {
   if (process.env.SKIP_GC_TESTS === "true") {
     test?.skip()
+    return () => {
+      console.log("no gc")
+    }
   }
 
   const gc = global.gc as undefined | GCFunction
   if (typeof gc !== "function") {
     throw new Error(
-      "Garbage collection is not exposed. It may be enabled by the node --expose-gc flag or v8-expose-gc flag in Mocha. To skip GC tests, set the environment variable `SKIP_GC_TESTS`",
+      "Garbage collection is not exposed. It may be enabled by the node --expose-gc flag. To skip GC tests, set the environment variable `SKIP_GC_TESTS`",
     )
   }
   // https://github.com/nodejs/node/blob/v20.0.0/deps/v8/src/extensions/gc-extension.h

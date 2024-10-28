@@ -99,10 +99,11 @@ function getItLabelDetails(tsVer: TestDef): string {
 describe("compatibility of typings for typescript versions", async function () {
   let execCmd: string
 
-  before(async function () {
+  beforeEach(async function (ctx) {
     if (/^true$/.test(process.env.EXCLUDE_TYPINGS_COMPAT_TESTS as string)) {
-      this.skip()
+      return ctx.skip()
     }
+
     execCmd = await getPackageManager()
   })
 

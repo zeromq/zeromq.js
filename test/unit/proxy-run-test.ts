@@ -9,10 +9,10 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`proxy with ${proto} run`, function () {
     let proxy: zmq.Proxy
 
-    beforeEach(async function () {
+    beforeEach(async function (ctx) {
       /* ZMQ < 4.0.5 has no steerable proxy support. */
       if (semver.satisfies(zmq.version, "< 4.0.5")) {
-        this.skip()
+        return ctx.skip()
       }
 
       proxy = new zmq.Proxy(new zmq.Router(), new zmq.Dealer())
