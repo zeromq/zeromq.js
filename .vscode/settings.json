@@ -18,6 +18,7 @@
   "mochaExplorer.env": {
     "INCLUDE_COMPAT_TESTS": "true"
   },
+  "mochaExplorer.files": "test/unit/**/*-test.ts",
   "files.exclude": {
     "**/.DS_Store": true,
     "**/Thumbs.db": true,

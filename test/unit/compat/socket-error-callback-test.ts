@@ -3,7 +3,7 @@ import type {Socket} from "../../../v5-compat"
 import {isFullError} from "../../../src/errors"
 import {assert} from "chai"
 
-if (process.env.INCLUDE_COMPAT_TESTS) {
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   describe("compat socket error callback", function () {
     let sock: Socket
 

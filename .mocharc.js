@@ -3,7 +3,6 @@
  */
 const config = {
   require: ["ts-node/register"],
-  spec: ["test/unit/**/*-test.ts"],
   "expose-gc": true,
   "v8-expose-gc": true,
   exit: true,

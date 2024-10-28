@@ -3,7 +3,7 @@ import {assert} from "chai"
 import {uniqAddress} from "../helpers"
 import http from "http"
 
-if (process.env.INCLUDE_COMPAT_TESTS) {
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   describe("compat socket stream", function () {
     let address: string
     beforeEach(async () => {

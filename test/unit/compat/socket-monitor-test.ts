@@ -4,7 +4,7 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "../helpers"
 import {isFullError} from "../../../src/errors"
 
-if (process.env.INCLUDE_COMPAT_TESTS) {
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   /* This test case only seems to work reliably with TCP. */
   for (const proto of testProtos("tcp")) {
     describe(`compat socket with ${proto} monitor`, function () {

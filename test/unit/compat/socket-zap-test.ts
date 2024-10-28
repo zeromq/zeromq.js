@@ -4,7 +4,7 @@ import semver from "semver"
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "../helpers"
 
-if (process.env.INCLUDE_COMPAT_TESTS) {
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   function start() {
     const zap = zmq.socket("router")
 

@@ -3,7 +3,7 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "../helpers"
 import {isFullError} from "../../../src/errors"
 
-if (process.env.INCLUDE_COMPAT_TESTS) {
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   for (const proto of testProtos("tcp")) {
     describe(`compat proxy with ${proto} xpub-xsub`, function () {
       const sockets: zmq.Socket[] = []

@@ -3,7 +3,7 @@ import {capability} from "../../../src"
 import {assert} from "chai"
 import semver from "semver"
 
-if (process.env.INCLUDE_COMPAT_TESTS) {
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   describe("compat exports", function () {
     it("should export a valid version", function () {
       assert.ok(semver.valid(zmq.version))

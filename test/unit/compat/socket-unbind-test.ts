@@ -6,7 +6,7 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "../helpers"
 
 if (
-  process.env.INCLUDE_COMPAT_TESTS &&
+  process.env.INCLUDE_COMPAT_TESTS === "true" &&
   process.env.INCLUDE_COMPAT_UNBIND_TEST
 ) {
   for (const proto of testProtos("tcp")) {

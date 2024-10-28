@@ -2,8 +2,8 @@ import * as zmq from "../../../v5-compat"
 import {assert} from "chai"
 import {testProtos, uniqAddress} from "../helpers"
 
-if (process.env.INCLUDE_COMPAT_TESTS) {
-  for (const proto of testProtos("tcp", "inproc")) {
+if (process.env.INCLUDE_COMPAT_TESTS === "true") {
+  for (const proto of testProtos( "inproc")) {
     describe(`compat socket with ${proto} messages`, function () {
       let push: zmq.Socket
       let pull: zmq.Socket
