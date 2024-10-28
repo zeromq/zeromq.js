@@ -29,6 +29,7 @@ import {
 
 import * as draft from "./draft"
 import {FullError} from "./errors"
+import events from "events"
 
 /**
  * A type representing the messages that are returned inside promises by
@@ -348,8 +349,6 @@ interface EventEmitter {
 if (!Observer.prototype.hasOwnProperty("emitter")) {
   Object.defineProperty(Observer.prototype, "emitter", {
     get: function emitter(this: Observer) {
-      /* eslint-disable-next-line @typescript-eslint/no-var-requires */
-      const events = require("events")
       const value: EventEmitter = new events.EventEmitter()
 
       const boundReceive = this.receive.bind(this)

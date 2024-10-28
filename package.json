@@ -22,6 +22,9 @@
     "@aminya/cmake-ts": "^0.3.0-aminya.7",
     "node-addon-api": "^8.2.1"
   },
+  "optionalDependencies": {
+    "deasync": "^0.1.30"
+  },
   "devDependencies": {
     "@types/benchmark": "~2.1.5",
     "@types/chai": "^5.0.0",

@@ -9,6 +9,7 @@ import {FullError} from "./errors"
 import * as longOptions from "./compat/long-options"
 import * as pollStates from "./compat/poll-states"
 import * as sendOptions from "./compat/send-options"
+import deasync from "deasync"
 
 type AnySocket =
   | zmq.Pair
@@ -330,7 +331,7 @@ class Socket extends EventEmitter {
   bindSync(...args: Parameters<Socket["bind"]>) {
     try {
       Object.defineProperty(this, "bindSync", {
-        value: require("deasync")(this.bind),
+        value: deasync(this.bind),
       })
     } catch (err) {
       throw new Error(
@@ -345,7 +346,7 @@ class Socket extends EventEmitter {
   unbindSync(...args: Parameters<Socket["unbind"]>) {
     try {
       Object.defineProperty(this, "unbindSync", {
-        value: require("deasync")(this.unbind),
+        value: deasync(this.unbind),
       })
     } catch (err) {
       throw new Error(
