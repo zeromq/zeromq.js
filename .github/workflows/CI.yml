@@ -175,9 +175,12 @@ jobs:
           timeout_minutes: 5
           max_attempts: 1
           command: |
-            pnpm run clean.temp
             pnpm run test.unit
         continue-on-error: true
+
+      - name: Clean Tmp
+        run: rm -rf ./tmp
+        shell: bash
 
       - name: Test Compatibility
         if: ${{ !matrix.docker }}
@@ -186,10 +189,13 @@ jobs:
           timeout_minutes: 5
           max_attempts: 1
           command: |
-            pnpm run clean.temp
             pnpm run test.unit.compat
         continue-on-error: true
 
+      - name: Clean Tmp
+        run: rm -rf ./tmp
+        shell: bash
+        
       - name: Test Electron Windows/MacOS
         if: "${{ !matrix.docker }}"
         uses: nick-fields/retry@v3
