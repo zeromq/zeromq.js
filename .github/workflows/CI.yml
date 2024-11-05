@@ -190,7 +190,18 @@ jobs:
             pnpm run test.unit.compat
         continue-on-error: true
 
-      - name: Test Electron (Main)
+      - name: Test Electron Windows/MacOS
+        if: "${{ !matrix.docker }}"
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 1
+          command: |
+            pnpm install -g electron@latest
+            pnpm run test.electron.main
+        continue-on-error: true
+
+      - name: Test Electron Linux
         if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
         uses: nick-fields/retry@v3
         with:
