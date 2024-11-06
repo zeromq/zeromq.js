@@ -63,6 +63,9 @@
     "overrides": {
       "typescript": "~4.9.5",
       "node-gyp": "10.0.1"
+    },
+    "patchedDependencies": {
+      "electron-mocha": "patches/electron-mocha.patch"
     }
   },
   "engines": {
