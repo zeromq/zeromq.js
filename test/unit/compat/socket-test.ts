@@ -1,5 +1,5 @@
 import * as zmq from "../../../v5-compat"
-import { assert } from "chai"
+import {assert} from "chai"
 
 if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   describe("compat socket", function () {

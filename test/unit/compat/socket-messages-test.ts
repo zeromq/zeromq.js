@@ -3,7 +3,7 @@ import {assert} from "chai"
 import {testProtos, uniqAddress} from "../helpers"
 
 if (process.env.INCLUDE_COMPAT_TESTS === "true") {
-  for (const proto of testProtos( "inproc")) {
+  for (const proto of testProtos("inproc")) {
     describe(`compat socket with ${proto} messages`, function () {
       let push: zmq.Socket
       let pull: zmq.Socket
