@@ -195,7 +195,7 @@ jobs:
       - name: Clean Tmp
         run: rm -rf ./tmp
         shell: bash
-        
+
       - name: Test Electron Windows/MacOS
         if: "${{ !matrix.docker }}"
         uses: nick-fields/retry@v3
@@ -203,7 +203,6 @@ jobs:
           timeout_minutes: 5
           max_attempts: 1
           command: |
-            pnpm install -g electron@latest
             pnpm run test.electron.main
         continue-on-error: true
 
@@ -215,7 +214,6 @@ jobs:
           max_attempts: 1
           command: |
             sudo apt-get install xvfb
-            pnpm install -g electron@latest
             xvfb-run --auto-servernum pnpm run test.electron.main
         continue-on-error: true
 

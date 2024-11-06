@@ -522,6 +522,9 @@ void Socket::Close(const Napi::CallbackInfo& info) {
 }
 
 Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
+#ifdef _MSC_VER
+#pragma warning(disable : 4065)
+#endif
     switch (type) {
 #ifdef ZMQ_HAS_POLLABLE_THREAD_SAFE
     case ZMQ_SERVER:
