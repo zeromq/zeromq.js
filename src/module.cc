@@ -1,29 +1,34 @@
 
 #include "./module.h"
 
+#include <array>
+
 #include "./context.h"
 #include "./observer.h"
 #include "./outgoing_msg.h"
 #include "./proxy.h"
 #include "./socket.h"
+#include "./zmq_inc.h"
 #include "util/error.h"
-#include "util/to_string.h"
 
 namespace zmq {
-static inline Napi::String Version(const Napi::Env& env) {
-    int32_t major, minor, patch;
+Napi::String Version(const Napi::Env& env) {
+    int32_t major = 0;
+    int32_t minor = 0;
+    int32_t patch = 0;
     zmq_version(&major, &minor, &patch);
 
-    return Napi::String::New(
-        env, to_string(major) + "." + to_string(minor) + "." + to_string(patch));
+    return Napi::String::New(env,
+        std::to_string(major) + "." + std::to_string(minor) + "."
+            + std::to_string(patch));
 }
 
-static inline Napi::Object Capabilities(const Napi::Env& env) {
+Napi::Object Capabilities(const Napi::Env& env) {
     auto result = Napi::Object::New(env);
 
 #ifdef ZMQ_HAS_CAPABILITIES
     static auto options = {"ipc", "pgm", "tipc", "norm", "curve", "gssapi", "draft"};
-    for (auto& option : options) {
+    for (const auto& option : options) {
         result.Set(option, static_cast<bool>(zmq_has(option)));
     }
 
@@ -54,22 +59,24 @@ static inline Napi::Object Capabilities(const Napi::Env& env) {
     return result;
 }
 
-static inline Napi::Value CurveKeyPair(const Napi::CallbackInfo& info) {
-    char public_key[41];
-    char secret_key[41];
-    if (zmq_curve_keypair(public_key, secret_key) < 0) {
+Napi::Value CurveKeyPair(const Napi::CallbackInfo& info) {
+    static constexpr auto max_key_length = 41;
+
+    std::array<char, max_key_length> public_key{};
+    std::array<char, max_key_length> secret_key{};
+
+    if (zmq_curve_keypair(public_key.data(), secret_key.data()) < 0) {
         ErrnoException(info.Env(), zmq_errno()).ThrowAsJavaScriptException();
         return info.Env().Undefined();
     }
 
     auto result = Napi::Object::New(info.Env());
-    result["publicKey"] = Napi::String::New(info.Env(), public_key);
-    result["secretKey"] = Napi::String::New(info.Env(), secret_key);
+    result["publicKey"] = Napi::String::New(info.Env(), public_key.data());
+    result["secretKey"] = Napi::String::New(info.Env(), secret_key.data());
     return result;
 }
 
-Module::Global::Global() {
-    SharedContext = zmq_ctx_new();
+Module::Global::Global() : SharedContext(zmq_ctx_new()) {
     assert(SharedContext != nullptr);
 
     ContextTerminator.Add(SharedContext);
@@ -82,7 +89,7 @@ Module::Global::Shared Module::Global::Instance() {
     static std::mutex lock;
     static std::weak_ptr<Global> shared;
 
-    std::lock_guard<std::mutex> guard(lock);
+    std::lock_guard<std::mutex> const guard(lock);
 
     /* Get an existing instance from the weak reference, if possible. */
     if (auto instance = shared.lock()) {
@@ -108,15 +115,15 @@ Module::Module(Napi::Object exports) : MsgTrash(exports.Env()) {
     Proxy::Initialize(*this, exports);
 #endif
 }
-}
+}  // namespace zmq
 
 /* This initializer can be called in multiple contexts, like worker threads. */
 NAPI_MODULE_INIT(/* env, exports */) {
-    auto module = new zmq::Module(Napi::Object(env, exports));
+    auto* module = new zmq::Module(Napi::Object(env, exports));
     auto terminate = [](void* data) { delete reinterpret_cast<zmq::Module*>(data); };
 
     /* Tear down the module class when the env/agent/thread is closed.*/
-    auto status = napi_add_env_cleanup_hook(env, terminate, module);
+    [[maybe_unused]] auto status = napi_add_env_cleanup_hook(env, terminate, module);
     assert(status == napi_ok);
     return exports;
 }

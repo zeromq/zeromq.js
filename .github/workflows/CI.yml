@@ -14,11 +14,8 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          # - ubuntu-22.04
           - ubuntu-20.04
-          - windows-2022
-        node_version:
-          - 18
+          - windows-2019
         node_arch:
           - x64
         cpp_arch:
@@ -29,24 +26,20 @@ jobs:
           - ""
 
         include:
-          - os: windows-2022
-            node_version: 18
+          - os: windows-2019
             node_arch: ia32
             cpp_arch: amd64_x86
 
           # - os: windows-2022
-          #   node_version: 18
           #   node_arch: x64
           #   arch: arm64
           #   cpp_arch: amd64_arm64
 
           - os: macos-13
-            node_version: 18
             node_arch: x64
             cpp_arch: x64
 
           - os: macos-14
-            node_version: 18
             node_arch: arm64
             cpp_arch: amd64_arm64
 
@@ -54,10 +47,10 @@ jobs:
           - os: ubuntu-22.04
             docker: node:18-alpine
             docker_cmd:
-              apk add --no-cache pkgconfig curl tar python3 make gcc g++ cmake
-              musl-dev && npm i -g pnpm && pnpm install && pnpm run
-              build.prebuild
-            node_version: 18
+              apk add --no-cache bash build-base curl git g++ make ninja-build
+              pkgconfig unzip zip python3 tar cmake ninja musl-dev && cp
+              /usr/lib/ninja-build/bin/ninja /usr/bin/ninja && npm i -g pnpm &&
+              pnpm install && pnpm run build
             node_arch: x64
             cpp_arch: x64
 
@@ -75,18 +68,18 @@ jobs:
         with:
           path: |
             ./node_modules/
-            ./build/
+            ~/vcpkg
           key:
             # prettier-ignore
-            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-ZMQ_DRAFT:${{env.npm_config_zmq_draft }}-Node:${{ matrix.node_version}}-${{hashFiles('./package.json') }}"
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-ZMQ_DRAFT:${{env.npm_config_zmq_draft }}-${{hashFiles('./package.json') }}"
           restore-keys: |
-            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-Node:${{ matrix.node_version }}-"
+            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-"
 
       - name: Env map
         run: |
-            if [ "${{ matrix.node_arch }}" = "ia32" ]; then
-              echo "setup_node_arch=x86" > $GITHUB_ENV
-            fi
+          if [ "${{ matrix.node_arch }}" = "ia32" ]; then
+            echo "setup_node_arch=x86" > $GITHUB_ENV
+          fi
         shell: bash
 
       - name: Setup Cpp
@@ -95,20 +88,10 @@ jobs:
         with:
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
           cmake: true
+          ninja: true
           python: true
+          vcpkg: true
           architecture: ${{ matrix.cpp_arch }}
-
-      - uses: pnpm/action-setup@v4
-        if: ${{ !matrix.docker }}
-        with:
-          version: 9
-
-      - name: Install Node
-        if: ${{ !matrix.docker }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node_version }}
-          architecture: ${{ env.setup_node_arch }}
 
       - name: Install Mac-OS x86_64 Dependencies
         if: ${{ contains(matrix.os, 'macos') && matrix.node_arch == 'x64' }}
@@ -123,13 +106,49 @@ jobs:
           echo "PATH=$PATH" >> $GITHUB_ENV
           echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
 
-      - name: Install Dependencies and Build
+      - uses: pnpm/action-setup@v4
+        if: ${{ !matrix.docker }}
+        with:
+          version: 9
+
+      - name: Install Node 20
+        if: ${{ !matrix.docker }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          architecture: ${{ env.setup_node_arch }}
+
+      - name: Install and Build Native
         if: ${{ !matrix.docker }}
         run: pnpm install
 
-      - name: Prebuild
+      - name: Build JavaScript
         if: ${{ !matrix.docker }}
-        run: pnpm run build.prebuild
+        run: pnpm run build.js
+
+      - name: Install Node 10
+        if: ${{ !matrix.docker && matrix.os != 'macos-14' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 10
+          architecture: ${{ env.setup_node_arch }}
+
+      - name: Build Native
+        if: ${{ !matrix.docker && matrix.node_arch != 'ia32' }}
+        run: npm run build.native
+
+      - name: Build Native Windows 32
+        if: ${{ matrix.os == 'windows-2019' && matrix.node_arch == 'ia32' }}
+        run:
+          node ./node_modules/@aminya/cmake-ts/build/main.js named-configs
+          windows-x86
+
+      - name: Use Node 20
+        if: ${{ !matrix.docker }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          architecture: ${{ env.setup_node_arch }}
 
       - name: Prebuild Docker
         if: ${{ matrix.docker }}
@@ -139,11 +158,11 @@ jobs:
           docker tag ${{ matrix.docker }} builder
           docker run --volume ${{ github.workspace }}:/app --workdir /app --privileged builder sh -c "${{ matrix.docker_cmd }}"
 
-      - name: Upload artifacts
+      - name: Upload build
         uses: actions/upload-artifact@v4
         with:
-          path: ./prebuilds
-          name: prebuilds-${{ strategy.job-index }}
+          path: ./build
+          name: build-${{ strategy.job-index }}
           overwrite: true
 
       - name: Lint
@@ -157,10 +176,38 @@ jobs:
           timeout_minutes: 5
           max_attempts: 1
           command: |
-            pnpm run test
+            pnpm run test.unit
         continue-on-error: true
 
-      - name: Test Electron (Main)
+      - name: Clean Tmp
+        run: rm -rf ./tmp
+        shell: bash
+
+      - name: Test Compatibility
+        if: ${{ !matrix.docker }}
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 1
+          command: |
+            pnpm run test.unit.compat
+        continue-on-error: true
+
+      - name: Clean Tmp
+        run: rm -rf ./tmp
+        shell: bash
+
+      - name: Test Electron Windows/MacOS
+        if: "${{ !matrix.docker }}"
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 5
+          max_attempts: 1
+          command: |
+            pnpm run test.electron.main
+        continue-on-error: true
+
+      - name: Test Electron Linux
         if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
         uses: nick-fields/retry@v3
         with:
@@ -168,16 +215,101 @@ jobs:
           max_attempts: 1
           command: |
             sudo apt-get install xvfb
-            pnpm install -g electron@latest
             xvfb-run --auto-servernum pnpm run test.electron.main
         continue-on-error: true
-  merge-prebuilds:
+
+  Package:
     runs-on: ubuntu-latest
     needs: Build
     steps:
       - name: Merge Artifacts
         uses: actions/upload-artifact/merge@v4
         with:
-          name: prebuilds
-          pattern: prebuilds-*
+          name: build
+          pattern: build-*
           delete-merged: true
+
+      - uses: actions/checkout@v4
+
+      - name: Place build
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+          path: ./build
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: "./.nvmrc"
+
+      - name: Install Pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Pack Zeromq
+        run: |
+          pnpm install
+          pnpm pack
+
+      - name: Upload Pack
+        uses: actions/upload-artifact@v4
+        with:
+          path: ./*.tgz
+          name: pack
+          overwrite: true
+
+  SmokeTest:
+    runs-on: ${{ matrix.os }}
+    needs: Package
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-24.04
+          - windows-2022
+          - macos-13
+        node-version:
+          - 10
+          - 22
+
+        include:
+          - os: macos-14
+            node-version: 22
+    steps:
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install Yarn 1
+        if: matrix.node-version == 10
+        run: |
+          npm i -g yarn@^1
+
+      - name: Install Yarn Latest
+        if: matrix.node-version == 22
+        run: |
+          npm i -g yarn@latest
+
+      - name: Install Pnpm 5
+        if: matrix.node-version == 10
+        uses: pnpm/action-setup@v4
+        with:
+          version: 5
+
+      - name: Install Pnpm 9
+        if: matrix.node-version == 22
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/checkout@v4
+
+      - name: Download Pack
+        uses: actions/download-artifact@v4
+        with:
+          name: pack
+
+      - name: Smoke Test
+        run: bash ./script/smoke-test.bash

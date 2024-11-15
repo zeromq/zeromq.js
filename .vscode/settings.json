@@ -1,21 +1,28 @@
 {
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
   "mochaExplorer.parallel": true,
   "mochaExplorer.globImplementation": "vscode",
-  "mochaExplorer.nodeArgv": [
-    "--expose-gc"
-  ],
+  "mochaExplorer.nodeArgv": ["--expose-gc"],
   "mochaExplorer.debuggerConfig": "JS-Attach",
+  "mochaExplorer.env": {
+    "INCLUDE_COMPAT_TESTS": "true"
+  },
+  "mochaExplorer.files": "test/unit/**/*-test.ts",
+  "mochaExplorer.mochaPath": "./node_modules/mocha",
   "files.exclude": {
-    "**/.git": true,
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
-    "**/.cache": true,
-    "**/script/*.js": true,
-    "**/script/*.mjs": true,
-    "**/script/*.js.map": true,
-    "**/script/*.mjs.map": true,
-    "**/script/*.d.ts": true,
-    "**/script/*.d.mts": true,
-    "**/script/*.tsbuildinfo": true,
+    "**/.cache": true
   }
 }

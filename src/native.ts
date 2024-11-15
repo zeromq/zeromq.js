@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 /* Declare all native C++ classes and methods in this file. */
-const path = require("path")
-module.exports = require("@aminya/node-gyp-build")(path.join(__dirname, ".."))
+import addon from "./load-addon"
+module.exports = addon
 
 /**
  * The version of the ØMQ library the bindings were built with. Formatted as

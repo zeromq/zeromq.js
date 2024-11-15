@@ -45,6 +45,7 @@ export type MessageLike =
   | ArrayBuffer /* Backing buffer of TypedArrays. */
   | SharedArrayBuffer
   | string
+  | number
   | null
 
 /**

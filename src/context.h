@@ -12,10 +12,12 @@ public:
     static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Context(const Napi::CallbackInfo& info);
-    virtual ~Context();
 
+    Context(const Context&) = delete;
+    Context& operator=(const Context&) = delete;
     Context(Context&&) = delete;
     Context& operator=(Context&&) = delete;
+    ~Context() override;
 
     void Close() override;
 
@@ -34,7 +36,7 @@ private:
     friend class Observer;
     friend class Proxy;
 };
-}
+}  // namespace zmq
 
-static_assert(!std::is_copy_constructible<zmq::Context>::value, "not copyable");
-static_assert(!std::is_move_constructible<zmq::Context>::value, "not movable");
+static_assert(!std::is_copy_constructible_v<zmq::Context>, "not copyable");
+static_assert(!std::is_move_constructible_v<zmq::Context>, "not movable");

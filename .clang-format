@@ -2,20 +2,20 @@
 Language: Cpp
 # BasedOnStyle:  Google
 AccessModifierOffset: -4
-AlignAfterOpenBracket: false
-AlignConsecutiveAssignments: false
+AlignAfterOpenBracket: "DontAlign"
+AlignConsecutiveAssignments: "None"
 AlignEscapedNewlinesLeft: false
-AlignOperands: false
+AlignOperands: "DontAlign"
 AlignTrailingComments: false
 AllowAllParametersOfDeclarationOnNextLine: true
-AllowShortBlocksOnASingleLine: false
+AllowShortBlocksOnASingleLine: "Never"
 AllowShortCaseLabelsOnASingleLine: false
 AllowShortFunctionsOnASingleLine: Empty
-AllowShortIfStatementsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: "AllIfsAndElse"
 AllowShortLoopsOnASingleLine: true
 AlwaysBreakAfterDefinitionReturnType: None
 AlwaysBreakBeforeMultilineStrings: true
-AlwaysBreakTemplateDeclarations: true
+AlwaysBreakTemplateDeclarations: "Yes"
 BinPackArguments: true
 BinPackParameters: true
 BreakBeforeBinaryOperators: NonAssignment
@@ -64,6 +64,7 @@ SpacesInSquareBrackets: false
 Standard: Auto
 TabWidth: 4
 UseTab: Never
+RemoveSemicolon: true
 
 IncludeBlocks: Regroup
 IncludeCategories:

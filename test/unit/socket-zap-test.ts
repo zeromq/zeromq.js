@@ -167,8 +167,6 @@ for (const proto of testProtos("tcp", "ipc")) {
           this.skip()
         }
 
-        this.slow(250)
-
         sockA.plainServer = true
         sockB.curveServer = true
 

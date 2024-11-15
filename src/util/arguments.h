@@ -4,11 +4,9 @@
 
 #include <optional>
 
-#include "to_string.h"
+namespace zmq::Arg {
 
-namespace zmq {
-namespace Arg {
-typedef bool (Napi::Value::*ValueMethod)() const;
+using ValueMethod = bool (Napi::Value::*)() const;
 
 template <ValueMethod M>
 struct VerifyWithMethod {
@@ -30,14 +28,17 @@ struct Not {
 
 template <typename... F>
 class Verify {
-    const std::string_view msg;
+    /* const */ std::string_view msg;
 
 public:
-    constexpr Verify(std::string_view msg) noexcept : msg(msg) {}
+    constexpr explicit Verify(std::string_view msg) noexcept : msg(msg) {}
 
-    std::optional<Napi::Error> operator()(uint32_t, const Napi::Value& value) const {
+    std::optional<Napi::Error> operator()(
+        uint32_t /*unused*/, const Napi::Value& value) const {
         auto valid = ((F()(value)) || ...);
-        if (valid) return {};
+        if (valid) {
+            return {};
+        }
         return Napi::TypeError::New(value.Env(), std::string(msg));
     }
 };
@@ -60,14 +61,14 @@ using Optional = Verify<F..., Undefined>;
 
 template <typename... F>
 class Validator {
-    static constexpr size_t N = sizeof...(F);
+    static constexpr size_t NumArgs = sizeof...(F);
     std::tuple<F...> validators;
 
 public:
-    constexpr Validator(F&&... validators) noexcept
+    constexpr explicit Validator(F&&... validators) noexcept
         : validators(std::forward<F>(validators)...) {}
 
-    bool ThrowIfInvalid(const Napi::CallbackInfo& info) const {
+    [[nodiscard]] bool ThrowIfInvalid(const Napi::CallbackInfo& info) const {
         if (auto err = Validate(info)) {
             err->ThrowAsJavaScriptException();
             return true;
@@ -76,25 +77,29 @@ public:
         return false;
     }
 
-    std::optional<Napi::Error> Validate(const Napi::CallbackInfo& info) const {
+    [[nodiscard]] std::optional<Napi::Error> Validate(
+        const Napi::CallbackInfo& info) const {
         return eval(info);
     }
 
 private:
     template <size_t I = 0>
-    std::optional<Napi::Error> eval(const Napi::CallbackInfo& info) const {
-        if constexpr (I == N) {
-            if (info.Length() > N) {
-                auto msg = "Expected " + to_string(N) + " argument" + (N != 1 ? "s" : "");
+    [[nodiscard]] std::optional<Napi::Error> eval(const Napi::CallbackInfo& info) const {
+        if constexpr (I == NumArgs) {
+            if (info.Length() > NumArgs) {
+                auto msg = "Expected " + std::to_string(NumArgs) + " argument"
+                    + (NumArgs != 1 ? "s" : "");
                 return Napi::TypeError::New(info.Env(), msg);
             }
 
             return {};
         } else {
-            if (auto err = std::get<I>(validators)(I, info[I])) return err;
+            if (auto err = std::get<I>(validators)(I, info[I])) {
+                return err;
+            }
             return eval<I + 1>(info);
         }
     }
 };
-}
-}
+}  // namespace zmq::Arg
+   // namespace zmq

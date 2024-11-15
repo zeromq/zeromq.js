@@ -13,7 +13,6 @@ build-tmp-napi-v*
 test.js
 .cache/
 test/typings-compatibility/
-/script/*js
 /script/*.d.ts
 /script/*.d.*ts
 /script/*js.map
@@ -22,3 +21,11 @@ tsconfig.*.tsbuildinfo
 /doc-unminified
 .DS_Store
 .idea
+/staging
+!/lib/load-addon.js
+!/lib/load-addon.js.map
+
+compile_commands.json
+
+/smoke-test-*
+/*.tgz

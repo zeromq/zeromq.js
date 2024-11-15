@@ -15,7 +15,12 @@ public:
     static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Proxy(const Napi::CallbackInfo& info);
-    virtual ~Proxy();
+
+    Proxy(const Proxy&) = delete;
+    Proxy(Proxy&&) = delete;
+    Proxy& operator=(const Proxy&) = delete;
+    Proxy& operator=(Proxy&&) = delete;
+    ~Proxy() override;
 
     void Close() override;
 
@@ -41,9 +46,9 @@ private:
     void* control_sub = nullptr;
     void* control_pub = nullptr;
 };
-}
+}  // namespace zmq
 
-static_assert(!std::is_copy_constructible<zmq::Proxy>::value, "not copyable");
-static_assert(!std::is_move_constructible<zmq::Proxy>::value, "not movable");
+static_assert(!std::is_copy_constructible_v<zmq::Proxy>, "not copyable");
+static_assert(!std::is_move_constructible_v<zmq::Proxy>, "not movable");
 
 #endif

@@ -10,6 +10,7 @@
   iterators.
 - High performance.
 - Fully usable with TypeScript (3+).
+- Compatible with Zeromq 4/5 via "zeromq/v5-compat"
 
 ## Useful links
 
@@ -21,18 +22,39 @@
 
 ## Table of contents
 
-- [Installation](#installation)
-  - [Prebuilt binaries](#prebuilt-binaries)
-  - [Building from source](#building-from-source)
-- [Examples](#examples)
-  - [Push/Pull](#pushpull)
-  - [Pub/Sub](#pubsub)
-  - [Req/Rep](#reqrep)
+- [ZeroMQ.js Next Generation](#zeromqjs-next-generation)
+  - [Useful links](#useful-links)
+  - [Table of contents](#table-of-contents)
+  - [Installation](#installation)
+    - [Prebuilt binaries](#prebuilt-binaries)
+    - [Building from source](#building-from-source)
+    - [Available Build Options](#available-build-options)
+    - [Curve support](#curve-support)
+    - [Libsodium for Curve](#libsodium-for-curve)
+      - [Draft support](#draft-support)
+      - [Websocket support](#websocket-support)
+      - [Secure Websocket support](#secure-websocket-support)
+      - [Not Synchronous Resolve](#not-synchronous-resolve)
+      - [MacOS Deployment Target](#macos-deployment-target)
+  - [Examples](#examples)
+    - [Basic Usage](#basic-usage)
+    - [Push/Pull](#pushpull)
+      - [`producer.js`](#producerjs)
+      - [`worker.js`](#workerjs)
+    - [Pub/Sub](#pubsub)
+      - [`publisher.js`](#publisherjs)
+      - [`subscriber.js`](#subscriberjs)
+    - [Req/Rep](#reqrep)
+      - [`client.js`](#clientjs)
+      - [`server.js`](#serverjs)
+  - [Zeromq 4 and 5 Compatibility layer](#zeromq-4-and-5-compatibility-layer)
   - [TypeScript](#typescript)
-  - [More examples](#more-examples)
-  - [Compatibility layer for version 4/5](#compatibility-layer-for-version-45)
-- [Contribution](#contribution)
-- [History](#history)
+  - [Contribution](#contribution)
+    - [Dependencies](#dependencies)
+    - [Defining new options](#defining-new-options)
+    - [Testing](#testing)
+    - [Publishing](#publishing)
+  - [History](#history)
 
 ## Installation
 
@@ -42,14 +64,19 @@ Install **ZeroMQ.js** with prebuilt binaries:
 npm install zeromq
 ```
 
-Requirements for using prebuilt binaries:
+Supported versions:
 
-- Node.js 10.2+ or Electron 3+ (requires a
-  [N-API](https://nodejs.org/api/n-api.html) version 3+)
+- Node.js v12 (requires a [N-API](https://nodejs.org/api/n-api.html))
 
 ### Prebuilt binaries
 
 The following platforms have a **prebuilt binary** available:
+
+- Windows on x86/x86-64
+
+  Zeromq binaries on Windows 10 or older need
+  [Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-microsoft-visual-c-redistributable-version)
+  to be installed.
 
 - Linux on x86-64 with libstdc++.so.6.0.21+ (glibc++ 3.4.21+), for example:
   - Debian 9+ (Stretch or later)
@@ -58,7 +85,6 @@ The following platforms have a **prebuilt binary** available:
 - Linux on x86-64 with musl, for example:
   - Alpine 3.3+
 - MacOS 10.9+ on x86-64
-- Windows on x86/x86-64
 
 If a prebuilt binary is not available for your platform, installing will attempt
 to start a build from source.
@@ -71,9 +97,9 @@ during build, you can build this package from source.
 Make sure you have the following installed before attempting to build from
 source:
 
-- Node.js 10+ or Electron 3+
+- Node.js 10+ or Electron
 - A working C++17 compiler toolchain with make
-- Python 3 with Node 12.13+ (or legacy Python 2.7)
+- Python 3 with Node 10+ (or legacy Python 2.7)
 - CMake 2.8+
 - curl
 
@@ -91,6 +117,25 @@ When building from source, you can also specify additional build options in a
 <details>
 <summary>👉🏻 Options</summary>
 
+### Curve support
+
+Enables CURVE security for encrypted communications. To enable CURVE support,
+add the following to your .npmrc:
+
+```ini
+zmq_curve="true"
+```
+
+### Libsodium for Curve
+
+Enable libsodium for CURVE security instead of the built-in tweetnacl
+implementation. This can provide better performance for CURVE operations. To use
+libsodium, add the following to your .npmrc:
+
+```ini
+zmq_sodium="true"
+```
+
 #### Draft support
 
 By default `libzmq` is built with support for `Draft` patterns (e.g.
@@ -101,71 +146,85 @@ without support for `Draft`, you can specify the following in `.npmrc`:
 zmq_draft=false
 ```
 
+#### Websocket support
+
+Enables WebSocket transport, allowing ZeroMQ to communicate over WebSockets. To
+enable WebSocket support, add the following to your .npmrc:
+
+```ini
+zmq_websockets="true"
+```
+
+#### Secure Websocket support
+
+Enables WebSocket transport with TLS (wss), providing secure WebSocket
+communications. To enable secure WebSocket support, add the following to your
+.npmrc:
+
+```ini
+zmq_websockets_secure="true"
+```
+
 #### Not Synchronous Resolve
 
-If you want to send/receive on the socket immediately, you can specify the
-following in `.npmrc`:
+Enables immediate send/receive on the socket without synchronous resolution.
+This option can improve performance in certain scenarios by allowing operations
+to proceed without waiting for synchronous resolution. To enable this feature,
+add the following to your `.npmrc`:
 
 ```ini
 zmq_no_sync_resolve="true"
 ```
 
-#### Shared library support
-
-If you want to link against a shared ZeroMQ library installed on your system,
-you can build skip downloading `libzmq` and link with the installed library
-instead by specifying the following in `.npmrc`:
-
-```ini
-zmq_shared=true
-```
-
-#### Alternative libzmq version
-
-You can specify an alternative version or Git revision of `libzmq` to build
-against by specifying the following in `.npmrc`:
-
-```ini
-zmq_version="4.3.5"
-```
-
-#### Debug build of libzmq
-
-If you want to build `libzmq` with debug symbols, you can specify the following
-in `.npmrc`:
-
-```ini
-zmq_build_type="Debug"
-```
-
-#### Cross-compilation for different architectures
-
-If you want to cross-compile for a different architecture, you can specify the
-following in `.npmrc`:
-
-```ini
-arch="arm64"
-target_arch="arm64"
-```
-
 #### MacOS Deployment Target
 
-If you want to specify the MacOS deployment target, you can specify the
-following in `.npmrc`:
+Specifies the minimum macOS version that the binary will be compatible with.
+This is particularly useful when building for different macOS versions. To set
+this, add the following to your .npmrc, replacing 10.15 with your desired
+minimum macOS version:
 
 ```ini
-macos_deployment_target="10.15"
+macosx_deployment_target="10.15"
 ```
 
 </details>
 
 ## Examples
 
-**Note:** These examples assume the reader is familiar with ZeroMQ. If you are
-new to ZeroMQ, please start with the
+Here some examples of different features are provided. More examples can be
+found in the [examples directory](examples).
+
+You can also browse
+[the API reference documentation](http://zeromq.github.io/zeromq.js/globals.html)
+to see all socket types, methods & options as well as more detailed information
+about how to apply them.
+
+**Note:** If you are new to ZeroMQ, please start with the
 [ZeroMQ documentation](https://zeromq.org/get-started/).
 
-More examples can be found in the [examples directory](examples).
+### Basic Usage
+
+ES modules:
+
+```typescript
+import {Request} from "zeromq"
+// or as namespace
+import * as zmq from "zeromq"
+
+const reqSock = new Request()
+//...
+const repSock = new zmq.Reply()
+```
+
+Commonjs:
+
+```js
+const zmq = require("zeromq")
+
+const reqSock = new zmq.Request()
+//...
+const repSock = new zmq.Reply()
+```
 
 ### Push/Pull
 
@@ -177,7 +236,7 @@ how a worker pulls information from the socket.
 Creates a producer to push information onto a socket.
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Push()
@@ -201,7 +260,7 @@ run()
 Creates a worker to pull information from the socket.
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Pull()
@@ -227,7 +286,7 @@ Publisher/Subscriber, application.
 Create the publisher which sends messages.
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Publisher()
@@ -252,7 +311,7 @@ run()
 Create a subscriber to connect to a publisher's port to receive messages.
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Subscriber()
@@ -281,7 +340,7 @@ This example illustrates a request from a client and a reply from a server.
 #### `client.js`
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Request()
@@ -301,7 +360,7 @@ run()
 #### `server.js`
 
 ```js
-const zmq = require("zeromq")
+import * as zmq from "zeromq"
 
 async function run() {
   const sock = new zmq.Reply()
@@ -309,50 +368,14 @@ async function run() {
   await sock.bind("tcp://127.0.0.1:3000")
 
   for await (const [msg] of sock) {
-    await sock.send(2 * parseInt(msg, 10))
+    await sock.send((2 * parseInt(msg.toString(), 10)).toString())
   }
 }
 
 run()
 ```
 
-## TypeScript
-
-This library provides typings for TypeScript version 3.0.x and later.
-
-_Requirements_
-
-- For TypeScript version >= 3:
-  - [compilerOptions](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
-- For TypeScript version < 3.6:
-  - either set `compilerOptions.target` to `esnext` or later (e.g. `es2018`)
-  - or add the following, or similar, libraries to `compilerOptions.lib` (and
-    include their corresponding polyfills if needed): `es2015`,
-    `ESNext.AsyncIterable`
-
-_Example Usage_
-
-```typescript
-import {Request} from "zeromq"
-// or as namespace
-import * as zmq from "zeromq"
-
-const reqSock = new Request()
-//...
-const repSock = new zmq.Reply()
-```
-
-### More examples
-
-More advanced examples can be found in the [examples](examples) directory of
-this repository.
-
-Or you can
-[browse the API reference documentation](http://zeromq.github.io/zeromq.js/globals.html)
-to see all socket types, methods & options as well as more detailed information
-about how to apply them.
-
-### Compatibility layer for version 4/5
+## Zeromq 4 and 5 Compatibility layer
 
 The next generation version of the library features a compatibility layer for
 ZeroMQ.js versions 4 and 5. This is recommended for users upgrading from
@@ -378,6 +401,20 @@ pub.bind("tcp://*:3456", err => {
   })
 })
 ```
+
+## TypeScript
+
+This library provides typings for TypeScript version 3.0.x and later.
+
+_Requirements_
+
+- For TypeScript version >= 3:
+  - [compilerOptions](https://www.typescriptlang.org/docs/handbook/compiler-options.html)
+- For TypeScript version < 3.6:
+  - either set `compilerOptions.target` to `esnext` or later (e.g. `es2018`)
+  - or add the following, or similar, libraries to `compilerOptions.lib` (and
+    include their corresponding polyfills if needed): `es2015`,
+    `ESNext.AsyncIterable`
 
 ## Contribution
 

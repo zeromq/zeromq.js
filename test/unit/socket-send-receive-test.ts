@@ -265,8 +265,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       })
 
       it("should poll simultaneously", async function () {
-        this.timeout(5000)
-
         const sendReceiveA = async () => {
           const [msg1] = await Promise.all([
             sockA.receive(),
@@ -426,8 +424,6 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       }
 
       it("should not starve event loop", async function () {
-        this.slow(250)
-
         sockA.sendHighWaterMark = 5000
         sockB.receiveHighWaterMark = 5000
 

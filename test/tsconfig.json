@@ -1,6 +1,8 @@
 {
   "extends": "../tsconfig.json",
-  "include": [
-    "**/*.ts"
-  ]
+  "include": ["./unit/**/*.ts", "./*.ts"],
+  "compilerOptions": {
+    "skipLibCheck": true
+  },
+  "compileOnSave": false
 }

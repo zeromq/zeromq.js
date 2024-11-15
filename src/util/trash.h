@@ -20,8 +20,8 @@ class Trash {
 
 public:
     /* Construct trash with an associated asynchronous callback. */
-    inline Trash(const Napi::Env& env) {
-        auto loop = UvLoop(env);
+    explicit Trash(const Napi::Env& env) {
+        auto* loop = UvLoop(env);
 
         async->data = this;
 
@@ -29,17 +29,17 @@ public:
             reinterpret_cast<Trash*>(async->data)->Clear();
         };
 
-        auto err = uv_async_init(loop, async, clear);
+        [[maybe_unused]] auto err = uv_async_init(loop, async.get(), clear);
         assert(err == 0);
 
         /* Immediately unreference this handle in order to prevent the async
            callback from preventing the Node.js process to exit. */
-        uv_unref(async);
+        uv_unref(this->async.get_handle());
     }
 
     /* Add given item to the trash, marking it for deletion next time the
        async callback is called by UV. */
-    inline void Add(T* item) {
+    void Add(T* item) {
         std::lock_guard<std::mutex> guard(lock);
         values.emplace_back(item);
 
@@ -47,14 +47,14 @@ public:
            that calls are coalesced if they occur frequently. This is good
            news for us, since that means frequent additions do not cause
            unnecessary trash cycle operations. */
-        auto err = uv_async_send(async);
+        [[maybe_unused]] auto err = uv_async_send(this->async.get());
         assert(err == 0);
     }
 
     /* Empty the trash. */
-    inline void Clear() {
+    void Clear() {
         std::lock_guard<std::mutex> guard(lock);
         values.clear();
     }
 };
-}
+}  // namespace zmq

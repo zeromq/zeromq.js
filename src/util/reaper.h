@@ -21,6 +21,12 @@ class Reaper {
     std::set<T*> pointers;
 
 public:
+    Reaper() = default;
+    Reaper(const Reaper&) = delete;
+    Reaper(Reaper&&) = delete;
+    Reaper& operator=(const Reaper&) = delete;
+    Reaper& operator=(Reaper&&) = delete;
+
     ~Reaper() {
         /* Copy pointers to vector to avoid issues with callbacks deregistering
            themselves from the reaper while we are still iterating. We iterate
@@ -32,12 +38,12 @@ public:
         }
     }
 
-    inline void Add(T* ptr) {
+    void Add(T* ptr) {
         assert(ptr);
         pointers.insert(ptr);
     }
 
-    inline void Remove(T* ptr) {
+    void Remove(T* ptr) {
         assert(ptr);
         pointers.erase(ptr);
     }
@@ -49,14 +55,14 @@ class ThreadSafeReaper : Reaper<T, Deleter> {
     std::mutex lock;
 
 public:
-    inline void Add(T* ptr) {
+    void Add(T* ptr) {
         std::lock_guard<std::mutex> guard(lock);
         Reaper<T, Deleter>::Add(ptr);
     }
 
-    inline void Remove(T* ptr) {
+    void Remove(T* ptr) {
         std::lock_guard<std::mutex> guard(lock);
         Reaper<T, Deleter>::Remove(ptr);
     }
 };
-}
+}  // namespace zmq

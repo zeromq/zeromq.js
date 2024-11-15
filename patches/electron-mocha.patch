@@ -1,0 +1,27 @@
+diff --git a/bin/electron-mocha b/bin/electron-mocha
+index 038b2a00322cfaf98824ff33729b917c80d12828..30ed87458181ae7b7efe2970726b2eedd25f2138 100755
+--- a/bin/electron-mocha
++++ b/bin/electron-mocha
+@@ -35,7 +35,7 @@ function run (electron) {
+     ...process.argv.slice(2)
+   ]
+ 
+-  let child = spawn(electron, args)
++  let child = spawn(electron, args, { shell: process.platform === 'win32' })
+ 
+   // stdio 'inherit' not work reliably in Renderer!
+   child.stdout.pipe(process.stdout)
+diff --git a/lib/main.js b/lib/main.js
+index b8d0f8e80a86318d2a90fac3332514adda379ad9..0e1d55c3a996ddf0b5c8d98da8f04339da34788d 100644
+--- a/lib/main.js
++++ b/lib/main.js
+@@ -54,7 +54,8 @@ app.on('quit', () => {
+     detached: true,
+     stdio: 'ignore',
+     env: { ELECTRON_RUN_AS_NODE: 1 },
+-    cwd: __dirname
++    cwd: __dirname,
++    shell: process.platform === 'win32'
+   })
+   child.unref()
+ })

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include <optional>
 
 #include "./closable.h"
@@ -15,7 +16,12 @@ public:
     static void Initialize(Module& module, Napi::Object& exports);
 
     explicit Socket(const Napi::CallbackInfo& info);
-    virtual ~Socket();
+
+    Socket(const Socket&) = delete;
+    Socket(Socket&&) = delete;
+    Socket& operator=(const Socket&) = delete;
+    Socket& operator=(Socket&&) = delete;
+    ~Socket() override;
 
     void Close() override;
 
@@ -55,8 +61,8 @@ protected:
 
 private:
     inline void WarnUnlessImmediateOption(int32_t option) const;
-    inline bool ValidateOpen() const;
-    bool HasEvents(int32_t events) const;
+    [[nodiscard]] inline bool ValidateOpen() const;
+    [[nodiscard]] bool HasEvents(uint32_t requested_events) const;
 
     /* Send/receive are usually in a hot path and will benefit slightly
        from being inlined. They are used in more than one location and are
@@ -65,31 +71,31 @@ private:
     force_inline void Receive(const Napi::Promise::Deferred& res);
 
     class Poller : public zmq::Poller<Poller> {
-        Socket& socket;
+        std::reference_wrapper<Socket> socket;
         std::optional<Napi::Promise::Deferred> read_deferred;
         std::optional<Napi::Promise::Deferred> write_deferred;
         OutgoingMsg::Parts write_value;
 
     public:
-        explicit Poller(Socket& socket) : socket(socket) {}
+        explicit Poller(std::reference_wrapper<Socket> socket) : socket(socket) {}
 
         Napi::Value ReadPromise();
         Napi::Value WritePromise(OutgoingMsg::Parts&& parts);
 
-        inline bool Reading() const {
+        [[nodiscard]] bool Reading() const {
             return read_deferred.has_value();
         }
 
-        inline bool Writing() const {
+        [[nodiscard]] bool Writing() const {
             return write_deferred.has_value();
         }
 
-        inline bool ValidateReadable() const {
-            return socket.HasEvents(ZMQ_POLLIN);
+        [[nodiscard]] bool ValidateReadable() const {
+            return socket.get().HasEvents(ZMQ_POLLIN);
         }
 
-        inline bool ValidateWritable() const {
-            return socket.HasEvents(ZMQ_POLLOUT);
+        [[nodiscard]] bool ValidateWritable() const {
+            return socket.get().HasEvents(ZMQ_POLLOUT);
         }
 
         void ReadableCallback();
@@ -112,12 +118,12 @@ private:
     State state = State::Open;
     bool request_close = false;
     bool thread_safe = false;
-    uint8_t type = 0;
+    int type = 0;
 
     friend class Observer;
     friend class Proxy;
 };
-}
+}  // namespace zmq
 
-static_assert(!std::is_copy_constructible<zmq::Socket>::value, "not copyable");
-static_assert(!std::is_move_constructible<zmq::Socket>::value, "not movable");
+static_assert(!std::is_copy_constructible_v<zmq::Socket>, "not copyable");
+static_assert(!std::is_move_constructible_v<zmq::Socket>, "not movable");
