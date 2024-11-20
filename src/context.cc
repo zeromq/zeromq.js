@@ -170,10 +170,14 @@ void Context::Initialize(Module& module, Napi::Object& exports) {
 
     auto constructor = DefineClass(exports.Env(), "Context", proto, &module);
 
-    /* Create global context that is closed on process exit. */
-    auto context = constructor.New({});
-    module.GlobalContext = Napi::Persistent(context);
-    exports.Set("context", context);
+        // Check if GlobalContext already exists and if it's tied to the current environment
+    if (!module.GlobalContext.Env() || module.GlobalContext.Env() != exports.Env()) {
+        // Create the context and store the persistent reference if not already created
+        auto context = constructor.New({});
+        module.GlobalContext = Napi::Persistent(context);
+    }
+
+    exports.Set("context", module.GlobalContext.Value());
 
     module.Context = Napi::Persistent(constructor);
     exports.Set("Context", constructor);
