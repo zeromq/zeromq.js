@@ -171,7 +171,7 @@ void Context::Initialize(Module& module, Napi::Object& exports) {
     auto constructor = DefineClass(exports.Env(), "Context", proto, &module);
 
         // Check if GlobalContext already exists and if it's tied to the current environment
-    if (!module.GlobalContext.Env() || module.GlobalContext.Env() != exports.Env()) {
+    if (module.GlobalContext.IsEmpty()) {
         // Create the context and store the persistent reference if not already created
         auto context = constructor.New({});
         module.GlobalContext = Napi::Persistent(context);
