@@ -92,18 +92,10 @@ jobs:
           vcpkg: true
           architecture: ${{ matrix.cpp_arch }}
 
-      - name: Install Mac-OS x86_64 Dependencies
-        if: ${{ contains(matrix.os, 'macos') && matrix.node_arch == 'x64' }}
+      - name: Install Mac-OS Dependencies
+        if: ${{ contains(matrix.os, 'macos') }}
         run: |
-          brew install libsodium gnutls
-
-      - name: Install Mac-OS arm64 Dependencies
-        if: ${{ contains(matrix.os, 'macos') && matrix.node_arch == 'arm64' }}
-        run: |
-          brew uninstall libsodium --force --ignore-dependencies
-          source ./script/macos-arm-deps.sh
-          echo "PATH=$PATH" >> $GITHUB_ENV
-          echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
+          brew install gnutls autoconf automake libtool 
 
       - uses: pnpm/action-setup@v4
         if: ${{ !matrix.docker }}
