@@ -28,7 +28,7 @@ macro(set_option_from_env OPTION_NAME)
   message(STATUS "${OPTION_NAME}: ${${OPTION_NAME}}")
 endmacro()
 
-option(ZMQ_DRAFT "Build and install draft APIs" OFF)
+option(ZMQ_DRAFT "Build and install draft APIs (e.g. `server-client`, `radio-dish`, `scatter-gather`)" ON)
 set_option_from_env(ZMQ_DRAFT)
 
 option(ZMQ_CURVE "Enable CURVE security" ON)

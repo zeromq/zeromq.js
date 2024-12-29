@@ -103,7 +103,6 @@ Socket::Socket(const Napi::CallbackInfo& info)
     }
 
     uv_os_sock_t file_descriptor = 0;
-    std::function<void()> const finalize = nullptr;
 
     const auto error = [this]() {
         [[maybe_unused]] auto err = zmq_close(socket);
@@ -125,12 +124,14 @@ Socket::Socket(const Napi::CallbackInfo& info)
     }
 #endif
 
+    std::function<void()> finalize = nullptr;
+
     /* Currently only some DRAFT sockets are threadsafe. */
     if (thread_safe) {
 #ifdef ZMQ_HAS_POLLABLE_THREAD_SAFE
         /* Threadsafe sockets do not expose an FD we can integrate into the
            event loop, so we have to construct one by creating a zmq_poller. */
-        auto poll = zmq_poller_new();
+        auto* poll = zmq_poller_new();
         if (poll == nullptr) {
             ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
             error();
@@ -138,7 +139,7 @@ Socket::Socket(const Napi::CallbackInfo& info)
 
         /* Callback to free the underlying poller. Move the poller to transfer
            ownership after the constructor has completed. */
-        finalize = [=]() mutable {
+        finalize = [&]() {
             [[maybe_unused]] auto err = zmq_poller_destroy(&poll);
             assert(err == 0);
         };
@@ -149,7 +150,7 @@ Socket::Socket(const Napi::CallbackInfo& info)
             error();
         }
 
-        if (zmq_poller_fd(poll, &fd) < 0) {
+        if (zmq_poller_fd(poll, &file_descriptor) < 0) {
             ErrnoException(Env(), zmq_errno()).ThrowAsJavaScriptException();
             finalize();
             error();
@@ -327,17 +328,17 @@ void Socket::Receive(const Napi::Promise::Deferred& res) {
         switch (type) {
         case ZMQ_SERVER: {
             auto meta = Napi::Object::New(Env());
-            meta.Set("routingId", zmq_msg_routing_id(part));
-            list[i++] = meta;
+            meta.Set("routingId", zmq_msg_routing_id(part.get()));
+            list[i_part++] = meta;
             break;
         }
 
         case ZMQ_DISH: {
             auto meta = Napi::Object::New(Env());
-            auto data = zmq_msg_group(part);
+            const auto* data = zmq_msg_group(part.get());
             auto length = strnlen(data, ZMQ_GROUP_MAX_LENGTH);
             meta.Set("group", Napi::Buffer<char>::Copy(Env(), data, length));
-            list[i++] = meta;
+            list[i_part++] = meta;
             break;
         }
         }
@@ -610,7 +611,9 @@ Napi::Value Socket::Send(const Napi::CallbackInfo& info) {
             Arg::Required<Arg::Object>("Options must be an object"),
         };
 
-        if (args.ThrowIfInvalid(info)) return Env().Undefined();
+        if (args.ThrowIfInvalid(info)) {
+            return Env().Undefined();
+        }
 
         break;
     }
@@ -752,19 +755,22 @@ void Socket::Join([[maybe_unused]] const Napi::CallbackInfo& info) {
         Arg::Required<Arg::String, Arg::Buffer>("Group must be a string or buffer"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) {
+        return;
+    }
 
-    if (!ValidateOpen()) return;
+    if (!ValidateOpen()) {
+        return;
+    }
 
     auto str = [&]() {
         if (info[0].IsString()) {
             return std::string(info[0].As<Napi::String>());
-        } else {
-            Napi::Object buf = info[0].As<Napi::Object>();
-            auto length = buf.As<Napi::Buffer<char>>().Length();
-            auto value = buf.As<Napi::Buffer<char>>().Data();
-            return std::string(value, length);
         }
+        auto buf = info[0].As<Napi::Object>();
+        auto length = buf.As<Napi::Buffer<char>>().Length();
+        auto* value = buf.As<Napi::Buffer<char>>().Data();
+        return std::string(value, length);
     }();
 
     if (zmq_join(socket, str.c_str()) < 0) {
@@ -780,19 +786,22 @@ void Socket::Leave([[maybe_unused]] const Napi::CallbackInfo& info) {
         Arg::Required<Arg::String, Arg::Buffer>("Group must be a string or buffer"),
     };
 
-    if (args.ThrowIfInvalid(info)) return;
+    if (args.ThrowIfInvalid(info)) {
+        return;
+    }
 
-    if (!ValidateOpen()) return;
+    if (!ValidateOpen()) {
+        return;
+    }
 
     auto str = [&]() {
         if (info[0].IsString()) {
             return std::string(info[0].As<Napi::String>());
-        } else {
-            Napi::Object buf = info[0].As<Napi::Object>();
-            auto length = buf.As<Napi::Buffer<char>>().Length();
-            auto value = buf.As<Napi::Buffer<char>>().Data();
-            return std::string(value, length);
         }
+        auto buf = info[0].As<Napi::Object>();
+        auto length = buf.As<Napi::Buffer<char>>().Length();
+        auto* value = buf.As<Napi::Buffer<char>>().Data();
+        return std::string(value, length);
     }();
 
     if (zmq_leave(socket, str.c_str()) < 0) {

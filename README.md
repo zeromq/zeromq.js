@@ -12,6 +12,7 @@
 - Fully usable with TypeScript (3+).
 - Compatible with Zeromq 4/5 via "zeromq/v5-compat"
 - Secure Curve protocol with Libsodium
+- Zeromq Draft API support
 
 ## Useful links
 
@@ -141,6 +142,8 @@ Building libsodium requires these dependencies on Linux/MacOS:
 etc.
 
 #### Draft support
+
+(Enabled by default)
 
 By default `libzmq` is built with support for `Draft` patterns (e.g.
 `server-client`, `radio-dish`, `scatter-gather`). If you want to build `libzmq`
