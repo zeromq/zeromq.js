@@ -41,27 +41,28 @@ interface RadioGroupOptions {
 export interface Radio extends Writable<MessageLike, [RadioGroupOptions]> {}
 allowMethods(Radio.prototype, ["send"])
 
-const join = (Socket.prototype as any).join
-const leave = (Socket.prototype as any).leave
+const join = (
+  Socket.prototype as Socket & {
+    join: (value: Array<string | Buffer>) => void
+  }
+).join
+const leave = (
+  Socket.prototype as Socket & {
+    leave: (value: Array<string | Buffer>) => void
+  }
+).leave
 
 export class Dish extends Socket {
   constructor(options?: SocketOptions<Dish>) {
     super(SocketType.Dish, options)
   }
 
-  /* TODO: These methods might accept arrays in their C++ implementation for
-     the sake of simplicity. */
-
   join(...values: Array<Buffer | string>): void {
-    for (const value of values) {
-      join(value)
-    }
+    join(values)
   }
 
   leave(...values: Array<Buffer | string>): void {
-    for (const value of values) {
-      leave(value)
-    }
+    leave(values)
   }
 }
 

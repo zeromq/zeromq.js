@@ -88,7 +88,8 @@ private:
         if constexpr (I == NumArgs) {
             if (info.Length() > NumArgs) {
                 auto msg = "Expected " + std::to_string(NumArgs) + " argument"
-                    + (NumArgs != 1 ? "s" : "");
+                    + (NumArgs != 1 ? "s" : "") + " but received "
+                    + std::to_string(info.Length());
                 return Napi::TypeError::New(info.Env(), msg);
             }
 

@@ -5,6 +5,7 @@
 
 #include "./module.h"
 #include "util/error.h"
+#include "util/string_or_buffer.h"
 
 namespace zmq {
 OutgoingMsg::OutgoingMsg(Napi::Value value, std::reference_wrapper<Module> module) {
@@ -116,18 +117,7 @@ bool OutgoingMsg::Parts::SetGroup(Napi::Value value) {
         return false;
     }
 
-    auto group = [&]() {
-        if (value.IsString()) {
-            return std::string(value.As<Napi::String>());
-        }
-        if (value.IsBuffer()) {
-            auto buf = value.As<Napi::Object>();
-            auto length = buf.As<Napi::Buffer<char>>().Length();
-            auto* value = buf.As<Napi::Buffer<char>>().Data();
-            return std::string(value, length);
-        }
-        return std::string();
-    }();
+    const auto group = convert_string_or_buffer(value);
 
     for (auto& part : parts) {
         if (zmq_msg_set_group(part.get(), group.c_str()) < 0) {
