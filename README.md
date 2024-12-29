@@ -29,8 +29,7 @@
     - [Prebuilt binaries](#prebuilt-binaries)
     - [Building from source](#building-from-source)
     - [Available Build Options](#available-build-options)
-    - [Curve support](#curve-support)
-    - [Libsodium for Curve](#libsodium-for-curve)
+    - [Curve with Libsodium support](#curve-with-libsodium-support)
       - [Draft support](#draft-support)
       - [Websocket support](#websocket-support)
       - [Secure Websocket support](#secure-websocket-support)
@@ -117,24 +116,16 @@ When building from source, you can also specify additional build options in a
 <details>
 <summary>👉🏻 Options</summary>
 
-### Curve support
+### Curve with Libsodium support
 
-Enables CURVE security for encrypted communications. To enable CURVE support,
-add the following to your .npmrc:
+Enables CURVE security for encrypted communications. Zeromq uses libsodium for CURVE security. To enable CURVE support, add the following to your .npmrc:
 
 ```ini
 zmq_curve="true"
-```
-
-### Libsodium for Curve
-
-Enable libsodium for CURVE security instead of the built-in tweetnacl
-implementation. This can provide better performance for CURVE operations. To use
-libsodium, add the following to your .npmrc:
-
-```ini
 zmq_sodium="true"
 ```
+
+Building libsodium requires these dependencies on Linux/MacOS: `autoconf automake libtool`, which can be installed via `apt-get` or `brew`, etc.
 
 #### Draft support
 

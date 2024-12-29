@@ -19,9 +19,7 @@ jobs:
           - x64
         cpp_arch:
           - x64
-        docker:
-          - ""
-        docker_cmd:
+        dockerfile:
           - ""
 
         include:
@@ -44,12 +42,7 @@ jobs:
 
           # Alpine
           - os: ubuntu-22.04
-            docker: node:18-alpine
-            docker_cmd:
-              apk add --no-cache bash build-base curl git g++ make ninja-build
-              pkgconfig unzip zip python3 tar cmake ninja musl-dev && cp
-              /usr/lib/ninja-build/bin/ninja /usr/bin/ninja && npm i -g pnpm &&
-              pnpm install && pnpm run build
+            dockerfile: docker/alpine.dockerfile
             node_arch: x64
             cpp_arch: x64
 
@@ -82,7 +75,7 @@ jobs:
         shell: bash
 
       - name: Setup Cpp
-        if: ${{ !matrix.docker }}
+        if: ${{ !matrix.dockerfile }}
         uses: aminya/setup-cpp@v1
         with:
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
@@ -92,48 +85,40 @@ jobs:
           vcpkg: true
           architecture: ${{ matrix.cpp_arch }}
 
-      - name: Install Mac-OS x86_64 Dependencies
-        if: ${{ contains(matrix.os, 'macos') && matrix.node_arch == 'x64' }}
+      - name: Install Mac-OS Dependencies
+        if: ${{ contains(matrix.os, 'macos') }}
         run: |
-          brew install libsodium gnutls
-
-      - name: Install Mac-OS arm64 Dependencies
-        if: ${{ contains(matrix.os, 'macos') && matrix.node_arch == 'arm64' }}
-        run: |
-          brew uninstall libsodium --force --ignore-dependencies
-          source ./script/macos-arm-deps.sh
-          echo "PATH=$PATH" >> $GITHUB_ENV
-          echo "PKG_CONFIG_PATH=$PKG_CONFIG_PATH" >> $GITHUB_ENV
+          brew install gnutls autoconf automake libtool 
 
       - uses: pnpm/action-setup@v4
-        if: ${{ !matrix.docker }}
+        if: ${{ !matrix.dockerfile }}
         with:
           version: 9
 
       - name: Install Node 20
-        if: ${{ !matrix.docker }}
+        if: ${{ !matrix.dockerfile }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
           architecture: ${{ env.setup_node_arch }}
 
       - name: Install and Build Native
-        if: ${{ !matrix.docker }}
+        if: ${{ !matrix.dockerfile }}
         run: pnpm install
 
       - name: Build JavaScript
-        if: ${{ !matrix.docker }}
+        if: ${{ !matrix.dockerfile }}
         run: pnpm run build.js
 
       - name: Install Node 10
-        if: ${{ !matrix.docker && matrix.os != 'macos-14' }}
+        if: ${{ !matrix.dockerfile && matrix.os != 'macos-14' }}
         uses: actions/setup-node@v4
         with:
           node-version: 10
           architecture: ${{ env.setup_node_arch }}
 
       - name: Build Native
-        if: ${{ !matrix.docker && matrix.node_arch != 'ia32' }}
+        if: ${{ !matrix.dockerfile && matrix.node_arch != 'ia32' }}
         run: npm run build.native
 
       - name: Build Native Windows 32
@@ -143,19 +128,19 @@ jobs:
           windows-x86
 
       - name: Use Node 20
-        if: ${{ !matrix.docker }}
+        if: ${{ !matrix.dockerfile }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
           architecture: ${{ env.setup_node_arch }}
 
       - name: Prebuild Docker
-        if: ${{ matrix.docker }}
+        if: ${{ matrix.dockerfile }}
         run: |
-          docker login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} ghcr.io
-          docker pull ${{ matrix.docker }}
-          docker tag ${{ matrix.docker }} builder
-          docker run --volume ${{ github.workspace }}:/app --workdir /app --privileged builder sh -c "${{ matrix.docker_cmd }}"
+          docker build -t zeromq -f ${{ matrix.dockerfile }} .
+          docker create --name zeromq-temp zeromq
+          docker cp zeromq-temp:/app/build ./build
+          docker rm -f zeromq-temp
 
       - name: Upload build
         uses: actions/upload-artifact@v4
@@ -165,11 +150,11 @@ jobs:
           overwrite: true
 
       - name: Lint
-        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
+        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.dockerfile }}"
         run: pnpm run lint-test
 
       - name: Test
-        if: ${{ !matrix.docker }}
+        if: ${{ !matrix.dockerfile }}
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -183,7 +168,7 @@ jobs:
         shell: bash
 
       - name: Test Compatibility
-        if: ${{ !matrix.docker }}
+        if: ${{ !matrix.dockerfile }}
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -197,7 +182,7 @@ jobs:
         shell: bash
 
       - name: Test Electron Windows/MacOS
-        if: "${{ !matrix.docker }}"
+        if: "${{ !matrix.dockerfile }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -207,7 +192,7 @@ jobs:
         continue-on-error: true
 
       - name: Test Electron Linux
-        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.docker }}"
+        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.dockerfile }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5

@@ -31,11 +31,15 @@ endmacro()
 option(ZMQ_DRAFT "Build and install draft APIs" OFF)
 set_option_from_env(ZMQ_DRAFT)
 
-option(ZMQ_CURVE "Enable CURVE security" OFF)
+option(ZMQ_CURVE "Enable CURVE security" ON)
 set_option_from_env(ZMQ_CURVE)
 
-option(ZMQ_SODIUM "Using libsodium for CURVE security" OFF)
+option(ZMQ_SODIUM "Using libsodium for CURVE security" ON)
 set_option_from_env(ZMQ_SODIUM)
+
+if(ZMQ_SODIUM AND APPLE)
+  message(STATUS "building libsodium requires running `brew install autoconf automake libtool`")
+endif()
 
 option(ZMQ_WEBSOCKETS "Enable WebSocket transport" OFF)
 set_option_from_env(ZMQ_WEBSOCKETS)
