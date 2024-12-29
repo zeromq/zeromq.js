@@ -11,6 +11,8 @@
 - High performance.
 - Fully usable with TypeScript (3+).
 - Compatible with Zeromq 4/5 via "zeromq/v5-compat"
+- Secure Curve protocol support
+- Zeromq Draft API support
 
 ## Useful links
 
@@ -28,7 +30,7 @@
   - [Installation](#installation)
     - [Prebuilt binaries](#prebuilt-binaries)
     - [Building from source](#building-from-source)
-    - [Available Build Options](#available-build-options)
+      - [Available Build Options](#available-build-options)
     - [Curve with Libsodium support](#curve-with-libsodium-support)
       - [Draft support](#draft-support)
       - [Websocket support](#websocket-support)
@@ -104,30 +106,37 @@ source:
 
 To install from source, specify `build_from_source=true` in a `.npmrc` file
 
-```
+```ini
 build_from_source=true
 ```
 
+#### Available Build Options
+
 When building from source, you can also specify additional build options in a
 `.npmrc` file in your project:
-
-### Available Build Options
 
 <details>
 <summary>👉🏻 Options</summary>
 
 ### Curve with Libsodium support
 
-Enables CURVE security for encrypted communications. Zeromq uses libsodium for CURVE security. To enable CURVE support, add the following to your .npmrc:
+(Enabled by default)
+
+Enables CURVE security for encrypted communications. Zeromq uses libsodium for
+CURVE security. To enable CURVE support, add the following to your .npmrc:
 
 ```ini
 zmq_curve="true"
 zmq_sodium="true"
 ```
 
-Building libsodium requires these dependencies on Linux/MacOS: `autoconf automake libtool`, which can be installed via `apt-get` or `brew`, etc.
+Building libsodium requires these dependencies on Linux/MacOS:
+`autoconf automake libtool`, which can be installed via `apt-get` or `brew`,
+etc.
 
 #### Draft support
+
+(Enabled by default)
 
 By default `libzmq` is built with support for `Draft` patterns (e.g.
 `server-client`, `radio-dish`, `scatter-gather`). If you want to build `libzmq`
