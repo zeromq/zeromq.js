@@ -125,7 +125,7 @@ zmq_curve="true"
 zmq_sodium="true"
 ```
 
-Building libsodium requires running `brew install autoconf automake libtool`
+Building libsodium requires these dependencies on Linux/MacOS: `autoconf automake libtool`, which can be installed via `apt-get` or `brew`, etc.
 
 #### Draft support
 
