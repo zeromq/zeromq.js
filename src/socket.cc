@@ -103,7 +103,7 @@ Socket::Socket(const Napi::CallbackInfo& info)
         return;
     }
 
-    auto file_descriptor = uv_os_sock_t{};
+    uv_os_sock_t file_descriptor = 0;
 
     const auto error = [this]() {
         [[maybe_unused]] auto err = zmq_close(socket);
