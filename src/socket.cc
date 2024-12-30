@@ -407,6 +407,44 @@ Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
     return res.Promise();
 }
 
+Napi::Value Socket::BindSync(const Napi::CallbackInfo& info) {
+    Arg::Validator const args{
+        Arg::Required<Arg::String>("Address must be a string"),
+    };
+
+    if (args.ThrowIfInvalid(info)) {
+        return Env().Undefined();
+    }
+
+    if (!ValidateOpen()) {
+        return Env().Undefined();
+    }
+
+    state = Socket::State::Blocked;
+    auto run_ctx = std::make_shared<AddressContext>(info[0].As<Napi::String>());
+
+    while (zmq_bind(socket, run_ctx->address.c_str()) < 0) {
+        if (zmq_errno() != EINTR) {
+            run_ctx->error = static_cast<uint32_t>(zmq_errno());
+            break;
+        }
+    }
+
+    state = Socket::State::Open;
+    endpoints++;
+
+    if (request_close) {
+        Close();
+    }
+
+    if (run_ctx->error != 0) {
+        ErrnoException(Env(), static_cast<int32_t>(run_ctx->error), run_ctx->address)
+            .ThrowAsJavaScriptException();
+    }
+
+    return Env().Undefined();
+}
+
 Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
     Arg::Validator const args{
         Arg::Required<Arg::String>("Address must be a string"),
@@ -461,6 +499,44 @@ Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
     }
 
     return res.Promise();
+}
+
+Napi::Value Socket::UnbindSync(const Napi::CallbackInfo& info) {
+    Arg::Validator const args{
+        Arg::Required<Arg::String>("Address must be a string"),
+    };
+
+    if (args.ThrowIfInvalid(info)) {
+        return Env().Undefined();
+    }
+
+    if (!ValidateOpen()) {
+        return Env().Undefined();
+    }
+
+    state = Socket::State::Blocked;
+    auto run_ctx = std::make_shared<AddressContext>(info[0].As<Napi::String>());
+
+    while (zmq_unbind(socket, run_ctx->address.c_str()) < 0) {
+        if (zmq_errno() != EINTR) {
+            run_ctx->error = static_cast<uint32_t>(zmq_errno());
+            break;
+        }
+    }
+
+    state = Socket::State::Open;
+    --endpoints;
+
+    if (request_close) {
+        Close();
+    }
+
+    if (run_ctx->error != 0) {
+        ErrnoException(Env(), static_cast<int32_t>(run_ctx->error), run_ctx->address)
+            .ThrowAsJavaScriptException();
+    }
+
+    return Env().Undefined();
 }
 
 void Socket::Connect(const Napi::CallbackInfo& info) {
@@ -919,6 +995,10 @@ void Socket::Initialize(Module& module, Napi::Object& exports) {
     auto proto = {
         InstanceMethod<&Socket::Bind>("bind"),
         InstanceMethod<&Socket::Unbind>("unbind"),
+
+        InstanceMethod<&Socket::BindSync>("bindSync"),
+        InstanceMethod<&Socket::BindSync>("unbindSync"),
+
         InstanceMethod<&Socket::Connect>("connect"),
         InstanceMethod<&Socket::Disconnect>("disconnect"),
         InstanceMethod<&Socket::Close>("close"),

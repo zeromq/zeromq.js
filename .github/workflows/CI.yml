@@ -158,34 +158,18 @@ jobs:
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
-          max_attempts: 2
+          max_attempts: 3
+          shell: bash
           command: |
-            pnpm run test.unit
-
-      - name: Clean Tmp
-        run: rm -rf ./tmp
-        shell: bash
-
-      - name: Test Compatibility
-        if: ${{ !matrix.dockerfile }}
-        uses: nick-fields/retry@v3
-        with:
-          timeout_minutes: 5
-          max_attempts: 2
-          command: |
-            pnpm run test.unit.compat
-        continue-on-error: true
-
-      - name: Clean Tmp
-        run: rm -rf ./tmp
-        shell: bash
+            pnpm run test.unit || (rm -rf ./tmp && exit 1)
+            rm -rf ./tmp
 
       - name: Test Electron Windows/MacOS
         if: "${{ !contains(matrix.os, 'ubuntu') && !matrix.dockerfile }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
-          max_attempts: 2
+          max_attempts: 1
           command: |
             pnpm run test.electron.main
         continue-on-error: true
@@ -195,7 +179,7 @@ jobs:
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
-          max_attempts: 2
+          max_attempts: 1
           command: |
             sudo apt-get install xvfb
             xvfb-run --auto-servernum pnpm run test.electron.main

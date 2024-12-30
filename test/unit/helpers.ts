@@ -216,9 +216,7 @@ export function createProcess(fn: () => void): Promise<Result> {
 
     setTimeout(() => {
       resolve({code: -1, stdout, stderr, isTimeout: true})
-      console.error(
-        `Child timed out\n${stdout.toString()}\n${stderr.toString()}`,
-      )
+      console.log(`Child timed out\n${stdout.toString()}\n${stderr.toString()}`)
       child.kill()
     }, 750)
   })

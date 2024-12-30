@@ -540,6 +540,26 @@ export declare abstract class Socket {
   bind(address: string): Promise<void>
 
   /**
+   * Binds the socket to the given address. During {@link bind}() the socket
+   * cannot be used. Do not call any other methods until the returned promise
+   * resolves. Make sure to use `await`.
+   *
+   * You can use `*` in place of a hostname to bind on all interfaces/addresses,
+   * and you can use `*` in place of a port to bind to a random port (which can
+   * be retrieved with {@link lastEndpoint} later).
+   *
+   * ```typescript
+   * socket.bindSync("tcp://127.0.0.1:3456")
+   * socket.bindSync("tcp://*:3456")         // binds on all interfaces
+   * socket.bindSync("tcp://127.0.0.1:*")    // binds on random port
+   * ```
+   *
+   * @param address Address to bind this socket to.
+   * @returns Resolved when the socket was successfully bound.
+   */
+  bindSync(address: string): void
+
+  /**
    * Unbinds the socket to the given address. During {@link unbind}() the socket
    * cannot be used. Do not call any other methods until the returned promise
    * resolves. Make sure to use `await`.
@@ -548,6 +568,16 @@ export declare abstract class Socket {
    * @returns Resolved when the socket was successfully unbound.
    */
   unbind(address: string): Promise<void>
+
+  /**
+   * Unbinds the socket to the given address. During {@link unbind}() the socket
+   * cannot be used. Do not call any other methods until the returned promise
+   * resolves. Make sure to use `await`.
+   *
+   * @param address Address to unbind this socket from.
+   * @returns Resolved when the socket was successfully unbound.
+   * */
+  unbindSync(address: string): void
 
   /**
    * Connects to the socket at the given remote address and returns immediately.
