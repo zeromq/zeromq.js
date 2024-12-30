@@ -7,15 +7,15 @@ macro(set_option_from_env OPTION_NAME)
     if("$ENV{npm_config_${OPTION_NAME_LOWER}}" STREQUAL "true")
       set("${OPTION_NAME}"
         ON
-        CACHE BOOL "npm_config_${OPTION_NAME_LOWER}")
+        CACHE BOOL "npm_config_${OPTION_NAME_LOWER}" FORCE)
     elseif("$ENV{npm_config_${OPTION_NAME_LOWER}}" STREQUAL "false")
       set("${OPTION_NAME}"
         OFF
-        CACHE BOOL "npm_config_${OPTION_NAME_LOWER}")
+        CACHE BOOL "npm_config_${OPTION_NAME_LOWER}" FORCE)
     else()
       set("${OPTION_NAME}"
         "$ENV{npm_config_${OPTION_NAME_LOWER}}"
-        CACHE STRING "npm_config_${OPTION_NAME_LOWER}")
+        CACHE STRING "npm_config_${OPTION_NAME_LOWER}" FORCE)
     endif()
   endif()
 
@@ -54,6 +54,13 @@ if(APPLE)
   option(MACOSX_DEPLOYMENT_TARGET "MacOS deployment target" "10.15")
   set_option_from_env(MACOSX_DEPLOYMENT_TARGET)
   set(CMAKE_OSX_DEPLOYMENT_TARGET ${MACOSX_DEPLOYMENT_TARGET})
+endif()
+
+option(ZMQ_ENABLE_SANITIZER_UNDEFINED "Enable undefined behavior sanitizer" OFF)
+set_option_from_env(ZMQ_ENABLE_SANITIZER_UNDEFINED)
+
+if(${ZMQ_ENABLE_SANITIZER_UNDEFINED})
+  set(ENABLE_SANITIZER_UNDEFINED "ENABLE_SANITIZER_UNDEFINED")
 endif()
 
 # target system on Windows (for cross-compiling x86) and static linking runtimes
@@ -107,7 +114,11 @@ run_vcpkg(VCPKG_URL "https://github.com/microsoft/vcpkg.git" VCPKG_REV
 # Name of the project (will be the name of the plugin)
 project(addon LANGUAGES C CXX)
 
-project_options(ENABLE_CACHE ENABLE_COMPILE_COMMANDS_SYMLINK)
+project_options(
+  ENABLE_CACHE
+  ENABLE_COMPILE_COMMANDS_SYMLINK
+  ${ENABLE_SANITIZER_UNDEFINED}
+)
 
 file(GLOB_RECURSE SOURCES "./src/*.cc")
 add_library(addon SHARED ${SOURCES})
