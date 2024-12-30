@@ -20,6 +20,7 @@
   },
   "mochaExplorer.files": "test/unit/**/*-test.ts",
   "mochaExplorer.mochaPath": "./node_modules/mocha",
+  "mochaExplorer.timeout": 6000,
   "files.exclude": {
     "**/.DS_Store": true,
     "**/Thumbs.db": true,
