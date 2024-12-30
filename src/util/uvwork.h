@@ -23,11 +23,11 @@ public:
         auto err = uv_queue_work(
             loop, work.get(),
             [](uv_work_t* req) {
-                auto& work = *reinterpret_cast<UvWork*>(req->data);
+                auto& work = *static_cast<UvWork*>(req->data);
                 work.execute_callback();
             },
             [](uv_work_t* req, int /*status*/) {
-                auto& work = *reinterpret_cast<UvWork*>(req->data);
+                auto& work = *static_cast<UvWork*>(req->data);
                 work.complete_callback();
                 delete &work;
             });

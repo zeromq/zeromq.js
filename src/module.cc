@@ -102,10 +102,10 @@ Module::Global::Shared Module::Global::Instance() {
     return instance;
 }
 
-Module::Module(Napi::Object exports) : MsgTrash(exports.Env()) {
-    exports.Set("version", zmq::Version(exports.Env()));
-    exports.Set("capability", zmq::Capabilities(exports.Env()));
-    exports.Set("curveKeyPair", Napi::Function::New(exports.Env(), zmq::CurveKeyPair));
+Module::Module(Napi::Env env, Napi::Object exports) : MsgTrash(env) {
+    exports.Set("version", zmq::Version(env));
+    exports.Set("capability", zmq::Capabilities(env));
+    exports.Set("curveKeyPair", Napi::Function::New(env, zmq::CurveKeyPair));
 
     Context::Initialize(*this, exports);
     Socket::Initialize(*this, exports);
@@ -117,13 +117,5 @@ Module::Module(Napi::Object exports) : MsgTrash(exports.Env()) {
 }
 }  // namespace zmq
 
-/* This initializer can be called in multiple contexts, like worker threads. */
-NAPI_MODULE_INIT(/* env, exports */) {
-    auto* module = new zmq::Module(Napi::Object(env, exports));
-    auto terminate = [](void* data) { delete reinterpret_cast<zmq::Module*>(data); };
-
-    /* Tear down the module class when the env/agent/thread is closed.*/
-    [[maybe_unused]] auto status = napi_add_env_cleanup_hook(env, terminate, module);
-    assert(status == napi_ok);
-    return exports;
-}
+using Module = zmq::Module;
+NODE_API_ADDON(Module)

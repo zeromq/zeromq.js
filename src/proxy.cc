@@ -23,7 +23,7 @@ struct ProxyContext {
 
 Proxy::Proxy(const Napi::CallbackInfo& info)
     : Napi::ObjectWrap<Proxy>(info), async_context(Env(), "Proxy"),
-      module(*reinterpret_cast<Module*>(info.Data())) {
+      module(*static_cast<Module*>(info.Data())) {
     Arg::Validator const args{
         Arg::Required<Arg::Object>("Front-end must be a socket object"),
         Arg::Required<Arg::Object>("Back-end must be a socket object"),

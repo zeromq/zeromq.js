@@ -67,7 +67,7 @@ struct AddressContext {
 
 Socket::Socket(const Napi::CallbackInfo& info)
     : Napi::ObjectWrap<Socket>(info), async_context(Env(), "Socket"), poller(*this),
-      module(*reinterpret_cast<Module*>(info.Data())) {
+      module(*static_cast<Module*>(info.Data())) {
     Arg::Validator const args{
         Arg::Required<Arg::Number>("Socket type must be a number"),
         Arg::Optional<Arg::Object>("Options must be an object"),
@@ -392,7 +392,7 @@ Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
             if (run_ctx->error != 0) {
                 res.Reject(ErrnoException(
                     Env(), static_cast<int32_t>(run_ctx->error), run_ctx->address)
-                               .Value());
+                        .Value());
                 return;
             }
 
@@ -448,7 +448,7 @@ Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
             if (run_ctx->error != 0) {
                 res.Reject(ErrnoException(
                     Env(), static_cast<int32_t>(run_ctx->error), run_ctx->address)
-                               .Value());
+                        .Value());
                 return;
             }
 

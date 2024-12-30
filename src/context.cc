@@ -9,7 +9,7 @@
 
 namespace zmq {
 Context::Context(const Napi::CallbackInfo& info)
-    : Napi::ObjectWrap<Context>(info), module(*reinterpret_cast<Module*>(info.Data())) {
+    : Napi::ObjectWrap<Context>(info), module(*static_cast<Module*>(info.Data())) {
     /* If this module has no global context, then create one with a process
        wide context pointer that is shared between threads/agents. */
     if (module.GlobalContext.IsEmpty()) {

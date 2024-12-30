@@ -48,9 +48,7 @@ OutgoingMsg::OutgoingMsg(Napi::Value value, std::reference_wrapper<Module> modul
         auto length = str->size();
         auto* data = str->data();
 
-        auto release = [](void*, void* str) {
-            delete reinterpret_cast<std::string*>(str);
-        };
+        auto release = [](void*, void* str) { delete static_cast<std::string*>(str); };
 
         if (zmq_msg_init_data(&msg, data, length, release, str) < 0) {
             delete str;
