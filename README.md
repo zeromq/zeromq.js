@@ -11,6 +11,7 @@
 - High performance.
 - Fully usable with TypeScript (3+).
 - Compatible with Zeromq 4/5 via "zeromq/v5-compat"
+- Secure Curve protocol with Libsodium
 
 ## Useful links
 
@@ -90,17 +91,24 @@ to start a build from source.
 
 ### Building from source
 
-If a prebuilt binary is unavailable or if you want to pass certain options
+If a prebuilt binary is unavailable, or if you want to pass certain options
 during build, you can build this package from source.
 
 Make sure you have the following installed before attempting to build from
 source:
 
 - Node.js 10+ or Electron
-- A working C++17 compiler toolchain with make
-- Python 3 with Node 10+ (or legacy Python 2.7)
-- CMake 2.8+
-- curl
+- C++17 compiler toolchain (e.g. LLVM, GCC, MSVC)
+- Python 3
+- CMake 3.16+
+- vcpkg dependencies (e.g. on Linux it needs curl, unzip, zip, tar, git,
+  pkg-config)
+
+For Curve:
+
+- automake
+- autoconf
+- libtool
 
 To install from source, specify `build_from_source=true` in a `.npmrc` file
 
@@ -118,14 +126,19 @@ When building from source, you can also specify additional build options in a
 
 ### Curve with Libsodium support
 
-Enables CURVE security for encrypted communications. Zeromq uses libsodium for CURVE security. To enable CURVE support, add the following to your .npmrc:
+(Enabled by default)
+
+Enables CURVE security for encrypted communications. Zeromq uses libsodium for
+CURVE security. To enable CURVE support, add the following to your .npmrc:
 
 ```ini
 zmq_curve="true"
 zmq_sodium="true"
 ```
 
-Building libsodium requires these dependencies on Linux/MacOS: `autoconf automake libtool`, which can be installed via `apt-get` or `brew`, etc.
+Building libsodium requires these dependencies on Linux/MacOS:
+`autoconf automake libtool`, which can be installed via `apt-get` or `brew`,
+etc.
 
 #### Draft support
 
