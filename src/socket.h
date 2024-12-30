@@ -73,6 +73,9 @@ private:
     force_inline void Send(const Napi::Promise::Deferred& res, OutgoingMsg::Parts& parts);
     force_inline void Receive(const Napi::Promise::Deferred& res);
 
+    inline void JoinElement(const Napi::Value& value);
+    inline void LeaveElement(const Napi::Value& value);
+
     class Poller : public zmq::Poller<Poller> {
         std::reference_wrapper<Socket> socket;
         std::optional<Napi::Promise::Deferred> read_deferred;
