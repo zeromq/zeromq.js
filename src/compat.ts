@@ -327,34 +327,66 @@ class Socket extends EventEmitter {
     )
   }
 
-  bindSync(...args: Parameters<Socket["bind"]>) {
+  /**
+   * @deprecated: Use `bind()` instead.
+   */
+  _bindSync: undefined | ((address: string) => this) = undefined
+
+  /**
+   * @deprecated: Use `bind()` instead.
+   */
+  bindSync(address: string) {
     try {
-      Object.defineProperty(this, "bindSync", {
-        value: require("deasync")(this.bind),
-      })
+      if (this._bindSync === undefined) {
+        console.log("Warning: bindSync() is deprecated. Use bind() instead.")
+
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const deasync = require("deasync") as typeof import("deasync")
+
+        Object.defineProperty(this, "_bindSync", {
+          value: deasync<string>(this.bind),
+        })
+      }
     } catch (err) {
       throw new Error(
-        "bindSync() has been removed from compatibility mode; " +
-          "use bind() instead, or add 'deasync' to your project dependencies",
+        `Add 'deasync' to your project dependencies, or use bind() instead: ${err}`,
       )
     }
 
-    this.bindSync(...args)
+    return this._bindSync!(address)
   }
 
-  unbindSync(...args: Parameters<Socket["unbind"]>) {
+  /**
+   * @deprecated: Use `unbind()` instead.
+   */
+  _unbindSync: undefined | ((address: string) => this) = undefined
+
+  /**
+   * @deprecated: Use `unbind()` instead.
+   */
+  unbindSync(address: string) {
     try {
-      Object.defineProperty(this, "unbindSync", {
-        value: require("deasync")(this.unbind),
-      })
+      if (this._unbindSync === undefined) {
+        console.log(
+          "Warning: unbindSync() is deprecated. Use unbind() instead.",
+        )
+
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        const deasync = require("deasync") as typeof import("deasync")
+
+        Object.defineProperty(this, "_unbindSync", {
+          value: deasync<string>((address_: string, cb: Callback) =>
+            this.unbind(address_, cb),
+          ),
+        })
+      }
     } catch (err) {
       throw new Error(
-        "unbindSync() has been removed from compatibility mode; " +
-          "use unbind() instead, or add 'deasync' to your project dependencies",
+        `Add 'deasync' to your project dependencies, or use unbind() instead: ${err}`,
       )
     }
 
-    this.unbindSync(...args)
+    return this._unbindSync!(address)
   }
 
   pause() {
