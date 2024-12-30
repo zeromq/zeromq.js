@@ -20,8 +20,6 @@ jobs:
         cpp_arch:
           - x64
     env:
-      npm_config_zmq_draft: false
-      npm_config_zmq_shared: false
       npm_config_arch: ${{ matrix.node_arch }}
       npm_config_target_arch: ${{ matrix.node_arch }}
       setup_node_arch: ${{ matrix.node_arch }}
@@ -29,17 +27,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+
       - name: Cache
         uses: actions/cache@v4
         with:
           path: |
             ./node_modules/
-            ./build/
+            ~/vcpkg
           key:
             # prettier-ignore
-            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-ZMQ_DRAFT:${{env.npm_config_zmq_draft }}-Node:${{ matrix.node_version}}-${{hashFiles('./package.json') }}-docs"
+            "docs-cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-${{hashFiles('./pnpm-lock.yaml', './vcpkg.json', './CMakeLists.txt') }}"
           restore-keys: |
-            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-ZMQ_DRAFT:${{ env.npm_config_zmq_draft }}-Node:${{ matrix.node_version }}-"
+            "docs-cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-"
 
       - name: Env map
         run: |

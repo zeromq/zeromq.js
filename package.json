@@ -92,7 +92,6 @@
     "install": "node ./script/install.js",
     "clean": "rimraf ./build ./prebuilds ./staging && run-p clean.lib clean.temp",
     "clean.lib": "rimraf ./lib/",
-    "clean.release": "rimraf ./build/Release",
     "clean.temp": "rimraf ./tmp && shx mkdir -p ./tmp",
     "build.js": "run-s clean.lib && tsc -p ./src/tsconfig.json && run-s build.downlevel",
     "build.downlevel": "downlevel-dts ./lib ./lib/ts3.7",
