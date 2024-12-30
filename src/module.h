@@ -46,7 +46,7 @@ struct Terminator {
     }
 };
 
-class Module {
+class Module : public Napi::Addon<Module> {
     /* Contains shared global state that will be accessible by all
        agents/threads. */
     class Global {
@@ -67,7 +67,7 @@ class Module {
     };
 
 public:
-    explicit Module(Napi::Object exports);
+    explicit Module(Napi::Env env, Napi::Object exports);
 
     class Global& Global() {
         return *global;
