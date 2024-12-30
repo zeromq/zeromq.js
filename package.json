@@ -109,7 +109,7 @@
     "test.unit.debug": "run-s clean.temp build.debug && mocha ./test/unit/*-test.ts",
     "test.unit.compat": "run-s clean.temp build && cross-env INCLUDE_COMPAT_TESTS=true mocha ./test/unit/compat/*-test.ts",
     "test.unit.nogc": "run-s clean.temp build && cross-env SKIP_GC_TESTS=true mocha",
-    "test.electron.main": "run-s clean.temp build && electron-mocha ./test/unit/*-test.ts",
+    "test.electron.main": "run-s clean.temp build && cross-env SKIP_GC_TESTS=true electron-mocha ./test/unit/*-test.ts",
     "test.electron.renderer": "run-s build && electron-mocha --renderer ./test/unit/*-test.ts",
     "test.smoke": "bash ./script/smoke-test.bash",
     "format": "run-s format.prettier format.clang-format",

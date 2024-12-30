@@ -129,7 +129,11 @@ describe("compatibility of typings for typescript versions", async function () {
     })
 
     afterEach(async () => {
-      await remove(tscTargetPath)
+      try {
+        await remove(tscTargetPath)
+      } catch (err) {
+        console.error(`Failed to remove ${tscTargetPath}:`, err)
+      }
     })
   }
 })

@@ -2,7 +2,7 @@ import * as semver from "semver"
 import * as zmq from "../../src"
 
 import {assert} from "chai"
-import {testProtos, uniqAddress} from "./helpers"
+import {cleanSocket, testProtos, uniqAddress} from "./helpers"
 import {isFullError} from "../../src/errors"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {

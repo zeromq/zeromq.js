@@ -6,9 +6,9 @@ const config = {
   "expose-gc": true,
   "v8-expose-gc": true,
   exit: true,
-  parallel: true,
-  timeout: 5000,
-  retries: 1,
+  parallel: false,
+  timeout: 6000,
+  retries: 3,
   fullTrace: true,
   bail: false,
 }

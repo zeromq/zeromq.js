@@ -17,7 +17,7 @@ if (semver.satisfies(zmq.version, ">= 4.2")) {
  * Get a unique id to be used as a port number or IPC path.
  * This function is thread-safe and will use a lock file to ensure that the id is unique.
  */
-let idFallback = 5000
+let idFallback = 6000
 async function getUniqueId() {
   const idPath = path.resolve(__dirname, "../../tmp/port-id.lock")
   await fs.promises.mkdir(path.dirname(idPath), {recursive: true})
@@ -25,10 +25,10 @@ async function getUniqueId() {
   try {
     // Create the file if it doesn't exist
     if (!fs.existsSync(idPath)) {
-      await fs.promises.writeFile(idPath, "5000", "utf8")
+      await fs.promises.writeFile(idPath, "6000", "utf8")
 
       /* Windows cannot bind on a ports just above 1014; start higher to be safe. */
-      return 5000
+      return 6000
     }
 
     await lockfile.lock(idPath, {retries: 10})
@@ -63,7 +63,7 @@ async function getUniqueId() {
   }
 }
 
-type Proto = "ipc" | "tcp" | "udp" | "inproc"
+export type Proto = "ipc" | "tcp" | "udp" | "inproc"
 
 export async function uniqAddress(proto: Proto) {
   const id = await getUniqueId()
@@ -81,6 +81,19 @@ export async function uniqAddress(proto: Proto) {
     case "inproc":
     default:
       return `${proto}://${proto}-${id}`
+  }
+}
+
+export async function cleanSocket(address: string) {
+  const [proto, path] = address.split("://")[1]
+  if (proto !== "ipc" || !path) {
+    return
+  }
+  const exists = await fs.promises
+    .access(path, fs.constants.F_OK)
+    .catch(() => false)
+  if (exists) {
+    await fs.promises.rm(path)
   }
 }
 
