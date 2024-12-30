@@ -35,7 +35,10 @@ protected:
     inline void Close(const Napi::CallbackInfo& info);
 
     inline Napi::Value Bind(const Napi::CallbackInfo& info);
+    inline Napi::Value BindSync(const Napi::CallbackInfo& info);
+
     inline Napi::Value Unbind(const Napi::CallbackInfo& info);
+    inline Napi::Value UnbindSync(const Napi::CallbackInfo& info);
 
     inline void Connect(const Napi::CallbackInfo& info);
     inline void Disconnect(const Napi::CallbackInfo& info);

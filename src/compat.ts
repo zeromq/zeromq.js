@@ -327,34 +327,12 @@ class Socket extends EventEmitter {
     )
   }
 
-  bindSync(...args: Parameters<Socket["bind"]>) {
-    try {
-      Object.defineProperty(this, "bindSync", {
-        value: require("deasync")(this.bind),
-      })
-    } catch (err) {
-      throw new Error(
-        "bindSync() has been removed from compatibility mode; " +
-          "use bind() instead, or add 'deasync' to your project dependencies",
-      )
-    }
-
-    this.bindSync(...args)
+  bindSync(address: string) {
+    this._socket.bindSync(address)
   }
 
-  unbindSync(...args: Parameters<Socket["unbind"]>) {
-    try {
-      Object.defineProperty(this, "unbindSync", {
-        value: require("deasync")(this.unbind),
-      })
-    } catch (err) {
-      throw new Error(
-        "unbindSync() has been removed from compatibility mode; " +
-          "use unbind() instead, or add 'deasync' to your project dependencies",
-      )
-    }
-
-    this.unbindSync(...args)
+  unbindSync(address: string) {
+    this._socket.unbindSync(address)
   }
 
   pause() {
