@@ -33,7 +33,7 @@ public:
         assert(err == 0);
 
         err = uv_check_start(check.get(), [](uv_check_t* check) {
-            auto& immediate = *reinterpret_cast<UvDelayed*>(check->data);
+            auto& immediate = *static_cast<UvDelayed*>(check->data);
             immediate.check.reset();
             immediate.idle.reset();
             immediate.delayed_callback();

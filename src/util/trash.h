@@ -25,9 +25,7 @@ public:
 
         async->data = this;
 
-        auto clear = [](uv_async_t* async) {
-            reinterpret_cast<Trash*>(async->data)->Clear();
-        };
+        auto clear = [](uv_async_t* async) { static_cast<Trash*>(async->data)->Clear(); };
 
         [[maybe_unused]] auto err = uv_async_init(loop, async.get(), clear);
         assert(err == 0);

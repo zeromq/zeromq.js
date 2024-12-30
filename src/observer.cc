@@ -130,7 +130,7 @@ std::pair<const char*, const char*> ProtoError(uint32_t val) {
 
 Observer::Observer(const Napi::CallbackInfo& info)
     : Napi::ObjectWrap<Observer>(info), async_context(Env(), "Observer"), poller(*this),
-      module(*reinterpret_cast<Module*>(info.Data())) {
+      module(*static_cast<Module*>(info.Data())) {
     Arg::Validator const args{
         Arg::Required<Arg::Object>("Socket must be a socket object"),
     };
@@ -263,7 +263,7 @@ void Observer::Receive(const Napi::Promise::Deferred& res) {
         }
     }
 
-    auto* data2 = reinterpret_cast<char*>(zmq_msg_data(&msg2));
+    auto* data2 = static_cast<char*>(zmq_msg_data(&msg2));
     auto length = zmq_msg_size(&msg2);
 
     auto event = Napi::Object::New(Env());

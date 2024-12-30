@@ -27,7 +27,7 @@ Napi::Value IncomingMsg::IntoBuffer(const Napi::Env& env) {
             return env.Undefined();
         }
     }
-    auto* data = reinterpret_cast<uint8_t*>(zmq_msg_data(ref->get()));
+    auto* data = static_cast<uint8_t*>(zmq_msg_data(ref->get()));
     auto length = zmq_msg_size(ref->get());
 
     if (noElectronMemoryCage) {

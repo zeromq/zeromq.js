@@ -75,7 +75,7 @@ public:
                 readable_timer.get(),
                 [](uv_timer_t* timer) {
                     // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
-                    auto& poller = *reinterpret_cast<Poller*>(timer->data);
+                    auto& poller = *static_cast<Poller*>(timer->data);
                     poller.Trigger(UV_READABLE);
                 },
                 static_cast<uint64_t>(timeout), 0);
@@ -100,7 +100,7 @@ public:
                 writable_timer.get(),
                 [](uv_timer_t* timer) {
                     // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
-                    auto& poller = *reinterpret_cast<Poller*>(timer->data);
+                    auto& poller = *static_cast<Poller*>(timer->data);
                     poller.Trigger(UV_WRITABLE);
                 },
                 static_cast<uint64_t>(timeout), 0);
@@ -167,7 +167,7 @@ private:
     static void Callback(uv_poll_t* poll, int32_t status, int32_t /*events*/) {
         if (status == 0) {
             // NOLINTNEXTLINE(*-pro-type-reinterpret-cast)
-            auto& poller = *reinterpret_cast<Poller*>(poll->data);
+            auto& poller = *static_cast<Poller*>(poll->data);
             poller.TriggerReadable();
             poller.TriggerWritable();
         }
