@@ -91,7 +91,7 @@
   ],
   "scripts": {
     "install": "node ./script/install.js",
-    "clean": "shx rm -rf ./build ./prebuilds && run-p clean.lib clean.temp",
+    "clean": "shx rm -rf ./build ./prebuilds ./staging && run-p clean.lib clean.temp",
     "clean.lib": "shx rm -rf ./lib/",
     "clean.release": "shx rm -rf ./build/Release",
     "clean.temp": "shx rm -rf ./tmp && shx mkdir -p ./tmp",
@@ -100,11 +100,13 @@
     "build.doc": "typedoc --options ./typedoc.json && minify-all -s docs-unminified -d docs --jsCompressor terser && shx rm -rf docs-unminified",
     "deploy.doc": "run-s build.doc && gh-pages --dist \"./docs\"",
     "build.native": "cmake-ts nativeonly",
-    "build.native.debug": "cmake-ts dev-os-only",
+    "build.native.debug": "cross-env npm_config_zmq_enable_sanitizer_undefined=true cmake-ts dev-os-only",
     "build": "run-p build.js build.native",
     "build.debug": "run-s build.js build.native.debug",
     "test": "run-s test.unit",
+    "test.debug": "run-s test.unit.debug",
     "test.unit": "run-s clean.temp build && mocha ./test/unit/*-test.ts",
+    "test.unit.debug": "run-s clean.temp build.debug && mocha ./test/unit/*-test.ts",
     "test.unit.compat": "run-s clean.temp build && cross-env INCLUDE_COMPAT_TESTS=true mocha ./test/unit/compat/*-test.ts",
     "test.unit.nogc": "run-s clean.temp build && cross-env SKIP_GC_TESTS=true mocha",
     "test.electron.main": "run-s clean.temp build && electron-mocha ./test/unit/*-test.ts",
@@ -139,6 +141,24 @@
         "dev": true,
         "buildType": "Debug",
         "os": "linux",
+        "arch": "x64",
+        "runtime": "node",
+        "runtimeVersion": "12.22.12"
+      },
+      {
+        "name": "darwin-arm64-dev",
+        "dev": true,
+        "buildType": "Debug",
+        "os": "darwin",
+        "arch": "arm64",
+        "runtime": "node",
+        "runtimeVersion": "12.22.12"
+      },
+      {
+        "name": "windows-x64-dev",
+        "dev": true,
+        "buildType": "Debug",
+        "os": "win32",
         "arch": "x64",
         "runtime": "node",
         "runtimeVersion": "12.22.12"
