@@ -41,27 +41,22 @@ interface RadioGroupOptions {
 export interface Radio extends Writable<MessageLike, [RadioGroupOptions]> {}
 allowMethods(Radio.prototype, ["send"])
 
-const join = (
-  Socket.prototype as Socket & {
-    join: (value: Array<string | Buffer>) => void
-  }
-).join
-const leave = (
-  Socket.prototype as Socket & {
-    leave: (value: Array<string | Buffer>) => void
-  }
-).leave
-
 export class Dish extends Socket {
   constructor(options?: SocketOptions<Dish>) {
     super(SocketType.Dish, options)
   }
 
   join(...values: Array<Buffer | string>): void {
+    const {join} = Socket.prototype as Socket & {
+      join: (value: Array<string | Buffer>) => void
+    }
     join(values)
   }
 
   leave(...values: Array<Buffer | string>): void {
+    const {leave} = Socket.prototype as Socket & {
+      leave: (value: Array<string | Buffer>) => void
+    }
     leave(values)
   }
 }

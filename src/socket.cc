@@ -140,9 +140,12 @@ Socket::Socket(const Napi::CallbackInfo& info)
 
         /* Callback to free the underlying poller. Move the poller to transfer
            ownership after the constructor has completed. */
-        finalize = [&]() {
-            [[maybe_unused]] auto err = zmq_poller_destroy(&poll);
-            assert(err == 0);
+        finalize = [poll]() mutable {
+            if (poll != nullptr) {
+                [[maybe_unused]] auto err = zmq_poller_destroy(&poll);
+                assert(err == 0);
+                poll = nullptr;
+            }
         };
 
         if (zmq_poller_add(poll, socket, nullptr, ZMQ_POLLIN | ZMQ_POLLOUT) < 0) {
