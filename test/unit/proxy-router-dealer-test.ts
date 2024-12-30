@@ -2,7 +2,7 @@ import * as semver from "semver"
 import * as zmq from "../../src"
 
 import {assert} from "chai"
-import {testProtos, uniqAddress} from "./helpers"
+import {cleanSocket, testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc", "inproc")) {
   describe(`proxy with ${proto} router/dealer`, function () {
@@ -29,7 +29,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       rep = new zmq.Reply()
     })
 
-    afterEach(function () {
+    afterEach(async function () {
       /* Closing proxy sockets is only necessary if run() fails. */
       proxy.frontEnd.close()
       proxy.backEnd.close()
@@ -37,6 +37,7 @@ for (const proto of testProtos("tcp", "ipc", "inproc")) {
       req.close()
       rep.close()
       global.gc?.()
+      await Promise.all([cleanSocket(frontAddress), cleanSocket(backAddress)])
     })
 
     describe("run", function () {

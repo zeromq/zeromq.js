@@ -84,6 +84,19 @@ export async function uniqAddress(proto: Proto) {
   }
 }
 
+export async function cleanSocket(address: string) {
+  const [proto, path] = address.split("://")[1]
+  if (proto !== "ipc" || !path) {
+    return
+  }
+  const exists = await fs.promises
+    .access(path, fs.constants.F_OK)
+    .catch(() => false)
+  if (exists) {
+    await fs.promises.rm(path)
+  }
+}
+
 export function testProtos(...requested: Proto[]) {
   const set = new Set(requested)
 
