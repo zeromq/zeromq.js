@@ -9,6 +9,7 @@ jobs:
   Build:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }}-${{ matrix.node_arch }}-${{ matrix.dockerfile }}-${{ matrix.distro }}
     strategy:
       fail-fast: false
       matrix:
@@ -47,16 +48,56 @@ jobs:
             cpp_arch: x64
 
           # Debian Arm
-          - os: macos-14
+          - os: ubuntu-22.04
             node_arch: arm64
             cpp_arch: amd64_arm64
-            dockerfile: docker/alpine.dockerfile
+            distro: node:18
+            install: |
+              apt-get update -y && \
+                  apt-get install --no-install-recommends -y \
+                  bash \
+                  build-essential \
+                  curl \
+                  git \
+                  g++ \
+                  make \
+                  ninja-build \
+                  pkg-config \
+                  unzip \
+                  zip \
+                  python3 \
+                  tar \
+                  cmake \
+                  ninja-build \
+                  automake \
+                  autoconf \
+                  libtool
 
           # Musl Alpine Arm
-          - os: macos-14
+          - os: ubuntu-22.04
             node_arch: arm64
             cpp_arch: amd64_arm64
-            dockerfile: docker/debian.dockerfile
+            install: |
+              apk add --no-cache \
+                  bash \ 
+                  build-base \
+                  curl \ 
+                  git \
+                  g++ \ 
+                  make \ 
+                  ninja-build \
+                  pkgconfig \
+                  unzip \
+                  zip \
+                  python3 \
+                  tar \
+                  cmake \ 
+                  ninja \
+                  musl-dev \
+                  automake \
+                  autoconf \
+                  libtool && \
+                  cp /usr/lib/ninja-build/bin/ninja /usr/bin/ninja
 
     env:
       npm_config_arch: ${{ matrix.node_arch }}
@@ -85,7 +126,7 @@ jobs:
         shell: bash
 
       - name: Setup Cpp
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ !matrix.dockerfile && !matrix.install }}
         uses: aminya/setup-cpp@v1
         with:
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
@@ -101,34 +142,34 @@ jobs:
           brew install gnutls autoconf automake libtool
 
       - uses: pnpm/action-setup@v4
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ !matrix.dockerfile && !matrix.install }}
         with:
           version: 9
 
       - name: Install Node 20
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ !matrix.dockerfile && !matrix.install }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
           architecture: ${{ env.setup_node_arch }}
 
       - name: Install and Build Native
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ !matrix.dockerfile && !matrix.install }}
         run: pnpm install
 
       - name: Build JavaScript
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ !matrix.dockerfile && !matrix.install }}
         run: pnpm run build.js
 
       - name: Install Node 10
-        if: ${{ !matrix.dockerfile && matrix.os != 'macos-14' }}
+        if: ${{ !matrix.dockerfile && !matrix.install && matrix.os != 'macos-14' }}
         uses: actions/setup-node@v4
         with:
           node-version: 10
           architecture: ${{ env.setup_node_arch }}
-
+        
       - name: Build Native
-        if: ${{ !matrix.dockerfile && matrix.node_arch != 'ia32' }}
+        if: ${{ !matrix.dockerfile && !matrix.install && matrix.node_arch != 'ia32' }}
         run: npm run build.native
 
       - name: Build Native Windows 32
@@ -138,7 +179,7 @@ jobs:
           windows-x86
 
       - name: Use Node 20
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ !matrix.dockerfile && !matrix.install }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -153,6 +194,26 @@ jobs:
           docker cp zeromq-temp:/app/build ./
           docker rm -f zeromq-temp
 
+      - name: Build Linux Arm64
+        if: ${{ matrix.install }} 
+        uses: uraimo/run-on-arch-action@v2
+        with:
+          arch: aarch64
+          distro: ${{ matrix.distro }}
+          githubToken: ${{ github.token }}
+          setup: |
+            mkdir -p "${PWD}/build"
+          dockerRunArgs: |
+            --volume "${PWD}/build:/build"
+          env: |
+            VCPKG_FORCE_SYSTEM_BINARIES: 1
+          install: |
+            ${{ matrix.install }}
+          run: |
+            npm i -g pnpm && \
+            pnpm install && \
+            pnpm run build
+
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
@@ -161,11 +222,11 @@ jobs:
           overwrite: true
 
       - name: Lint
-        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.dockerfile }}"
+        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.dockerfile && !matrix.install }}"
         run: pnpm run lint-test
 
       - name: Test
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ !matrix.dockerfile && !matrix.install }}
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -176,7 +237,7 @@ jobs:
             rm -rf ./tmp && mkdir -p ./tmp
 
       - name: Test Electron Windows/MacOS
-        if: "${{ !contains(matrix.os, 'ubuntu') && !matrix.dockerfile }}"
+        if: "${{ !contains(matrix.os, 'ubuntu') && !matrix.dockerfile && !matrix.install }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -186,7 +247,7 @@ jobs:
         continue-on-error: true
 
       - name: Test Electron Linux
-        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.dockerfile }}"
+        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.dockerfile && !matrix.install }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
