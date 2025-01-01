@@ -60,7 +60,7 @@ jobs:
           - os: ubuntu-24.04
             node_arch: arm64
             cpp_arch: amd64_arm64
-            distro: bullseye
+            distro: bookworm
             native: false
 
           # Musl Alpine Arm
@@ -178,6 +178,7 @@ jobs:
           env: |
             VCPKG_FORCE_SYSTEM_BINARIES: 1
           install: |
+            set -x
             case "${{ matrix.distro }}" in
                 ubuntu*|jessie|stretch|buster|bullseye)
                   apt-get update -q -y
@@ -225,6 +226,7 @@ jobs:
                      nodejs
                  ;;
                 alpine*)
+                  apk update
                   apk add --no-cache \
                     bash \ 
                     build-base \
