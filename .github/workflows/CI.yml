@@ -50,21 +50,21 @@ jobs:
             native: true
 
           # Musl Alpine
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             dockerfile: docker/alpine.dockerfile
             node_arch: x64
             cpp_arch: x64
             native: false
 
           # Debian Arm
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             node_arch: arm64
             cpp_arch: amd64_arm64
             distro: bullseye
             native: false
 
           # Musl Alpine Arm
-          - os: ubuntu-22.04
+          - os: ubuntu-24.04
             node_arch: arm64
             cpp_arch: amd64_arm64
             distro: alpine_latest
@@ -166,7 +166,7 @@ jobs:
 
       - name: Build Linux Arm64
         if: ${{ matrix.distro }}
-        uses: uraimo/run-on-arch-action@v2
+        uses: uraimo/run-on-arch-action@v2.8.1
         with:
           arch: aarch64
           distro: ${{ matrix.distro }}
