@@ -199,7 +199,8 @@ jobs:
                      automake \
                      autoconf \
                      libtool \
-                     nodejs
+                     nodejs \
+                     npm
                  ;;
                 fedora*)
                   dnf update -q -y
@@ -238,18 +239,18 @@ jobs:
                     python3 \
                     tar \
                     cmake \ 
-                    ninja \
                     musl-dev \
                     automake \
                     autoconf \
                     libtool \
-                    nodejs && \
+                    nodejs \
+                    npm && \
                     cp /usr/lib/ninja-build/bin/ninja /usr/bin/ninja
                  ;;
              esac
+             npm i -g pnpm
 
           run: |
-            npm i -g pnpm && \
             pnpm install && \
             pnpm run build
 
