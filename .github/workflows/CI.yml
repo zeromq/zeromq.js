@@ -180,29 +180,6 @@ jobs:
           install: |
             set -x
             case "${{ matrix.distro }}" in
-                ubuntu*|jessie|stretch|buster|bullseye)
-                  apt-get update -q -y
-                  apt-get install --no-install-recommends -y \
-                     bash \
-                     build-essential \
-                     curl \
-                     git \
-                     g++ \
-                     make \
-                     ninja-build \
-                     pkg-config \
-                     unzip \
-                     zip \
-                     python3 \
-                     tar \
-                     cmake \
-                     ninja-build \
-                     automake \
-                     autoconf \
-                     libtool \
-                     nodejs \
-                     npm
-                 ;;
                 fedora*)
                   dnf update -q -y
                   dnf install -y \
@@ -227,27 +204,32 @@ jobs:
                  ;;
                 alpine*)
                   apk update
-                  apk add --no-cache \
-                    bash \ 
-                    build-base \
-                    curl \ 
-                    git \
-                    g++ \ 
-                    make \ 
-                    ninja-build \
-                    pkgconfig \
-                    unzip \
-                    zip \
-                    python3 \
-                    tar \
-                    cmake \ 
-                    musl-dev \
-                    automake \
-                    autoconf \
-                    libtool \
-                    nodejs \
-                    npm && \
-                    cp /usr/lib/ninja-build/bin/ninja /usr/bin/ninja
+                  apk add --no-cache bash build-base curl git g++ make ninja-build pkgconfig unzip zip python3 tar cmake musl-dev automake autoconf libtool nodejs npm 
+                  cp /usr/lib/ninja-build/bin/ninja /usr/bin/ninja
+                 ;;
+                *)
+                  # Default case (Ubuntu/Debian)
+                  apt-get update -q -y
+                  apt-get install --no-install-recommends -y \
+                     bash \
+                     build-essential \
+                     curl \
+                     git \
+                     g++ \
+                     make \
+                     ninja-build \
+                     pkg-config \
+                     unzip \
+                     zip \
+                     python3 \
+                     tar \
+                     cmake \
+                     ninja-build \
+                     automake \
+                     autoconf \
+                     libtool \
+                     nodejs \
+                     npm
                  ;;
              esac
              npm i -g pnpm
