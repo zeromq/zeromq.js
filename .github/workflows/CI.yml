@@ -40,11 +40,23 @@ jobs:
             node_arch: arm64
             cpp_arch: amd64_arm64
 
-          # Alpine
+          # Musl Alpine
           - os: ubuntu-22.04
             dockerfile: docker/alpine.dockerfile
             node_arch: x64
             cpp_arch: x64
+
+          # Debian Arm
+          - os: macos-14
+            node_arch: arm64
+            cpp_arch: amd64_arm64
+            dockerfile: docker/alpine.dockerfile
+
+          # Musl Alpine Arm
+          - os: macos-14
+            node_arch: arm64
+            cpp_arch: amd64_arm64
+            dockerfile: docker/debian.dockerfile
 
     env:
       npm_config_arch: ${{ matrix.node_arch }}
@@ -137,7 +149,8 @@ jobs:
         run: |
           docker build -t zeromq -f ${{ matrix.dockerfile }} .
           docker create --name zeromq-temp zeromq
-          docker cp zeromq-temp:/app/build ./build
+          mkdir -p ./build
+          docker cp zeromq-temp:/app/build ./
           docker rm -f zeromq-temp
 
       - name: Upload build
