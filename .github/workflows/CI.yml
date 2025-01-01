@@ -233,6 +233,8 @@ jobs:
                  ;;
              esac
              npm i -g pnpm
+             npx -y setup-cpp --vcpkg "ee2d2a100103e0f3613c60655dcf15be7d5157b8"
+             ~/vcpkg/vcpkg install 'zeromq[draft,curve,sodium]'
 
           run: |
             pnpm install && \
