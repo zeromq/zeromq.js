@@ -164,6 +164,12 @@ jobs:
           docker cp zeromq-temp:/app/build ./
           docker rm -f zeromq-temp
 
+      - name: Read Installer Script
+        if: ${{ matrix.distro }}
+        id: read-installer-script
+        run: |
+          echo "install_deps=$(cat ./script/install-deps.bash)" >> $GITHUB_OUTPUT
+
       - name: Build Linux Arm64
         if: ${{ matrix.distro }}
         uses: uraimo/run-on-arch-action@v2.8.1
@@ -178,7 +184,7 @@ jobs:
           env: |
             VCPKG_FORCE_SYSTEM_BINARIES: 1
           install: |
-            ./script/install-deps.bash
+            ${{ steps.read-installer-script.outputs.install_deps }}
 
           run: |
             pnpm install && \
