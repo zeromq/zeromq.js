@@ -67,7 +67,7 @@ npm i -g pnpm
 export VCPKG_FORCE_SYSTEM_BINARIES=1
 
 # vcpkg
-npx -y setup-cpp --vcpkg "ee2d2a100103e0f3613c60655dcf15be7d5157b8"
+npx -y setup-cpp --vcpkg "ee2d2a100103e0f3613c60655dcf15be7d5157b8" --timeout 3600000
 
 # zeromq
 cd ~/vcpkg || exit 1
