@@ -168,7 +168,10 @@ jobs:
         if: ${{ matrix.distro }}
         id: read-installer-script
         run: |
-          echo "install_deps=$(cat ./script/install-deps.bash)" >> $GITHUB_OUTPUT
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "install_deps<<$EOF" >> $GITHUB_OUTPUT
+          cat ./script/install-deps.bash >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
 
       - name: Build Linux Arm64
         if: ${{ matrix.distro }}
