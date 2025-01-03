@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 
 set -x
 
 # Ubuntu/Debian
 apt=$(command -v apt-get || true)
-if [[ -n $apt ]]; then
+if [ -n "$apt" ]; then
     apt-get update -q -y
     apt-get install --no-install-recommends -y \
         bash \
@@ -30,7 +30,7 @@ fi
 
 # Alpine Linux
 apk=$(command -v apk || true)
-if [[ -n $apk ]]; then
+if [ -n "$apk" ]; then
     apk update
     apk add --no-cache bash build-base curl git g++ make ninja-build pkgconfig unzip zip python3 tar cmake musl-dev automake autoconf libtool nodejs npm
     cp /usr/lib/ninja-build/bin/ninja /usr/bin/ninja
@@ -38,7 +38,7 @@ fi
 
 # Fedora/RHEL
 dnf=$(command -v dnf || true)
-if [[ -n $dnf ]]; then
+if [ -n "$dnf" ]; then
     dnf update -q -y
     dnf install -y \
         bash \
