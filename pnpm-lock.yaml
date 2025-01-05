@@ -8,11 +8,6 @@ overrides:
   typescript: ~4.9.5
   node-gyp: 10.0.1
 
-patchedDependencies:
-  electron-mocha:
-    hash: c4pa7rsg6atg3nmsnc7zhtvcny
-    path: patches/electron-mocha.patch
-
 importers:
 
   .:
@@ -74,7 +69,7 @@ importers:
         version: 33.2.1
       electron-mocha:
         specifier: ^13.0.1
-        version: 13.0.1(patch_hash=c4pa7rsg6atg3nmsnc7zhtvcny)
+        version: 13.0.1
       eslint:
         specifier: ^8.57.1
         version: 8.57.1
@@ -4935,7 +4930,7 @@ snapshots:
       jsbn: 0.1.1
       safer-buffer: 2.1.2
 
-  electron-mocha@13.0.1(patch_hash=c4pa7rsg6atg3nmsnc7zhtvcny):
+  electron-mocha@13.0.1:
     dependencies:
       ansi-colors: 4.1.3
       electron-window: 0.8.1
