@@ -9,6 +9,8 @@ jobs:
   Build:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ${{ matrix.os }}
+    # prettier-ignore
+    name: ${{ matrix.os }}-${{ matrix.node_arch }}-${{ matrix.dockerfile }}-${{ matrix.distro }}
     strategy:
       fail-fast: false
       matrix:
@@ -21,11 +23,16 @@ jobs:
           - x64
         dockerfile:
           - ""
+        distro:
+          - ""
+        native:
+          - true
 
         include:
           - os: windows-2019
             node_arch: ia32
             cpp_arch: amd64_x86
+            native: true
 
           # - os: windows-2022
           #   node_arch: x64
@@ -35,16 +42,33 @@ jobs:
           - os: macos-13
             node_arch: x64
             cpp_arch: x64
+            native: true
 
           - os: macos-14
             node_arch: arm64
             cpp_arch: amd64_arm64
+            native: true
 
-          # Alpine
-          - os: ubuntu-22.04
+          # Musl Alpine
+          - os: ubuntu-24.04
             dockerfile: docker/alpine.dockerfile
             node_arch: x64
             cpp_arch: x64
+            native: false
+
+          # Debian Arm
+          - os: ubuntu-24.04
+            node_arch: arm64
+            cpp_arch: amd64_arm64
+            distro: bookworm
+            native: false
+
+          # Musl Alpine Arm
+          - os: ubuntu-24.04
+            node_arch: arm64
+            cpp_arch: amd64_arm64
+            distro: alpine_latest
+            native: false
 
     env:
       npm_config_arch: ${{ matrix.node_arch }}
@@ -59,9 +83,8 @@ jobs:
           path: |
             ./node_modules/
             ~/vcpkg
-          key:
-            # prettier-ignore
-            "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-${{hashFiles('./pnpm-lock.yaml', './vcpkg.json', './CMakeLists.txt') }}"
+          # prettier-ignore
+          key: "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch}}-${{hashFiles('./pnpm-lock.yaml', './vcpkg.json', './CMakeLists.txt') }}"
           restore-keys: |
             "cache-OS:${{ matrix.os }}-arch:${{ matrix.node_arch }}-"
 
@@ -73,7 +96,7 @@ jobs:
         shell: bash
 
       - name: Setup Cpp
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ matrix.native }}
         uses: aminya/setup-cpp@v1
         with:
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
@@ -89,34 +112,34 @@ jobs:
           brew install gnutls autoconf automake libtool
 
       - uses: pnpm/action-setup@v4
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ matrix.native }}
         with:
           version: 9
 
       - name: Install Node 20
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ matrix.native }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
           architecture: ${{ env.setup_node_arch }}
 
       - name: Install and Build Native
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ matrix.native }}
         run: pnpm install
 
       - name: Build JavaScript
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ matrix.native }}
         run: pnpm run build.js
 
       - name: Install Node 10
-        if: ${{ !matrix.dockerfile && matrix.os != 'macos-14' }}
+        if: ${{ matrix.native && matrix.os != 'macos-14' }}
         uses: actions/setup-node@v4
         with:
           node-version: 10
           architecture: ${{ env.setup_node_arch }}
 
       - name: Build Native
-        if: ${{ !matrix.dockerfile && matrix.node_arch != 'ia32' }}
+        if: ${{ matrix.native && matrix.node_arch != 'ia32' }}
         run: npm run build.native
 
       - name: Build Native Windows 32
@@ -126,7 +149,7 @@ jobs:
           windows-x86
 
       - name: Use Node 20
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ matrix.native }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -137,8 +160,38 @@ jobs:
         run: |
           docker build -t zeromq -f ${{ matrix.dockerfile }} .
           docker create --name zeromq-temp zeromq
-          docker cp zeromq-temp:/app/build ./build
+          mkdir -p ./build
+          docker cp zeromq-temp:/app/build ./
           docker rm -f zeromq-temp
+
+      - name: Read Installer Script
+        if: ${{ matrix.distro }}
+        id: read-installer-script
+        run: |
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "install_deps<<$EOF" >> $GITHUB_OUTPUT
+          cat ./script/install-deps.sh >> $GITHUB_OUTPUT
+          echo "$EOF" >> $GITHUB_OUTPUT
+
+      - name: Build Linux Arm64
+        if: ${{ matrix.distro }}
+        uses: uraimo/run-on-arch-action@v2.8.1
+        with:
+          arch: aarch64
+          distro: ${{ matrix.distro }}
+          githubToken: ${{ github.token }}
+          setup: |
+            mkdir -p "${PWD}/build"
+          dockerRunArgs: |
+            --volume "${PWD}/build:/build"
+          env: |
+            VCPKG_FORCE_SYSTEM_BINARIES: 1
+          install: |
+            ${{ steps.read-installer-script.outputs.install_deps }}
+
+          run: |
+            pnpm install && \
+            pnpm run build
 
       - name: Upload build
         uses: actions/upload-artifact@v4
@@ -148,11 +201,11 @@ jobs:
           overwrite: true
 
       - name: Lint
-        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.dockerfile }}"
+        if: "${{ contains(matrix.os, 'ubuntu') && matrix.native }}"
         run: pnpm run lint-test
 
       - name: Test
-        if: ${{ !matrix.dockerfile }}
+        if: ${{ matrix.native }}
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -163,7 +216,7 @@ jobs:
             rm -rf ./tmp && mkdir -p ./tmp
 
       - name: Test Electron Windows/MacOS
-        if: "${{ !contains(matrix.os, 'ubuntu') && !matrix.dockerfile }}"
+        if: "${{ !contains(matrix.os, 'ubuntu') && matrix.native }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -173,7 +226,7 @@ jobs:
         continue-on-error: true
 
       - name: Test Electron Linux
-        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.dockerfile }}"
+        if: "${{ contains(matrix.os, 'ubuntu') && matrix.native }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
