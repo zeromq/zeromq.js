@@ -13,6 +13,7 @@
 - Compatible with Zeromq 4/5 via "zeromq/v5-compat"
 - Secure Curve protocol with Libsodium
 - Zeromq Draft API support
+- Websocket support
 
 ## Useful links
 
@@ -30,8 +31,8 @@
   - [Installation](#installation)
     - [Prebuilt binaries](#prebuilt-binaries)
     - [Building from source](#building-from-source)
-    - [Available Build Options](#available-build-options)
-    - [Curve with Libsodium support](#curve-with-libsodium-support)
+      - [Available Build Options](#available-build-options)
+      - [Curve with Libsodium support](#curve-with-libsodium-support)
       - [Draft support](#draft-support)
       - [Websocket support](#websocket-support)
       - [Secure Websocket support](#secure-websocket-support)
@@ -113,19 +114,19 @@ For Curve:
 
 To install from source, specify `build_from_source=true` in a `.npmrc` file
 
-```
+```ini
 build_from_source=true
 ```
+
+#### Available Build Options
 
 When building from source, you can also specify additional build options in a
 `.npmrc` file in your project:
 
-### Available Build Options
-
 <details>
 <summary>👉🏻 Options</summary>
 
-### Curve with Libsodium support
+#### Curve with Libsodium support
 
 (Enabled by default)
 
@@ -155,6 +156,8 @@ zmq_draft=false
 
 #### Websocket support
 
+(Enabled by default)
+
 Enables WebSocket transport, allowing ZeroMQ to communicate over WebSockets. To
 enable WebSocket support, add the following to your .npmrc:
 
@@ -163,6 +166,8 @@ zmq_websockets="true"
 ```
 
 #### Secure Websocket support
+
+(Enabled by default)
 
 Enables WebSocket transport with TLS (wss), providing secure WebSocket
 communications. To enable secure WebSocket support, add the following to your
