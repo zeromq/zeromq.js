@@ -34,10 +34,10 @@ jobs:
             cpp_arch: amd64_x86
             native: true
 
-          # - os: windows-2022
-          #   node_arch: x64
-          #   arch: arm64
-          #   cpp_arch: amd64_arm64
+          - os: windows-2022
+            node_arch: x64
+            cpp_arch: amd64_arm64
+            native: true
 
           - os: macos-13
             node_arch: x64
