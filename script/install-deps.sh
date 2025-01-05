@@ -67,7 +67,11 @@ npm i -g pnpm
 export VCPKG_FORCE_SYSTEM_BINARIES=1
 
 # vcpkg
-npx -y setup-cpp --vcpkg "ee2d2a100103e0f3613c60655dcf15be7d5157b8" --timeout 3600000
+git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
+cd ~/vcpkg || exit 1
+git checkout "ee2d2a100103e0f3613c60655dcf15be7d5157b8"
+~/vcpkg/bootstrap-vcpkg.sh
+cd - || exit 1
 
 # zeromq
 cd ~/vcpkg || exit 1
