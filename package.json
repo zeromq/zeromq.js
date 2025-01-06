@@ -120,7 +120,7 @@
     "format": "run-s format.prettier format.clang-format",
     "format.prettier": "prettier -l --cache --cache-location ./.cache/prettier --write .",
     "format.clang-format": "clang-format -i -style=file ./src/*.cc ./src/*.h ./src/util/*.h",
-    "lint-test.eslint": "eslint ./**/*.{ts,tsx,js,jsx,cjs,mjs,json,yaml} --no-error-on-unmatched-pattern --cache --cache-location ./.cache/eslint/",
+    "lint-test.eslint": "eslint './**/*.{ts,tsx,js,jsx,cjs,mjs,json,yaml}' --no-error-on-unmatched-pattern --cache --cache-location ./.cache/eslint/",
     "lint.eslint": "pnpm run lint-test.eslint --fix",
     "lint.tsc": "tsc --noEmit -p ./src/tsconfig.json",
     "lint.tsc-test": "tsc --noEmit -p ./test/tsconfig.json",

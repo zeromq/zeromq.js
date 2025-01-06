@@ -187,6 +187,7 @@ export interface EventError<E = ErrnoError> {
  * type AllEvents = { type: "bind", address: string }
  * ```
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type EventFor<T extends string, D = {}> = Expand<{type: T} & D>
 
 /**
@@ -530,6 +531,7 @@ export declare abstract class Socket {
    * @param type The socket type.
    * @param options Any options to set during construction.
    */
+  // eslint-disable-next-line @typescript-eslint/ban-types
   protected constructor(type: SocketType, options?: {})
 
   /**
@@ -737,4 +739,5 @@ export type WritableKeys<T> = {
  * ```
  * @internal
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type Options<T, E = {}> = Expand<Partial<E & Pick<T, WritableKeys<T>>>>
