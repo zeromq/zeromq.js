@@ -8,6 +8,7 @@
     "ts-node": ">= 0"
   },
   "scripts": {
+    "build": "cd .. && pnpm build && cd ./examples && pnpm install",
     "majordomo": "ts-node ./majordomo/index.ts",
     "queue": "ts-node ./queue/index.ts",
     "threaded-worker": "ts-node ./threaded-worker/index.ts",
