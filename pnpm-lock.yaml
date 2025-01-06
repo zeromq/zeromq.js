@@ -117,6 +117,9 @@ importers:
       semver:
         specifier: ^7.6.3
         version: 7.6.3
+      servor:
+        specifier: ^4.0.2
+        version: 4.0.2
       shx:
         specifier: ^0.3.4
         version: 0.3.4
@@ -126,6 +129,15 @@ importers:
       typedoc:
         specifier: ^0.27.6
         version: 0.27.6(typescript@4.9.5)
+      typedoc-plugin-dt-links:
+        specifier: ^1.1.6
+        version: 1.1.6(typedoc@0.27.6(typescript@4.9.5))
+      typedoc-plugin-inline-sources:
+        specifier: ^1.2.0
+        version: 1.2.0(typedoc@0.27.6(typescript@4.9.5))
+      typedoc-plugin-mdn-links:
+        specifier: ^4.0.7
+        version: 4.0.7(typedoc@0.27.6(typescript@4.9.5))
       typescript:
         specifier: ~4.9.5
         version: 4.9.5
@@ -3021,6 +3033,10 @@ packages:
   serialize-javascript@6.0.2:
     resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
 
+  servor@4.0.2:
+    resolution: {integrity: sha512-MlmQ5Ntv4jDYUN060x/KEmN7emvIqKMZ9OkM+nY8Bf2+KkyLmGsTqWLyAN2cZr5oESAcH00UanUyyrlS1LRjFw==}
+    hasBin: true
+
   set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
 
@@ -3377,6 +3393,21 @@ packages:
   typedarray.prototype.slice@1.0.3:
     resolution: {integrity: sha512-8WbVAQAUlENo1q3c3zZYuy5k9VzBQvp8AX9WOtbvyWlLM1v5JaSRmjubLjzHF4JFtptjH/5c/i95yaElvcjC0A==}
     engines: {node: '>= 0.4'}
+
+  typedoc-plugin-dt-links@1.1.6:
+    resolution: {integrity: sha512-1t4eH4m2nIPCaG2V2tg5MpfZskbpxUCABQK6nAMlaYvZniDohQ7EOXBiW3kDrsHNXaEIMV38nXAJgP3dfptJDg==}
+    peerDependencies:
+      typedoc: '>= 0.23.14 || 0.24.x || 0.25.x || 0.26.x || 0.27.x'
+
+  typedoc-plugin-inline-sources@1.2.0:
+    resolution: {integrity: sha512-gCjief4B71vRJw25Lwl7J69DuxzDjjG6pvUUPmjxY3uePyzcFGiw4eqbq+tmIPLXlnKAQujmglX/G+ZDnLUzug==}
+    peerDependencies:
+      typedoc: 0.25.x || 0.26.x
+
+  typedoc-plugin-mdn-links@4.0.7:
+    resolution: {integrity: sha512-S9nUdZShdu+8HyWygmxjqyYIviZVdL36OjPWvxuLVMrS21lqxnVYLqInPYHXalmvitVEqWmrJJk8Al0x6d8wEA==}
+    peerDependencies:
+      typedoc: 0.26.x || 0.27.x
 
   typedoc@0.27.6:
     resolution: {integrity: sha512-oBFRoh2Px6jFx366db0lLlihcalq/JzyCVp7Vaq1yphL/tbgx2e+bkpkCgJPunaPvPwoTOXSwasfklWHm7GfAw==}
@@ -7027,6 +7058,8 @@ snapshots:
     dependencies:
       randombytes: 2.1.0
 
+  servor@4.0.2: {}
+
   set-blocking@2.0.0: {}
 
   set-function-length@1.2.2:
@@ -7444,6 +7477,18 @@ snapshots:
       es-errors: 1.3.0
       typed-array-buffer: 1.0.2
       typed-array-byte-offset: 1.0.2
+
+  typedoc-plugin-dt-links@1.1.6(typedoc@0.27.6(typescript@4.9.5)):
+    dependencies:
+      typedoc: 0.27.6(typescript@4.9.5)
+
+  typedoc-plugin-inline-sources@1.2.0(typedoc@0.27.6(typescript@4.9.5)):
+    dependencies:
+      typedoc: 0.27.6(typescript@4.9.5)
+
+  typedoc-plugin-mdn-links@4.0.7(typedoc@0.27.6(typescript@4.9.5)):
+    dependencies:
+      typedoc: 0.27.6(typescript@4.9.5)
 
   typedoc@0.27.6(typescript@4.9.5):
     dependencies:

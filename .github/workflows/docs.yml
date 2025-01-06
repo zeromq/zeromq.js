@@ -67,7 +67,7 @@ jobs:
       - name: Build Documentation
         run: |
           pnpm install
-          pnpm run build.doc
+          pnpm run docs.build
 
       - name: Deploy Documentation
         uses: Cecilapp/GitHub-Pages-deploy@v3

@@ -27,5 +27,9 @@
   ],
   "cleanOutputDir": true,
   "pretty": false,
-  "githubPages": true
+  "githubPages": true,
+  "plugin": [
+    "typedoc-plugin-dt-links",
+    "typedoc-plugin-mdn-links",
+  ]
 }
