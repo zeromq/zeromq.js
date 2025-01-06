@@ -12,6 +12,7 @@ export class Queue {
   }
 
   send(msg: MessageLike) {
+    console.log(`Sending message: ${msg}`)
     if (this.queue.length > this.max) {
       throw new Error("Queue is full")
     }
