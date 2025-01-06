@@ -308,7 +308,7 @@ jobs:
       - name: Install Yarn Latest
         if: matrix.node-version == 22
         run: |
-          npm i -g yarn@latest
+          npm i -g @yarnpkg/cli-dist@latest
 
       - name: Install Pnpm 5
         if: matrix.node-version == 10
