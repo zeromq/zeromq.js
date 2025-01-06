@@ -70,6 +70,16 @@
     "node": ">= 10",
     "pnpm": ">= 9"
   },
+  "overrides": {
+    "typescript": "~4.9.5",
+    "node-gyp": "10.0.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "typescript": "~4.9.5",
+      "node-gyp": "10.0.1"
+    }
+  },
   "files": [
     "CHANGELOG.md",
     "LICENSE.txt",
@@ -239,9 +249,5 @@
     "napi"
   ],
   "license": "MIT AND MPL-2.0",
-  "author": "Amin Yahyaabadi <aminyahyaabadi74@gmail.com>, Rolf Timmermans <rolf@zxcv.nl>",
-  "overrides": {
-    "typescript": "~4.9.5",
-    "node-gyp": "10.0.1"
-  }
+  "author": "Amin Yahyaabadi <aminyahyaabadi74@gmail.com>, Rolf Timmermans <rolf@zxcv.nl>"
 }
