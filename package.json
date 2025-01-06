@@ -60,15 +60,6 @@
     "typescript": "~4.9.5",
     "which": "^5.0.0"
   },
-  "pnpm": {
-    "overrides": {
-      "typescript": "~4.9.5",
-      "node-gyp": "10.0.1"
-    },
-    "patchedDependencies": {
-      "electron-mocha": "patches/electron-mocha.patch"
-    }
-  },
   "engines": {
     "node": ">= 10",
     "pnpm": ">= 9"
@@ -113,15 +104,15 @@
     "format.prettier": "prettier -l --cache --cache-location ./.cache/prettier --write .",
     "format.clang-format": "clang-format -i -style=file ./src/*.cc ./src/*.h ./src/util/*.h",
     "lint-test.eslint": "eslint ./**/*.{ts,tsx,js,jsx,cjs,mjs,json,yaml} --no-error-on-unmatched-pattern --cache --cache-location ./.cache/eslint/",
-    "lint.eslint": "pnpm run lint-test.eslint --fix",
+    "lint.eslint": "run-s 'lint-test.eslint --fix'",
     "lint.tsc": "tsc --noEmit -p ./src/tsconfig.json",
     "lint.tsc-test": "tsc --noEmit -p ./test/tsconfig.json",
     "lint.clang-tidy": "git ls-files --exclude-standard | grep -E '\\.(cpp|hpp|c|cc|cxx|hxx|h|ixx)$' | xargs -n 1 -P $(nproc) clang-tidy",
     "lint": "run-p lint.tsc-test lint.tsc lint.eslint format",
     "lint-test": "run-s lint-test.eslint",
     "bench": "node --expose-gc test/bench",
-    "prepare": "pnpm run build.js",
-    "bump": "pnpx npm-check-updates -u -x typescript,eslint,chai,@types/chai && pnpx typesync"
+    "prepare": "run-s build.js",
+    "bump": "npx npm-check-updates -u -x typescript,eslint,chai,@types/chai && npx typesync"
   },
   "cmake-ts": {
     "nodeAPI": "node-addon-api",
@@ -239,5 +230,9 @@
     "napi"
   ],
   "license": "MIT AND MPL-2.0",
-  "author": "Amin Yahyaabadi <aminyahyaabadi74@gmail.com>, Rolf Timmermans <rolf@zxcv.nl>"
+  "author": "Amin Yahyaabadi <aminyahyaabadi74@gmail.com>, Rolf Timmermans <rolf@zxcv.nl>",
+  "overrides": {
+    "typescript": "~4.9.5",
+    "node-gyp": "10.0.1"
+  }
 }
