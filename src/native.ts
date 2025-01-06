@@ -685,8 +685,11 @@ export const enum SocketType {
 
 /* Utility types. */
 
-/* https://stackoverflow.com/questions/49579094 */
-type IfEquals<X, Y, A, B = never> =
+/**
+ * @internal
+ * https://stackoverflow.com/questions/49579094
+ */
+export type IfEquals<X, Y, A, B = never> =
   (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B
 
 /**

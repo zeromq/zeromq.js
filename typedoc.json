@@ -6,12 +6,7 @@
   "out": "docs-unminified",
   "excludePrivate": true,
   "excludeExternals": false,
-  "exclude": [
-    "script/**/*",
-    "test/**/*",
-    "examples/**/*",
-    "build/**/*"
-  ],
+  "exclude": ["script/**/*", "test/**/*", "examples/**/*", "build/**/*"],
   "highlightLanguages": [
     "bash",
     "console",
@@ -31,6 +26,7 @@
   "plugin": [
     "typedoc-plugin-dt-links",
     "typedoc-plugin-mdn-links",
-    "typedoc-plugin-include-example"
+    "typedoc-plugin-include-example",
+    "typedoc-plugin-missing-exports"
   ]
 }

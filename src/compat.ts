@@ -734,15 +734,18 @@ for (const key in shortOptions) {
 
 /**
  * Create a new socket.
- * 
+ *
  * @param type Type of socket to create.
  * @param options Options for the socket.
- * 
+ *
  * @returns A new socket.
- * 
+ *
  * @includeExample examples/v5-compat/index.js
  */
-export function createSocket(type: SocketType, options: {[key: string]: any} = {}) {
+export function createSocket(
+  type: SocketType,
+  options: {[key: string]: any} = {},
+) {
   const sock = new Socket(type)
   for (const key in options) {
     if (options.hasOwnProperty(key)) {
@@ -805,10 +808,7 @@ export function proxy(frontend: Socket, backend: Socket, capture?: Socket) {
 
 export const version = zmq.version
 
-export {
-  createSocket as socket,
-  shortOptions as options,
-}
+export {createSocket as socket, shortOptions as options}
 
 export * from "./compat/long-options"
 export * from "./compat/types"

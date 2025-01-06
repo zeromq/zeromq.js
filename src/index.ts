@@ -982,7 +982,7 @@ allowMethods(Pair.prototype, ["send", "receive"])
  * water mark for a connected {@link Subscriber}, then any messages that would
  * be sent to the subscriber in question shall instead be dropped until the mute
  * state ends. The {@link Writable.send}() method will never block.
- * 
+ *
  * @includeExample examples/pub-sub/publisher.ts
  */
 export class Publisher extends Socket {
@@ -1032,7 +1032,7 @@ allowMethods(Publisher.prototype, ["send"])
  * {@link Publisher}. Initially a {@link Subscriber} is not subscribed to any
  * messages. Use {@link Subscriber.subscribe}() to specify which messages to
  * subscribe to. This socket cannot send messages.
- * 
+ *
  * @includeExample examples/pub-sub/subscriber.ts
  */
 export class Subscriber extends Socket {
@@ -1139,7 +1139,7 @@ allowMethods(Subscriber.prototype, ["receive"])
  * If no services are available, then any send operation on the socket shall
  * block until at least one service becomes available. The REQ socket shall not
  * discard messages.
- * 
+ *
  * @includeExample examples/req-rep/client.ts
  */
 export class Request extends Socket {
@@ -1207,7 +1207,7 @@ allowMethods(Request.prototype, ["send", "receive"])
  * among all clients, and each reply sent is routed to the client that issued
  * the last request. If the original requester does not exist any more the reply
  * is silently discarded.
- * 
+ *
  * @includeExample examples/req-rep/server.ts
  */
 export class Reply extends Socket {
@@ -1240,7 +1240,7 @@ allowMethods(Reply.prototype, ["send", "receive"])
  * When a {@link Dealer} is connected to a {@link Reply} socket, each message
  * sent must consist of an empty message part, the delimiter, followed by one or
  * more body parts.
- * 
+ *
  * @includeExample examples/queue/index.ts
  * @includeExample examples/queue/queue.ts
  */
@@ -1386,7 +1386,7 @@ allowMethods(Router.prototype, ["send", "receive"])
  * A {@link Pull} socket is used by a pipeline node to receive messages from
  * upstream pipeline nodes. Messages are fair-queued from among all connected
  * upstream nodes. This socket cannot send messages.
- * 
+ *
  * @includeExample examples/push-pull/worker.ts
  */
 export class Pull extends Socket {
@@ -1419,7 +1419,7 @@ allowMethods(Pull.prototype, ["receive"])
  * at all, then {@link Writable.send}() will block until the mute state ends or
  * at least one downstream node becomes available for sending; messages are not
  * discarded.
- * 
+ *
  * @includeExample examples/push-pull/producer.ts
  */
 export class Push extends Socket {
