@@ -656,6 +656,9 @@ export declare abstract class Socket {
   protected setStringOption(option: number, value: string | Buffer | null): void
 }
 
+/**
+ * Socket types available for creating sockets.
+ */
 export const enum SocketType {
   Pair = 0,
   Publisher = 1,
