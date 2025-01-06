@@ -6,15 +6,27 @@
   "out": "docs-unminified",
   "excludePrivate": true,
   "excludeExternals": false,
-  "exclude": [
-    "script/**/*",
-    "test/**/*",
-    "examples/**/*",
-    "src/errors.ts",
-    "src/util.ts",
-    "build/**/*"
+  "exclude": ["script/**/*", "test/**/*", "examples/**/*", "build/**/*"],
+  "highlightLanguages": [
+    "bash",
+    "console",
+    "css",
+    "html",
+    "javascript",
+    "json",
+    "jsonc",
+    "json5",
+    "tsx",
+    "typescript",
+    "ini"
   ],
   "cleanOutputDir": true,
   "pretty": false,
-  "githubPages": true
+  "githubPages": true,
+  "plugin": [
+    "typedoc-plugin-dt-links",
+    "typedoc-plugin-mdn-links",
+    "typedoc-plugin-include-example",
+    "typedoc-plugin-missing-exports"
+  ]
 }
