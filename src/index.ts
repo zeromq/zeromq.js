@@ -1060,7 +1060,7 @@ export class Subscriber extends Socket {
   }
 
   /**
-   * Establish a new message filter. Newly created {@link Subsriber} sockets
+   * Establish a new message filter. Newly created {@link Subscriber} sockets
    * will filtered out all incoming messages. Call this method to subscribe to
    * messages beginning with the given prefix.
    *

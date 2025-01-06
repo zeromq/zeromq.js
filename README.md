@@ -341,7 +341,7 @@ For Curve:
 
 To install from source, specify `build_from_source=true` in a `.npmrc` file
 
-```
+```ini
 build_from_source=true
 ```
 

@@ -12,6 +12,19 @@
     "examples/**/*",
     "build/**/*"
   ],
+  "highlightLanguages": [
+    "bash",
+    "console",
+    "css",
+    "html",
+    "javascript",
+    "json",
+    "jsonc",
+    "json5",
+    "tsx",
+    "typescript",
+    "ini"
+  ],
   "cleanOutputDir": true,
   "pretty": false,
   "githubPages": true
