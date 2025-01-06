@@ -446,8 +446,6 @@ declare module "./native" {
      * chosen scheduling policy. Details can be found at
      * http://man7.org/linux/man-pages/man2/sched_setscheduler.2.html. This
      * option only applies before creating any sockets on the context.
-     *
-     * @writeonly
      */
     threadPriority: number
 
@@ -458,8 +456,6 @@ declare module "./native" {
      * available on Windows. Supported values for this option can be found at
      * http://man7.org/linux/man-pages/man2/sched_setscheduler.2.html. This
      * option only applies before creating any sockets on the context.
-     *
-     * @writeonly
      */
     threadSchedulingPolicy: number
 
@@ -874,7 +870,6 @@ declare module "./native" {
      * enable this option to reduce the latency and improve the performance of
      * loopback operations on a TCP socket on Windows.
      *
-     * @windows
      */
     loopbackFastPath: boolean
 
@@ -1160,8 +1155,6 @@ export class Request extends Socket {
    *
    * *Warning:** Do not set this option on a socket that talks to any other
    * socket type except {@link Router}: the results are undefined.
-   *
-   * @writeonly
    */
   probeRouter: boolean
 
@@ -1259,8 +1252,6 @@ export class Dealer extends Socket {
    *
    * *Warning:** Do not set this option on a socket that talks to any other
    * socket type except {@link Router}: the results are undefined.
-   *
-   * @writeonly
    */
   probeRouter: boolean
 
@@ -1337,8 +1328,6 @@ export class Router extends Socket {
    *
    * *Warning:** Do not set this option on a socket that talks to any other
    * socket type except {@link Router}: the results are undefined.
-   *
-   * @writeonly
    */
   probeRouter: boolean
 
