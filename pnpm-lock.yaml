@@ -16,14 +16,13 @@ patchedDependencies:
 importers:
 
   .:
-    dependencies:
-      node-addon-api:
-        specifier: ^8.3.0
-        version: 8.3.0
     optionalDependencies:
       '@aminya/cmake-ts':
         specifier: 0.3.0-aminya.7
         version: 0.3.0-aminya.7
+      node-addon-api:
+        specifier: ^8.3.0
+        version: 8.3.0
     devDependencies:
       '@types/benchmark':
         specifier: ~2.1.5
@@ -6469,7 +6468,8 @@ snapshots:
     dependencies:
       semver: 7.6.3
 
-  node-addon-api@8.3.0: {}
+  node-addon-api@8.3.0:
+    optional: true
 
   node-int64@0.4.0:
     optional: true
