@@ -132,6 +132,9 @@ importers:
       typedoc-plugin-dt-links:
         specifier: ^1.1.6
         version: 1.1.6(typedoc@0.27.6(typescript@4.9.5))
+      typedoc-plugin-include-example:
+        specifier: ^2.0.2
+        version: 2.0.2(typedoc@0.27.6(typescript@4.9.5))
       typedoc-plugin-inline-sources:
         specifier: ^1.2.0
         version: 1.2.0(typedoc@0.27.6(typescript@4.9.5))
@@ -3398,6 +3401,11 @@ packages:
     resolution: {integrity: sha512-1t4eH4m2nIPCaG2V2tg5MpfZskbpxUCABQK6nAMlaYvZniDohQ7EOXBiW3kDrsHNXaEIMV38nXAJgP3dfptJDg==}
     peerDependencies:
       typedoc: '>= 0.23.14 || 0.24.x || 0.25.x || 0.26.x || 0.27.x'
+
+  typedoc-plugin-include-example@2.0.2:
+    resolution: {integrity: sha512-5TTfmUR4dzz68K6RJMVQJ6db0MNK+86n0BFuxYeEJ1+MRV546pE7y+vdUfSjc7spVOZhzNp+vxH76+9bTmSHyQ==}
+    peerDependencies:
+      typedoc: 0.26.x || 0.27.x
 
   typedoc-plugin-inline-sources@1.2.0:
     resolution: {integrity: sha512-gCjief4B71vRJw25Lwl7J69DuxzDjjG6pvUUPmjxY3uePyzcFGiw4eqbq+tmIPLXlnKAQujmglX/G+ZDnLUzug==}
@@ -7479,6 +7487,10 @@ snapshots:
       typed-array-byte-offset: 1.0.2
 
   typedoc-plugin-dt-links@1.1.6(typedoc@0.27.6(typescript@4.9.5)):
+    dependencies:
+      typedoc: 0.27.6(typescript@4.9.5)
+
+  typedoc-plugin-include-example@2.0.2(typedoc@0.27.6(typescript@4.9.5)):
     dependencies:
       typedoc: 0.27.6(typescript@4.9.5)
 

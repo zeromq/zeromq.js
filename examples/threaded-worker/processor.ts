@@ -10,8 +10,8 @@ export class Processor {
   output = new Pull()
   signal = new Publisher()
 
-  init: Promise<any>
-  exit: Promise<any>
+  init: Promise<void[]>
+  exit: Promise<void[]>
 
   constructor(threads: number = cpus().length) {
     console.log(`starting ${threads} worker threads`)
@@ -22,7 +22,7 @@ export class Processor {
       this.input.bind("inproc://input"),
       this.output.bind("inproc://output"),
       this.signal.bind("inproc://signal"),
-      new Promise(resolve => {
+      new Promise<void>(resolve => {
         setTimeout(resolve, 100)
       }),
     ])

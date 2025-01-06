@@ -732,6 +732,16 @@ for (const key in shortOptions) {
   })
 }
 
+/**
+ * Create a new socket.
+ * 
+ * @param type Type of socket to create.
+ * @param options Options for the socket.
+ * 
+ * @returns A new socket.
+ * 
+ * @includeExample examples/v5-compat/index.js
+ */
 export function createSocket(type: SocketType, options: {[key: string]: any} = {}) {
   const sock = new Socket(type)
   for (const key in options) {
