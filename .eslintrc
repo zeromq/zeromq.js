@@ -13,15 +13,10 @@
   "ignorePatterns": [
     "node_modules/",
     "build/",
-    "lib/",
+    "lib/**/*",
     "tmp/",
-    "v5-compat.d.ts",
-    "draft.d.ts",
-    "script/*.js",
-    "script/*.d.ts",
     "docs/",
     "doc-unminified/",
-    "test/unit/compat/",
     "test/bench/"
   ]
 }

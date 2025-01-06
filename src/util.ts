@@ -6,6 +6,8 @@ type SocketMethods = "send" | "receive" | "join" | "leave"
  * to make the relevant socket types have only their relevant methods.
  * @param socketPrototype
  * @param methods
+ *
+ * @internal
  */
 export function allowMethods(socketPrototype: any, methods: SocketMethods[]) {
   const toDelete = ["send", "receive", "join", "leave"] as SocketMethods[]

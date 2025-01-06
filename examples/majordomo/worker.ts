@@ -13,34 +13,25 @@ export class Worker {
   }
 
   async start() {
+    console.log(`starting worker ${this.service} on ${this.address}`)
     await this.socket.send([null, Header.Worker, Message.Ready, this.service])
 
-    const loop = async () => {
-      for await (const [
-        _blank1,
-        _header,
-        _type,
-        client,
-        _blank2,
-        ...req
-      ] of this.socket) {
-        const rep = await this.process(...req)
-        try {
-          await this.socket.send([
-            null,
-            Header.Worker,
-            Message.Reply,
-            client,
-            null,
-            ...rep,
-          ])
-        } catch (err) {
-          console.error(`unable to send reply for ${this.address}`)
-        }
+    for await (const [_blank1, _header, _type, client, _blank2, ...req] of this
+      .socket) {
+      const rep = await this.process(...req)
+      try {
+        await this.socket.send([
+          null,
+          Header.Worker,
+          Message.Reply,
+          client,
+          null,
+          ...rep,
+        ])
+      } catch (err) {
+        console.error(`unable to send reply for ${this.address}`)
       }
     }
-
-    return loop()
   }
 
   async stop() {
@@ -55,6 +46,9 @@ export class Worker {
     }
   }
 
+  /**
+   * @virtual
+   */
   async process(...req: Buffer[]): Promise<Buffer[]> {
     return req
   }

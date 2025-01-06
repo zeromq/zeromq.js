@@ -1,22 +1,23 @@
-import {Socket} from "zeromq"
+import {Dealer, type MessageLike} from "zeromq"
 
 export class Queue {
-  queue: any[] = []
-  socket: Socket
+  queue: MessageLike[] = []
+  socket: Dealer
   max: number
   sending = false
 
-  constructor(socket: Socket, max = 100) {
+  constructor(socket: Dealer, max = 100) {
     this.socket = socket
     this.max = max
   }
 
-  send(msg: any) {
+  send(msg: MessageLike) {
+    console.log(`Sending message: ${msg}`)
     if (this.queue.length > this.max) {
       throw new Error("Queue is full")
     }
     this.queue.push(msg)
-    this.trySend()
+    return this.trySend()
   }
 
   async trySend() {
@@ -25,8 +26,9 @@ export class Queue {
     }
     this.sending = true
 
-    while (this.queue.length) {
-      await this.socket.send(this.queue.shift())
+    while (this.queue.length > 0) {
+      const firstMessage = this.queue.shift()!
+      await this.socket.send(firstMessage)
     }
 
     this.sending = false

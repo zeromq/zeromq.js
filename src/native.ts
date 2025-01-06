@@ -43,11 +43,11 @@ export declare const capability: Partial<{
  * To correctly connect two sockets with this mechanism:
  *
  * * Generate a **client** keypair with {@link curveKeyPair}().
- *   * Assign the private and public key on the client socket with
+ *   - Assign the private and public key on the client socket with
  *     {@link Socket.curveSecretKey} and {@link Socket.curvePublicKey}.
  * * Generate a **server** keypair with {@link curveKeyPair}().
- *   * Assign the private key on the server socket with {@link Socket.curveSecretKey}.
- *   * Assign the public key **on the client socket** with
+ *   - Assign the private key on the server socket with {@link Socket.curveSecretKey}.
+ *   - Assign the public key **on the client socket** with
  *     {@link Socket.curveServerKey}. The server does *not* need to know its own
  *     public key. Key distribution is *not* handled by the CURVE security
  *     mechanism.
@@ -112,15 +112,24 @@ export declare class Context {
  */
 export declare const context: Context
 
-interface ErrnoError extends Error {
+/**
+ * An error that represents a generic error with an associated error code.
+ */
+export interface ErrnoError extends Error {
   code: string
   errno: number
 }
 
+/**
+ * An event that represents an authorization error.
+ */
 export interface AuthError extends Error {
   status: 300 | 400 | 500
 }
 
+/**
+ * An event that represents a protocol error.
+ */
 export interface ProtoError extends Error {
   code:
     | "ERR_ZMTP_UNSPECIFIED"
@@ -145,18 +154,40 @@ export interface ProtoError extends Error {
     | "ERR_ZAP_INVALID_METADATA"
 }
 
+/**
+ * An object that contains the address of an event.
+ */
 export interface EventAddress {
   address: string
 }
 
+/**
+ * An object that contains the interval for an event.
+ */
 export interface EventInterval {
   interval: number
 }
 
+/**
+ * An object that contains an error for an event.
+ */
 export interface EventError<E = ErrnoError> {
   error: E
 }
 
+/**
+ * Represents a ZeroMQ event type.
+ * @typeParam T The event type (e.g., "bind", "connect", "close", etc.), which is stored in the `type` property.
+ * @typeParam D The base event data type (which is unified by the type).
+ *
+ * @example
+ * ```typescript
+ * type AllEvents = EventFor<"bind", { address: string }>
+ * // is equivalent to
+ * type AllEvents = { type: "bind", address: string }
+ * ```
+ */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type EventFor<T extends string, D = {}> = Expand<{type: T} & D>
 
 /**
@@ -176,78 +207,78 @@ export type EventFor<T extends string, D = {}> = Expand<{type: T} & D>
  * errors) that correspond to a specific operation are namespaced with a colon
  * `:`, e.g. `bind:error` or `connect:retry`.
  *
- * * **accept** - ZMQ_EVENT_ACCEPTED The socket has accepted a connection from a
+ * - **accept** - ZMQ_EVENT_ACCEPTED The socket has accepted a connection from a
  *   remote peer.
  *
- * * **accept:error** - ZMQ_EVENT_ACCEPT_FAILED The socket has rejected a
+ * - **accept:error** - ZMQ_EVENT_ACCEPT_FAILED The socket has rejected a
  *   connection from a remote peer.
  *
  *   The following additional details will be included with this event:
  *
- *   * `error` - An error object that describes the specific error
+ *   - `error` - An error object that describes the specific error
  *     that occurred.
  *
- * * **bind** - ZMQ_EVENT_LISTENING The socket was successfully bound to a
+ * - **bind** - ZMQ_EVENT_LISTENING The socket was successfully bound to a
  *   network interface.
  *
- * * **bind:error** - ZMQ_EVENT_BIND_FAILED The socket could not bind to a given
+ * - **bind:error** - ZMQ_EVENT_BIND_FAILED The socket could not bind to a given
  *   interface.
  *
  *   The following additional details will be included with this event:
  *
- *   * `error` - An error object that describes the specific error
+ *   - `error` - An error object that describes the specific error
  *     that occurred.
  *
- * * **connect** - ZMQ_EVENT_CONNECTED The socket has successfully connected to
+ * - **connect** - ZMQ_EVENT_CONNECTED The socket has successfully connected to
  *   a remote peer.
  *
- * * **connect:delay** - ZMQ_EVENT_CONNECT_DELAYED A connect request on the
+ * - **connect:delay** - ZMQ_EVENT_CONNECT_DELAYED A connect request on the
  *   socket is pending.
  *
- * * **connect:retry** - ZMQ_EVENT_CONNECT_RETRIED A connection attempt is being
+ * - **connect:retry** - ZMQ_EVENT_CONNECT_RETRIED A connection attempt is being
  *   handled by reconnect timer. Note that the reconnect interval is
  *   recalculated at each retry.
  *
  *   The following additional details will be included with this event:
  *
- *   * `interval` - The current reconnect interval.
+ *   - `interval` - The current reconnect interval.
  *
- * * **close** - ZMQ_EVENT_CLOSED The socket was closed.
+ * - **close** - ZMQ_EVENT_CLOSED The socket was closed.
  *
- * * **close:error** - ZMQ_EVENT_CLOSE_FAILED The socket close failed. Note that
+ * - **close:error** - ZMQ_EVENT_CLOSE_FAILED The socket close failed. Note that
  *   this event occurs **only on IPC** transports..
  *
  *   The following additional details will be included with this event:
  *
- *   * `error` - An error object that describes the specific error
+ *   - `error` - An error object that describes the specific error
  *     that occurred.
  *
- * * **disconnect** - ZMQ_EVENT_DISCONNECTED The socket was disconnected
+ * - **disconnect** - ZMQ_EVENT_DISCONNECTED The socket was disconnected
  *   unexpectedly.
  *
- * * **handshake** - ZMQ_EVENT_HANDSHAKE_SUCCEEDED The ZMTP security mechanism
+ * - **handshake** - ZMQ_EVENT_HANDSHAKE_SUCCEEDED The ZMTP security mechanism
  *   handshake succeeded. NOTE: This event may still be in DRAFT statea and not
  *   yet available in stable releases.
  *
- * * **handshake:error:protocol** - ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL The ZMTP
+ * - **handshake:error:protocol** - ZMQ_EVENT_HANDSHAKE_FAILED_PROTOCOL The ZMTP
  *   security mechanism handshake failed due to some mechanism protocol error,
  *   either between the ZMTP mechanism peers, or between the mechanism server
  *   and the ZAP handler. This indicates a configuration or implementation error
  *   in either peer resp. the ZAP handler. NOTE: This event may still be in
  *   DRAFT state and not yet available in stable releases.
  *
- * * **handshake:error:auth** - ZMQ_EVENT_HANDSHAKE_FAILED_AUTH The ZMTP
+ * - **handshake:error:auth** - ZMQ_EVENT_HANDSHAKE_FAILED_AUTH The ZMTP
  *   security mechanism handshake failed due to an authentication failure. NOTE:
  *   This event may still be in DRAFT state and not yet available in stable
  *   releases.
  *
- * * **handshake:error:other** - ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL
+ * - **handshake:error:other** - ZMQ_EVENT_HANDSHAKE_FAILED_NO_DETAIL
  *   Unspecified error during handshake. NOTE: This event may still be in DRAFT
  *   state and not yet available in stable releases.
  *
- * * **end** - ZMQ_EVENT_MONITOR_STOPPED Monitoring on this socket ended.
+ * - **end** - ZMQ_EVENT_MONITOR_STOPPED Monitoring on this socket ended.
  *
- * * **unknown** An event was generated by ZeroMQ that the Node.js library could
+ * - **unknown** An event was generated by ZeroMQ that the Node.js library could
  *   not interpret. Please submit a pull request for new event types if they are
  *   not yet included.
  */
@@ -279,7 +310,7 @@ export type EventType = Event["type"]
  * Represents the event data object given one particular event type, for example
  * `EventOfType<"accept">`.
  *
- * @typeparam E The specific event type.
+ * @typeParam E The specific event type.
  */
 export type EventOfType<E extends EventType = EventType> = Expand<
   Extract<Event, Event & EventFor<E>>
@@ -321,9 +352,9 @@ export declare class Observer {
   close(): void
 
   /**
-   * Waits for the next event to become availeble on the observer. Reads an
+   * Waits for the next event to become available on the observer. Reads an
    * event immediately if possible. If no events are queued, it will wait
-   * asynchonously. The promise will be resolved with the next event when
+   * asynchronously. The promise will be resolved with the next event when
    * available.
    *
    * When reading events with {@link receive}() the observer may **not** be in
@@ -365,8 +396,8 @@ export declare class Observer {
  * [Review the ØMQ documentation](http://api.zeromq.org/4-3:zmq-proxy#toc3) for
  * an overview of some example applications of a proxy.
  *
- * @typeparam F The front-end socket type.
- * @typeparam B The back-end socket type.
+ * @typeParam F The front-end socket type.
+ * @typeParam B The back-end socket type.
  */
 export declare class Proxy<
   F extends Socket = Socket,
@@ -500,6 +531,7 @@ export declare abstract class Socket {
    * @param type The socket type.
    * @param options Any options to set during construction.
    */
+  // eslint-disable-next-line @typescript-eslint/ban-types
   protected constructor(type: SocketType, options?: {})
 
   /**
@@ -593,7 +625,7 @@ export declare abstract class Socket {
 
   /**
    * Disconnects a previously connected socket from the given address and
-   * returns immediately. Disonnection will happen asynchronously in the
+   * returns immediately. Disconnection will happen asynchronously in the
    * background.
    *
    * ```typescript
@@ -626,6 +658,9 @@ export declare abstract class Socket {
   protected setStringOption(option: number, value: string | Buffer | null): void
 }
 
+/**
+ * Socket types available for creating sockets.
+ */
 export const enum SocketType {
   Pair = 0,
   Publisher = 1,
@@ -652,11 +687,19 @@ export const enum SocketType {
 
 /* Utility types. */
 
-/* https://stackoverflow.com/questions/49579094 */
-type IfEquals<X, Y, A, B = never> =
+/**
+ * @internal
+ * https://stackoverflow.com/questions/49579094
+ */
+export type IfEquals<X, Y, A, B = never> =
   (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B
 
-/* https://stackoverflow.com/questions/57683303 */
+/**
+ * Utility type that expands a type into its keys and values.
+ *
+ * https://stackoverflow.com/questions/57683303
+ * @internal
+ */
 export type Expand<T> = T extends infer O ? {[K in keyof O]: O[K]} : never
 
 /** @internal */
@@ -664,11 +707,37 @@ export type ReadableKeys<T> = {
   [P in keyof T]-?: T[P] extends Function ? never : P
 }[keyof T]
 
-/** @internal */
+/**
+ * Get the writable keys of a type.
+ * @internal
+ */
 export type WritableKeys<T> = {
   [P in keyof T]-?: T[P] extends Function
     ? never
     : IfEquals<{[Q in P]: T[P]}, {-readonly [Q in P]: T[P]}, P>
 }[keyof T]
 
+/**
+ * Utility type for defining options for a given type.
+ * It allows setting the writable properties of a type.
+ *
+ * @typeParam T The type to define options for.
+ * @typeParam E Additional optional properties. Defaults to an empty object.
+ *
+ * @example
+ * ```typescript
+ * interface Server {
+ *   port: number
+ *   readonly name: string
+ * }
+ * type ServerOptions = Options<Server, { debug?: boolean }>
+ * // is equivalent to:
+ * interface ServerOptions {
+ *  port?: number
+ *  debug?: boolean
+ * }
+ * ```
+ * @internal
+ */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type Options<T, E = {}> = Expand<Partial<E & Pick<T, WritableKeys<T>>>>

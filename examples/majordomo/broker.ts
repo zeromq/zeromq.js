@@ -17,22 +17,18 @@ export class Broker {
     console.log(`starting broker on ${this.address}`)
     await this.socket.bind(this.address)
 
-    const loop = async () => {
-      for await (const [sender, _blank, header, ...rest] of this.socket) {
-        switch (header.toString()) {
-          case Header.Client:
-            this.handleClient(sender, ...rest)
-            break
-          case Header.Worker:
-            this.handleWorker(sender, ...rest)
-            break
-          default:
-            console.error(`invalid message header: ${header}`)
-        }
+    for await (const [sender, _blank, header, ...rest] of this.socket) {
+      switch (header.toString()) {
+        case Header.Client:
+          await this.handleClient(sender as Buffer, ...(rest as Buffer[]))
+          break
+        case Header.Worker:
+          await this.handleWorker(sender as Buffer, ...(rest as Buffer[]))
+          break
+        default:
+          console.error(`invalid message header: ${header}`)
       }
     }
-
-    return loop()
   }
 
   async stop() {
@@ -43,7 +39,7 @@ export class Broker {
 
   handleClient(client: Buffer, service?: Buffer, ...req: Buffer[]) {
     if (service) {
-      this.dispatchRequest(client, service, ...req)
+      return this.dispatchRequest(client, service, ...req)
     }
   }
 
@@ -51,16 +47,14 @@ export class Broker {
     switch (type?.toString()) {
       case Message.Ready: {
         const [service] = rest
-        this.register(worker, service)
-        break
+        return this.register(worker, service)
       }
 
       case Message.Reply: {
         const [client, _blank, ...rep] = rest
-        this.dispatchReply(worker, client, ...rep).catch(err => {
+        return this.dispatchReply(worker, client, ...rep).catch(err => {
           console.error(err)
         })
-        break
       }
 
       case Message.Heartbeat:
@@ -68,8 +62,7 @@ export class Broker {
         break
 
       case Message.Disconnect:
-        this.deregister(worker)
-        break
+        return this.deregister(worker)
 
       default:
         console.error(`invalid worker message type: ${type}`)
@@ -78,11 +71,11 @@ export class Broker {
 
   register(worker: Buffer, service: Buffer) {
     this.setWorkerService(worker, service)
-    this.getService(service).register(worker)
+    return this.getService(service).register(worker)
   }
 
   dispatchRequest(client: Buffer, service: Buffer, ...req: Buffer[]) {
-    this.getService(service).dispatchRequest(client, ...req)
+    return this.getService(service).dispatchRequest(client, ...req)
   }
 
   dispatchReply(worker: Buffer, client: Buffer, ...rep: Buffer[]) {
@@ -92,7 +85,7 @@ export class Broker {
 
   deregister(worker: Buffer) {
     const service = this.getWorkerService(worker)
-    this.getService(service).deregister(worker)
+    return this.getService(service).deregister(worker)
   }
 
   getService(name: Buffer): Service {

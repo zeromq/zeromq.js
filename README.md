@@ -28,15 +28,6 @@
   - [Useful links](#useful-links)
   - [Table of contents](#table-of-contents)
   - [Installation](#installation)
-    - [Prebuilt binaries](#prebuilt-binaries)
-    - [Building from source](#building-from-source)
-    - [Available Build Options](#available-build-options)
-    - [Curve with Libsodium support](#curve-with-libsodium-support)
-      - [Draft support](#draft-support)
-      - [Websocket support](#websocket-support)
-      - [Secure Websocket support](#secure-websocket-support)
-      - [Not Synchronous Resolve](#not-synchronous-resolve)
-      - [MacOS Deployment Target](#macos-deployment-target)
   - [Examples](#examples)
     - [Basic Usage](#basic-usage)
     - [Push/Pull](#pushpull)
@@ -50,6 +41,15 @@
       - [`server.js`](#serverjs)
   - [Zeromq 4 and 5 Compatibility layer](#zeromq-4-and-5-compatibility-layer)
   - [TypeScript](#typescript)
+    - [Prebuilt binaries](#prebuilt-binaries)
+    - [Building from source](#building-from-source)
+    - [Available Build Options](#available-build-options)
+    - [Curve with Libsodium support](#curve-with-libsodium-support)
+      - [Draft support](#draft-support)
+      - [Websocket support](#websocket-support)
+      - [Secure Websocket support](#secure-websocket-support)
+      - [Not Synchronous Resolve](#not-synchronous-resolve)
+      - [MacOS Deployment Target](#macos-deployment-target)
   - [Contribution](#contribution)
     - [Dependencies](#dependencies)
     - [Defining new options](#defining-new-options)
@@ -67,139 +67,13 @@ npm install zeromq
 
 Supported versions:
 
-- Node.js v12 (requires a [N-API](https://nodejs.org/api/n-api.html))
-
-### Prebuilt binaries
-
-The following platforms have a **prebuilt binary** available:
-
-- Windows on x86/x86-64
-
-  Zeromq binaries on Windows 10 or older need
-  [Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-microsoft-visual-c-redistributable-version)
-  to be installed.
-
-- Linux on x86-64 with libstdc++.so.6.0.21+ (glibc++ 3.4.21+), for example:
-  - Debian 9+ (Stretch or later)
-  - Ubuntu 16.04+ (Xenial or later)
-  - CentOS 8+
-- Linux on x86-64 with musl, for example:
-  - Alpine 3.3+
-- MacOS 10.9+ on x86-64
-
-If a prebuilt binary is not available for your platform, installing will attempt
-to start a build from source.
-
-### Building from source
-
-If a prebuilt binary is unavailable, or if you want to pass certain options
-during build, you can build this package from source.
-
-Make sure you have the following installed before attempting to build from
-source:
-
-- Node.js 10+ or Electron
-- C++17 compiler toolchain (e.g. LLVM, GCC, MSVC)
-- Python 3
-- CMake 3.16+
-- vcpkg dependencies (e.g. on Linux it needs curl, unzip, zip, tar, git,
-  pkg-config)
-
-For Curve:
-
-- automake
-- autoconf
-- libtool
-
-To install from source, specify `build_from_source=true` in a `.npmrc` file
-
-```
-build_from_source=true
-```
-
-When building from source, you can also specify additional build options in a
-`.npmrc` file in your project:
-
-### Available Build Options
-
-<details>
-<summary>👉🏻 Options</summary>
-
-### Curve with Libsodium support
-
-(Enabled by default)
-
-Enables CURVE security for encrypted communications. Zeromq uses libsodium for
-CURVE security. To enable CURVE support, add the following to your .npmrc:
-
-```ini
-zmq_curve="true"
-zmq_sodium="true"
-```
-
-Building libsodium requires these dependencies on Linux/MacOS:
-`autoconf automake libtool`, which can be installed via `apt-get` or `brew`,
-etc.
-
-#### Draft support
-
-(Enabled by default)
-
-By default `libzmq` is built with support for `Draft` patterns (e.g.
-`server-client`, `radio-dish`, `scatter-gather`). If you want to build `libzmq`
-without support for `Draft`, you can specify the following in `.npmrc`:
-
-```ini
-zmq_draft=false
-```
-
-#### Websocket support
-
-Enables WebSocket transport, allowing ZeroMQ to communicate over WebSockets. To
-enable WebSocket support, add the following to your .npmrc:
-
-```ini
-zmq_websockets="true"
-```
-
-#### Secure Websocket support
-
-Enables WebSocket transport with TLS (wss), providing secure WebSocket
-communications. To enable secure WebSocket support, add the following to your
-.npmrc:
-
-```ini
-zmq_websockets_secure="true"
-```
-
-#### Not Synchronous Resolve
-
-Enables immediate send/receive on the socket without synchronous resolution.
-This option can improve performance in certain scenarios by allowing operations
-to proceed without waiting for synchronous resolution. To enable this feature,
-add the following to your `.npmrc`:
-
-```ini
-zmq_no_sync_resolve="true"
-```
-
-#### MacOS Deployment Target
-
-Specifies the minimum macOS version that the binary will be compatible with.
-This is particularly useful when building for different macOS versions. To set
-this, add the following to your .npmrc, replacing 10.15 with your desired
-minimum macOS version:
-
-```ini
-macosx_deployment_target="10.15"
-```
-
-</details>
+- Node.js v10+ (requires a [N-API](https://nodejs.org/api/n-api.html))
 
 ## Examples
 
 Here some examples of different features are provided. More examples can be
-found in the [examples directory](examples).
+found in the
+[examples directory](https://github.com/zeromq/zeromq.js/tree/master/examples).
 
 You can also browse
 [the API reference documentation](http://zeromq.github.io/zeromq.js/globals.html)
@@ -423,6 +297,133 @@ _Requirements_
     include their corresponding polyfills if needed): `es2015`,
     `ESNext.AsyncIterable`
 
+### Prebuilt binaries
+
+The following platforms have a **prebuilt binary** available:
+
+- Windows on x86/x86-64
+
+  Zeromq binaries on Windows 10 or older need
+  [Visual C++ Redistributable](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170#latest-microsoft-visual-c-redistributable-version)
+  to be installed.
+
+- Linux on x86-64 with libstdc++.so.6.0.21+ (glibc++ 3.4.21+), for example:
+  - Debian 9+ (Stretch or later)
+  - Ubuntu 16.04+ (Xenial or later)
+  - CentOS 8+
+- Linux on x86-64 with musl, for example:
+  - Alpine 3.3+
+- MacOS 10.9+ on x86-64
+
+If a prebuilt binary is not available for your platform, installing will attempt
+to start a build from source.
+
+### Building from source
+
+If a prebuilt binary is unavailable, or if you want to pass certain options
+during build, you can build this package from source.
+
+Make sure you have the following installed before attempting to build from
+source:
+
+- Node.js 10+ or Electron
+- C++17 compiler toolchain (e.g. LLVM, GCC, MSVC)
+- Python 3
+- CMake 3.16+
+- vcpkg dependencies (e.g. on Linux it needs curl, unzip, zip, tar, git,
+  pkg-config)
+
+For Curve:
+
+- automake
+- autoconf
+- libtool
+
+To install from source, specify `build_from_source=true` in a `.npmrc` file
+
+```ini
+build_from_source=true
+```
+
+When building from source, you can also specify additional build options in a
+`.npmrc` file in your project:
+
+### Available Build Options
+
+<details>
+<summary>👉🏻 Options</summary>
+
+### Curve with Libsodium support
+
+(Enabled by default)
+
+Enables CURVE security for encrypted communications. Zeromq uses libsodium for
+CURVE security. To enable CURVE support, add the following to your .npmrc:
+
+```ini
+zmq_curve="true"
+zmq_sodium="true"
+```
+
+Building libsodium requires these dependencies on Linux/MacOS:
+`autoconf automake libtool`, which can be installed via `apt-get` or `brew`,
+etc.
+
+#### Draft support
+
+(Enabled by default)
+
+By default `libzmq` is built with support for `Draft` patterns (e.g.
+`server-client`, `radio-dish`, `scatter-gather`). If you want to build `libzmq`
+without support for `Draft`, you can specify the following in `.npmrc`:
+
+```ini
+zmq_draft=false
+```
+
+#### Websocket support
+
+Enables WebSocket transport, allowing ZeroMQ to communicate over WebSockets. To
+enable WebSocket support, add the following to your .npmrc:
+
+```ini
+zmq_websockets="true"
+```
+
+#### Secure Websocket support
+
+Enables WebSocket transport with TLS (wss), providing secure WebSocket
+communications. To enable secure WebSocket support, add the following to your
+.npmrc:
+
+```ini
+zmq_websockets_secure="true"
+```
+
+#### Not Synchronous Resolve
+
+Enables immediate send/receive on the socket without synchronous resolution.
+This option can improve performance in certain scenarios by allowing operations
+to proceed without waiting for synchronous resolution. To enable this feature,
+add the following to your `.npmrc`:
+
+```ini
+zmq_no_sync_resolve="true"
+```
+
+#### MacOS Deployment Target
+
+Specifies the minimum macOS version that the binary will be compatible with.
+This is particularly useful when building for different macOS versions. To set
+this, add the following to your .npmrc, replacing 10.15 with your desired
+minimum macOS version:
+
+```ini
+macosx_deployment_target="10.15"
+```
+
+</details>
+
 ## Contribution
 
 If you are interested in making contributions to this project, please read the
@@ -520,4 +521,5 @@ first outlined in [this issue](https://github.com/zeromq/zeromq.js/issues/189).
 Previous versions of ZeroMQ.js were based on `zmq` and a fork that included
 prebuilt binaries.
 
-See detailed changes in the [CHANGELOG](CHANGELOG.md).
+See detailed changes in the
+[CHANGELOG](https://github.com/zeromq/zeromq.js/releases).

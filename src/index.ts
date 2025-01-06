@@ -51,8 +51,8 @@ export type MessageLike =
 /**
  * Describes sockets that can send messages.
  *
- * @typeparam M The type of the message or message parts that can be sent.
- * @typeparam O Rest type for any options, if applicable to the socket type
+ * @typeParam M The type of the message or message parts that can be sent.
+ * @typeParam O Rest type for any options, if applicable to the socket type
  * (DRAFT only).
  */
 export interface Writable<
@@ -158,7 +158,7 @@ export interface Writable<
    *
    * * If you wish to send on a socket and **messages should be queued before
    *   they are dropped**, you should implement a [simple
-   *   queue](examples/queue/queue.ts) in JavaScript. Such a queue is not
+   *   queue](../examples/queue/queue.ts) in JavaScript. Such a queue is not
    *   provided by this library because most real world applications need to
    *   deal with undeliverable messages in more complex ways - for example, they
    *   might need to reply with a status message; or first retry delivery a
@@ -176,7 +176,7 @@ type ReceiveType<T> = T extends {receive(): Promise<infer U>} ? U : never
 /**
  * Describes sockets that can receive messages.
  *
- * @typeparam M The type of the message or message parts that can be read.
+ * @typeParam M The type of the message or message parts that can be read.
  */
 export interface Readable<M extends object[] = Message[]> {
   /**
@@ -269,7 +269,7 @@ export interface Readable<M extends object[] = Message[]> {
  * socket type, for example `new Dealer({...})`. Readonly options
  * for the particular socket will be omitted.
  *
- * @typeparam S The socket type to which the options should be applied.
+ * @typeParam S The socket type to which the options should be applied.
  */
 export type SocketOptions<S extends Socket> = Options<S, {context: Context}>
 
@@ -446,8 +446,6 @@ declare module "./native" {
      * chosen scheduling policy. Details can be found at
      * http://man7.org/linux/man-pages/man2/sched_setscheduler.2.html. This
      * option only applies before creating any sockets on the context.
-     *
-     * @writeonly
      */
     threadPriority: number
 
@@ -458,8 +456,6 @@ declare module "./native" {
      * available on Windows. Supported values for this option can be found at
      * http://man7.org/linux/man-pages/man2/sched_setscheduler.2.html. This
      * option only applies before creating any sockets on the context.
-     *
-     * @writeonly
      */
     threadSchedulingPolicy: number
 
@@ -874,7 +870,6 @@ declare module "./native" {
      * enable this option to reduce the latency and improve the performance of
      * loopback operations on a TCP socket on Windows.
      *
-     * @windows
      */
     loopbackFastPath: boolean
 
@@ -987,6 +982,8 @@ allowMethods(Pair.prototype, ["send", "receive"])
  * water mark for a connected {@link Subscriber}, then any messages that would
  * be sent to the subscriber in question shall instead be dropped until the mute
  * state ends. The {@link Writable.send}() method will never block.
+ *
+ * @includeExample examples/pub-sub/publisher.ts
  */
 export class Publisher extends Socket {
   /**
@@ -1035,6 +1032,8 @@ allowMethods(Publisher.prototype, ["send"])
  * {@link Publisher}. Initially a {@link Subscriber} is not subscribed to any
  * messages. Use {@link Subscriber.subscribe}() to specify which messages to
  * subscribe to. This socket cannot send messages.
+ *
+ * @includeExample examples/pub-sub/subscriber.ts
  */
 export class Subscriber extends Socket {
   /**
@@ -1065,7 +1064,7 @@ export class Subscriber extends Socket {
   }
 
   /**
-   * Establish a new message filter. Newly created {@link Subsriber} sockets
+   * Establish a new message filter. Newly created {@link Subscriber} sockets
    * will filtered out all incoming messages. Call this method to subscribe to
    * messages beginning with the given prefix.
    *
@@ -1140,6 +1139,8 @@ allowMethods(Subscriber.prototype, ["receive"])
  * If no services are available, then any send operation on the socket shall
  * block until at least one service becomes available. The REQ socket shall not
  * discard messages.
+ *
+ * @includeExample examples/req-rep/client.ts
  */
 export class Request extends Socket {
   /**
@@ -1160,8 +1161,6 @@ export class Request extends Socket {
    *
    * *Warning:** Do not set this option on a socket that talks to any other
    * socket type except {@link Router}: the results are undefined.
-   *
-   * @writeonly
    */
   probeRouter: boolean
 
@@ -1208,6 +1207,8 @@ allowMethods(Request.prototype, ["send", "receive"])
  * among all clients, and each reply sent is routed to the client that issued
  * the last request. If the original requester does not exist any more the reply
  * is silently discarded.
+ *
+ * @includeExample examples/req-rep/server.ts
  */
 export class Reply extends Socket {
   /**
@@ -1239,6 +1240,9 @@ allowMethods(Reply.prototype, ["send", "receive"])
  * When a {@link Dealer} is connected to a {@link Reply} socket, each message
  * sent must consist of an empty message part, the delimiter, followed by one or
  * more body parts.
+ *
+ * @includeExample examples/queue/index.ts
+ * @includeExample examples/queue/queue.ts
  */
 export class Dealer extends Socket {
   /**
@@ -1259,8 +1263,6 @@ export class Dealer extends Socket {
    *
    * *Warning:** Do not set this option on a socket that talks to any other
    * socket type except {@link Router}: the results are undefined.
-   *
-   * @writeonly
    */
   probeRouter: boolean
 
@@ -1337,8 +1339,6 @@ export class Router extends Socket {
    *
    * *Warning:** Do not set this option on a socket that talks to any other
    * socket type except {@link Router}: the results are undefined.
-   *
-   * @writeonly
    */
   probeRouter: boolean
 
@@ -1386,6 +1386,8 @@ allowMethods(Router.prototype, ["send", "receive"])
  * A {@link Pull} socket is used by a pipeline node to receive messages from
  * upstream pipeline nodes. Messages are fair-queued from among all connected
  * upstream nodes. This socket cannot send messages.
+ *
+ * @includeExample examples/push-pull/worker.ts
  */
 export class Pull extends Socket {
   constructor(options?: SocketOptions<Pull>) {
@@ -1417,6 +1419,8 @@ allowMethods(Pull.prototype, ["receive"])
  * at all, then {@link Writable.send}() will block until the mute state ends or
  * at least one downstream node becomes available for sending; messages are not
  * discarded.
+ *
+ * @includeExample examples/push-pull/producer.ts
  */
 export class Push extends Socket {
   constructor(options?: SocketOptions<Push>) {
