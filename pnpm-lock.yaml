@@ -17,12 +17,13 @@ importers:
 
   .:
     dependencies:
-      '@aminya/cmake-ts':
-        specifier: ^0.3.0-aminya.7
-        version: 0.3.0-aminya.7
       node-addon-api:
         specifier: ^8.3.0
         version: 8.3.0
+    optionalDependencies:
+      '@aminya/cmake-ts':
+        specifier: 0.3.0-aminya.7
+        version: 0.3.0-aminya.7
     devDependencies:
       '@types/benchmark':
         specifier: ~2.1.5
@@ -3614,6 +3615,7 @@ snapshots:
       unzipper: 0.12.3
       url-join: 4.0.1
       which: 2.0.2
+    optional: true
 
   '@aminya/eslint-plugin-only-warn@1.2.2': {}
 
@@ -3782,6 +3784,7 @@ snapshots:
       tough-cookie: 4.1.4
       tunnel-agent: 0.6.0
       uuid: 8.3.2
+    optional: true
 
   '@dabh/diagnostics@2.0.3':
     dependencies:
@@ -4220,12 +4223,14 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  aproba@1.2.0: {}
+  aproba@1.2.0:
+    optional: true
 
   are-we-there-yet@3.0.1:
     dependencies:
       delegates: 1.0.0
       readable-stream: 3.6.2
+    optional: true
 
   arg@4.1.3: {}
 
@@ -4309,8 +4314,10 @@ snapshots:
   asn1@0.2.6:
     dependencies:
       safer-buffer: 2.1.2
+    optional: true
 
-  assert-plus@1.0.0: {}
+  assert-plus@1.0.0:
+    optional: true
 
   assertion-error@1.1.0: {}
 
@@ -4342,15 +4349,18 @@ snapshots:
 
   async@3.2.6: {}
 
-  asynckit@0.4.0: {}
+  asynckit@0.4.0:
+    optional: true
 
   available-typed-arrays@1.0.7:
     dependencies:
       possible-typed-array-names: 1.0.0
 
-  aws-sign2@0.7.0: {}
+  aws-sign2@0.7.0:
+    optional: true
 
-  aws4@1.13.2: {}
+  aws4@1.13.2:
+    optional: true
 
   axe-core@3.5.6:
     optional: true
@@ -4425,6 +4435,7 @@ snapshots:
   bcrypt-pbkdf@1.0.2:
     dependencies:
       tweetnacl: 0.14.5
+    optional: true
 
   benchmark@2.1.4:
     dependencies:
@@ -4439,7 +4450,8 @@ snapshots:
       inherits: 2.0.4
       readable-stream: 3.6.2
 
-  bluebird@3.7.2: {}
+  bluebird@3.7.2:
+    optional: true
 
   boolbase@1.0.0: {}
 
@@ -4520,7 +4532,8 @@ snapshots:
 
   caniuse-lite@1.0.30001666: {}
 
-  caseless@0.12.0: {}
+  caseless@0.12.0:
+    optional: true
 
   chai@4.5.0:
     dependencies:
@@ -4574,7 +4587,8 @@ snapshots:
 
   chownr@1.1.4: {}
 
-  chownr@2.0.0: {}
+  chownr@2.0.0:
+    optional: true
 
   clean-css@4.2.4:
     dependencies:
@@ -4624,7 +4638,8 @@ snapshots:
       color-name: 1.1.4
       simple-swizzle: 0.2.2
 
-  color-support@1.1.3: {}
+  color-support@1.1.3:
+    optional: true
 
   color@3.2.1:
     dependencies:
@@ -4641,6 +4656,7 @@ snapshots:
   combined-stream@1.0.8:
     dependencies:
       delayed-stream: 1.0.0
+    optional: true
 
   commander@11.1.0: {}
 
@@ -4659,14 +4675,16 @@ snapshots:
     dependencies:
       date-now: 0.1.4
 
-  console-control-strings@1.1.0: {}
+  console-control-strings@1.1.0:
+    optional: true
 
   convert-source-map@2.0.0: {}
 
   core-js@2.6.12:
     optional: true
 
-  core-util-is@1.0.2: {}
+  core-util-is@1.0.2:
+    optional: true
 
   core-util-is@1.0.3: {}
 
@@ -4759,6 +4777,7 @@ snapshots:
   dashdash@1.14.1:
     dependencies:
       assert-plus: 1.0.0
+    optional: true
 
   data-view-buffer@1.0.1:
     dependencies:
@@ -4845,9 +4864,11 @@ snapshots:
       has-property-descriptors: 1.0.2
       object-keys: 1.1.1
 
-  delayed-stream@1.0.0: {}
+  delayed-stream@1.0.0:
+    optional: true
 
-  delegates@1.0.0: {}
+  delegates@1.0.0:
+    optional: true
 
   detect-node@2.1.0:
     optional: true
@@ -4927,6 +4948,7 @@ snapshots:
   duplexer2@0.1.4:
     dependencies:
       readable-stream: 2.3.8
+    optional: true
 
   eastasianwidth@0.2.0: {}
 
@@ -4934,6 +4956,7 @@ snapshots:
     dependencies:
       jsbn: 0.1.1
       safer-buffer: 2.1.2
+    optional: true
 
   electron-mocha@13.0.1(patch_hash=c4pa7rsg6atg3nmsnc7zhtvcny):
     dependencies:
@@ -5500,7 +5523,8 @@ snapshots:
 
   exit@0.1.2: {}
 
-  extend@3.0.2: {}
+  extend@3.0.2:
+    optional: true
 
   extract-zip@2.0.1:
     dependencies:
@@ -5512,7 +5536,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  extsprintf@1.3.0: {}
+  extsprintf@1.3.0:
+    optional: true
 
   fast-deep-equal@3.1.3: {}
 
@@ -5597,13 +5622,15 @@ snapshots:
       cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  forever-agent@0.6.1: {}
+  forever-agent@0.6.1:
+    optional: true
 
   form-data@4.0.1:
     dependencies:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
+    optional: true
 
   fs-constants@1.0.0: {}
 
@@ -5612,6 +5639,7 @@ snapshots:
       graceful-fs: 4.2.11
       jsonfile: 6.1.0
       universalify: 2.0.1
+    optional: true
 
   fs-extra@11.2.0:
     dependencies:
@@ -5628,6 +5656,7 @@ snapshots:
   fs-minipass@2.1.0:
     dependencies:
       minipass: 3.3.6
+    optional: true
 
   fs.realpath@1.0.0: {}
 
@@ -5655,6 +5684,7 @@ snapshots:
       string-width: 4.2.3
       strip-ansi: 6.0.1
       wide-align: 1.1.5
+    optional: true
 
   gensync@1.0.0-beta.2: {}
 
@@ -5688,6 +5718,7 @@ snapshots:
   getpass@0.1.7:
     dependencies:
       assert-plus: 1.0.0
+    optional: true
 
   gh-pages@6.2.0:
     dependencies:
@@ -5829,7 +5860,8 @@ snapshots:
     dependencies:
       has-symbols: 1.0.3
 
-  has-unicode@2.0.1: {}
+  has-unicode@2.0.1:
+    optional: true
 
   has@1.0.4:
     optional: true
@@ -5880,6 +5912,7 @@ snapshots:
       assert-plus: 1.0.0
       jsprim: 2.0.2
       sshpk: 1.18.0
+    optional: true
 
   http2-wrapper@1.0.3:
     dependencies:
@@ -6042,7 +6075,8 @@ snapshots:
     dependencies:
       which-typed-array: 1.1.15
 
-  is-typedarray@1.0.0: {}
+  is-typedarray@1.0.0:
+    optional: true
 
   is-unicode-supported@0.1.0: {}
 
@@ -6065,7 +6099,8 @@ snapshots:
 
   isarray@0.0.1: {}
 
-  isarray@1.0.0: {}
+  isarray@1.0.0:
+    optional: true
 
   isarray@2.0.5: {}
 
@@ -6073,7 +6108,8 @@ snapshots:
 
   isexe@3.1.1: {}
 
-  isstream@0.1.2: {}
+  isstream@0.1.2:
+    optional: true
 
   iterator.prototype@1.1.2:
     dependencies:
@@ -6102,7 +6138,8 @@ snapshots:
     dependencies:
       argparse: 2.0.1
 
-  jsbn@0.1.1: {}
+  jsbn@0.1.1:
+    optional: true
 
   jsesc@3.0.2: {}
 
@@ -6124,11 +6161,13 @@ snapshots:
 
   json-schema-traverse@0.4.1: {}
 
-  json-schema@0.4.0: {}
+  json-schema@0.4.0:
+    optional: true
 
   json-stable-stringify-without-jsonify@1.0.1: {}
 
-  json-stringify-safe@5.0.1: {}
+  json-stringify-safe@5.0.1:
+    optional: true
 
   json5@1.0.2:
     dependencies:
@@ -6154,6 +6193,7 @@ snapshots:
       extsprintf: 1.3.0
       json-schema: 0.4.0
       verror: 1.10.0
+    optional: true
 
   jsx-ast-utils@2.4.1:
     dependencies:
@@ -6288,6 +6328,7 @@ snapshots:
   memory-stream@1.0.0:
     dependencies:
       readable-stream: 3.6.2
+    optional: true
 
   memorystream@0.3.1: {}
 
@@ -6298,11 +6339,13 @@ snapshots:
       braces: 3.0.3
       picomatch: 2.3.1
 
-  mime-db@1.52.0: {}
+  mime-db@1.52.0:
+    optional: true
 
   mime-types@2.1.35:
     dependencies:
       mime-db: 1.52.0
+    optional: true
 
   mimic-response@1.0.1: {}
 
@@ -6345,8 +6388,10 @@ snapshots:
   minipass@3.3.6:
     dependencies:
       yallist: 4.0.0
+    optional: true
 
-  minipass@5.0.0: {}
+  minipass@5.0.0:
+    optional: true
 
   minipass@7.1.2: {}
 
@@ -6354,10 +6399,12 @@ snapshots:
     dependencies:
       minipass: 3.3.6
       yallist: 4.0.0
+    optional: true
 
   mkdirp-classic@0.5.3: {}
 
-  mkdirp@1.0.4: {}
+  mkdirp@1.0.4:
+    optional: true
 
   mocha@10.7.3:
     dependencies:
@@ -6424,7 +6471,8 @@ snapshots:
 
   node-addon-api@8.3.0: {}
 
-  node-int64@0.4.0: {}
+  node-int64@0.4.0:
+    optional: true
 
   node-releases@2.0.18: {}
 
@@ -6467,6 +6515,7 @@ snapshots:
       console-control-strings: 1.1.0
       gauge: 4.0.4
       set-blocking: 2.0.0
+    optional: true
 
   nth-check@2.1.1:
     dependencies:
@@ -6600,7 +6649,8 @@ snapshots:
 
   pend@1.2.0: {}
 
-  performance-now@2.1.0: {}
+  performance-now@2.1.0:
+    optional: true
 
   picocolors@1.1.0: {}
 
@@ -6800,7 +6850,8 @@ snapshots:
     dependencies:
       parse-ms: 4.0.0
 
-  process-nextick-args@2.0.1: {}
+  process-nextick-args@2.0.1:
+    optional: true
 
   process@0.11.10: {}
 
@@ -6818,7 +6869,8 @@ snapshots:
       retry: 0.12.0
       signal-exit: 3.0.7
 
-  psl@1.9.0: {}
+  psl@1.9.0:
+    optional: true
 
   pump@3.0.2:
     dependencies:
@@ -6832,8 +6884,10 @@ snapshots:
   qs@6.13.0:
     dependencies:
       side-channel: 1.0.6
+    optional: true
 
-  querystringify@2.2.0: {}
+  querystringify@2.2.0:
+    optional: true
 
   queue-microtask@1.2.3: {}
 
@@ -6879,6 +6933,7 @@ snapshots:
       safe-buffer: 5.1.2
       string_decoder: 1.1.1
       util-deprecate: 1.0.2
+    optional: true
 
   readable-stream@3.6.2:
     dependencies:
@@ -6934,7 +6989,8 @@ snapshots:
 
   require-directory@2.1.1: {}
 
-  requires-port@1.0.0: {}
+  requires-port@1.0.0:
+    optional: true
 
   resolve-alpn@1.2.1: {}
 
@@ -6990,7 +7046,8 @@ snapshots:
       has-symbols: 1.0.3
       isarray: 2.0.5
 
-  safe-buffer@5.1.2: {}
+  safe-buffer@5.1.2:
+    optional: true
 
   safe-buffer@5.2.1: {}
 
@@ -7002,7 +7059,8 @@ snapshots:
 
   safe-stable-stringify@2.5.0: {}
 
-  safer-buffer@2.1.2: {}
+  safer-buffer@2.1.2:
+    optional: true
 
   semver-compare@1.0.0:
     optional: true
@@ -7027,7 +7085,8 @@ snapshots:
     dependencies:
       randombytes: 2.1.0
 
-  set-blocking@2.0.0: {}
+  set-blocking@2.0.0:
+    optional: true
 
   set-function-length@1.2.2:
     dependencies:
@@ -7107,7 +7166,8 @@ snapshots:
 
   spdx-license-ids@3.0.20: {}
 
-  splitargs2@0.1.3: {}
+  splitargs2@0.1.3:
+    optional: true
 
   sprintf-js@1.1.3:
     optional: true
@@ -7123,6 +7183,7 @@ snapshots:
       jsbn: 0.1.1
       safer-buffer: 2.1.2
       tweetnacl: 0.14.5
+    optional: true
 
   stable@0.1.8: {}
 
@@ -7195,6 +7256,7 @@ snapshots:
   string_decoder@1.1.1:
     dependencies:
       safe-buffer: 5.1.2
+    optional: true
 
   string_decoder@1.3.0:
     dependencies:
@@ -7301,6 +7363,7 @@ snapshots:
       minizlib: 2.1.2
       mkdirp: 1.0.4
       yallist: 4.0.0
+    optional: true
 
   terser@5.34.1:
     dependencies:
@@ -7328,6 +7391,7 @@ snapshots:
       punycode: 2.3.1
       universalify: 0.2.0
       url-parse: 1.5.10
+    optional: true
 
   traverse@0.3.9: {}
 
@@ -7384,8 +7448,10 @@ snapshots:
   tunnel-agent@0.6.0:
     dependencies:
       safe-buffer: 5.2.1
+    optional: true
 
-  tweetnacl@0.14.5: {}
+  tweetnacl@0.14.5:
+    optional: true
 
   type-check@0.4.0:
     dependencies:
@@ -7481,7 +7547,8 @@ snapshots:
 
   universalify@0.1.2: {}
 
-  universalify@0.2.0: {}
+  universalify@0.2.0:
+    optional: true
 
   universalify@2.0.1: {}
 
@@ -7492,6 +7559,7 @@ snapshots:
       fs-extra: 11.2.0
       graceful-fs: 4.2.11
       node-int64: 0.4.0
+    optional: true
 
   update-browserslist-db@1.1.1(browserslist@4.24.0):
     dependencies:
@@ -7505,16 +7573,19 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  url-join@4.0.1: {}
+  url-join@4.0.1:
+    optional: true
 
   url-parse@1.5.10:
     dependencies:
       querystringify: 2.2.0
       requires-port: 1.0.0
+    optional: true
 
   util-deprecate@1.0.2: {}
 
-  uuid@8.3.2: {}
+  uuid@8.3.2:
+    optional: true
 
   v8-compile-cache-lib@3.0.1: {}
 
@@ -7528,6 +7599,7 @@ snapshots:
       assert-plus: 1.0.0
       core-util-is: 1.0.2
       extsprintf: 1.3.0
+    optional: true
 
   vscode-json-languageservice@4.2.1:
     dependencies:
@@ -7598,6 +7670,7 @@ snapshots:
   wide-align@1.1.5:
     dependencies:
       string-width: 4.2.3
+    optional: true
 
   winston-transport@4.8.0:
     dependencies:
@@ -7641,7 +7714,8 @@ snapshots:
 
   yallist@3.1.1: {}
 
-  yallist@4.0.0: {}
+  yallist@4.0.0:
+    optional: true
 
   yaml@1.10.2: {}
 
