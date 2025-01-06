@@ -6,8 +6,13 @@ async function run() {
   await sock.bind("tcp://127.0.0.1:3000")
 
   for await (const [msg] of sock) {
-    await sock.send((2 * parseInt(msg.toString(), 10)).toString())
+    // parse the message as a number
+    const value = parseInt(msg.toString(), 10)
+
+    // calculate the result and send it back to the client
+    const result = 2 * value
+    await sock.send(result)
   }
 }
 
-run()
+run().catch(console.error)

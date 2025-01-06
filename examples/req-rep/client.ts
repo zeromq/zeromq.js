@@ -6,10 +6,11 @@ async function run() {
   sock.connect("tcp://127.0.0.1:3000")
   console.log("Producer bound to port 3000")
 
-  await sock.send("4")
-  const [result] = await sock.receive()
+  await sock.send(4)
+  console.log("Request a calculation for 4")
 
-  console.log(result)
+  const [result] = await sock.receive()
+  console.log(`Received result: ${result}`)
 }
 
-run()
+run().catch(console.error)

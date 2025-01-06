@@ -9,10 +9,19 @@ async function sleep(msec: number) {
   })
 }
 
+class SodaWorker extends Worker {
+  service = "soda"
+
+  override async process(...msgs: Buffer[]): Promise<Buffer[]> {
+    await sleep(Math.random() * 300)
+    return msgs
+  }
+}
+
 class TeaWorker extends Worker {
   service = "tea"
 
-  async process(...msgs: Buffer[]): Promise<Buffer[]> {
+  override async process(...msgs: Buffer[]): Promise<Buffer[]> {
     await sleep(Math.random() * 500)
     return msgs
   }
@@ -21,7 +30,7 @@ class TeaWorker extends Worker {
 class CoffeeWorker extends Worker {
   service = "coffee"
 
-  async process(...msgs: Buffer[]): Promise<Buffer[]> {
+  override async process(...msgs: Buffer[]): Promise<Buffer[]> {
     await sleep(Math.random() * 200)
     return msgs
   }
@@ -29,7 +38,12 @@ class CoffeeWorker extends Worker {
 
 const broker = new Broker()
 
-const workers = [new TeaWorker(), new CoffeeWorker(), new TeaWorker()]
+const workers = [
+  new SodaWorker(),
+  new TeaWorker(),
+  new CoffeeWorker(),
+  new TeaWorker(),
+]
 
 async function request(
   service: string,
@@ -46,15 +60,19 @@ async function request(
     console.log(`received '${res.join(", ")}' from '${service}'`)
     return res
   } catch (err) {
-    console.log(`timeout expired waiting for '${service}'`)
+    console.log(`timeout expired waiting for '${service}'`, err)
   }
 }
 
 async function main() {
-  for (const worker of workers) {
-    await worker.start()
-  }
-  await broker.start()
+  const _started = Promise.all([
+    // start the broker
+    broker.start(),
+    // start the workers
+    ...workers.map(worker => worker.start()),
+  ])
+
+  console.log("---------- Started -----------")
 
   /* Requests are issued in parallel. */
   await Promise.all([
@@ -69,13 +87,24 @@ async function main() {
     request("coffee", "irish coffee"),
   ])
 
-  for (const worker of workers) {
-    await worker.stop()
-  }
-  await broker.stop()
+  console.log("---------- Stopping -----------")
+
+  await Promise.all([
+    // stop the broker
+    broker.stop(),
+    // stop the workers
+    ...workers.map(worker => worker.stop()),
+  ])
 }
 
 main().catch(err => {
   console.error(err)
   process.exit(1)
 })
+
+if (process.env.CI) {
+  // exit after 1 second in CI environment
+  setTimeout(() => {
+    process.exit(0)
+  }, 2000)
+}

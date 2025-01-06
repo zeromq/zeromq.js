@@ -5,11 +5,19 @@
     "zeromq": "file:.."
   },
   "devDependencies": {
-    "ts-node": ">= 0"
+    "cross-env": "^7.0.3",
+    "npm-run-all2": "^7.0.2",
+    "ts-node": "10.9.2"
   },
   "scripts": {
-    "majordomo": "ts-node majordomo",
-    "queue": "ts-node queue",
-    "threaded-worker": "ts-node threaded-worker"
+    "build": "cd .. && pnpm build && cd ./examples && pnpm install",
+    "majordomo": "ts-node ./majordomo/index.ts",
+    "queue": "ts-node ./queue/index.ts",
+    "threaded-worker": "ts-node ./threaded-worker/index.ts",
+    "pub-sub": "ts-node ./pub-sub/index.ts",
+    "push-pull": "ts-node ./push-pull/index.ts",
+    "req-rep": "ts-node ./req-rep/index.ts",
+    "v5-compat": "node ./v5-compat/index.js",
+    "test": "cross-env CI=true run-s majordomo queue threaded-worker pub-sub push-pull req-rep"
   }
 }
