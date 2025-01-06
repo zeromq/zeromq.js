@@ -38,7 +38,7 @@ export class Processor {
       await this.input.send(req.map(pt => pt.toString()))
     }
 
-    const output: string[] = Array.from({length: input.length})
+    const output: (string | undefined)[] = Array.from({length: input.length})
     for await (const [pos, res] of this.output) {
       output[parseInt(pos.toString(), 10)] = res.toString()
       if (output.every(el => el !== undefined)) {
@@ -46,7 +46,7 @@ export class Processor {
       }
     }
 
-    return output.join("")
+    return (output as string[]).join("")
   }
 
   async stop() {
