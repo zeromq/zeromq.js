@@ -12,7 +12,7 @@ async function sleep(msec: number) {
 class TeaWorker extends Worker {
   service = "tea"
 
-  async process(...msgs: Buffer[]): Promise<Buffer[]> {
+  override async process(...msgs: Buffer[]): Promise<Buffer[]> {
     await sleep(Math.random() * 500)
     return msgs
   }
@@ -21,7 +21,7 @@ class TeaWorker extends Worker {
 class CoffeeWorker extends Worker {
   service = "coffee"
 
-  async process(...msgs: Buffer[]): Promise<Buffer[]> {
+  override async process(...msgs: Buffer[]): Promise<Buffer[]> {
     await sleep(Math.random() * 200)
     return msgs
   }
@@ -51,10 +51,14 @@ async function request(
 }
 
 async function main() {
-  for (const worker of workers) {
-    await worker.start()
-  }
-  await broker.start()
+  const started = Promise.all([
+    // start the broker
+    broker.start(),
+    // start the workers
+    ...workers.map(worker => worker.start()),
+  ])
+
+  console.log("---------- Started -----------")
 
   /* Requests are issued in parallel. */
   await Promise.all([
@@ -69,10 +73,16 @@ async function main() {
     request("coffee", "irish coffee"),
   ])
 
-  for (const worker of workers) {
-    await worker.stop()
-  }
-  await broker.stop()
+  console.log("---------- Stopping -----------")
+
+  await Promise.all([
+    // stop the broker
+    broker.stop(),
+    // stop the workers
+    ...workers.map(worker => worker.stop()),
+  ])
+  // await outstanding promises
+  await started
 }
 
 main().catch(err => {

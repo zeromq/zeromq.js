@@ -8,8 +8,8 @@
     "ts-node": ">= 0"
   },
   "scripts": {
-    "majordomo": "ts-node majordomo",
-    "queue": "ts-node queue",
-    "threaded-worker": "ts-node threaded-worker"
+    "majordomo": "ts-node ./majordomo/index.ts",
+    "queue": "ts-node ./queue/index.ts",
+    "threaded-worker": "ts-node ./threaded-worker/index.ts"
   }
 }
