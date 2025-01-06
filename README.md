@@ -72,7 +72,8 @@ Supported versions:
 ## Examples
 
 Here some examples of different features are provided. More examples can be
-found in the [examples directory](https://github.com/zeromq/zeromq.js/tree/master/examples).
+found in the
+[examples directory](https://github.com/zeromq/zeromq.js/tree/master/examples).
 
 You can also browse
 [the API reference documentation](http://zeromq.github.io/zeromq.js/globals.html)
@@ -520,4 +521,5 @@ first outlined in [this issue](https://github.com/zeromq/zeromq.js/issues/189).
 Previous versions of ZeroMQ.js were based on `zmq` and a fork that included
 prebuilt binaries.
 
-See detailed changes in the [CHANGELOG](https://github.com/zeromq/zeromq.js/releases).
+See detailed changes in the
+[CHANGELOG](https://github.com/zeromq/zeromq.js/releases).
