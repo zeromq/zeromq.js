@@ -57,7 +57,7 @@ const shortOptions = {
   connect_timeout: longOptions.ZMQ_CONNECT_TIMEOUT,
 }
 
-class Context {
+export class Context {
   static setMaxThreads(value: number) {
     zmq.context.ioThreads = value
   }
@@ -79,7 +79,10 @@ class Context {
   }
 }
 
-type SocketType =
+/**
+ * All the socket types available in the compatibility layer
+ */
+export type SocketType =
   | "pair"
   | "req"
   | "rep"
@@ -97,7 +100,7 @@ type SocketType =
 
 type Callback = (err?: Error) => void
 
-class Socket extends EventEmitter {
+export class Socket extends EventEmitter {
   [key: string]: any
 
   type: SocketType
@@ -729,7 +732,20 @@ for (const key in shortOptions) {
   })
 }
 
-function createSocket(type: SocketType, options: {[key: string]: any} = {}) {
+/**
+ * Create a new socket.
+ *
+ * @param type Type of socket to create.
+ * @param options Options for the socket.
+ *
+ * @returns A new socket.
+ *
+ * @includeExample examples/v5-compat/index.js
+ */
+export function createSocket(
+  type: SocketType,
+  options: {[key: string]: any} = {},
+) {
   const sock = new Socket(type)
   for (const key in options) {
     if (options.hasOwnProperty(key)) {
@@ -739,12 +755,12 @@ function createSocket(type: SocketType, options: {[key: string]: any} = {}) {
   return sock
 }
 
-function curveKeypair() {
+export function curveKeypair() {
   const {publicKey, secretKey} = zmq.curveKeyPair()
   return {public: publicKey, secret: secretKey}
 }
 
-function proxy(frontend: Socket, backend: Socket, capture?: Socket) {
+export function proxy(frontend: Socket, backend: Socket, capture?: Socket) {
   switch (`${frontend.type}/${backend.type}`) {
     case "push/pull":
     case "pull/push":
@@ -790,19 +806,9 @@ function proxy(frontend: Socket, backend: Socket, capture?: Socket) {
   }
 }
 
-const version = zmq.version
+export const version = zmq.version
 
-export {
-  version,
-  Context,
-  Socket,
-  SocketType,
-  createSocket as socket,
-  createSocket,
-  curveKeypair,
-  proxy,
-  shortOptions as options,
-}
+export {createSocket as socket, shortOptions as options}
 
 export * from "./compat/long-options"
 export * from "./compat/types"

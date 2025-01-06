@@ -108,6 +108,9 @@ importers:
       semver:
         specifier: ^7.6.3
         version: 7.6.3
+      servor:
+        specifier: ^4.0.2
+        version: 4.0.2
       shx:
         specifier: ^0.3.4
         version: 0.3.4
@@ -117,6 +120,21 @@ importers:
       typedoc:
         specifier: ^0.27.6
         version: 0.27.6(typescript@4.9.5)
+      typedoc-plugin-dt-links:
+        specifier: ^1.1.6
+        version: 1.1.6(typedoc@0.27.6(typescript@4.9.5))
+      typedoc-plugin-include-example:
+        specifier: ^2.0.2
+        version: 2.0.2(typedoc@0.27.6(typescript@4.9.5))
+      typedoc-plugin-inline-sources:
+        specifier: ^1.2.0
+        version: 1.2.0(typedoc@0.27.6(typescript@4.9.5))
+      typedoc-plugin-mdn-links:
+        specifier: ^4.0.7
+        version: 4.0.7(typedoc@0.27.6(typescript@4.9.5))
+      typedoc-plugin-missing-exports:
+        specifier: ^3.1.0
+        version: 3.1.0(typedoc@0.27.6(typescript@4.9.5))
       typescript:
         specifier: ~4.9.5
         version: 4.9.5
@@ -272,8 +290,8 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@gerrit0/mini-shiki@1.24.4':
-    resolution: {integrity: sha512-YEHW1QeAg6UmxEmswiQbOVEg1CW22b1XUD/lNTliOsu0LD0wqoyleFMnmbTp697QE0pcadQiR5cVtbbAPncvpw==}
+  '@gerrit0/mini-shiki@1.26.1':
+    resolution: {integrity: sha512-gHFUvv9f1fU2Piou/5Y7Sx5moYxcERbC7CXc6rkDLQTUBg5Dgg9L4u29/nHqfoQ3Y9R0h0BcOhd14uOEZIBP7Q==}
 
   '@humanwhocodes/config-array@0.13.0':
     resolution: {integrity: sha512-DZLEEqFWQFiyK6h5YIeynKx7JlvCYWL0cImfSRXZ9l4Sg2efkFGTuFf6vzXjK1cq6IYkU+Eg/JizXw+TD2vRNw==}
@@ -345,14 +363,14 @@ packages:
   '@sec-ant/readable-stream@0.4.1':
     resolution: {integrity: sha512-831qok9r2t8AlxLko40y2ebgSDhenenCatLVeW/uBtnHPyhHOvG0C7TvfgecV+wHzIm5KUICgzmVpWS+IMEAeg==}
 
-  '@shikijs/engine-oniguruma@1.24.4':
-    resolution: {integrity: sha512-Do2ry6flp2HWdvpj2XOwwa0ljZBRy15HKZITzPcNIBOGSeprnA8gOooA/bLsSPuy8aJBa+Q/r34dMmC3KNL/zw==}
+  '@shikijs/engine-oniguruma@1.26.1':
+    resolution: {integrity: sha512-F5XuxN1HljLuvfXv7d+mlTkV7XukC1cawdtOo+7pKgPD83CAB1Sf8uHqP3PK0u7njFH0ZhoXE1r+0JzEgAQ+kg==}
 
-  '@shikijs/types@1.24.4':
-    resolution: {integrity: sha512-0r0XU7Eaow0PuDxuWC1bVqmWCgm3XqizIaT7SM42K03vc69LGooT0U8ccSR44xP/hGlNx4FKhtYpV+BU6aaKAA==}
+  '@shikijs/types@1.26.1':
+    resolution: {integrity: sha512-d4B00TKKAMaHuFYgRf3L0gwtvqpW4hVdVwKcZYbBfAAQXspgkbWqnFfuFl3MDH6gLbsubOcr+prcnsqah3ny7Q==}
 
-  '@shikijs/vscode-textmate@9.3.1':
-    resolution: {integrity: sha512-79QfK1393x9Ho60QFyLti+QfdJzRQCVLFb97kOIV7Eo9vQU/roINgk7m24uv0a7AUvN//RDH36FLjjK48v0s9g==}
+  '@shikijs/vscode-textmate@10.0.1':
+    resolution: {integrity: sha512-fTIQwLF+Qhuws31iw7Ncl1R3HUDtGwIipiJ9iU+UsDUwMhegFcQKQHd51nZjb7CArq0MvON8rbgCGQYWHUKAdg==}
 
   '@sindresorhus/is@4.6.0':
     resolution: {integrity: sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==}
@@ -3012,6 +3030,10 @@ packages:
   serialize-javascript@6.0.2:
     resolution: {integrity: sha512-Saa1xPByTTq2gdeFZYLLo+RFE35NHZkAbqZeWNd3BpzppeVisAqpDjcp8dyf6uIvEqJRd46jemmyA4iFIeVk8g==}
 
+  servor@4.0.2:
+    resolution: {integrity: sha512-MlmQ5Ntv4jDYUN060x/KEmN7emvIqKMZ9OkM+nY8Bf2+KkyLmGsTqWLyAN2cZr5oESAcH00UanUyyrlS1LRjFw==}
+    hasBin: true
+
   set-blocking@2.0.0:
     resolution: {integrity: sha512-KiKBS8AnWGEyLzofFfmvKwpdPzqiy16LvQfK3yv/fVH7Bj13/wl3JSR1J+rfgRE9q7xUJK4qvgS8raSOeLUehw==}
 
@@ -3368,6 +3390,31 @@ packages:
   typedarray.prototype.slice@1.0.3:
     resolution: {integrity: sha512-8WbVAQAUlENo1q3c3zZYuy5k9VzBQvp8AX9WOtbvyWlLM1v5JaSRmjubLjzHF4JFtptjH/5c/i95yaElvcjC0A==}
     engines: {node: '>= 0.4'}
+
+  typedoc-plugin-dt-links@1.1.6:
+    resolution: {integrity: sha512-1t4eH4m2nIPCaG2V2tg5MpfZskbpxUCABQK6nAMlaYvZniDohQ7EOXBiW3kDrsHNXaEIMV38nXAJgP3dfptJDg==}
+    peerDependencies:
+      typedoc: '>= 0.23.14 || 0.24.x || 0.25.x || 0.26.x || 0.27.x'
+
+  typedoc-plugin-include-example@2.0.2:
+    resolution: {integrity: sha512-5TTfmUR4dzz68K6RJMVQJ6db0MNK+86n0BFuxYeEJ1+MRV546pE7y+vdUfSjc7spVOZhzNp+vxH76+9bTmSHyQ==}
+    peerDependencies:
+      typedoc: 0.26.x || 0.27.x
+
+  typedoc-plugin-inline-sources@1.2.0:
+    resolution: {integrity: sha512-gCjief4B71vRJw25Lwl7J69DuxzDjjG6pvUUPmjxY3uePyzcFGiw4eqbq+tmIPLXlnKAQujmglX/G+ZDnLUzug==}
+    peerDependencies:
+      typedoc: 0.25.x || 0.26.x
+
+  typedoc-plugin-mdn-links@4.0.7:
+    resolution: {integrity: sha512-S9nUdZShdu+8HyWygmxjqyYIviZVdL36OjPWvxuLVMrS21lqxnVYLqInPYHXalmvitVEqWmrJJk8Al0x6d8wEA==}
+    peerDependencies:
+      typedoc: 0.26.x || 0.27.x
+
+  typedoc-plugin-missing-exports@3.1.0:
+    resolution: {integrity: sha512-Sogbaj+qDa21NjB3SlIw4JXSwmcl/WOjwiPNaVEcPhpNG/MiRTtpwV81cT7h1cbu9StpONFPbddYWR0KV/fTWA==}
+    peerDependencies:
+      typedoc: 0.26.x || 0.27.x
 
   typedoc@0.27.6:
     resolution: {integrity: sha512-oBFRoh2Px6jFx366db0lLlihcalq/JzyCVp7Vaq1yphL/tbgx2e+bkpkCgJPunaPvPwoTOXSwasfklWHm7GfAw==}
@@ -3827,11 +3874,11 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@gerrit0/mini-shiki@1.24.4':
+  '@gerrit0/mini-shiki@1.26.1':
     dependencies:
-      '@shikijs/engine-oniguruma': 1.24.4
-      '@shikijs/types': 1.24.4
-      '@shikijs/vscode-textmate': 9.3.1
+      '@shikijs/engine-oniguruma': 1.26.1
+      '@shikijs/types': 1.26.1
+      '@shikijs/vscode-textmate': 10.0.1
 
   '@humanwhocodes/config-array@0.13.0':
     dependencies:
@@ -3906,17 +3953,17 @@ snapshots:
 
   '@sec-ant/readable-stream@0.4.1': {}
 
-  '@shikijs/engine-oniguruma@1.24.4':
+  '@shikijs/engine-oniguruma@1.26.1':
     dependencies:
-      '@shikijs/types': 1.24.4
-      '@shikijs/vscode-textmate': 9.3.1
+      '@shikijs/types': 1.26.1
+      '@shikijs/vscode-textmate': 10.0.1
 
-  '@shikijs/types@1.24.4':
+  '@shikijs/types@1.26.1':
     dependencies:
-      '@shikijs/vscode-textmate': 9.3.1
+      '@shikijs/vscode-textmate': 10.0.1
       '@types/hast': 3.0.4
 
-  '@shikijs/vscode-textmate@9.3.1': {}
+  '@shikijs/vscode-textmate@10.0.1': {}
 
   '@sindresorhus/is@4.6.0': {}
 
@@ -7028,6 +7075,8 @@ snapshots:
     dependencies:
       randombytes: 2.1.0
 
+  servor@4.0.2: {}
+
   set-blocking@2.0.0: {}
 
   set-function-length@1.2.2:
@@ -7446,9 +7495,29 @@ snapshots:
       typed-array-buffer: 1.0.2
       typed-array-byte-offset: 1.0.2
 
+  typedoc-plugin-dt-links@1.1.6(typedoc@0.27.6(typescript@4.9.5)):
+    dependencies:
+      typedoc: 0.27.6(typescript@4.9.5)
+
+  typedoc-plugin-include-example@2.0.2(typedoc@0.27.6(typescript@4.9.5)):
+    dependencies:
+      typedoc: 0.27.6(typescript@4.9.5)
+
+  typedoc-plugin-inline-sources@1.2.0(typedoc@0.27.6(typescript@4.9.5)):
+    dependencies:
+      typedoc: 0.27.6(typescript@4.9.5)
+
+  typedoc-plugin-mdn-links@4.0.7(typedoc@0.27.6(typescript@4.9.5)):
+    dependencies:
+      typedoc: 0.27.6(typescript@4.9.5)
+
+  typedoc-plugin-missing-exports@3.1.0(typedoc@0.27.6(typescript@4.9.5)):
+    dependencies:
+      typedoc: 0.27.6(typescript@4.9.5)
+
   typedoc@0.27.6(typescript@4.9.5):
     dependencies:
-      '@gerrit0/mini-shiki': 1.24.4
+      '@gerrit0/mini-shiki': 1.26.1
       lunr: 2.3.9
       markdown-it: 14.1.0
       minimatch: 9.0.5

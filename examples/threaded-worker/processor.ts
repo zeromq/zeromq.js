@@ -10,8 +10,8 @@ export class Processor {
   output = new Pull()
   signal = new Publisher()
 
-  init: Promise<any>
-  exit: Promise<any>
+  init: Promise<void[]>
+  exit: Promise<void[]>
 
   constructor(threads: number = cpus().length) {
     console.log(`starting ${threads} worker threads`)
@@ -22,7 +22,7 @@ export class Processor {
       this.input.bind("inproc://input"),
       this.output.bind("inproc://output"),
       this.signal.bind("inproc://signal"),
-      new Promise(resolve => {
+      new Promise<void>(resolve => {
         setTimeout(resolve, 100)
       }),
     ])
@@ -38,7 +38,7 @@ export class Processor {
       await this.input.send(req.map(pt => pt.toString()))
     }
 
-    const output: string[] = Array.from({length: input.length})
+    const output: (string | undefined)[] = Array.from({length: input.length})
     for await (const [pos, res] of this.output) {
       output[parseInt(pos.toString(), 10)] = res.toString()
       if (output.every(el => el !== undefined)) {
@@ -46,7 +46,7 @@ export class Processor {
       }
     }
 
-    return output.join("")
+    return (output as string[]).join("")
   }
 
   async stop() {

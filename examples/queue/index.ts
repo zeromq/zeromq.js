@@ -4,15 +4,20 @@ import {Queue} from "./queue"
 
 async function main() {
   const sender = new Dealer()
-  await sender.bind("tcp://127.0.0.1:5555")
+  await sender.bind("tcp://127.0.0.1:4444")
+  console.log("sender bound to port 4444")
 
   const queue = new Queue(sender)
-  queue.send("hello")
-  queue.send("world!")
-  queue.send(null)
+
+  const sent = Promise.all([
+    queue.send("hello"),
+    queue.send("world!"),
+    queue.send(null),
+  ])
 
   const receiver = new Dealer()
-  receiver.connect("tcp://127.0.0.1:5555")
+  receiver.connect("tcp://127.0.0.1:4444")
+  console.log("receiver connected to port 4444")
 
   for await (const [msg] of receiver) {
     if (msg.length === 0) {
@@ -22,6 +27,8 @@ async function main() {
       console.log(`received: ${msg}`)
     }
   }
+
+  await sent
 }
 
 main().catch(err => {
