@@ -158,7 +158,7 @@ export interface Writable<
    *
    * * If you wish to send on a socket and **messages should be queued before
    *   they are dropped**, you should implement a [simple
-   *   queue](examples/queue/queue.ts) in JavaScript. Such a queue is not
+   *   queue](../examples/queue/queue.ts) in JavaScript. Such a queue is not
    *   provided by this library because most real world applications need to
    *   deal with undeliverable messages in more complex ways - for example, they
    *   might need to reply with a status message; or first retry delivery a
