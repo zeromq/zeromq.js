@@ -51,8 +51,8 @@ export type MessageLike =
 /**
  * Describes sockets that can send messages.
  *
- * @typeparam M The type of the message or message parts that can be sent.
- * @typeparam O Rest type for any options, if applicable to the socket type
+ * @typeParam M The type of the message or message parts that can be sent.
+ * @typeParam O Rest type for any options, if applicable to the socket type
  * (DRAFT only).
  */
 export interface Writable<
@@ -176,7 +176,7 @@ type ReceiveType<T> = T extends {receive(): Promise<infer U>} ? U : never
 /**
  * Describes sockets that can receive messages.
  *
- * @typeparam M The type of the message or message parts that can be read.
+ * @typeParam M The type of the message or message parts that can be read.
  */
 export interface Readable<M extends object[] = Message[]> {
   /**
@@ -269,7 +269,7 @@ export interface Readable<M extends object[] = Message[]> {
  * socket type, for example `new Dealer({...})`. Readonly options
  * for the particular socket will be omitted.
  *
- * @typeparam S The socket type to which the options should be applied.
+ * @typeParam S The socket type to which the options should be applied.
  */
 export type SocketOptions<S extends Socket> = Options<S, {context: Context}>
 

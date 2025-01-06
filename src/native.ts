@@ -279,7 +279,7 @@ export type EventType = Event["type"]
  * Represents the event data object given one particular event type, for example
  * `EventOfType<"accept">`.
  *
- * @typeparam E The specific event type.
+ * @typeParam E The specific event type.
  */
 export type EventOfType<E extends EventType = EventType> = Expand<
   Extract<Event, Event & EventFor<E>>
@@ -365,8 +365,8 @@ export declare class Observer {
  * [Review the ØMQ documentation](http://api.zeromq.org/4-3:zmq-proxy#toc3) for
  * an overview of some example applications of a proxy.
  *
- * @typeparam F The front-end socket type.
- * @typeparam B The back-end socket type.
+ * @typeParam F The front-end socket type.
+ * @typeParam B The back-end socket type.
  */
 export declare class Proxy<
   F extends Socket = Socket,
