@@ -13,7 +13,7 @@ export class Worker {
   }
 
   async start() {
-    console.log(`starting worker on ${this.address}`)
+    console.log(`starting worker ${this.service} on ${this.address}`)
     await this.socket.send([null, Header.Worker, Message.Ready, this.service])
 
     for await (const [_blank1, _header, _type, client, _blank2, ...req] of this
