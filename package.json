@@ -95,7 +95,7 @@
     "clean.temp": "rimraf ./tmp && shx mkdir -p ./tmp",
     "build.js": "run-s clean.lib && tsc -p ./src/tsconfig.json && run-s build.downlevel",
     "build.downlevel": "downlevel-dts ./lib ./lib/ts3.7",
-    "build.doc": "typedoc --options ./typedoc.json && minify-all -s docs-unminified -d docs --jsCompressor terser && rimraf docs-unminified",
+    "build.doc": "rimraf docs && typedoc --options ./typedoc.json && minify-all -s docs-unminified -d docs --jsCompressor terser && rimraf docs-unminified",
     "deploy.doc": "run-s build.doc && gh-pages --dist \"./docs\"",
     "build.native": "cmake-ts nativeonly",
     "build.native.debug": "cross-env npm_config_zmq_enable_sanitizer_undefined=true cmake-ts dev-os-only",
