@@ -27,33 +27,38 @@ jobs:
           - ""
         distro:
           - ""
-        native:
-          - true
-
+        vm:
+          - false
+        cross_compiling:
+          - false
         include:
           - os: windows-2019
             node_arch: ia32
             node_target_arch: ia32
             cpp_arch: amd64_x86
-            native: true
+            vm: false
+            cross_compiling: true
 
           - os: windows-2022
             node_arch: x64
             node_target_arch: arm64
             cpp_arch: amd64_arm64
-            native: true
+            vm: false
+            cross_compiling: true
 
           - os: macos-13
             node_arch: x64
             node_target_arch: x64
             cpp_arch: x64
-            native: true
+            vm: false
+            cross_compiling: false
 
           - os: macos-14
             node_arch: arm64
             node_target_arch: arm64
             cpp_arch: arm64
-            native: true
+            vm: false
+            cross_compiling: false
 
           # Musl Alpine
           - os: ubuntu-24.04
@@ -61,7 +66,8 @@ jobs:
             node_arch: x64
             node_target_arch: x64
             cpp_arch: x64
-            native: false
+            vm: true
+            cross_compiling: false
 
           # Debian Arm
           - os: ubuntu-24.04
@@ -69,7 +75,8 @@ jobs:
             node_arch: arm64
             node_target_arch: arm64
             cpp_arch: arm64
-            native: false
+            vm: true
+            cross_compiling: false
 
           # Musl Alpine Arm
           - os: ubuntu-24.04
@@ -77,12 +84,14 @@ jobs:
             node_arch: arm64
             node_target_arch: arm64
             cpp_arch: arm64
-            native: false
+            vm: true
+            cross_compiling: false
 
     env:
       npm_config_arch: ${{ matrix.node_arch }}
       npm_config_target_arch: ${{ matrix.node_target_arch }}
       setup_node_arch: ${{ matrix.node_arch }}
+      cross_compiling: ${{ matrix.cross_compiling }}
     steps:
       - uses: actions/checkout@v4
 
@@ -105,7 +114,7 @@ jobs:
         shell: bash
 
       - name: Setup Cpp
-        if: ${{ matrix.native }}
+        if: ${{ !matrix.vm }}
         uses: aminya/setup-cpp@master
         with:
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
@@ -121,44 +130,38 @@ jobs:
           brew install gnutls autoconf automake libtool
 
       - uses: pnpm/action-setup@v4
-        if: ${{ matrix.native }}
+        if: ${{ !matrix.vm }}
         with:
           version: 9
 
       - name: Install Node 20
-        if: ${{ matrix.native }}
+        if: ${{ !matrix.vm }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
           architecture: ${{ env.setup_node_arch }}
 
       - name: Install and Build Native
-        if: ${{ matrix.native }}
+        if: ${{ !matrix.vm }}
         run: pnpm install
 
       - name: Build JavaScript
-        if: ${{ matrix.native }}
+        if: ${{ !matrix.vm }}
         run: pnpm run build.js
 
       - name: Install Node 10
-        if: ${{ matrix.native && matrix.os != 'macos-14' }}
+        if: ${{ !matrix.vm && matrix.os != 'macos-14' }}
         uses: actions/setup-node@v4
         with:
           node-version: 10
           architecture: ${{ env.setup_node_arch }}
 
-      - name: Build Native
-        if: ${{ matrix.native && matrix.node_arch != 'ia32' }}
-        run: npm run build.native
-
-      - name: Build Native Windows 32
-        if: ${{ matrix.os == 'windows-2019' && matrix.node_arch == 'ia32' }}
-        run:
-          node ./node_modules/@aminya/cmake-ts/build/main.js named-configs
-          windows-x86
+      - name: Build Node 10 Native
+        if: ${{ !matrix.vm }}
+        run: node ./script/install.js
 
       - name: Use Node 20
-        if: ${{ matrix.native }}
+        if: ${{ !matrix.vm }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -210,11 +213,11 @@ jobs:
           overwrite: true
 
       - name: Lint
-        if: "${{ contains(matrix.os, 'ubuntu') && matrix.native }}"
+        if: "${{ !matrix.vm && contains(matrix.os, 'ubuntu') }}"
         run: pnpm run lint-test
 
       - name: Test
-        if: ${{ matrix.native }}
+        if: ${{ !matrix.vm }}
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -225,7 +228,7 @@ jobs:
             rm -rf ./tmp && mkdir -p ./tmp
 
       - name: Test Electron Windows/MacOS
-        if: "${{ !contains(matrix.os, 'ubuntu') && matrix.native }}"
+        if: "${{ !matrix.vm && !contains(matrix.os, 'ubuntu') }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -235,7 +238,7 @@ jobs:
         continue-on-error: true
 
       - name: Test Electron Linux
-        if: "${{ contains(matrix.os, 'ubuntu') && matrix.native }}"
+        if: "${{ !matrix.vm && contains(matrix.os, 'ubuntu') }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
