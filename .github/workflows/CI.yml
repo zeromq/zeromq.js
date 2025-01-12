@@ -10,7 +10,7 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ${{ matrix.os }}
     # prettier-ignore
-    name: ${{ matrix.os }}-${{ matrix.node_arch }}-${{ matrix.dockerfile }}-${{ matrix.distro }}
+    name: ${{ matrix.os }}-${{ matrix.node_target_arch }}-${{ matrix.dockerfile }}-${{ matrix.distro }}
     strategy:
       fail-fast: false
       matrix:
@@ -18,6 +18,8 @@ jobs:
           - ubuntu-20.04
           - windows-2019
         node_arch:
+          - x64
+        node_target_arch:
           - x64
         cpp_arch:
           - x64
@@ -31,48 +33,55 @@ jobs:
         include:
           - os: windows-2019
             node_arch: ia32
+            node_target_arch: ia32
             cpp_arch: amd64_x86
             native: true
 
           - os: windows-2022
             node_arch: x64
+            node_target_arch: arm64
             cpp_arch: amd64_arm64
             native: true
 
           - os: macos-13
             node_arch: x64
+            node_target_arch: x64
             cpp_arch: x64
             native: true
 
           - os: macos-14
             node_arch: arm64
-            cpp_arch: amd64_arm64
+            node_target_arch: arm64
+            cpp_arch: arm64
             native: true
 
           # Musl Alpine
           - os: ubuntu-24.04
             dockerfile: docker/alpine.dockerfile
             node_arch: x64
+            node_target_arch: x64
             cpp_arch: x64
             native: false
 
           # Debian Arm
           - os: ubuntu-24.04
-            node_arch: arm64
-            cpp_arch: amd64_arm64
             distro: bookworm
+            node_arch: arm64
+            node_target_arch: arm64
+            cpp_arch: arm64
             native: false
 
           # Musl Alpine Arm
           - os: ubuntu-24.04
-            node_arch: arm64
-            cpp_arch: amd64_arm64
             distro: alpine_latest
+            node_arch: arm64
+            node_target_arch: arm64
+            cpp_arch: arm64
             native: false
 
     env:
       npm_config_arch: ${{ matrix.node_arch }}
-      npm_config_target_arch: ${{ matrix.node_arch }}
+      npm_config_target_arch: ${{ matrix.node_target_arch }}
       setup_node_arch: ${{ matrix.node_arch }}
     steps:
       - uses: actions/checkout@v4
