@@ -397,7 +397,7 @@ Napi::Value Socket::Bind(const Napi::CallbackInfo& info) {
             if (run_ctx->error != 0) {
                 res.Reject(ErrnoException(
                     Env(), static_cast<int32_t>(run_ctx->error), run_ctx->address)
-                        .Value());
+                               .Value());
                 return;
             }
 
@@ -491,7 +491,7 @@ Napi::Value Socket::Unbind(const Napi::CallbackInfo& info) {
             if (run_ctx->error != 0) {
                 res.Reject(ErrnoException(
                     Env(), static_cast<int32_t>(run_ctx->error), run_ctx->address)
-                        .Value());
+                               .Value());
                 return;
             }
 

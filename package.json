@@ -178,6 +178,13 @@
         "runtimeVersion": "12.22.12"
       },
       {
+        "name": "windows-arm64",
+        "os": "win32",
+        "arch": "arm64",
+        "runtime": "node",
+        "runtimeVersion": "12.22.12"
+      },
+      {
         "name": "windows-x86",
         "os": "win32",
         "arch": "ia32",
