@@ -97,7 +97,7 @@ jobs:
 
       - name: Setup Cpp
         if: ${{ matrix.native }}
-        uses: aminya/setup-cpp@v1
+        uses: aminya/setup-cpp@master
         with:
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
           cmake: true
