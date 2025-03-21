@@ -175,7 +175,7 @@ jobs:
 
       - name: Build Linux Arm64
         if: ${{ matrix.distro }}
-        uses: uraimo/run-on-arch-action@v2.8.1
+        uses: uraimo/run-on-arch-action@v3.0.0
         with:
           arch: aarch64
           distro: ${{ matrix.distro }}
