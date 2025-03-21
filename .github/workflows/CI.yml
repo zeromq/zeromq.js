@@ -60,7 +60,7 @@ jobs:
           - os: ubuntu-24.04
             node_arch: arm64
             cpp_arch: amd64_arm64
-            distro: bookworm
+            distro: ubuntu20.04
             native: false
 
           # Musl Alpine Arm
