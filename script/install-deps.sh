@@ -69,7 +69,7 @@ export VCPKG_FORCE_SYSTEM_BINARIES=1
 # vcpkg
 git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
 cd ~/vcpkg || exit 1
-git checkout "ee2d2a100103e0f3613c60655dcf15be7d5157b8"
+git checkout "608d1dbcd6969679f82b1ca6b89d58939c9b228e"
 ~/vcpkg/bootstrap-vcpkg.sh
 cd - || exit 1
 
