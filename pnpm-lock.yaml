@@ -12,9 +12,9 @@ importers:
 
   .:
     dependencies:
-      '@aminya/cmake-ts':
-        specifier: ^0.3.0-aminya.7
-        version: 0.3.0-aminya.7
+      cmake-ts:
+        specifier: ^0.4.0
+        version: 0.4.0
       node-addon-api:
         specifier: ^8.3.0
         version: 8.3.0
@@ -147,10 +147,6 @@ importers:
         version: 5.0.0
 
 packages:
-
-  '@aminya/cmake-ts@0.3.0-aminya.7':
-    resolution: {integrity: sha512-y6a2Nq1Pj+3Y0tOLob2q0LbCB4cGIbcXJqDO10W51XpqUdB30OU0Xvl6ZDHFluHm/8nY5Vx/Ua9mxobG975//Q==}
-    hasBin: true
 
   '@aminya/eslint-plugin-only-warn@1.2.2':
     resolution: {integrity: sha512-0VdfoicL+dorb0WrbbhsFsH8xH+8X2Y6CrO/3br68kimkMNOJB/5DFGRraVDYHfCIQgMnlv5Q9GX1yI7V4GcgQ==}
@@ -932,6 +928,10 @@ packages:
 
   clone-response@1.0.3:
     resolution: {integrity: sha512-ROoL94jJH2dUVML2Y/5PEDNaSHgeOdSDicUyS7izcF63G6sTc/FTjLub4b8Il9S8S0beOfYt0TaA5qvFK+w0wA==}
+
+  cmake-ts@0.4.0:
+    resolution: {integrity: sha512-ms5ujfqTQSZUDZ7q0pVOGkMAzvqFA+/GKmuW1UqMSq0J8pDjsoy+d2ypnSC4HlyTPCW7jzEJ3keGa7Id2cz+6Q==}
+    hasBin: true
 
   coffeescript@1.12.7:
     resolution: {integrity: sha512-pLXHFxQMPklVoEekowk8b3erNynC+DVJzChxS/LCBBgR6/8AJkHivkm//zbowcfc7BTCAjryuhx6gPqPRfsFoA==}
@@ -3640,23 +3640,6 @@ packages:
 
 snapshots:
 
-  '@aminya/cmake-ts@0.3.0-aminya.7':
-    dependencies:
-      '@cypress/request': 3.0.5
-      fast-glob: 3.3.2
-      fs-extra: 10.1.0
-      lodash: 4.17.21
-      memory-stream: 1.0.0
-      minizlib: 2.1.2
-      npmlog: 6.0.2
-      resolve: 1.22.8
-      semver: 7.6.3
-      splitargs2: 0.1.3
-      tar: 6.2.1
-      unzipper: 0.12.3
-      url-join: 4.0.1
-      which: 2.0.2
-
   '@aminya/eslint-plugin-only-warn@1.2.2': {}
 
   '@ampproject/remapping@2.3.0':
@@ -4642,6 +4625,23 @@ snapshots:
   clone-response@1.0.3:
     dependencies:
       mimic-response: 1.0.1
+
+  cmake-ts@0.4.0:
+    dependencies:
+      '@cypress/request': 3.0.5
+      fast-glob: 3.3.2
+      fs-extra: 10.1.0
+      lodash: 4.17.21
+      memory-stream: 1.0.0
+      minizlib: 2.1.2
+      npmlog: 6.0.2
+      resolve: 1.22.8
+      semver: 7.6.3
+      splitargs2: 0.1.3
+      tar: 6.2.1
+      unzipper: 0.12.3
+      url-join: 4.0.1
+      which: 2.0.2
 
   coffeescript@1.12.7:
     optional: true
