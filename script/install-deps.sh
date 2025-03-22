@@ -21,8 +21,6 @@ if [ -n "$apt" ]; then
         zip \
         python3 \
         tar \
-        cmake \
-        ninja-build \
         automake \
         autoconf \
         libtool
@@ -33,6 +31,16 @@ if [ -n "$apt" ]; then
     echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
     apt-get update -qq
     apt-get install -y --no-install-recommends nodejs
+
+    # install latest cmake
+    test -f /usr/share/doc/kitware-archive-keyring/copyright ||
+        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+    echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
+    test -f /usr/share/doc/kitware-archive-keyring/copyright ||
+        rm /usr/share/keyrings/kitware-archive-keyring.gpg
+    apt-get update
+    apt-get install -y --no-install-recommends kitware-archive-keyring
+    apt-get install -y --no-install-recommends cmake
 fi
 
 # Alpine Linux
