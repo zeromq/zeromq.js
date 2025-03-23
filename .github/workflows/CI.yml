@@ -166,7 +166,7 @@ jobs:
           docker rm -f zeromq-temp
 
       - name: Read Installer Script
-        if: ${{ matrix.distro && !matrix.base_image }}
+        if: ${{ matrix.distro }}
         id: read-installer-script
         run: |
           EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)

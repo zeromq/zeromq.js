@@ -8,20 +8,24 @@ VCPKG_COMMIT="608d1dbcd6969679f82b1ca6b89d58939c9b228e"
 apt=$(command -v apt-get || true)
 if [ -n "$apt" ]; then
     apt-get update -q -y
-    apt-get install --no-install-recommends -y \
-        bash \
-        gnupg \
-        ca-certificates \
-        curl
 
-    # install latest nodejs
-    mkdir -p /etc/apt/keyrings
-    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-    apt-get update -qq
-    apt-get install -y --no-install-recommends nodejs
+    # if setup-cpp not installed
+    if [ -z "$(command -v setup-cpp || true)" ]; then
+        apt-get install --no-install-recommends -y \
+            bash \
+            gnupg \
+            ca-certificates \
+            curl
 
-    npx -y setup-cpp --compiler gcc --python true --cmake true --ninja true --make true --vcpkg $VCPKG_COMMIT
+        # install latest nodejs
+        mkdir -p /etc/apt/keyrings
+        curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+        echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+        apt-get update -qq
+        apt-get install -y --no-install-recommends nodejs
+
+        npx -y setup-cpp --compiler gcc --python true --cmake true --ninja true --make true --vcpkg $VCPKG_COMMIT
+    fi
 
     apt-get install --no-install-recommends -y \
         automake \
@@ -49,11 +53,15 @@ fi
 dnf=$(command -v dnf || true)
 if [ -n "$dnf" ]; then
     dnf update -q -y
-    dnf install -y \
-        bash \
-        nodejs
 
-    npx -y setup-cpp --compiler gcc --python true --cmake true --ninja true --make true --vcpkg $VCPKG_COMMIT --git true
+    # if setup-cpp not installed
+    if [ -z "$(command -v setup-cpp || true)" ]; then
+        dnf install -y \
+            bash \
+            nodejs
+
+        npx -y setup-cpp --compiler gcc --python true --cmake true --ninja true --make true --vcpkg $VCPKG_COMMIT --git true
+    fi
 
     dnf install -y \
         automake \
@@ -63,6 +71,7 @@ fi
 
 # zeromq
 cd ~/vcpkg || exit 1
+git checkout "$VCPKG_COMMIT" --force
 ~/vcpkg/vcpkg install 'zeromq[draft,curve,sodium]' || (cd - || exit 1)
 cd - || exit 1
 
