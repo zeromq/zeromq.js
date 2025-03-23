@@ -190,7 +190,7 @@ jobs:
             ${{ steps.read-installer-script.outputs.install_deps }}
 
           run: |
-            test -f $HOME/.cpprc && . $HOME/.cpprc && \
+            test -f /root/.cpprc && . /root/.cpprc && \
             pnpm install && \
             pnpm run build
 
