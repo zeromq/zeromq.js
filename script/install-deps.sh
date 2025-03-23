@@ -2,28 +2,17 @@
 
 set -x
 
+VCPKG_COMMIT="608d1dbcd6969679f82b1ca6b89d58939c9b228e"
+
 # Ubuntu/Debian
 apt=$(command -v apt-get || true)
 if [ -n "$apt" ]; then
     apt-get update -q -y
     apt-get install --no-install-recommends -y \
         bash \
-        build-essential \
         gnupg \
         ca-certificates \
-        curl \
-        git \
-        g++ \
-        make \
-        ninja-build \
-        pkg-config \
-        unzip \
-        zip \
-        python3 \
-        tar \
-        automake \
-        autoconf \
-        libtool
+        curl
 
     # install latest nodejs
     mkdir -p /etc/apt/keyrings
@@ -32,15 +21,12 @@ if [ -n "$apt" ]; then
     apt-get update -qq
     apt-get install -y --no-install-recommends nodejs
 
-    # install latest cmake
-    test -f /usr/share/doc/kitware-archive-keyring/copyright ||
-        wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
-    echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | tee /etc/apt/sources.list.d/kitware.list >/dev/null
-    test -f /usr/share/doc/kitware-archive-keyring/copyright ||
-        rm /usr/share/keyrings/kitware-archive-keyring.gpg
-    apt-get update
-    apt-get install -y --no-install-recommends kitware-archive-keyring
-    apt-get install -y --no-install-recommends cmake
+    npx -y setup-cpp --compiler gcc --python true --cmake true --ninja true --make true --vcpkg $VCPKG_COMMIT
+
+    apt-get install --no-install-recommends -y \
+        automake \
+        autoconf \
+        libtool
 fi
 
 # Alpine Linux
@@ -49,6 +35,14 @@ if [ -n "$apk" ]; then
     apk update
     apk add --no-cache bash build-base curl git g++ make ninja-build pkgconfig unzip zip python3 tar cmake musl-dev automake autoconf libtool nodejs npm
     cp /usr/lib/ninja-build/bin/ninja /usr/bin/ninja
+
+    # vcpkg
+    export VCPKG_FORCE_SYSTEM_BINARIES=1
+    git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
+    cd ~/vcpkg || exit 1
+    git checkout "$VCPKG_COMMIT"
+    ~/vcpkg/bootstrap-vcpkg.sh
+    cd - || exit 1
 fi
 
 # Fedora/RHEL
@@ -57,38 +51,20 @@ if [ -n "$dnf" ]; then
     dnf update -q -y
     dnf install -y \
         bash \
-        build-essential \
-        curl \
-        git \
-        g++ \
-        make \
-        ninja-build \
-        pkg-config \
-        unzip \
-        zip \
-        python3 \
-        tar \
-        cmake \
-        ninja-build \
+        nodejs
+
+    npx -y setup-cpp --compiler gcc --python true --cmake true --ninja true --make true --vcpkg $VCPKG_COMMIT --git true
+
+    dnf install -y \
         automake \
         autoconf \
-        libtool \
-        nodejs
+        libtool
 fi
-
-# pnpm
-npm i -g pnpm
-
-export VCPKG_FORCE_SYSTEM_BINARIES=1
-
-# vcpkg
-git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
-cd ~/vcpkg || exit 1
-git checkout "608d1dbcd6969679f82b1ca6b89d58939c9b228e"
-~/vcpkg/bootstrap-vcpkg.sh
-cd - || exit 1
 
 # zeromq
 cd ~/vcpkg || exit 1
 ~/vcpkg/vcpkg install 'zeromq[draft,curve,sodium]' || (cd - || exit 1)
 cd - || exit 1
+
+# pnpm
+npm i -g pnpm
