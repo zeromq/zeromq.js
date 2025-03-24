@@ -146,7 +146,7 @@ jobs:
       - name: Build Native Windows 32
         if: ${{ matrix.os == 'windows-2019' && matrix.node_arch == 'ia32' }}
         run:
-          node ./node_modules/@aminya/cmake-ts/build/main.js named-configs
+          node ./node_modules/cmake-ts/build/main.js named-configs
           windows-x86
 
       - name: Use Node 20
