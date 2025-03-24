@@ -37,16 +37,21 @@ fi
 apk=$(command -v apk || true)
 if [ -n "$apk" ]; then
     apk update
-    apk add --no-cache bash build-base curl git g++ make ninja-build pkgconfig unzip zip python3 tar cmake musl-dev automake autoconf libtool nodejs npm
-    cp /usr/lib/ninja-build/bin/ninja /usr/bin/ninja
 
-    # vcpkg
-    export VCPKG_FORCE_SYSTEM_BINARIES=1
-    git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
-    cd ~/vcpkg || exit 1
-    git checkout "$VCPKG_COMMIT"
-    ~/vcpkg/bootstrap-vcpkg.sh
-    cd - || exit 1
+    if [ -z "$(command -v setup-cpp || true)" ]; then
+        apk add --no-cache bash build-base curl git g++ make ninja-build pkgconfig unzip zip python3 tar cmake musl-dev nodejs npm
+        cp /usr/lib/ninja-build/bin/ninja /usr/bin/ninja
+
+        # vcpkg
+        export VCPKG_FORCE_SYSTEM_BINARIES=1
+        git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
+        cd ~/vcpkg || exit 1
+        git checkout "$VCPKG_COMMIT"
+        ~/vcpkg/bootstrap-vcpkg.sh
+        cd - || exit 1
+    fi
+
+    apk add --no-cache automake autoconf libtool
 fi
 
 # Fedora/RHEL

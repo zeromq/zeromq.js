@@ -81,12 +81,15 @@ jobs:
 
           # Musl Alpine Arm
           - os: ubuntu-24.04
-            distro: alpine_latest
+            distro: none
+            base_image: aminya/setup-cpp-alpine-gcc:3.21-1.4.0-arm64
             node_arch: arm64
             node_target_arch: arm64
             cpp_arch: arm64
             vm: true
             cross_compiling: false
+
+
 
     env:
       npm_config_arch: ${{ matrix.node_arch }}

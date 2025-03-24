@@ -1,4 +1,4 @@
-FROM node:18-alpine AS builder
+FROM aminya/setup-cpp-alpine-gcc:3.21-1.4.0-amd64 AS builder
 
 WORKDIR /app
 COPY ./ ./
@@ -6,31 +6,15 @@ ENV VCPKG_FORCE_SYSTEM_BINARIES=1
 RUN \
     # system dependencies
     apk add --no-cache \
-    bash \ 
-    build-base \
-    curl \ 
-    git \
-    g++ \ 
-    make \ 
-    ninja-build \
-    pkgconfig \
-    unzip \
-    zip \
-    python3 \
-    tar \
-    cmake \ 
-    ninja \
-    musl-dev \
     automake \
     autoconf \
     libtool && \
-    cp /usr/lib/ninja-build/bin/ninja /usr/bin/ninja && \ 
     # build
     npm i -g pnpm && \
     pnpm install && \
     pnpm run build
 
-FROM node:18-alpine
+FROM node:alpine3.21
 WORKDIR /app
 
 COPY ./ ./
