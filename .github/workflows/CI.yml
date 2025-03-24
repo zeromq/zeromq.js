@@ -10,7 +10,7 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, '[skip ci]') }}
     runs-on: ${{ matrix.os }}
     # prettier-ignore
-    name: ${{ matrix.os }}-${{ matrix.node_arch }}-${{ matrix.dockerfile }}-${{ matrix.distro }}
+    name: ${{ matrix.os }}-${{ matrix.node_arch }}-${{ matrix.dockerfile }}-${{ matrix.distro }}-${{ matrix.base_image }}
     strategy:
       fail-fast: false
       matrix:
@@ -60,7 +60,8 @@ jobs:
           - os: ubuntu-24.04
             node_arch: arm64
             cpp_arch: amd64_arm64
-            distro: bookworm
+            distro: none
+            base_image: aminya/setup-cpp-ubuntu-gcc:20.04-1.3.0
             native: false
 
           # Musl Alpine Arm
@@ -175,21 +176,24 @@ jobs:
 
       - name: Build Linux Arm64
         if: ${{ matrix.distro }}
-        uses: uraimo/run-on-arch-action@v2.8.1
+        uses: uraimo/run-on-arch-action@v3.0.0
         with:
           arch: aarch64
           distro: ${{ matrix.distro }}
+          base_image: ${{ matrix.base_image }}
           githubToken: ${{ github.token }}
           setup: |
             mkdir -p "${PWD}/build"
           dockerRunArgs: |
             --volume "${PWD}/build:/build"
+          shell: /bin/bash
           env: |
             VCPKG_FORCE_SYSTEM_BINARIES: 1
           install: |
             ${{ steps.read-installer-script.outputs.install_deps }}
 
           run: |
+            (test -f $HOME/.cpprc && . $HOME/.cpprc || true) && \
             pnpm install && \
             pnpm run build
 

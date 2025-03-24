@@ -78,7 +78,11 @@
     "overrides": {
       "typescript": "~4.9.5",
       "node-gyp": "10.0.1"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "core-js",
+      "electron"
+    ]
   },
   "files": [
     "CHANGELOG.md",
