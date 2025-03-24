@@ -68,7 +68,8 @@ jobs:
           - os: ubuntu-24.04
             node_arch: arm64
             cpp_arch: amd64_arm64
-            distro: alpine_latest
+            distro: none
+            base_image: aminya/setup-cpp-alpine-gcc:3.21-1.4.0-arm64
             native: false
 
     env:
