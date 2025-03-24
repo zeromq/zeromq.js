@@ -67,7 +67,7 @@ npm install zeromq
 
 Supported versions:
 
-- Node.js v10+ (requires a [N-API](https://nodejs.org/api/n-api.html))
+- Node.js v12+ (requires a [N-API](https://nodejs.org/api/n-api.html))
 
 ## Examples
 
@@ -326,7 +326,7 @@ during build, you can build this package from source.
 Make sure you have the following installed before attempting to build from
 source:
 
-- Node.js 10+ or Electron
+- Node.js 12+ or Electron
 - C++17 compiler toolchain (e.g. LLVM, GCC, MSVC)
 - Python 3
 - CMake 3.16+

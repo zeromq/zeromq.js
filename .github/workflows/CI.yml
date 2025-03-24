@@ -132,11 +132,11 @@ jobs:
         if: ${{ matrix.native }}
         run: pnpm run build.js
 
-      - name: Install Node 10
+      - name: Install Node 12
         if: ${{ matrix.native && matrix.os != 'macos-14' }}
         uses: actions/setup-node@v4
         with:
-          node-version: 10
+          node-version: 12
           architecture: ${{ env.setup_node_arch }}
 
       - name: Build Native
@@ -146,7 +146,7 @@ jobs:
       - name: Build Native Windows 32
         if: ${{ matrix.os == 'windows-2019' && matrix.node_arch == 'ia32' }}
         run:
-          node ./node_modules/@aminya/cmake-ts/build/main.js named-configs
+          node ./node_modules/cmake-ts/build/main.js named-configs
           windows-x86
 
       - name: Use Node 20
@@ -292,7 +292,7 @@ jobs:
           - windows-2022
           - macos-13
         node-version:
-          - 10
+          - 12
           - 22
 
         include:
@@ -305,7 +305,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
 
       - name: Install Yarn 1
-        if: matrix.node-version == 10
+        if: matrix.node-version == 12
         run: |
           npm i -g yarn@^1
 
@@ -315,7 +315,7 @@ jobs:
           npm i -g yarn@latest
 
       - name: Install Pnpm 5
-        if: matrix.node-version == 10
+        if: matrix.node-version == 12
         uses: pnpm/action-setup@v4
         with:
           version: 5

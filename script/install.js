@@ -5,13 +5,38 @@ function cmakeTs() {
   console.log(
     "Building addon node via cmake-ts (requires cmake, ninja, and the vcpkg dependencies)",
   )
-  const cmakeTsPath = require.resolve("@aminya/cmake-ts/build/main.js")
+  let cmakeTsPath = tryRequireResolve("cmake-ts/build/main.js")
+  if (cmakeTsPath === undefined) {
+    cmakeTsPath = tryRequireResolve("cmake-ts/build/main")
+  }
+  if (cmakeTsPath === undefined) {
+    throw new Error(
+      "Failed to find cmake-ts in cmake-ts/build/main.js or cmake-ts/build/main.js",
+    )
+  }
 
   cp.execFileSync(process.execPath, [cmakeTsPath, "nativeonly"], {
     stdio: "inherit",
   })
 }
 
+/**
+ * Try to require resolve a path.
+ * @param {string} path
+ * @returns {string | undefined}
+ */
+function tryRequireResolve(path) {
+  try {
+    return require.resolve(path)
+  } catch (error) {
+    return undefined
+  }
+}
+
+/**
+ * Log a warning if the environment is not production.
+ * @param {string} message
+ */
 function devWarn(message) {
   if (process.env.NODE_ENV !== "production") {
     console.warn(message)
