@@ -112,7 +112,7 @@ if(APPLE)
 endif()
 
 run_vcpkg(VCPKG_URL "https://github.com/microsoft/vcpkg.git" VCPKG_REV
-  "ee2d2a100103e0f3613c60655dcf15be7d5157b8")
+  "608d1dbcd6969679f82b1ca6b89d58939c9b228e")
 
 # Name of the project (will be the name of the plugin)
 project(addon LANGUAGES C CXX)

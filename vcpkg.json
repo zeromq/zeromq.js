@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
   "name": "zeromqjs",
   "version-string": "6.0.8",
-  "builtin-baseline": "ee2d2a100103e0f3613c60655dcf15be7d5157b8",
+  "builtin-baseline": "608d1dbcd6969679f82b1ca6b89d58939c9b228e",
   "dependencies": [
     {
       "name": "zeromq",
