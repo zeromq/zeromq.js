@@ -63,7 +63,7 @@
     "typedoc-plugin-inline-sources": "^1.2.0",
     "typedoc-plugin-mdn-links": "^4.0.7",
     "typedoc-plugin-missing-exports": "^3.1.0",
-    "typescript": "~4.9.5",
+    "typescript": "^5.0.0",
     "which": "^5.0.0"
   },
   "engines": {
@@ -76,7 +76,6 @@
   },
   "pnpm": {
     "overrides": {
-      "typescript": "~4.9.5",
       "node-gyp": "10.0.1"
     },
     "onlyBuiltDependencies": [
