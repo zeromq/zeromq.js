@@ -3,7 +3,7 @@ import fs from "fs"
 
 function errStr(error: unknown) {
   return error instanceof Error
-    ? `${error.name}: ${error.message}\n${error.stack}`
+    ? `${error.name}: ${error.stack}`
     : String(error)
 }
 
@@ -23,36 +23,43 @@ function findAddon(): any | undefined {
     ) as Record<string, string>
 
     // compatible addons (abi -> addon path)
-    const compatibleAddons: Record<string, string> = {}
+    const compatibleAddons: Map<BuildConfiguration, string> = new Map()
+
+    const libc = detectLibc()
 
     const configs = Object.keys(manifest)
     for (const configStr of configs) {
       const config = JSON.parse(configStr) as BuildConfiguration
 
       // check if the config is compatible with the current runtime
-      if (config.os !== process.platform || config.arch !== process.arch) {
-        continue
-      }
-      const libc = detectLibc()
-      if (config.libc !== libc) {
+      if (
+        config.os !== process.platform ||
+        config.arch !== process.arch ||
+        config.libc !== libc
+      ) {
         continue
       }
 
       const addonRelativePath = manifest[configStr]
-      compatibleAddons[config.abi ?? 0] = path.resolve(
-        buildDir,
-        addonRelativePath,
+      compatibleAddons.set(config, path.resolve(buildDir, addonRelativePath))
+    }
+    if (compatibleAddons.size === 0) {
+      throw new Error(
+        `No compatible zeromq.js addon found for ${process.platform} ${process.arch} ${libc}. The candidates were:\n${configs.join(
+          "\n",
+        )}`,
       )
     }
 
     // sort the compatible abis in descending order
-    const compatibleAbis = Object.keys(compatibleAddons).sort((a, b) => {
-      return Number.parseInt(b, 10) - Number.parseInt(a, 10)
-    })
+    const compatibleAddonsSorted = [...compatibleAddons.entries()].sort(
+      ([c1, _p1], [c2, _p2]) => {
+        return (c2.abi ?? 0) - (c1.abi ?? 0)
+      },
+    )
 
     // try each available addon ABI
-    for (const abi of compatibleAbis) {
-      const addonPath = compatibleAddons[abi]
+    for (const [_config, addonPath] of compatibleAddonsSorted) {
       try {
         addon = require(addonPath)
         break
