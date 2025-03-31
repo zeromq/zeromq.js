@@ -3,7 +3,7 @@ import fs from "fs"
 
 function errStr(error: unknown) {
   return error instanceof Error
-    ? `${error.name}: ${error.stack}`
+    ? `${error.name}: ${error.message}\n${error.stack}`
     : String(error)
 }
 

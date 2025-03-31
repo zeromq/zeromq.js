@@ -258,43 +258,15 @@ jobs:
           pattern: build-*
           path: ./build-artifacts
 
-      - name: Create build directory
-        shell: bash
-        run: mkdir -p ./build
-
-      - name: Merge Manifests
-        shell: python
-        run: |
-          import json
-          import os
-          import sys
-
-          # Get the list of files in the build-artifacts directory
-          build_artifacts_dir = os.path.join(os.getcwd(), 'build-artifacts')
-          manifest_files = [os.path.join(build_artifacts_dir, f) for f in os.listdir(build_artifacts_dir) if f.endswith('.json')]
-          merged_manifest = {}
-          for file in manifest_files:
-            with open(file, 'r') as f:
-              manifest = json.load(f)
-              for key, value in manifest.items():
-                if key not in merged_manifest:
-                  merged_manifest[key] = value
-                else:
-                  merged_manifest[key] += value
-          with open('./build/manifest.json', 'w') as f:
-            json.dump(merged_manifest, f)
+      - name: Install Dependencies
+        run: pnpm install
 
       - name: Merge Artifacts
-        shell: bash
         run: |
-          for folder in ./build-artifacts/*; do
-            mv "$folder" ./build/
-          done
+          pnpm exec tsx ./script/merge-artifacts.mts
 
       - name: Pack Zeromq
-        run: |
-          pnpm install
-          pnpm pack
+        run: pnpm pack
 
       - name: Upload Pack
         uses: actions/upload-artifact@v4

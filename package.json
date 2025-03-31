@@ -44,7 +44,8 @@
     "eslint-config-atomic": "^1.22.1",
     "eslint-plugin-prettier": "^5.2.1",
     "execa": "^9.5.2",
-    "fs-extra": "^11.2.0",
+    "fast-glob": "^3.3.3",
+    "fs-extra": "^11.3.0",
     "gh-pages": "^6.2.0",
     "minify-all-cli": "^1.0.13",
     "mocha": "^11.0.1",
@@ -57,6 +58,7 @@
     "servor": "^4.0.2",
     "shx": "^0.3.4",
     "ts-node": "~10.9.2",
+    "tsx": "^4.19.3",
     "typedoc": "^0.27.6",
     "typedoc-plugin-dt-links": "^1.1.6",
     "typedoc-plugin-include-example": "^2.0.2",
@@ -81,7 +83,8 @@
     },
     "onlyBuiltDependencies": [
       "core-js",
-      "electron"
+      "electron",
+      "esbuild"
     ]
   },
   "files": [
