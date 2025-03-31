@@ -23,7 +23,8 @@
       "ES2020",
       // only used in tests
       "ES2021.WeakRef"
-    ]
+    ],
+    "types": ["node"]
   },
   "compileOnSave": true
 }

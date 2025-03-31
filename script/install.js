@@ -48,6 +48,7 @@ function main() {
     cmakeTs()
   } else {
     try {
+      /* eslint-disable-next-line import/no-unassigned-import */
       require("../lib/load-addon.js")
     } catch (error) {
       devWarn(error)

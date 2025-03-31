@@ -1,3 +1,6 @@
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
+import {assert} from "chai"
+
 import * as path from "path"
 import {exec} from "child_process"
 import {
@@ -9,8 +12,6 @@ import {
   writeFile,
 } from "fs-extra"
 import which from "which"
-
-import {assert} from "chai"
 
 /**
  * Testing typings compatibility for TypeScript versions, i.e. when zeromq.js is

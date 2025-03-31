@@ -1,8 +1,11 @@
 /* This test is very unreliable in practice, especially in CI.
    It is disabled by default. */
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
+import {assert} from "chai"
+
 import * as zmq from "../../../v5-compat"
 import semver from "semver"
-import {assert} from "chai"
+
 import {testProtos, uniqAddress} from "../helpers"
 
 if (

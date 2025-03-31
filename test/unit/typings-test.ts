@@ -1,3 +1,5 @@
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
+
 import * as zmq from "../../src"
 
 describe("typings", function () {

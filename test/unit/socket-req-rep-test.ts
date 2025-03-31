@@ -1,6 +1,8 @@
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
+import {assert} from "chai"
+
 import * as zmq from "../../src"
 
-import {assert} from "chai"
 import {testProtos, uniqAddress} from "./helpers"
 import {isFullError} from "../../src/errors"
 

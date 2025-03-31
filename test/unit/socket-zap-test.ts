@@ -1,7 +1,10 @@
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
+import {assert} from "chai"
+
 import * as semver from "semver"
+
 import * as zmq from "../../src"
 
-import {assert} from "chai"
 import {captureEvent, testProtos, uniqAddress} from "./helpers"
 
 for (const proto of testProtos("tcp", "ipc")) {

@@ -1,5 +1,7 @@
-import * as zmq from "../../../v5-compat"
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
 import {assert} from "chai"
+
+import * as zmq from "../../../v5-compat"
 
 if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   describe("compat socket", function () {

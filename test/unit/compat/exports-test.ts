@@ -1,6 +1,9 @@
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
+import {assert} from "chai"
+
 import * as zmq from "../../../v5-compat"
 import {capability} from "../../../src"
-import {assert} from "chai"
+
 import semver from "semver"
 
 if (process.env.INCLUDE_COMPAT_TESTS === "true") {

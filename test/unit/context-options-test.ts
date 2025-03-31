@@ -1,6 +1,7 @@
-import * as zmq from "../../src"
-
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
 import {assert} from "chai"
+
+import * as zmq from "../../src"
 
 describe("context options", function () {
   afterEach(function () {

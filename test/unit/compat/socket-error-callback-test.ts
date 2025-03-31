@@ -1,7 +1,8 @@
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
+import {assert} from "chai"
+
 import * as zmq from "../../../v5-compat"
 import type {Socket} from "../../../v5-compat"
-import {isFullError} from "../../../src/errors"
-import {assert} from "chai"
 
 if (process.env.INCLUDE_COMPAT_TESTS === "true") {
   describe("compat socket error callback", function () {

@@ -47,7 +47,7 @@
     "fs-extra": "^11.2.0",
     "gh-pages": "^6.2.0",
     "minify-all-cli": "^1.0.13",
-    "mocha": "^11.0.1",
+    "mocha": "^11.2.0",
     "npm-run-all2": "^7.0.2",
     "prebuildify": "^6.0.1",
     "prettier": "^3.4.2",

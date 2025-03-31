@@ -1,6 +1,9 @@
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
+import {assert} from "chai"
+
 import * as zmq from "../../../v5-compat"
 import semver from "semver"
-import {assert} from "chai"
+
 import {testProtos, uniqAddress} from "../helpers"
 import {isFullError} from "../../../src/errors"
 

@@ -1,3 +1,5 @@
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
+
 import {Worker} from "worker_threads"
 import {testProtos} from "./helpers"
 

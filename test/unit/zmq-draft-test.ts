@@ -1,7 +1,8 @@
+import {describe, it, beforeEach, afterEach, before, after} from "mocha"
+import {assert} from "chai"
+
 import * as zmq from "../../src"
 import * as draft from "../../src/draft"
-
-import {assert} from "chai"
 
 describe("zmq draft", function () {
   if (zmq.capability.draft !== true) {
