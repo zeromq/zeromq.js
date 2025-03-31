@@ -255,7 +255,6 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: build
           pattern: build-*
           path: ./build-artifacts
 
@@ -346,6 +345,8 @@ jobs:
       - name: Install Pnpm 9
         if: matrix.node-version == 22
         uses: pnpm/action-setup@v4
+        with:
+          version: 9
 
       - uses: actions/checkout@v4
 
