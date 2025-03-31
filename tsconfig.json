@@ -2,7 +2,7 @@
   "root": true,
   "compilerOptions": {
     "allowJs": false,
-    "target": "es2020",
+    "target": "ES2019",
     "declaration": true,
     "module": "commonjs",
     "moduleResolution": "node",
@@ -20,7 +20,7 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "lib": [
-      "ES2020",
+      "ES2019",
       // only used in tests
       "ES2021.WeakRef"
     ]

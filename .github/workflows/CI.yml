@@ -115,8 +115,6 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         if: ${{ matrix.native }}
-        with:
-          version: 9
 
       - name: Install Node 20
         if: ${{ matrix.native }}
@@ -147,8 +145,7 @@ jobs:
       - name: Build Native Windows 32
         if: ${{ matrix.os == 'windows-2019' && matrix.node_arch == 'ia32' }}
         run:
-          node ./node_modules/cmake-ts/build/main.js named-configs
-          windows-x86
+          node ./node_modules/cmake-ts/build/main.js named-configs windows-x86
 
       - name: Use Node 20
         if: ${{ matrix.native }}
@@ -245,20 +242,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: Build
     steps:
-      - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
-        with:
-          name: build
-          pattern: build-*
-          delete-merged: true
-
       - uses: actions/checkout@v4
-
-      - name: Place build
-        uses: actions/download-artifact@v4
-        with:
-          name: build
-          path: ./build
 
       - name: Install Node
         uses: actions/setup-node@v4
@@ -267,13 +251,22 @@ jobs:
 
       - name: Install Pnpm
         uses: pnpm/action-setup@v4
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
         with:
-          version: 9
+          pattern: build-*
+          path: ./build-artifacts
+
+      - name: Install Dependencies
+        run: pnpm install
+
+      - name: Merge Artifacts
+        run: |
+          pnpm exec tsx ./script/merge-artifacts.mts
 
       - name: Pack Zeromq
-        run: |
-          pnpm install
-          pnpm pack
+        run: pnpm pack
 
       - name: Upload Pack
         uses: actions/upload-artifact@v4
