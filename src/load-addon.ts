@@ -16,23 +16,43 @@ function devWarn(message: string) {
 function findAddon(): any | undefined {
   let addon: undefined | any = undefined
   try {
-    const addonParentDir = path.resolve(
-      path.join(
-        __dirname,
-        "..",
-        "build",
-        process.platform,
-        process.arch,
-        "node",
-      ),
-    )
-    const addOnAbiDirs = fs.readdirSync(addonParentDir).sort((a, b) => {
+    const buildDir = path.resolve(__dirname, "..", "build")
+
+    const manifest = JSON.parse(
+      fs.readFileSync(path.resolve(buildDir, "manifest.json"), "utf-8"),
+    ) as Record<string, string>
+
+    // compatible addons (abi -> addon path)
+    const compatibleAddons: Record<string, string> = {}
+
+    const configs = Object.keys(manifest)
+    for (const configStr of configs) {
+      const config = JSON.parse(configStr) as BuildConfiguration
+
+      // check if the config is compatible with the current runtime
+      if (config.os !== process.platform || config.arch !== process.arch) {
+        continue
+      }
+      const libc = detectLibc()
+      if (config.libc !== libc) {
+        continue
+      }
+
+      const addonRelativePath = manifest[configStr]
+      compatibleAddons[config.abi ?? 0] = path.resolve(
+        buildDir,
+        addonRelativePath,
+      )
+    }
+
+    // sort the compatible abis in descending order
+    const compatibleAbis = Object.keys(compatibleAddons).sort((a, b) => {
       return Number.parseInt(b, 10) - Number.parseInt(a, 10)
     })
 
     // try each available addon ABI
-    for (const addOnAbiDir of addOnAbiDirs) {
-      const addonPath = path.join(addonParentDir, addOnAbiDir, "addon.node")
+    for (const abi of compatibleAbis) {
+      const addonPath = compatibleAddons[abi]
       try {
         addon = require(addonPath)
         break
@@ -55,6 +75,44 @@ function findAddon(): any | undefined {
   }
 
   return addon
+}
+
+/**
+ * Build configuration (from cmake-ts)
+ */
+type BuildConfiguration = {
+  name: string
+  dev: boolean
+  os: typeof process.platform
+  arch: typeof process.arch
+  runtime: string
+  runtimeVersion: string
+  toolchainFile: string | null
+  CMakeOptions?: {name: string; value: string}[]
+  addonSubdirectory: string
+  // list of additional definitions to fixup node quirks for some specific versions
+  additionalDefines: string[]
+  /** The ABI number that is used by the runtime. */
+  abi?: number
+  /** The libc that is used by the runtime. */
+  libc?: string
+}
+
+/**
+ * Detect the libc used by the runtime (from cmake-ts)
+ */
+function detectLibc() {
+  if (process.platform === "linux") {
+    if (fs.existsSync("/etc/alpine-release")) {
+      return "musl"
+    }
+    return "glibc"
+  } else if (process.platform === "darwin") {
+    return "libc"
+  } else if (process.platform === "win32") {
+    return "msvc"
+  }
+  return "unknown"
 }
 
 const addon = findAddon()
