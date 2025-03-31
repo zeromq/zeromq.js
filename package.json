@@ -67,9 +67,9 @@
     "which": "^5.0.0"
   },
   "engines": {
-    "node": ">= 12",
-    "pnpm": ">= 9"
+    "node": ">= 12"
   },
+  "packageManager": "pnpm@10.6.5",
   "overrides": {
     "typescript": "~4.9.5",
     "node-gyp": "10.0.1"

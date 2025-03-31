@@ -115,8 +115,6 @@ jobs:
 
       - uses: pnpm/action-setup@v4
         if: ${{ matrix.native }}
-        with:
-          version: 9
 
       - name: Install Node 20
         if: ${{ matrix.native }}
@@ -244,20 +242,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: Build
     steps:
-      - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@v4
-        with:
-          name: build
-          pattern: build-*
-          delete-merged: true
-
       - uses: actions/checkout@v4
-
-      - name: Place build
-        uses: actions/download-artifact@v4
-        with:
-          name: build
-          path: ./build
 
       - name: Install Node
         uses: actions/setup-node@v4
@@ -266,8 +251,46 @@ jobs:
 
       - name: Install Pnpm
         uses: pnpm/action-setup@v4
+
+      - name: Download Artifacts
+        uses: actions/download-artifact@v4
         with:
-          version: 9
+          name: build
+          pattern: build-*
+          path: ./build-artifacts
+
+      - name: Create build directory
+        shell: bash
+        run: mkdir -p ./build
+
+      - name: Merge Manifests
+        shell: python
+        run: |
+          import json
+          import os
+          import sys
+
+          # Get the list of files in the build-artifacts directory
+          build_artifacts_dir = os.path.join(os.getcwd(), 'build-artifacts')
+          manifest_files = [os.path.join(build_artifacts_dir, f) for f in os.listdir(build_artifacts_dir) if f.endswith('.json')]
+          merged_manifest = {}
+          for file in manifest_files:
+            with open(file, 'r') as f:
+              manifest = json.load(f)
+              for key, value in manifest.items():
+                if key not in merged_manifest:
+                  merged_manifest[key] = value
+                else:
+                  merged_manifest[key] += value
+          with open('./build/manifest.json', 'w') as f:
+            json.dump(merged_manifest, f)
+
+      - name: Merge Artifacts
+        shell: bash
+        run: |
+          for folder in ./build-artifacts/*; do
+            mv "$folder" ./build/
+          done
 
       - name: Pack Zeromq
         run: |
@@ -323,8 +346,6 @@ jobs:
       - name: Install Pnpm 9
         if: matrix.node-version == 22
         uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - uses: actions/checkout@v4
 
