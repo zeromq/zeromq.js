@@ -7,14 +7,14 @@ on:
 
 jobs:
   Docs:
-    runs-on: ubuntu-22.04
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-22.04
+          - ubuntu-24.04
         node_version:
-          - 18
+          - 20
         node_arch:
           - x64
         cpp_arch:
@@ -55,8 +55,6 @@ jobs:
           architecture: ${{ matrix.cpp_arch }}
 
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Install Node
         uses: actions/setup-node@v4
