@@ -1,19 +1,26 @@
-FROM aminya/setup-cpp-alpine-gcc:3.21 AS base
+FROM aminya/setup-cpp-ubuntu-gcc:20.04 AS base
+
 # system dependencies
-RUN apk add --no-cache \
+RUN apt-get update -q -y \
+    && apt-get install --no-install-recommends -y \
     automake \
     autoconf \
-    libtool
+    libtool && \
+    apt-get clean autoclean && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /tmp/*
 
 FROM base AS builder
 WORKDIR /app
 COPY ./ ./
+
 # build
 RUN npm i -g pnpm && \
     pnpm install && \
     pnpm run build
 
-FROM node:alpine3.21
+FROM node:22-bookworm
 WORKDIR /app
 
 COPY ./ ./
