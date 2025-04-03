@@ -10,19 +10,17 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, '[skip build]') }}
     runs-on: ${{ matrix.os }}
     # prettier-ignore
-    name: ${{ matrix.os }}-${{ matrix.node_arch }}-${{ matrix.dockerfile }}-${{ matrix.distro }}-${{ matrix.base_image }}
+    name: ${{ matrix.os }}-${{ matrix.node_arch }}-${{ matrix.distro }}-${{ matrix.platform }}
     strategy:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-20.04
+          - ubuntu-24.04
           - windows-2019
         node_arch:
           - x64
         cpp_arch:
           - x64
-        dockerfile:
-          - ""
         distro:
           - ""
         native:
@@ -49,27 +47,36 @@ jobs:
             cpp_arch: amd64_arm64
             native: true
 
-          # Musl Alpine
+          # Ubuntu x64
           - os: ubuntu-24.04
-            dockerfile: docker/alpine.dockerfile
+            distro: ubuntu
+            platform: linux/amd64
             node_arch: x64
             cpp_arch: x64
             native: false
 
-          # Debian Arm
-          - os: ubuntu-24.04
+          # Ubuntu Arm
+          - os: ubuntu-24.04-arm
+            distro: ubuntu
+            platform: linux/arm64
             node_arch: arm64
-            cpp_arch: amd64_arm64
-            distro: none
-            base_image: aminya/setup-cpp-ubuntu-gcc:20.04-1.3.0
+            cpp_arch: arm64
+            native: false
+
+          # Musl Alpine
+          - os: ubuntu-24.04
+            distro: alpine
+            platform: linux/amd64
+            node_arch: x64
+            cpp_arch: x64
             native: false
 
           # Musl Alpine Arm
-          - os: ubuntu-24.04
+          - os: ubuntu-24.04-arm
+            distro: alpine
+            platform: linux/arm64
             node_arch: arm64
-            cpp_arch: amd64_arm64
-            distro: none
-            base_image: aminya/setup-cpp-alpine-gcc:3.21-1.4.0-arm64
+            cpp_arch: arm64
             native: false
 
     env:
@@ -154,46 +161,26 @@ jobs:
           node-version: 20
           architecture: ${{ env.setup_node_arch }}
 
-      - name: Prebuild Docker
-        if: ${{ matrix.dockerfile }}
+      - name: Build Docker
+        if: ${{ matrix.distro }}
+        id: build_base
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./docker/${{ matrix.distro }}.dockerfile
+          push: false
+          load: true
+          provenance: false
+          platforms: ${{ matrix.platform }}
+          tags: zeromq:${{ matrix.distro }}-${{ matrix.node_arch }}
+
+      - name: Copy Build
+        if: ${{ matrix.distro }}
         run: |
-          docker build -t zeromq -f ${{ matrix.dockerfile }} .
-          docker create --name zeromq-temp zeromq
+          docker create --name zeromq-temp zeromq:${{ matrix.distro }}-${{ matrix.node_arch }}
           mkdir -p ./build
           docker cp zeromq-temp:/app/build ./
           docker rm -f zeromq-temp
-
-      - name: Read Installer Script
-        if: ${{ matrix.distro }}
-        id: read-installer-script
-        run: |
-          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
-          echo "install_deps<<$EOF" >> $GITHUB_OUTPUT
-          cat ./script/install-deps.sh >> $GITHUB_OUTPUT
-          echo "$EOF" >> $GITHUB_OUTPUT
-
-      - name: Build Linux Arm64
-        if: ${{ matrix.distro }}
-        uses: uraimo/run-on-arch-action@v3.0.0
-        with:
-          arch: aarch64
-          distro: ${{ matrix.distro }}
-          base_image: ${{ matrix.base_image }}
-          githubToken: ${{ github.token }}
-          setup: |
-            mkdir -p "${PWD}/build"
-          dockerRunArgs: |
-            --volume "${PWD}/build:/build"
-          shell: /bin/bash
-          env: |
-            VCPKG_FORCE_SYSTEM_BINARIES: 1
-          install: |
-            ${{ steps.read-installer-script.outputs.install_deps }}
-
-          run: |
-            (test -f $HOME/.cpprc && . $HOME/.cpprc || true) && \
-            pnpm install && \
-            pnpm run build
 
       - name: Upload build
         uses: actions/upload-artifact@v4
