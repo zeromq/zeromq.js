@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       cmake-ts:
-        specifier: ^0.6.0
-        version: 0.6.0
+        specifier: ^0.6.1
+        version: 0.6.1
       node-addon-api:
         specifier: ^8.3.0
         version: 8.3.0
@@ -1044,8 +1044,8 @@ packages:
   clone-response@1.0.3:
     resolution: {integrity: sha512-ROoL94jJH2dUVML2Y/5PEDNaSHgeOdSDicUyS7izcF63G6sTc/FTjLub4b8Il9S8S0beOfYt0TaA5qvFK+w0wA==}
 
-  cmake-ts@0.6.0:
-    resolution: {integrity: sha512-2QlKs1Cc8yjCKxWx/HJw0rwvqkoPetC3CA64RIqQOikOyqtZo/dlRHp17Kpss24GrOSCr3PsQ9kAlXHgev3qqQ==}
+  cmake-ts@0.6.1:
+    resolution: {integrity: sha512-uUn2qGhf20j8W/sQ7+UnvvqO1zNccqgbLgwRJi7S23FsjMWJqxvKK80Vc+tvLNKfpJzwH0rgoQD1l24SMnX0yg==}
     hasBin: true
 
   coffeescript@1.12.7:
@@ -4576,7 +4576,7 @@ snapshots:
     dependencies:
       mimic-response: 1.0.1
 
-  cmake-ts@0.6.0: {}
+  cmake-ts@0.6.1: {}
 
   coffeescript@1.12.7:
     optional: true
