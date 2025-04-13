@@ -1,6 +1,6 @@
 {
   "name": "zeromq",
-  "version": "6.3.0",
+  "version": "6.4.2",
   "description": "Next-generation ZeroMQ bindings for Node.js",
   "main": "lib/index.js",
   "type": "commonjs",
@@ -19,7 +19,7 @@
   },
   "homepage": "http://zeromq.github.io/zeromq.js/",
   "dependencies": {
-    "cmake-ts": "^0.5.3",
+    "cmake-ts": "1.0.0",
     "node-addon-api": "^8.3.0"
   },
   "devDependencies": {
@@ -44,7 +44,8 @@
     "eslint-config-atomic": "^1.22.1",
     "eslint-plugin-prettier": "^5.2.1",
     "execa": "^9.5.2",
-    "fs-extra": "^11.2.0",
+    "fast-glob": "^3.3.3",
+    "fs-extra": "^11.3.0",
     "gh-pages": "^6.2.0",
     "minify-all-cli": "^1.0.13",
     "mocha": "^11.0.1",
@@ -57,6 +58,7 @@
     "servor": "^4.0.2",
     "shx": "^0.3.4",
     "ts-node": "~10.9.2",
+    "tsx": "^4.19.3",
     "typedoc": "^0.27.6",
     "typedoc-plugin-dt-links": "^1.1.6",
     "typedoc-plugin-include-example": "^2.0.2",
@@ -67,9 +69,9 @@
     "which": "^5.0.0"
   },
   "engines": {
-    "node": ">= 12",
-    "pnpm": ">= 9"
+    "node": ">= 12"
   },
+  "packageManager": "pnpm@10.8.0",
   "overrides": {
     "typescript": "~4.9.5",
     "node-gyp": "10.0.1"
@@ -81,7 +83,8 @@
     },
     "onlyBuiltDependencies": [
       "core-js",
-      "electron"
+      "electron",
+      "esbuild"
     ]
   },
   "files": [
@@ -110,8 +113,8 @@
     "docs.preview": "servor --browse --reload docs",
     "docs.dev": "run-s docs.build docs.preview",
     "docs.deploy": "run-s docs.build && gh-pages --dist \"./docs\"",
-    "build.native": "cmake-ts nativeonly",
-    "build.native.debug": "cross-env npm_config_zmq_enable_sanitizer_undefined=true cmake-ts dev-os-only",
+    "build.native": "cmake-ts build --logger=debug",
+    "build.native.debug": "cross-env npm_config_zmq_enable_sanitizer_undefined=true cmake-ts build --config debug",
     "build": "run-p build.js build.native",
     "build.debug": "run-s build.js build.native.debug",
     "test": "run-s test.unit test.examples",
@@ -139,107 +142,6 @@
   },
   "cmake-ts": {
     "nodeAPI": "node-addon-api",
-    "configurations": [
-      {
-        "name": "linux-x64",
-        "os": "linux",
-        "arch": "x64",
-        "runtime": "node",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "linux-x64-dev",
-        "dev": true,
-        "buildType": "Debug",
-        "os": "linux",
-        "arch": "x64",
-        "runtime": "node",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "darwin-arm64-dev",
-        "dev": true,
-        "buildType": "Debug",
-        "os": "darwin",
-        "arch": "arm64",
-        "runtime": "node",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "windows-x64-dev",
-        "dev": true,
-        "buildType": "Debug",
-        "os": "win32",
-        "arch": "x64",
-        "runtime": "node",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "windows-x64",
-        "os": "win32",
-        "arch": "x64",
-        "runtime": "node",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "windows-arm64",
-        "os": "win32",
-        "arch": "arm64",
-        "runtime": "node",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "windows-x86",
-        "os": "win32",
-        "arch": "ia32",
-        "runtime": "node",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "darwin-x64",
-        "os": "darwin",
-        "arch": "x64",
-        "runtime": "node",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "darwin-arm64",
-        "os": "darwin",
-        "arch": "arm64",
-        "runtime": "node",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "linux-x64-electron",
-        "os": "linux",
-        "arch": "x64",
-        "runtime": "electron",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "windows-x64-electron",
-        "os": "win32",
-        "arch": "x64",
-        "runtime": "electron",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "darwin-x64-electron",
-        "os": "darwin",
-        "arch": "x64",
-        "runtime": "electron",
-        "runtimeVersion": "12.22.12"
-      },
-      {
-        "name": "darwin-arm64-electron",
-        "os": "darwin",
-        "arch": "arm64",
-        "runtime": "electron",
-        "runtimeVersion": "12.22.12"
-      }
-    ],
-    "targetDirectory": "build",
-    "buildType": "Release",
     "projectName": "addon"
   },
   "keywords": [

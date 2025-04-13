@@ -29,3 +29,4 @@ compile_commands.json
 
 /smoke-test-*
 /*.tgz
+/build-artifacts
