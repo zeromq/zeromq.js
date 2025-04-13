@@ -13,11 +13,11 @@ importers:
   .:
     dependencies:
       cmake-ts:
-        specifier: 1.0.0
-        version: 1.0.0
+        specifier: 1.0.2
+        version: 1.0.2
       node-addon-api:
-        specifier: ^8.3.0
-        version: 8.3.0
+        specifier: ^8.3.1
+        version: 8.3.1
     devDependencies:
       '@types/benchmark':
         specifier: ~2.1.5
@@ -1044,8 +1044,8 @@ packages:
   clone-response@1.0.3:
     resolution: {integrity: sha512-ROoL94jJH2dUVML2Y/5PEDNaSHgeOdSDicUyS7izcF63G6sTc/FTjLub4b8Il9S8S0beOfYt0TaA5qvFK+w0wA==}
 
-  cmake-ts@1.0.0:
-    resolution: {integrity: sha512-wg7HJHTLmoqNM7/g/D9urT2P8NEghaz1ATlr55dCZTlK19DWN9I1f8st9uV6Cn0FeOUt02Ps1CKphvfbjUPRRQ==}
+  cmake-ts@1.0.2:
+    resolution: {integrity: sha512-5l++JHE7MxFuyV/OwJf3ek7ZZN1aGPFPM5oUz6AnK5inQAPe4TFXRMz5sA2qg2FRgByPWdqO+gSfIPo8GzoKNQ==}
     hasBin: true
 
   coffeescript@1.12.7:
@@ -2436,8 +2436,8 @@ packages:
     resolution: {integrity: sha512-7vbj10trelExNjFSBm5kTvZXXa7pZyKWx9RCKIyqe6I9Ev3IzGpQoqBP3a+cOdxY+pWj6VkP28n/2wWysBHD/A==}
     engines: {node: '>=10'}
 
-  node-addon-api@8.3.0:
-    resolution: {integrity: sha512-8VOpLHFrOQlAH+qA0ZzuGRlALRA6/LVh8QJldbrC4DY0hXoMP0l4Acq8TzFC018HztWiRqyCEj2aTWY2UvnJUg==}
+  node-addon-api@8.3.1:
+    resolution: {integrity: sha512-lytcDEdxKjGJPTLEfW4mYMigRezMlyJY8W4wxJK8zE533Jlb8L8dRuObJFWg2P+AuOIxoCgKF+2Oq4d4Zd0OUA==}
     engines: {node: ^18 || ^20 || >= 21}
 
   node-releases@2.0.18:
@@ -4576,7 +4576,7 @@ snapshots:
     dependencies:
       mimic-response: 1.0.1
 
-  cmake-ts@1.0.0: {}
+  cmake-ts@1.0.2: {}
 
   coffeescript@1.12.7:
     optional: true
@@ -6320,7 +6320,7 @@ snapshots:
     dependencies:
       semver: 7.6.3
 
-  node-addon-api@8.3.0: {}
+  node-addon-api@8.3.1: {}
 
   node-releases@2.0.18: {}
 

@@ -15,7 +15,7 @@ function cmakeTs() {
     )
   }
 
-  cp.execFileSync(process.execPath, [cmakeTsPath, "nativeonly"], {
+  cp.execFileSync(process.execPath, [cmakeTsPath, "build"], {
     stdio: "inherit",
   })
 }

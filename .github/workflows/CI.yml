@@ -10,78 +10,76 @@ jobs:
     if: ${{ !contains(github.event.head_commit.message, '[skip build]') }}
     runs-on: ${{ matrix.os }}
     # prettier-ignore
-    name: ${{ matrix.os }}-${{ matrix.node_arch }}-${{ matrix.distro }}-${{ matrix.platform }}
+    name: ${{ matrix.os }} ${{ matrix.target_arch }} ${{ matrix.distro }} ${{ matrix.platform }}
     strategy:
       fail-fast: false
       matrix:
         os:
           - ubuntu-24.04
           - windows-2019
+          - macos-13
         node_arch:
           - x64
         cpp_arch:
           - x64
+        target_arch:
+          - x64
         distro:
           - ""
-        native:
-          - true
-
         include:
+          # Windows x86
           - os: windows-2019
-            node_arch: ia32
-            cpp_arch: amd64_x86
-            native: true
-
-          # - os: windows-2022
-          #   node_arch: x64
-          #   arch: arm64
-          #   cpp_arch: amd64_arm64
-
-          - os: macos-13
             node_arch: x64
-            cpp_arch: x64
-            native: true
+            target_arch: ia32
+            cpp_arch: amd64_x86
 
+          # Windows Arm64
+          - os: windows-2022
+            node_arch: x64
+            target_arch: arm64
+            cpp_arch: amd64_arm64
+
+          # MacOS Arm64
           - os: macos-14
             node_arch: arm64
+            target_arch: arm64
             cpp_arch: amd64_arm64
-            native: true
 
-          # Ubuntu x64
+          # Ubuntu 20.04 x64
           - os: ubuntu-24.04
             distro: ubuntu
             platform: linux/amd64
             node_arch: x64
+            target_arch: x64
             cpp_arch: x64
-            native: false
 
-          # Ubuntu Arm
+          # Ubuntu 20.04 Arm64
           - os: ubuntu-24.04-arm
             distro: ubuntu
             platform: linux/arm64
             node_arch: arm64
+            target_arch: arm64
             cpp_arch: arm64
-            native: false
 
           # Musl Alpine
           - os: ubuntu-24.04
             distro: alpine
             platform: linux/amd64
             node_arch: x64
+            target_arch: x64
             cpp_arch: x64
-            native: false
 
           # Musl Alpine Arm
           - os: ubuntu-24.04-arm
             distro: alpine
             platform: linux/arm64
             node_arch: arm64
+            target_arch: arm64
             cpp_arch: arm64
-            native: false
 
     env:
       npm_config_arch: ${{ matrix.node_arch }}
-      npm_config_target_arch: ${{ matrix.node_arch }}
+      npm_config_target_arch: ${{ matrix.target_arch }}
       setup_node_arch: ${{ matrix.node_arch }}
     steps:
       - uses: actions/checkout@v4
@@ -105,7 +103,7 @@ jobs:
         shell: bash
 
       - name: Setup Cpp
-        if: ${{ matrix.native }}
+        if: ${{ ! matrix.distro }}
         uses: aminya/setup-cpp@v1
         with:
           vcvarsall: ${{ contains(matrix.os, 'windows') }}
@@ -121,41 +119,36 @@ jobs:
           brew install gnutls autoconf automake libtool
 
       - uses: pnpm/action-setup@v4
-        if: ${{ matrix.native }}
+        if: ${{ ! matrix.distro }}
 
       - name: Install Node 20
-        if: ${{ matrix.native }}
+        if: ${{ ! matrix.distro }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
           architecture: ${{ env.setup_node_arch }}
 
       - name: Install and Build Native
-        if: ${{ matrix.native }}
+        if: ${{ ! matrix.distro }}
         run: pnpm install
 
       - name: Build JavaScript
-        if: ${{ matrix.native }}
+        if: ${{ ! matrix.distro }}
         run: pnpm run build.js
 
       - name: Install Node 12
-        if: ${{ matrix.native && matrix.os != 'macos-14' }}
+        if: ${{ !matrix.distro && matrix.os != 'macos-14' && !(matrix.os == 'windows-2022' && matrix.target_arch == 'arm64') }}
         uses: actions/setup-node@v4
         with:
           node-version: 12
           architecture: ${{ env.setup_node_arch }}
 
       - name: Build Native
-        if: ${{ matrix.native && matrix.node_arch != 'ia32' }}
+        if: ${{ ! matrix.distro }}
         run: npm run build.native
 
-      - name: Build Native Windows 32
-        if: ${{ matrix.os == 'windows-2019' && matrix.node_arch == 'ia32' }}
-        run:
-          node --enable-source-maps ./node_modules/cmake-ts/build/main.js build --config win32-ia32-release
-
       - name: Use Node 20
-        if: ${{ matrix.native }}
+        if: ${{ ! matrix.distro }}
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -190,11 +183,11 @@ jobs:
           overwrite: true
 
       - name: Lint
-        if: "${{ contains(matrix.os, 'ubuntu') && matrix.native }}"
+        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.distro }}"
         run: pnpm run lint-test
 
       - name: Test
-        if: ${{ matrix.native }}
+        if: ${{ ! matrix.distro && !(matrix.os == 'windows-2022' && matrix.target_arch == 'arm64') }}
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -205,7 +198,7 @@ jobs:
             rm -rf ./tmp && mkdir -p ./tmp
 
       - name: Test Electron Windows/MacOS
-        if: "${{ !contains(matrix.os, 'ubuntu') && matrix.native }}"
+        if: "${{ !contains(matrix.os, 'ubuntu') && !matrix.distro && !(matrix.os == 'windows-2022' && matrix.target_arch == 'arm64') }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -215,7 +208,7 @@ jobs:
         continue-on-error: true
 
       - name: Test Electron Linux
-        if: "${{ contains(matrix.os, 'ubuntu') && matrix.native }}"
+        if: "${{ contains(matrix.os, 'ubuntu') && !matrix.distro }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
