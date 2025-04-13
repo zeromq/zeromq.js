@@ -152,7 +152,7 @@ jobs:
       - name: Build Native Windows 32
         if: ${{ matrix.os == 'windows-2019' && matrix.node_arch == 'ia32' }}
         run:
-          node ./node_modules/cmake-ts/build/main.js named-configs windows-x86
+          node --enable-source-maps ./node_modules/cmake-ts/build/main.js build --config win32-ia32-release
 
       - name: Use Node 20
         if: ${{ matrix.native }}
