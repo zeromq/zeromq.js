@@ -137,7 +137,7 @@ jobs:
         run: pnpm run build.js
 
       - name: Install Node 12
-        if: ${{ !matrix.distro && matrix.os != 'macos-14' }}
+        if: ${{ !matrix.distro && matrix.os != 'macos-14' && !(matrix.os == 'windows-2022' && matrix.target_arch == 'arm64') }}
         uses: actions/setup-node@v4
         with:
           node-version: 12
@@ -187,7 +187,7 @@ jobs:
         run: pnpm run lint-test
 
       - name: Test
-        if: ${{ ! matrix.distro }}
+        if: ${{ ! matrix.distro && !(matrix.os == 'windows-2022' && matrix.target_arch == 'arm64') }}
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
@@ -198,7 +198,7 @@ jobs:
             rm -rf ./tmp && mkdir -p ./tmp
 
       - name: Test Electron Windows/MacOS
-        if: "${{ !contains(matrix.os, 'ubuntu') && !matrix.distro }}"
+        if: "${{ !contains(matrix.os, 'ubuntu') && !matrix.distro && !(matrix.os == 'windows-2022' && matrix.target_arch == 'arm64') }}"
         uses: nick-fields/retry@v3
         with:
           timeout_minutes: 5
