@@ -1,5 +1,21 @@
 cmake_minimum_required(VERSION 3.16)
 
+include(FetchContent)
+
+if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
+  cmake_policy(SET CMP0135 NEW)
+endif()
+
+# Add project_options from https://github.com/aminya/project_options
+set(PROJECT_OPTIONS_VERSION "v0.41.0")
+FetchContent_Declare(
+  _project_options
+  URL https://github.com/aminya/project_options/archive/refs/tags/${PROJECT_OPTIONS_VERSION}.zip
+)
+FetchContent_MakeAvailable(_project_options)
+include(${_project_options_SOURCE_DIR}/Index.cmake)
+
+# Detect ZeroMQ options from environment variables
 macro(set_option_from_env OPTION_NAME)
   string(TOLOWER ${OPTION_NAME} OPTION_NAME_LOWER)
 
@@ -50,12 +66,7 @@ set_option_from_env(ZMQ_WEBSOCKETS_SECURE)
 option(ZMQ_NO_SYNC_RESOLVE "send/receive on the socket immediately" OFF)
 set_option_from_env(ZMQ_NO_SYNC_RESOLVE)
 
-if(APPLE)
-  option(MACOSX_DEPLOYMENT_TARGET "MacOS deployment target" "10.15")
-  set_option_from_env(MACOSX_DEPLOYMENT_TARGET)
-  set(CMAKE_OSX_DEPLOYMENT_TARGET ${MACOSX_DEPLOYMENT_TARGET})
-endif()
-
+# Add undefined behavior sanitizer if requested
 option(ZMQ_ENABLE_SANITIZER_UNDEFINED "Enable undefined behavior sanitizer" OFF)
 set_option_from_env(ZMQ_ENABLE_SANITIZER_UNDEFINED)
 
@@ -63,20 +74,26 @@ if(${ZMQ_ENABLE_SANITIZER_UNDEFINED})
   set(ENABLE_SANITIZER_UNDEFINED "ENABLE_SANITIZER_UNDEFINED")
 endif()
 
-# target system on Windows (for cross-compiling x86) and static linking runtimes
+# Set MacOS deployment target
+if(APPLE)
+  option(MACOSX_DEPLOYMENT_TARGET "MacOS deployment target" "10.15")
+  set_option_from_env(MACOSX_DEPLOYMENT_TARGET)
+  set(CMAKE_OSX_DEPLOYMENT_TARGET ${MACOSX_DEPLOYMENT_TARGET})
+endif()
+
+# Set position independent code on all platforms
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+
+# Set static runtime on Windows
 if(WIN32)
   if("${CMAKE_SYSTEM_PROCESSOR}" STREQUAL "")
-    if("$ENV{Platform}" STREQUAL "x86")
-      set(CMAKE_SYSTEM_PROCESSOR "x86")
-    elseif(NOT "$ENV{PROCESSOR_ARCHITEW6432}" STREQUAL "")
-      set(CMAKE_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITEW6432}")
-    else()
-      set(CMAKE_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITECTURE}")
-    endif()
+    detect_compiler()
+    string(TOLOWER "${DETECTED_CMAKE_HOST_SYSTEM_PROCESSOR}" CMAKE_SYSTEM_PROCESSOR_LOWER)
+  else()
+    string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" CMAKE_SYSTEM_PROCESSOR_LOWER)
   endif()
 
-  string(TOLOWER "${CMAKE_SYSTEM_PROCESSOR}" CMAKE_SYSTEM_PROCESSOR_LOWER)
-
+  # set vcpkg triplet to static runtime
   if("${CMAKE_SYSTEM_PROCESSOR_LOWER}" STREQUAL "amd64" OR "${CMAKE_SYSTEM_PROCESSOR_LOWER}" STREQUAL "x64")
     set(VCPKG_TARGET_TRIPLET "x64-windows-static")
   elseif("${CMAKE_SYSTEM_PROCESSOR_LOWER}" STREQUAL "arm64" OR "${CMAKE_SYSTEM_PROCESSOR_LOWER}" STREQUAL "aarch64")
@@ -87,33 +104,11 @@ if(WIN32)
     message(STATUS "Not setting VCPKG_TARGET_TRIPLET for ${CMAKE_SYSTEM_PROCESSOR}")
   endif()
 
-  # Avoid loading of project_optinos/WindowsToolchain
-  set(CMAKE_TOOLCHAIN_FILE ";")
-
   # use static runtime library
   set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
-include(FetchContent)
-
-if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
-  cmake_policy(SET CMP0135 NEW)
-endif()
-
-set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
-
-# Add project_options from https://github.com/aminya/project_options Change the
-# version in the following URL to update the package (watch the releases of the
-# repository for future updates)
-set(PROJECT_OPTIONS_VERSION "v0.36.6")
-FetchContent_Declare(
-  _project_options
-  URL https://github.com/aminya/project_options/archive/refs/tags/${PROJECT_OPTIONS_VERSION}.zip
-)
-FetchContent_MakeAvailable(_project_options)
-include(${_project_options_SOURCE_DIR}/Index.cmake)
-
-# MacOS flags that should be set prior to any project calls
+# Defer undefined symbol resolution to runtime on MacOS
 if(APPLE)
   set(CMAKE_SHARED_LINKER_FLAGS
     "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
@@ -122,7 +117,7 @@ endif()
 run_vcpkg(VCPKG_URL "https://github.com/microsoft/vcpkg.git" VCPKG_REV
   "608d1dbcd6969679f82b1ca6b89d58939c9b228e")
 
-# Name of the project (will be the name of the plugin)
+# Name of the addon
 project(addon LANGUAGES C CXX)
 
 project_options(
@@ -158,12 +153,14 @@ target_link_system_libraries(addon PRIVATE libzmq libzmq-static)
 target_include_system_directories(addon PRIVATE ${CMAKE_JS_INC})
 target_link_system_libraries(addon PRIVATE ${CMAKE_JS_LIB})
 
+# Node flags
 target_compile_definitions(addon PRIVATE V8_COMPRESS_POINTERS)
 target_compile_definitions(addon PRIVATE V8_31BIT_SMIS_ON_64BIT_ARCH)
 target_compile_definitions(addon PRIVATE V8_REVERSE_JSARGS)
 target_compile_definitions(addon PRIVATE BUILDING_NODE_EXTENSION)
 target_compile_definitions(addon PRIVATE NAPI_CPP_EXCEPTIONS)
 
+# Windows definitions
 if(WIN32)
   target_compile_definitions(addon PRIVATE "NOMINMAX")
   target_compile_definitions(addon PRIVATE "NOGDI")
@@ -173,7 +170,7 @@ endif()
 # Use `.node` for the library without any "lib" prefix
 set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".node")
 
-# Windows
+# Windows delay load node.exe
 if(WIN32)
   set_property(TARGET addon PROPERTY LINK_FLAGS "-Xlinker /DELAYLOAD:NODE.EXE")
   target_link_libraries(addon PRIVATE "ShLwApi.lib" "delayimp.lib")
