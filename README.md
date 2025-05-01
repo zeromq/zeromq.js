@@ -76,7 +76,7 @@ found in the
 [examples directory](https://github.com/zeromq/zeromq.js/tree/master/examples).
 
 You can also browse
-[the API reference documentation](http://zeromq.github.io/zeromq.js/globals.html)
+[the API reference documentation](http://zeromq.github.io/zeromq.js/modules.html)
 to see all socket types, methods & options as well as more detailed information
 about how to apply them.
 
