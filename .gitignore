@@ -30,3 +30,6 @@ compile_commands.json
 /smoke-test-*
 /*.tgz
 /build-artifacts
+.parcel-cache/
+dist/
+*.wasm
