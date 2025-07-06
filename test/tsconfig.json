@@ -1,6 +1,6 @@
 {
   "extends": "../tsconfig.json",
-  "include": ["./unit/**/*.ts", "./*.ts", "../wasm.mts"],
+  "include": ["./unit/**/*.ts", "./*.ts"],
   "compilerOptions": {
     "skipLibCheck": true
   },
