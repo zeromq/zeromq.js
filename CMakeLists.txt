@@ -106,8 +106,6 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   add_link_options("SHELL:-s EXPORTED_FUNCTIONS=['_malloc','_free','_napi_register_wasm_v1']")
   add_link_options("SHELL:-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
   add_link_options("SHELL:-s ALLOW_MEMORY_GROWTH=1")
-  add_link_options("SHELL:-s MODULARIZE=1")
-  add_link_options("SHELL:-s ENVIRONMENT='web,worker'")
 
   # Allow undefined symbols on Linux for runtime loading
   add_link_options("SHELL:-s ERROR_ON_UNDEFINED_SYMBOLS=0")
