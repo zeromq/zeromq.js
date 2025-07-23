@@ -84,9 +84,16 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   set(VCPKG_HOST_TRIPLET wasm32-emscripten)
   set(VCPKG_TARGET_TRIPLET wasm32-emscripten)
 
-  include($ENV{EMSCRIPTEN_ROOT}/cmake/Modules/Platform/Emscripten.cmake)
+  if ("$ENV{EMSCRIPTEN_ROOT}" STREQUAL "")
+    find_program(EMCC emcc REQUIRED)
+    get_filename_component(EMSCRIPTEN_ROOT "${EMCC}" DIRECTORY)
+  else()
+    set(EMSCRIPTEN_ROOT "$ENV{EMSCRIPTEN_ROOT}")
+  endif()
 
-  set(CMAKE_LINKER "$ENV{EMSCRIPTEN_ROOT}/bin/lld${CMAKE_EXECUTABLE_SUFFIX}" CACHE STRING "Linker" FORCE)
+  include(${EMSCRIPTEN_ROOT}/cmake/Modules/Platform/Emscripten.cmake)
+
+  set(CMAKE_LINKER "${EMSCRIPTEN_ROOT}/bin/lld${CMAKE_EXECUTABLE_SUFFIX}" CACHE STRING "Linker" FORCE)
 
   # export an indirect function table for napi-wasm
   add_link_options("--export-table")
