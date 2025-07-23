@@ -100,16 +100,14 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   # export an indirect function table for napi-wasm
   add_link_options("--export-table")
 
-  add_compile_options("-fwasm-exceptions")
-
   # Add WebAssembly-specific exports for napi-wasm
   add_link_options("SHELL:-s EXPORTED_FUNCTIONS=['_malloc','_free','_napi_register_wasm_v1']")
   add_link_options("SHELL:-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
   add_link_options("SHELL:-s ALLOW_MEMORY_GROWTH=1")
-
-  # Allow undefined symbols on Linux for runtime loading
+  add_link_options("SHELL:-s ENVIRONMENT='node'")
   add_link_options("SHELL:-s ERROR_ON_UNDEFINED_SYMBOLS=0")
-  add_link_options("SHELL:-Wl,--unresolved-symbols=ignore-all")
+  add_link_options("SHELL:-s DISABLE_EXCEPTION_CATCHING=0")
+  add_link_options("--no-entry")
 endif()
 
 # Set MacOS deployment target
@@ -162,6 +160,7 @@ project_options(
   ENABLE_CACHE
   ENABLE_COMPILE_COMMANDS_SYMLINK
   ${ENABLE_SANITIZER_UNDEFINED}
+  ENABLE_INTERPROCEDURAL_OPTIMIZATION
 )
 
 file(GLOB_RECURSE SOURCES "./src/*.cc" "./src/*.cpp")

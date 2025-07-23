@@ -24,7 +24,8 @@ async function main() {
   const wasm = await getWasm()
 
   const {instance} = await WebAssembly.instantiate(wasm, {
-    env: napi,
+    napi: napi,
+    env: {} // The env imports will be provided by napi-wasm
   })
 
   // Create an environment.
