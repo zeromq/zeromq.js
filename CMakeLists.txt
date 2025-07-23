@@ -95,20 +95,22 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
 
   set(CMAKE_LINKER "${EMSCRIPTEN_ROOT}/bin/lld${CMAKE_EXECUTABLE_SUFFIX}" CACHE STRING "Linker" FORCE)
 
+  add_compile_definitions("-D__wasm__" "-D__EMSCRIPTEN__")
+
   # export an indirect function table for napi-wasm
   add_link_options("--export-table")
 
+  add_compile_options("-fwasm-exceptions")
+
   # Add WebAssembly-specific exports for napi-wasm
-  add_link_options("SHELL:-s EXPORTED_FUNCTIONS=['_malloc','_free','napi_wasm_malloc','napi_register_module_v1']")
+  add_link_options("SHELL:-s EXPORTED_FUNCTIONS=['_malloc','_free','_napi_register_wasm_v1']")
   add_link_options("SHELL:-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
   add_link_options("SHELL:-s ALLOW_MEMORY_GROWTH=1")
   add_link_options("SHELL:-s MODULARIZE=1")
-  add_link_options("SHELL:-s EXPORT_NAME='createModule'")
   add_link_options("SHELL:-s ENVIRONMENT='web,worker'")
-  add_link_options("SHELL:--no-entry")
-  add_link_options("SHELL:-Wl,--strip-all")
 
   # Allow undefined symbols on Linux for runtime loading
+  add_link_options("SHELL:-s ERROR_ON_UNDEFINED_SYMBOLS=0")
   add_link_options("SHELL:-Wl,--unresolved-symbols=ignore-all")
 endif()
 
