@@ -38,7 +38,7 @@
     "chai": "^4",
     "cross-env": "^7.0.3",
     "downlevel-dts": "^0.11.0",
-    "electron": "^33.2.1",
+    "electron": "^35.7.5",
     "electron-mocha": "^13.0.1",
     "eslint": "^8.57.1",
     "eslint-config-atomic": "^1.22.1",
