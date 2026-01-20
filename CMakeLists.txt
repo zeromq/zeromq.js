@@ -74,6 +74,42 @@ if(${ZMQ_ENABLE_SANITIZER_UNDEFINED})
   set(ENABLE_SANITIZER_UNDEFINED "ENABLE_SANITIZER_UNDEFINED")
 endif()
 
+option(ZMQ_WASM "Build for WebAssembly" OFF)
+set_option_from_env(ZMQ_WASM)
+
+if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
+  set(ZMQ_WASM TRUE)
+
+  # Compile for WebAssembly
+  set(VCPKG_HOST_TRIPLET wasm32-emscripten)
+  set(VCPKG_TARGET_TRIPLET wasm32-emscripten)
+
+  if ("$ENV{EMSCRIPTEN_ROOT}" STREQUAL "")
+    find_program(EMCC emcc REQUIRED)
+    get_filename_component(EMSCRIPTEN_ROOT "${EMCC}" DIRECTORY)
+  else()
+    set(EMSCRIPTEN_ROOT "$ENV{EMSCRIPTEN_ROOT}")
+  endif()
+
+  include(${EMSCRIPTEN_ROOT}/cmake/Modules/Platform/Emscripten.cmake)
+
+  set(CMAKE_LINKER "${EMSCRIPTEN_ROOT}/bin/lld${CMAKE_EXECUTABLE_SUFFIX}" CACHE STRING "Linker" FORCE)
+
+  add_compile_definitions("-D__wasm__" "-D__EMSCRIPTEN__")
+
+  # export an indirect function table for napi-wasm
+  add_link_options("--export-table")
+
+  # Add WebAssembly-specific exports for napi-wasm
+  add_link_options("SHELL:-s EXPORTED_FUNCTIONS=['_malloc','_free','_napi_register_wasm_v1']")
+  add_link_options("SHELL:-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
+  add_link_options("SHELL:-s ALLOW_MEMORY_GROWTH=1")
+  add_link_options("SHELL:-s ENVIRONMENT='node'")
+  add_link_options("SHELL:-s ERROR_ON_UNDEFINED_SYMBOLS=0")
+  add_link_options("SHELL:-s DISABLE_EXCEPTION_CATCHING=0")
+  add_link_options("--no-entry")
+endif()
+
 # Set MacOS deployment target
 if(APPLE)
   option(MACOSX_DEPLOYMENT_TARGET "MacOS deployment target" "10.15")
@@ -124,10 +160,17 @@ project_options(
   ENABLE_CACHE
   ENABLE_COMPILE_COMMANDS_SYMLINK
   ${ENABLE_SANITIZER_UNDEFINED}
+  ENABLE_INTERPROCEDURAL_OPTIMIZATION
 )
 
-file(GLOB_RECURSE SOURCES "./src/*.cc")
-add_library(addon SHARED ${SOURCES})
+file(GLOB_RECURSE SOURCES "./src/*.cc" "./src/*.cpp")
+
+if(ZMQ_WASM)
+  # For WebAssembly, create an executable instead of a shared library
+  add_executable(addon ${SOURCES})
+else()
+  add_library(addon SHARED ${SOURCES})
+endif()
 
 if(CMAKE_CXX_COMPILER_ID STREQUAL GNU
   OR CMAKE_CXX_COMPILER_ID STREQUAL Clang
@@ -143,6 +186,10 @@ endif()
 
 if(ZMQ_NO_SYNC_RESOLVE)
   target_compile_definitions(addon PRIVATE ZMQ_NO_SYNC_RESOLVE)
+endif()
+
+if(ZMQ_WASM)
+  target_compile_definitions(addon PRIVATE ZMQ_WASM)
 endif()
 
 # ZeroMQ
@@ -168,7 +215,11 @@ if(WIN32)
 endif()
 
 # Use `.node` for the library without any "lib" prefix
-set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".node")
+if(ZMQ_WASM)
+  set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".wasm")
+else()
+  set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".node")
+endif()
 
 # Windows delay load node.exe
 if(WIN32)
