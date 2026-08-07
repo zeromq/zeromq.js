@@ -70,6 +70,9 @@ set_option_from_env(ZMQ_NO_SYNC_RESOLVE)
 option(ZMQ_ENABLE_SANITIZER_UNDEFINED "Enable undefined behavior sanitizer" OFF)
 set_option_from_env(ZMQ_ENABLE_SANITIZER_UNDEFINED)
 
+option(ZMQ_SHARED "Use a system-installed shared libzmq" OFF)
+set_option_from_env(ZMQ_SHARED)
+
 if(${ZMQ_ENABLE_SANITIZER_UNDEFINED})
   set(ENABLE_SANITIZER_UNDEFINED "ENABLE_SANITIZER_UNDEFINED")
 endif()
@@ -114,8 +117,10 @@ if(APPLE)
     "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
 endif()
 
-run_vcpkg(VCPKG_URL "https://github.com/microsoft/vcpkg.git" VCPKG_REV
-  "608d1dbcd6969679f82b1ca6b89d58939c9b228e")
+if(NOT ZMQ_SHARED)
+  run_vcpkg(VCPKG_URL "https://github.com/microsoft/vcpkg.git" VCPKG_REV
+    "608d1dbcd6969679f82b1ca6b89d58939c9b228e")
+endif()
 
 # Name of the addon
 project(addon LANGUAGES C CXX)
@@ -146,8 +151,14 @@ if(ZMQ_NO_SYNC_RESOLVE)
 endif()
 
 # ZeroMQ
-find_package(ZeroMQ CONFIG REQUIRED)
-target_link_system_libraries(addon PRIVATE libzmq libzmq-static)
+if(ZMQ_SHARED)
+  find_package(PkgConfig REQUIRED)
+  pkg_check_modules(ZeroMQ REQUIRED IMPORTED_TARGET libzmq)
+  target_link_system_libraries(addon PRIVATE PkgConfig::ZeroMQ)
+else()
+  find_package(ZeroMQ CONFIG REQUIRED)
+  target_link_system_libraries(addon PRIVATE libzmq libzmq-static)
+endif()
 
 # Node specific
 target_include_system_directories(addon PRIVATE ${CMAKE_JS_INC})

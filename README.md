@@ -353,6 +353,16 @@ When building from source, you can also specify additional build options in a
 <details>
 <summary>👉🏻 Options</summary>
 
+### System libzmq
+
+Uses a shared `libzmq` installation discoverable through `pkg-config` instead of
+building the vendored vcpkg dependency. Install `libzmq` and add the following
+to your `.npmrc`:
+
+```ini
+zmq_shared=true
+```
+
 ### Curve with Libsodium support
 
 (Enabled by default)
