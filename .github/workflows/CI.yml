@@ -110,7 +110,7 @@ jobs:
           cmake: true
           ninja: true
           python: true
-          vcpkg: true
+          vcpkg: 608d1dbcd6969679f82b1ca6b89d58939c9b228e
           architecture: ${{ matrix.cpp_arch }}
 
       - name: Install Mac-OS Dependencies
