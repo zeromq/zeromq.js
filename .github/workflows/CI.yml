@@ -16,8 +16,8 @@ jobs:
       matrix:
         os:
           - ubuntu-24.04
-          - windows-2019
-          - macos-13
+          - windows-2022
+          - macos-15-intel
         node_arch:
           - x64
         cpp_arch:
@@ -28,7 +28,7 @@ jobs:
           - ""
         include:
           # Windows x86
-          - os: windows-2019
+          - os: windows-2022
             node_arch: x64
             target_arch: ia32
             cpp_arch: amd64_x86
@@ -267,7 +267,7 @@ jobs:
           - ubuntu-22.04-arm
           - ubuntu-24.04-arm
           - windows-2022
-          - macos-13
+          - macos-15-intel
         node-version:
           - 12
           - 22
