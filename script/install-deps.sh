@@ -30,6 +30,7 @@ if [ -n "$apt" ]; then
     apt-get install --no-install-recommends -y \
         automake \
         autoconf \
+        autoconf-archive \
         libtool
 fi
 
@@ -51,7 +52,7 @@ if [ -n "$apk" ]; then
         cd - || exit 1
     fi
 
-    apk add --no-cache automake autoconf libtool
+    apk add --no-cache automake autoconf autoconf-archive libtool
 fi
 
 # Fedora/RHEL
@@ -71,6 +72,7 @@ if [ -n "$dnf" ]; then
     dnf install -y \
         automake \
         autoconf \
+        autoconf-archive \
         libtool
 fi
 

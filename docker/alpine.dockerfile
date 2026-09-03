@@ -3,6 +3,7 @@ FROM aminya/setup-cpp-alpine-gcc:3.21 AS base
 RUN apk add --no-cache \
     automake \
     autoconf \
+    autoconf-archive \
     libtool
 
 FROM base AS builder

@@ -102,6 +102,12 @@ jobs:
           fi
         shell: bash
 
+      - name: Install Ubuntu Dependencies
+        if: ${{ contains(matrix.os, 'ubuntu') && ! matrix.distro }}
+        run: |
+          sudo apt-get update -q -y
+          sudo apt-get install --no-install-recommends -y autoconf-archive
+
       - name: Setup Cpp
         if: ${{ ! matrix.distro }}
         uses: aminya/setup-cpp@v1
@@ -116,7 +122,7 @@ jobs:
       - name: Install Mac-OS Dependencies
         if: ${{ contains(matrix.os, 'macos') }}
         run: |
-          brew install gnutls autoconf automake libtool
+          brew install gnutls autoconf automake libtool autoconf-archive
 
       - uses: pnpm/action-setup@v4
         if: ${{ ! matrix.distro }}

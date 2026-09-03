@@ -54,7 +54,7 @@ option(ZMQ_SODIUM "Using libsodium for CURVE security" ON)
 set_option_from_env(ZMQ_SODIUM)
 
 if(ZMQ_SODIUM AND APPLE)
-  message(STATUS "building libsodium requires running `brew install autoconf automake libtool`")
+  message(STATUS "building libsodium requires running `brew install autoconf automake libtool autoconf-archive`")
 endif()
 
 option(ZMQ_WEBSOCKETS "Enable WebSocket transport" OFF)
