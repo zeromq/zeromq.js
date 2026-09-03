@@ -7,7 +7,7 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 # Add project_options from https://github.com/aminya/project_options
-set(PROJECT_OPTIONS_VERSION "v0.41.0")
+set(PROJECT_OPTIONS_VERSION "v0.42.0")
 FetchContent_Declare(
   _project_options
   URL https://github.com/aminya/project_options/archive/refs/tags/${PROJECT_OPTIONS_VERSION}.zip
