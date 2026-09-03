@@ -71,21 +71,10 @@
   "engines": {
     "node": ">= 12"
   },
-  "packageManager": "pnpm@10.8.0",
+  "packageManager": "pnpm@12.3.0",
   "overrides": {
     "typescript": "~4.9.5",
     "node-gyp": "10.0.1"
-  },
-  "pnpm": {
-    "overrides": {
-      "typescript": "~4.9.5",
-      "node-gyp": "10.0.1"
-    },
-    "onlyBuiltDependencies": [
-      "core-js",
-      "electron",
-      "esbuild"
-    ]
   },
   "files": [
     "CHANGELOG.md",

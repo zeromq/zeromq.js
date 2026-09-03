@@ -16,7 +16,7 @@ WORKDIR /app
 COPY ./ ./
 
 # build
-RUN npm i -g pnpm@10.8.0 && \
+RUN npm i -g pnpm@12.3.0 && \
     pnpm install && \
     pnpm run build
 
