@@ -2,7 +2,7 @@
 
 set -x
 
-VCPKG_COMMIT="359a68225bedc4c42123c531146e22e9dd6c3784"
+VCPKG_COMMIT="7012bf7bc3dec4b9020a83b1a8a2d365be4bc214"
 
 # Ubuntu/Debian
 apt=$(command -v apt-get || true)

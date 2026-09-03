@@ -119,7 +119,7 @@ endif()
 
 if(NOT ZMQ_SHARED)
   run_vcpkg(VCPKG_URL "https://github.com/microsoft/vcpkg.git" VCPKG_REV
-    "359a68225bedc4c42123c531146e22e9dd6c3784")
+    "7012bf7bc3dec4b9020a83b1a8a2d365be4bc214")
 endif()
 
 # Name of the addon
