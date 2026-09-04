@@ -39,12 +39,21 @@ apk=$(command -v apk || true)
 if [ -n "$apk" ]; then
     apk update
 
+    apk add --no-cache curl
+    cmake_apk=/tmp/cmake-4.3.4-r0.apk
+    curl -fsSL \
+        "https://dl-cdn.alpinelinux.org/alpine/edge/main/$(apk --print-arch)/cmake-4.3.4-r0.apk" \
+        -o "$cmake_apk" || exit 1
+    apk add --no-cache "$cmake_apk" || exit 1
+    rm -f "$cmake_apk" || exit 1
+    cmake --version || exit 1
+    export VCPKG_FORCE_SYSTEM_BINARIES=1
+
     if [ -z "$(command -v setup-cpp || true)" ]; then
-        apk add --no-cache bash build-base curl git g++ make ninja-build pkgconfig unzip zip python3 tar cmake musl-dev nodejs npm
+        apk add --no-cache bash build-base curl git g++ make ninja-build pkgconfig unzip zip python3 tar musl-dev nodejs npm
         cp /usr/lib/ninja-build/bin/ninja /usr/bin/ninja
 
         # vcpkg
-        export VCPKG_FORCE_SYSTEM_BINARIES=1
         git clone https://github.com/microsoft/vcpkg.git ~/vcpkg
         cd ~/vcpkg || exit 1
         git checkout "$VCPKG_COMMIT"

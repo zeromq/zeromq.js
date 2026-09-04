@@ -329,7 +329,7 @@ source:
 - Node.js 12+ or Electron
 - C++17 compiler toolchain (e.g. LLVM, GCC, MSVC)
 - Python 3
-- CMake 3.16+
+- CMake 4.3.3+
 - vcpkg dependencies (e.g. on Linux it needs curl, unzip, zip, tar, git,
   pkg-config)
 
