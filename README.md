@@ -329,7 +329,7 @@ source:
 - Node.js 12+ or Electron
 - C++17 compiler toolchain (e.g. LLVM, GCC, MSVC)
 - Python 3
-- CMake 3.16+
+- CMake 4.3.3+
 - vcpkg dependencies (e.g. on Linux it needs curl, unzip, zip, tar, git,
   pkg-config)
 
@@ -337,6 +337,7 @@ For Curve:
 
 - automake
 - autoconf
+- autoconf-archive
 - libtool
 
 To install from source, specify `build_from_source=true` in a `.npmrc` file
@@ -376,7 +377,7 @@ zmq_sodium="true"
 ```
 
 Building libsodium requires these dependencies on Linux/MacOS:
-`autoconf automake libtool`, which can be installed via `apt-get` or `brew`,
+`autoconf automake autoconf-archive libtool`, which can be installed via `apt-get` or `brew`,
 etc.
 
 #### Draft support

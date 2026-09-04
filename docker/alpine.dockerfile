@@ -3,9 +3,18 @@ FROM aminya/setup-cpp-alpine-gcc:3.21 AS base
 RUN apk add --no-cache \
     automake \
     autoconf \
-    libtool
+    autoconf-archive \
+    libtool \
+    curl \
+    && curl -fsSL \
+      "https://dl-cdn.alpinelinux.org/alpine/edge/main/$(apk --print-arch)/cmake-4.3.4-r0.apk" \
+      -o /tmp/cmake-4.3.4-r0.apk \
+    && apk add --no-cache /tmp/cmake-4.3.4-r0.apk \
+    && rm -f /tmp/cmake-4.3.4-r0.apk \
+    && cmake --version
 
 FROM base AS builder
+ENV VCPKG_FORCE_SYSTEM_BINARIES=1
 WORKDIR /app
 COPY ./ ./
 # build
@@ -19,4 +28,3 @@ WORKDIR /app
 COPY ./ ./
 COPY --from=builder /app/build ./build
 COPY --from=builder /app/node_modules ./node_modules
-

@@ -5,6 +5,7 @@ RUN apt-get update -q -y \
     && apt-get install --no-install-recommends -y \
     automake \
     autoconf \
+    autoconf-archive \
     libtool && \
     apt-get clean autoclean && \
     apt-get autoremove -y && \

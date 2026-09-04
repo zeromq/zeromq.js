@@ -7,7 +7,7 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL "3.24.0")
 endif()
 
 # Add project_options from https://github.com/aminya/project_options
-set(PROJECT_OPTIONS_VERSION "v0.41.0")
+set(PROJECT_OPTIONS_VERSION "v0.42.0")
 FetchContent_Declare(
   _project_options
   URL https://github.com/aminya/project_options/archive/refs/tags/${PROJECT_OPTIONS_VERSION}.zip
@@ -54,7 +54,7 @@ option(ZMQ_SODIUM "Using libsodium for CURVE security" ON)
 set_option_from_env(ZMQ_SODIUM)
 
 if(ZMQ_SODIUM AND APPLE)
-  message(STATUS "building libsodium requires running `brew install autoconf automake libtool`")
+  message(STATUS "building libsodium requires running `brew install autoconf automake libtool autoconf-archive`")
 endif()
 
 option(ZMQ_WEBSOCKETS "Enable WebSocket transport" OFF)
@@ -119,7 +119,7 @@ endif()
 
 if(NOT ZMQ_SHARED)
   run_vcpkg(VCPKG_URL "https://github.com/microsoft/vcpkg.git" VCPKG_REV
-    "608d1dbcd6969679f82b1ca6b89d58939c9b228e")
+    "7012bf7bc3dec4b9020a83b1a8a2d365be4bc214")
 endif()
 
 # Name of the addon
