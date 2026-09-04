@@ -49,9 +49,12 @@ jobs:
       - name: Setup Cpp
         uses: aminya/setup-cpp@v1
         with:
-          vcvarsall: ${{ contains(matrix.os, 'windows') }}
+          vcvarsall: true
           cmake: true
+          ninja: true
           python: true
+          autoreconf: true
+          vcpkg: 7012bf7bc3dec4b9020a83b1a8a2d365be4bc214
           architecture: ${{ matrix.cpp_arch }}
 
       - uses: pnpm/action-setup@v4

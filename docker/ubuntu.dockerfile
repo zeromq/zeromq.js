@@ -1,17 +1,5 @@
 FROM aminya/setup-cpp-ubuntu-gcc:20.04 AS base
 
-# system dependencies
-RUN apt-get update -q -y \
-    && apt-get install --no-install-recommends -y \
-    automake \
-    autoconf \
-    autoconf-archive \
-    libtool && \
-    apt-get clean autoclean && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /tmp/*
-
 FROM base AS builder
 WORKDIR /app
 COPY ./ ./

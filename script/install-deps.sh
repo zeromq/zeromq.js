@@ -9,7 +9,6 @@ apt=$(command -v apt-get || true)
 if [ -n "$apt" ]; then
     apt-get update -q -y
 
-    # if setup-cpp not installed
     if [ -z "$(command -v setup-cpp || true)" ]; then
         apt-get install --no-install-recommends -y \
             bash \
@@ -24,14 +23,8 @@ if [ -n "$apt" ]; then
         apt-get update -qq
         apt-get install -y --no-install-recommends nodejs
 
-        npx -y setup-cpp --compiler gcc --python true --cmake true --ninja true --make true --vcpkg $VCPKG_COMMIT
+        npx -y setup-cpp --compiler gcc --python true --cmake true --ninja true --make true --autoreconf true --vcpkg $VCPKG_COMMIT
     fi
-
-    apt-get install --no-install-recommends -y \
-        automake \
-        autoconf \
-        autoconf-archive \
-        libtool
 fi
 
 # Alpine Linux
@@ -50,7 +43,7 @@ if [ -n "$apk" ]; then
     export VCPKG_FORCE_SYSTEM_BINARIES=1
 
     if [ -z "$(command -v setup-cpp || true)" ]; then
-        apk add --no-cache bash build-base curl git g++ make ninja-build pkgconfig unzip zip python3 tar musl-dev nodejs npm
+        apk add --no-cache bash build-base curl git g++ make ninja-build pkgconfig unzip zip python3 tar musl-dev nodejs npm automake autoconf autoconf-archive libtool
         cp /usr/lib/ninja-build/bin/ninja /usr/bin/ninja
 
         # vcpkg
@@ -60,8 +53,6 @@ if [ -n "$apk" ]; then
         ~/vcpkg/bootstrap-vcpkg.sh
         cd - || exit 1
     fi
-
-    apk add --no-cache automake autoconf autoconf-archive libtool
 fi
 
 # Fedora/RHEL
@@ -69,13 +60,12 @@ dnf=$(command -v dnf || true)
 if [ -n "$dnf" ]; then
     dnf update -q -y
 
-    # if setup-cpp not installed
     if [ -z "$(command -v setup-cpp || true)" ]; then
         dnf install -y \
             bash \
             nodejs
 
-        npx -y setup-cpp --compiler gcc --python true --cmake true --ninja true --make true --vcpkg $VCPKG_COMMIT --git true
+        npx -y setup-cpp --compiler gcc --python true --cmake true --ninja true --make true --autoreconf true --vcpkg $VCPKG_COMMIT --git true
     fi
 
     dnf install -y \
