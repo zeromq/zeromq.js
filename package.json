@@ -19,8 +19,9 @@
   },
   "homepage": "http://zeromq.github.io/zeromq.js/",
   "dependencies": {
-    "cmake-ts": "1.0.2",
-    "node-addon-api": "^8.3.1"
+    "cmake-ts": "link:../cmake-ts",
+    "node-addon-api": "^8.3.1",
+    "napi-wasm": "^1.1.3"
   },
   "devDependencies": {
     "@types/benchmark": "~2.1.5",
@@ -115,6 +116,7 @@
     "docs.deploy": "run-s docs.build && gh-pages --dist \"./docs\"",
     "build.native": "cmake-ts build --logger=debug",
     "build.native.debug": "cross-env npm_config_zmq_enable_sanitizer_undefined=true cmake-ts build --config debug",
+    "build.wasm": "cmake-ts build --logger=debug --config cross-wasm32-unknown-node-minsizerel",
     "build": "run-p build.js build.native",
     "build.debug": "run-s build.js build.native.debug",
     "test": "run-s test.unit test.examples",
