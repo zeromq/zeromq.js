@@ -1,4 +1,4 @@
-FROM aminya/setup-cpp-ubuntu-gcc:20.04 AS base
+FROM aminya/setup-cpp-ubuntu-llvm:20.04 AS base
 
 # Enable logging style for GitHub Actions
 ENV CI=1 \
@@ -8,11 +8,6 @@ RUN apt-get update -q -y && \
     # bison for websockets
     apt-get install --no-install-recommends -y \
       bison && \
-    # newer gcc
-    setup-cpp --compiler gcc-10 && \
-    apt-get remove --purge -y \
-      gcc-9 \
-      g++-9 && \
     # pnpm
     npm i -g pnpm@^10 && \
     # cleanup
