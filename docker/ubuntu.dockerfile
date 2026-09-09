@@ -7,6 +7,7 @@ ENV CI=1 \
 RUN apt-get update -q -y && \
     apt-get install --no-install-recommends -y \
       bison && \
+    setup-cpp --gcc 16 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/*
