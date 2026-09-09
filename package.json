@@ -104,7 +104,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "build.cmake-ts": "cd node_modules/cmake-ts && pnpm install && pnpm run build && cd ../..",
+    "build.cmake-ts": "cd node_modules/cmake-ts && pnpm install && pnpm run build && cd ../.. && pnpm install --ignore-scripts",
     "install": "pnpm run build.cmake-ts && node ./script/install.js",
     "clean": "rimraf ./build ./prebuilds ./staging && run-p clean.lib clean.temp",
     "clean.lib": "rimraf ./lib/",
