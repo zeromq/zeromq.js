@@ -1,4 +1,4 @@
-FROM aminya/setup-cpp-ubuntu-llvm:20.04 AS base
+FROM aminya/setup-cpp-ubuntu-gcc:20.04 AS base
 
 # Enable logging style for GitHub Actions
 ENV CI=1 \

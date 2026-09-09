@@ -60,14 +60,8 @@ endif()
 option(ZMQ_WEBSOCKETS "Enable WebSocket transport" ON)
 set_option_from_env(ZMQ_WEBSOCKETS)
 
-if(NOT WIN32 AND NOT APPLE)
-  # gnutls build fails on Windows and MacOS, so we default to OFF on those platforms
-  set(ZMQ_WEBSOCKETS_SECURE_DEFAULT ON)
-else()
-  set(ZMQ_WEBSOCKETS_SECURE_DEFAULT OFF)
-endif()
-
-option(ZMQ_WEBSOCKETS_SECURE "Enable WebSocket transport with TSL (wss)" ${ZMQ_WEBSOCKETS_SECURE_DEFAULT})
+# gnutls build fails on Windows and MacOS, and on Linux newer copmilers are required for our Ubuntu 20 baseline
+option(ZMQ_WEBSOCKETS_SECURE "Enable WebSocket transport with TSL (wss)" OFF)
 set_option_from_env(ZMQ_WEBSOCKETS_SECURE)
 
 option(ZMQ_NO_SYNC_RESOLVE "send/receive on the socket immediately" OFF)
