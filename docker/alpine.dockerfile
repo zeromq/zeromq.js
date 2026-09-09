@@ -1,10 +1,6 @@
 FROM aminya/setup-cpp-alpine-gcc:3.21 AS base
 # system dependencies
 RUN apk add --no-cache \
-    automake \
-    autoconf \
-    autoconf-archive \
-    libtool \
     curl \
     && curl -fsSL \
       "https://dl-cdn.alpinelinux.org/alpine/edge/main/$(apk --print-arch)/cmake-4.3.4-r0.apk" \

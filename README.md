@@ -43,8 +43,8 @@
   - [TypeScript](#typescript)
     - [Prebuilt binaries](#prebuilt-binaries)
     - [Building from source](#building-from-source)
-    - [Available Build Options](#available-build-options)
-    - [Curve with Libsodium support](#curve-with-libsodium-support)
+      - [System libzmq](#system-libzmq)
+      - [Curve with Libsodium support](#curve-with-libsodium-support)
       - [Draft support](#draft-support)
       - [Websocket support](#websocket-support)
       - [Secure Websocket support](#secure-websocket-support)
@@ -323,8 +323,12 @@ to start a build from source.
 If a prebuilt binary is unavailable, or if you want to pass certain options
 during build, you can build this package from source.
 
-Make sure you have the following installed before attempting to build from
-source:
+Make sure you have the following build dependencies installed before attempting to build from
+source. This can be done automatically via setup-cpp (e.g. see `script/install-deps.sh`).
+
+```shell
+npx -y setup-cpp --compiler gcc --python true --cmake true --ninja true --make true --autoreconf true --vcpkg 7012bf7bc3dec4b9020a83b1a8a2d365be4bc214
+```
 
 - Node.js 12+ or Electron
 - C++17 compiler toolchain (e.g. LLVM, GCC, MSVC)
@@ -349,12 +353,10 @@ build_from_source=true
 When building from source, you can also specify additional build options in a
 `.npmrc` file in your project:
 
-### Available Build Options
-
 <details>
 <summary>👉🏻 Options</summary>
 
-### System libzmq
+#### System libzmq
 
 Uses a shared `libzmq` installation discoverable through `pkg-config` instead of
 building the vendored vcpkg dependency. Install `libzmq` and add the following
@@ -364,7 +366,7 @@ to your `.npmrc`:
 zmq_shared=true
 ```
 
-### Curve with Libsodium support
+#### Curve with Libsodium support
 
 (Enabled by default)
 
