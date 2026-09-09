@@ -5,10 +5,16 @@ ENV CI=1 \
  GITHUB_ACTIONS=1
 
 RUN apt-get update -q -y && \
+    # bison for websockets
     apt-get install --no-install-recommends -y \
       bison && \
-    setup-cpp --gcc 16 && \
-    apt-get clean && \
+    # newer gcc
+    setup-cpp --compiler gcc-16 && \
+    # pnpm
+    npm i -g pnpm@^10 && \
+    # cleanup
+    apt-get clean autoclean && \
+    apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /tmp/*
 
@@ -17,7 +23,7 @@ WORKDIR /app
 COPY ./ ./
 
 # build
-RUN npm i -g pnpm@10.8.0 && \
+RUN source ~/.cpprc && \
     pnpm install && \
     pnpm run build
 
