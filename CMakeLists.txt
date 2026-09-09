@@ -57,9 +57,10 @@ if(ZMQ_SODIUM AND APPLE)
   message(STATUS "building libsodium requires running `brew install autoconf automake libtool autoconf-archive`")
 endif()
 
-option(ZMQ_WEBSOCKETS "Enable WebSocket transport" OFF)
+option(ZMQ_WEBSOCKETS "Enable WebSocket transport" ON)
 set_option_from_env(ZMQ_WEBSOCKETS)
 
+# gnutls build fails on Windows and MacOS, and on Linux newer copmilers are required for our Ubuntu 20 baseline
 option(ZMQ_WEBSOCKETS_SECURE "Enable WebSocket transport with TSL (wss)" OFF)
 set_option_from_env(ZMQ_WEBSOCKETS_SECURE)
 

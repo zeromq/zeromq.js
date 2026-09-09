@@ -4,12 +4,24 @@ FROM aminya/setup-cpp-ubuntu-gcc:20.04 AS base
 ENV CI=1 \
  GITHUB_ACTIONS=1
 
+RUN apt-get update -q -y && \
+    # bison for websockets
+    apt-get install --no-install-recommends -y \
+      bison && \
+    # pnpm
+    npm i -g pnpm@^10 && \
+    # cleanup
+    apt-get clean autoclean && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/* && \
+    rm -rf /tmp/*
+
 FROM base AS builder
 WORKDIR /app
 COPY ./ ./
 
 # build
-RUN npm i -g pnpm@10.8.0 && \
+RUN source ~/.cpprc && \
     pnpm install && \
     pnpm run build
 
