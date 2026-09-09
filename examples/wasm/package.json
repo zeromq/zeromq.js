@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": "parcel serve index.html"
+    "build.wasm": "cd ../../ && pnpm run build.wasm",
+    "start": "build.wasm && vite"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.8.0",
+  "packageManager": "bun@1.14.0",
   "devDependencies": {
-    "parcel": "^2.16.4"
+    "vite": "8.2.2"
   }
 }

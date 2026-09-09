@@ -29,8 +29,8 @@ async function main() {
   })
 
   // Create an environment.
-  let env = new Environment(instance)
-  let exports = env.exports
+  const env = new Environment(instance)
+  const exports = env.exports
 
   console.log(exports)
 }
