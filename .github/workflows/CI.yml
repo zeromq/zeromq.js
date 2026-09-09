@@ -106,7 +106,7 @@ jobs:
         if: ${{ contains(matrix.os, 'ubuntu') && ! matrix.distro }}
         run: |
           sudo apt-get update -q -y
-          sudo apt-get install --no-install-recommends -y autoconf-archive
+          sudo apt-get install --no-install-recommends -y bison
 
       - name: Setup Cpp
         if: ${{ ! matrix.distro }}

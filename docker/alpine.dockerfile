@@ -7,6 +7,7 @@ ENV CI=1 \
 # system dependencies
 RUN apk add --no-cache \
     curl \
+    bison \
     && curl -fsSL \
       "https://dl-cdn.alpinelinux.org/alpine/edge/main/$(apk --print-arch)/cmake-4.3.4-r0.apk" \
       -o /tmp/cmake-4.3.4-r0.apk \
