@@ -1,40 +1,71 @@
-import {Environment, napi} from "napi-wasm"
+import { Environment, napi } from "napi-wasm";
 
-async function getWasm() {
-  if (typeof window === "undefined") {
-    // Nodejs
-    const fs = await import("fs/promises")
-    const path = await import("path")
-    const url = await import("url")
+async function main_node() {
+	if (typeof window !== "undefined") {
+		return;
+	}
 
-    const __dirname = path.dirname(url.fileURLToPath(import.meta.url))
+	// Nodejs
+	const fs = await import("fs/promises");
+	const path = await import("path");
+	const url = await import("url");
+	const { WASI } = await import("wasi");
+	const { argv, env } = import("process");
 
-    return (await fs.readFile(path.join(__dirname, "addon.wasm")))
-  }
+	const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
-  // Browser
-  const response = await fetch("./addon.wasm")
-  if (!response.ok) {
-    throw new Error(`Failed to fetch wasm: ${response.statusText}`)
-  }
-  return await response.arrayBuffer()
+	const wasm = await fs.readFile(path.join(__dirname, "addon.wasm"));
+
+	const wasi = new WASI({
+		version: "preview1",
+		args: argv,
+		env,
+		preopens: {
+			"/local": "/tmp",
+		},
+	});
+
+	const { instance } = await WebAssembly.instantiate(wasm, {
+		...wasi.getImportObject(),
+		napi: napi,
+		env: {}, // The env imports will be provided by napi-wasm
+	});
+
+	const exports = env.exports;
+
+	console.log(exports);
+
+	wasi.start(instance);
 }
 
-async function main() {
-  const wasm = await getWasm()
+main_node().catch((err) => {
+	throw err;
+});
 
-  const {instance} = await WebAssembly.instantiate(wasm, {
-    napi: napi,
-    env: {} // The env imports will be provided by napi-wasm
-  })
+async function main_web() {
+	if (typeof window === "undefined") {
+		return;
+	}
 
-  // Create an environment.
-  const env = new Environment(instance)
-  const exports = env.exports
+	// Browser
+	const response = await fetch("./addon.wasm");
+	if (!response.ok) {
+		throw new Error(`Failed to fetch wasm: ${response.statusText}`);
+	}
+	const wasm = await response.arrayBuffer();
 
-  console.log(exports)
+	const { instance } = await WebAssembly.instantiate(wasm, {
+		napi: napi,
+		env: {}, // The env imports will be provided by napi-wasm
+	});
+
+	// Create an environment.
+	const env = new Environment(instance);
+	const exports = env.exports;
+
+	console.log(exports);
 }
 
-main().catch(err => {
-  throw err
-})
+main_web().catch((err) => {
+	throw err;
+});

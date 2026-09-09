@@ -97,6 +97,8 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
 
   include(${EMSCRIPTEN_ROOT}/cmake/Modules/Platform/Emscripten.cmake)
 
+  # add_compile_options("-fwasm-exceptions")
+
   set(CMAKE_LINKER "${EMSCRIPTEN_ROOT}/bin/lld${CMAKE_EXECUTABLE_SUFFIX}" CACHE STRING "Linker" FORCE)
 
   add_compile_definitions("-D__wasm__" "-D__EMSCRIPTEN__")
@@ -110,7 +112,7 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   add_link_options("SHELL:-s ALLOW_MEMORY_GROWTH=1")
   add_link_options("SHELL:-s ENVIRONMENT='node'")
   add_link_options("SHELL:-s ERROR_ON_UNDEFINED_SYMBOLS=0")
-  add_link_options("SHELL:-s DISABLE_EXCEPTION_CATCHING=0")
+  add_link_options("SHELL:-s DISABLE_EXCEPTION_CATCHING=1")
   add_link_options("--no-entry")
 endif()
 

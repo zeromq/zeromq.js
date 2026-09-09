@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build.wasm": "cd ../../ && pnpm run build.wasm",
-    "start": "bun run build.wasm && vite"
+    "build": "cd ../../ && pnpm run build.wasm",
+    "start.node": "node ./index.mjs",
+    "start.web": "vite --open"
   },
   "keywords": [],
   "author": "",
