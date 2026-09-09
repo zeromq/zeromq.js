@@ -10,6 +10,6 @@
   "license": "ISC",
   "packageManager": "pnpm@10.8.0",
   "devDependencies": {
-    "parcel": "^2.15.4"
+    "parcel": "^2.16.4"
   }
 }

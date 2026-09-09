@@ -72,7 +72,7 @@
   "engines": {
     "node": ">= 12"
   },
-  "packageManager": "pnpm@10.8.0",
+  "packageManager": "pnpm@10.26.0",
   "overrides": {
     "typescript": "~4.9.5",
     "node-gyp": "10.0.1"
@@ -104,7 +104,7 @@
     "tsconfig.json"
   ],
   "scripts": {
-    "build.cmake-ts": "cd node_modules/cmake-ts && pnpm install && pnpm run build && cd ../.. && pnpm install --ignore-scripts",
+    "build.cmake-ts": "cd node_modules/cmake-ts && pnpm install && pnpm run build && cd ../.. && (test -f ./node_modules/bin/cmake-ts || pnpm install --ignore-scripts)",
     "install": "pnpm run build.cmake-ts && node ./script/install.js",
     "clean": "rimraf ./build ./prebuilds ./staging && run-p clean.lib clean.temp",
     "clean.lib": "rimraf ./lib/",
