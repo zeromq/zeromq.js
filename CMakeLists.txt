@@ -66,7 +66,13 @@ endif()
 option(ZMQ_WEBSOCKETS "Enable WebSocket transport" ${ZMQ_WEBSOCKETS_DEFAULT})
 set_option_from_env(ZMQ_WEBSOCKETS)
 
-option(ZMQ_WEBSOCKETS_SECURE "Enable WebSocket transport with TSL (wss)" ${ZMQ_WEBSOCKETS_DEFAULT})
+if(NOT WIN32 AND NOT APPLE)
+  set(ZMQ_WEBSOCKETS_SECURE_DEFAULT ON)
+else()
+  set(ZMQ_WEBSOCKETS_SECURE_DEFAULT OFF)
+endif()
+
+option(ZMQ_WEBSOCKETS_SECURE "Enable WebSocket transport with TSL (wss)" ${ZMQ_WEBSOCKETS_SECURE_DEFAULT})
 set_option_from_env(ZMQ_WEBSOCKETS_SECURE)
 
 option(ZMQ_NO_SYNC_RESOLVE "send/receive on the socket immediately" OFF)
