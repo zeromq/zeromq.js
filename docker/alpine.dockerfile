@@ -1,4 +1,9 @@
 FROM aminya/setup-cpp-alpine-gcc:3.21 AS base
+
+# Enable logging style for GitHub Actions
+ENV CI=1 \
+ GITHUB_ACTIONS=1
+
 # system dependencies
 RUN apk add --no-cache \
     curl \

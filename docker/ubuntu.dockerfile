@@ -1,5 +1,9 @@
 FROM aminya/setup-cpp-ubuntu-gcc:20.04 AS base
 
+# Enable logging style for GitHub Actions
+ENV CI=1 \
+ GITHUB_ACTIONS=1
+
 FROM base AS builder
 WORKDIR /app
 COPY ./ ./
