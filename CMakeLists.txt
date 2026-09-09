@@ -57,16 +57,11 @@ if(ZMQ_SODIUM AND APPLE)
   message(STATUS "building libsodium requires running `brew install autoconf automake libtool autoconf-archive`")
 endif()
 
-if(NOT WIN32)
-  set(ZMQ_WEBSOCKETS_DEFAULT ON)
-else()
-  set(ZMQ_WEBSOCKETS_DEFAULT OFF)
-endif()
-
-option(ZMQ_WEBSOCKETS "Enable WebSocket transport" ${ZMQ_WEBSOCKETS_DEFAULT})
+option(ZMQ_WEBSOCKETS "Enable WebSocket transport" ON)
 set_option_from_env(ZMQ_WEBSOCKETS)
 
 if(NOT WIN32 AND NOT APPLE)
+  # gnutls build fails on Windows and MacOS, so we default to OFF on those platforms
   set(ZMQ_WEBSOCKETS_SECURE_DEFAULT ON)
 else()
   set(ZMQ_WEBSOCKETS_SECURE_DEFAULT OFF)
