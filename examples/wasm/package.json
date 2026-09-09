@@ -1,0 +1,17 @@
+{
+  "name": "browser",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "cd ../../ && pnpm run build.wasm",
+    "start.node": "node ./index.mjs",
+    "start.web": "vite --open"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "bun@1.14.0",
+  "devDependencies": {
+    "vite": "8.2.2"
+  }
+}
