@@ -57,10 +57,16 @@ if(ZMQ_SODIUM AND APPLE)
   message(STATUS "building libsodium requires running `brew install autoconf automake libtool autoconf-archive`")
 endif()
 
-option(ZMQ_WEBSOCKETS "Enable WebSocket transport" ON)
+if(NOT WIN32)
+  set(ZMQ_WEBSOCKETS_DEFAULT ON)
+else()
+  set(ZMQ_WEBSOCKETS_DEFAULT OFF)
+endif()
+
+option(ZMQ_WEBSOCKETS "Enable WebSocket transport" ${ZMQ_WEBSOCKETS_DEFAULT})
 set_option_from_env(ZMQ_WEBSOCKETS)
 
-option(ZMQ_WEBSOCKETS_SECURE "Enable WebSocket transport with TSL (wss)" ON)
+option(ZMQ_WEBSOCKETS_SECURE "Enable WebSocket transport with TSL (wss)" ${ZMQ_WEBSOCKETS_DEFAULT})
 set_option_from_env(ZMQ_WEBSOCKETS_SECURE)
 
 option(ZMQ_NO_SYNC_RESOLVE "send/receive on the socket immediately" OFF)
