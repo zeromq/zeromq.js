@@ -117,7 +117,7 @@
     "docs.deploy": "run-s docs.build && gh-pages --dist \"./docs\"",
     "build.native": "cmake-ts build --logger=debug",
     "build.native.debug": "cross-env npm_config_zmq_enable_sanitizer_undefined=true cmake-ts build --config debug",
-    "build.wasm": "cmake-ts build --logger=debug --config cross-wasm32-unknown-node-minsizerel",
+    "build.wasm": "cmake-ts build --logger=debug --config cross-wasm32-unknown-node-minsizerel && shx cp ./build/wasm32/unknown/node/*/addon.wasm ./examples/wasm/",
     "build": "run-p build.js build.native",
     "build.debug": "run-s build.js build.native.debug",
     "test": "run-s test.unit test.examples",

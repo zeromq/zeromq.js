@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build.wasm": "cd ../../ && pnpm run build.wasm",
-    "start": "build.wasm && vite"
+    "start": "bun run build.wasm && vite"
   },
   "keywords": [],
   "author": "",
