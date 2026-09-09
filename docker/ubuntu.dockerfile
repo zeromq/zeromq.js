@@ -9,7 +9,10 @@ RUN apt-get update -q -y && \
     apt-get install --no-install-recommends -y \
       bison && \
     # newer gcc
-    setup-cpp --compiler gcc-16 && \
+    setup-cpp --compiler gcc-10 && \
+    apt-get remove --purge -y \
+      gcc-9 \
+      g++-9 && \
     # pnpm
     npm i -g pnpm@^10 && \
     # cleanup
