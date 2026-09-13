@@ -21,7 +21,7 @@
   "dependencies": {
     "cmake-ts": "https://github.com/EmbeddedEnterprises/cmake-ts#1c92e5338d1a615e3a95c7fbaaddcd03acbcedf1",
     "node-addon-api": "^8.3.1",
-    "napi-wasm": "https://github.com/aminya/napi-wasm#5419220f3bd2d79d204a292a98105fadbb4c9d6e"
+    "napi-wasm": "https://github.com/aminya/napi-wasm#bf6f84684fc3d0483a9812642eb3c99407a3bde5"
   },
   "devDependencies": {
     "@types/benchmark": "~2.1.5",
@@ -97,7 +97,9 @@
     "CMakeLists.txt",
     "vcpkg.json",
     "*.d.ts",
+    "*.d.mts",
     "*.js",
+    "*.mjs",
     "lib",
     "src",
     "build",

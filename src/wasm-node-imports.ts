@@ -28,5 +28,5 @@ export const unsupportedNodeImports = [
   "__syscall_recvfrom",
   "__syscall_sendto",
   "__syscall_setsockopt",
-  "__syscall_socket"
-]
+  "__syscall_socket",
+] as const

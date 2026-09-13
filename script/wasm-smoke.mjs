@@ -1,55 +1,23 @@
 import assert from "node:assert/strict"
-import fs from "node:fs/promises"
-import path from "node:path"
-import {fileURLToPath} from "node:url"
-import {Environment, createNodeEnv, napi} from "napi-wasm"
-import {unsupportedNodeImports} from "../examples/wasm/unsupported-imports.mjs"
+import {createRequire} from "node:module"
+import * as zmq from "../wasm.mjs"
 
-const ZMQ_PAIR = 0
-const addonPath = path.resolve(
-  path.dirname(fileURLToPath(import.meta.url)),
-  "../examples/wasm/addon.wasm",
+const require = createRequire(import.meta.url)
+assert.equal(
+  require.cache[require.resolve("../lib/load-addon.js")],
+  undefined,
+  "the WASM entry must not load the native addon",
 )
 
-export async function loadWasm() {
-  const processModule = await import("node:process")
-  const {WASI} = await import("node:wasi")
-  const wasm = await fs.readFile(addonPath)
-  const wasi = new WASI({
-    version: "preview1",
-    args: processModule.argv,
-    env: processModule.env,
-  })
-  const nodeEnv = createNodeEnv({unsupportedImports: unsupportedNodeImports})
-  try {
-    const {instance} = await WebAssembly.instantiate(wasm, {
-      ...wasi.getImportObject(),
-      napi,
-      env: nodeEnv,
-    })
-    nodeEnv.bind(instance)
-
-    wasi.initialize(instance)
-    const environment = new Environment(instance)
-    return {environment, nodeEnv, wasi}
-  } catch (error) {
-    nodeEnv.dispose()
-    throw error
-  }
-}
-
-const {environment, nodeEnv} = await loadWasm()
-const {version, Context, Socket} = environment.exports
+const {version, Pair} = zmq
 assert.equal(typeof version, "string")
-assert.equal(typeof Context, "function")
-assert.equal(typeof Socket, "function")
+assert.equal(typeof Pair, "function")
 
-const context = new Context()
 const sockets = []
 try {
   const address = `inproc://wasm-smoke-${process.pid}`
-  const sender = new Socket(ZMQ_PAIR, {context})
-  const receiver = new Socket(ZMQ_PAIR, {context})
+  const sender = new Pair()
+  const receiver = new Pair()
   sockets.push(sender, receiver)
 
   await sender.bind(address)
@@ -65,6 +33,4 @@ try {
   for (const socket of sockets) {
     socket.close()
   }
-  environment.destroy()
-  nodeEnv.dispose()
 }
