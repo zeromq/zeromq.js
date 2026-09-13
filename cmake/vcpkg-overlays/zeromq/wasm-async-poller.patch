@@ -1,0 +1,185 @@
+diff --git a/src/poller-wasm.hpp b/src/poller-wasm.hpp
+new file mode 100644
+--- /dev/null
++++ b/src/poller-wasm.hpp
+@@ -0,0 +1,28 @@
++/* SPDX-License-Identifier: MPL-2.0 */
++
++#ifndef __ZMQ_POLLER_WASM_HPP_INCLUDED__
++#define __ZMQ_POLLER_WASM_HPP_INCLUDED__
++
++/* The Node napi-wasm adapter supplies these callbacks. They keep libzmq's
++   worker pollers cooperative when Emscripten pthreads are unavailable. */
++extern "C" {
++void napi_wasm_schedule (void (*callback_) (void *), void *arg_, int delay_);
++void napi_wasm_cancel (void *arg_);
++}
++
++namespace zmq
++{
++inline void schedule_wasm_worker (void (*callback_) (void *),
++                                  void *arg_,
++                                  int delay_)
++{
++    napi_wasm_schedule (callback_, arg_, delay_);
++}
++
++inline void cancel_wasm_worker (void *arg_)
++{
++    napi_wasm_cancel (arg_);
++}
++}
++
++#endif
+diff --git a/src/poller_base.hpp b/src/poller_base.hpp
+--- a/src/poller_base.hpp
++++ b/src/poller_base.hpp
+@@ -8,6 +8,9 @@
+ #include "clock.hpp"
+ #include "atomic_counter.hpp"
+ #include "ctx.hpp"
++#ifdef __EMSCRIPTEN__
++#include "poller-wasm.hpp"
++#endif
+ 
+ namespace zmq
+ {
+@@ -151,6 +154,12 @@
+     //  leaf class.
+     void stop_worker ();
+ 
++#ifdef __EMSCRIPTEN__
++    bool worker_started () const;
++    void schedule_worker (int timeout_);
++    void cancel_worker ();
++#endif
++
+   private:
+     //  Main worker thread routine.
+     static void worker_routine (void *arg_);
+diff --git a/src/poller_base.cpp b/src/poller_base.cpp
+--- a/src/poller_base.cpp
++++ b/src/poller_base.cpp
+@@ -98,9 +98,29 @@
+ 
+ void zmq::worker_poller_base_t::stop_worker ()
+ {
++#ifdef __EMSCRIPTEN__
++    cancel_worker ();
++#endif
+     _worker.stop ();
+ }
+ 
++#ifdef __EMSCRIPTEN__
++bool zmq::worker_poller_base_t::worker_started () const
++{
++    return _worker.get_started ();
++}
++
++void zmq::worker_poller_base_t::schedule_worker (int timeout_)
++{
++    schedule_wasm_worker (worker_routine, this, timeout_);
++}
++
++void zmq::worker_poller_base_t::cancel_worker ()
++{
++    cancel_wasm_worker (this);
++}
++#endif
++
+ void zmq::worker_poller_base_t::start (const char *name_)
+ {
+     zmq_assert (get_load () > 0);
+diff --git a/src/poll.cpp b/src/poll.cpp
+--- a/src/poll.cpp
++++ b/src/poll.cpp
+@@ -108,6 +108,42 @@
+ 
+ void zmq::poll_t::loop ()
+ {
++#ifdef __EMSCRIPTEN__
++    if (!worker_started ())
++        return;
++
++    const int timeout = (int) execute_timers ();
++    cleanup_retired ();
++
++    if (!pollset.empty ()) {
++        // Node's event loop drives the next poll iteration. Never block here.
++        int rc = poll (&pollset[0], static_cast<nfds_t> (pollset.size ()), 0);
++        if (rc == -1) {
++            errno_assert (errno == EINTR);
++        } else if (rc != 0) {
++            for (pollset_t::size_type i = 0; i != pollset.size (); i++) {
++                zmq_assert (!(pollset[i].revents & POLLNVAL));
++                if (pollset[i].fd == retired_fd)
++                    continue;
++                if (pollset[i].revents & (POLLERR | POLLHUP))
++                    fd_table[pollset[i].fd].events->in_event ();
++                if (pollset[i].fd == retired_fd)
++                    continue;
++                if (pollset[i].revents & POLLOUT)
++                    fd_table[pollset[i].fd].events->out_event ();
++                if (pollset[i].fd == retired_fd)
++                    continue;
++                if (pollset[i].revents & POLLIN)
++                    fd_table[pollset[i].fd].events->in_event ();
++            }
++        }
++    }
++
++    // A short delay avoids a busy loop when a mailbox is idle while still
++    // keeping in-process commands responsive in the Node event loop.
++    if (worker_started () && (!pollset.empty () || timeout != 0))
++        schedule_worker (timeout > 0 ? timeout : 1);
++#else
+     while (true) {
+         //  Execute any due timers.
+         int timeout = (int) execute_timers ();
+@@ -153,6 +189,7 @@
+                 fd_table[pollset[i].fd].events->in_event ();
+         }
+     }
++#endif
+ }
+ 
+ void zmq::poll_t::cleanup_retired ()
+diff --git a/src/thread.cpp b/src/thread.cpp
+--- a/src/thread.cpp
++++ b/src/thread.cpp
+@@ -237,22 +237,35 @@
+     _arg = arg_;
+     if (name_)
+         strncpy (_name, name_, sizeof (_name) - 1);
++#if defined __EMSCRIPTEN__
++    _started = true;
++    _tfn (_arg);
++#else
+     int rc = pthread_create (&_descriptor, NULL, thread_routine, this);
+     posix_assert (rc);
+     _started = true;
++#endif
+ }
+ 
+ void zmq::thread_t::stop ()
+ {
+     if (_started) {
++#if defined __EMSCRIPTEN__
++        _started = false;
++#else
+         int rc = pthread_join (_descriptor, NULL);
+         posix_assert (rc);
++#endif
+     }
+ }
+ 
+ bool zmq::thread_t::is_current_thread () const
+ {
++#if defined __EMSCRIPTEN__
++    return _started;
++#else
+     return bool (pthread_equal (pthread_self (), _descriptor));
++#endif
+ }
+ 
+ void zmq::thread_t::setSchedulingParameters (

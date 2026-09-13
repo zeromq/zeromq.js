@@ -1,6 +1,10 @@
 
 #include "./module.h"
 
+#ifdef ZMQ_WASM
+#include "./module-wasm.h"
+#endif
+
 #include <array>
 
 #include "./context.h"
@@ -116,27 +120,6 @@ Module::Module(Napi::Env env, Napi::Object exports) : MsgTrash(env) {
 #endif
 }
 }  // namespace zmq
-
-#ifdef ZMQ_WASM
-
-EXTERN_C_START
-NAPI_MODULE_EXPORT uint8_t* napi_wasm_malloc(size_t size) {
-    const size_t align = alignof(size_t);
-
-    if (size > 0) {
-        void* ptr = std::aligned_alloc(align, size);
-        if (ptr != nullptr) {
-            return static_cast<uint8_t*>(ptr);
-        }
-    } else {
-        return reinterpret_cast<uint8_t*>(align);
-    }
-
-    std::abort();
-}
-EXTERN_C_END
-
-#endif
 
 using Module = zmq::Module;
 NODE_API_ADDON(Module)

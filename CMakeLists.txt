@@ -116,6 +116,12 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${EMSCRIPTEN_PLATFORM_FILE}"
     CACHE FILEPATH "Emscripten toolchain chainloaded by vcpkg" FORCE)
 
+  # Use the repository's Emscripten-specific ZeroMQ port overlay. The overlay
+  # patches libzmq's signaler to use a pipe because Emscripten does not provide
+  # an anonymous socketpair in its Node socket backend.
+  set(VCPKG_OVERLAY_PORTS "${CMAKE_SOURCE_DIR}/cmake/vcpkg-overlays"
+    CACHE STRING "vcpkg overlay ports for the WebAssembly target" FORCE)
+
   add_compile_definitions("-D__wasm__" "-D__EMSCRIPTEN__")
 
   # export an indirect function table for napi-wasm
@@ -126,6 +132,11 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   add_link_options("SHELL:-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
   add_link_options("SHELL:-s ALLOW_MEMORY_GROWTH=1")
   add_link_options("SHELL:-s ENVIRONMENT='node'")
+  # Keep the signaler's pipe inside the module. The standalone Emscripten
+  # output otherwise leaves pipe2 as a host import, while Node's WASI adapter
+  # only provides the standard WASI descriptors.
+  add_link_options("SHELL:-s WASMFS=1")
+  add_link_options("SHELL:-Wl,--undefined=__syscall_pipe2")
   # Emscripten's --allow-undefined-file does not allow Node-API imports in
   # this em++ invocation. Permit unresolved symbols at link time, then expose
   # the exact module:symbol contract for the post-link audit.
@@ -220,6 +231,8 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "env:__syscall_unlinkat"
     "env:emscripten_asm_const_int"
     "env:emscripten_notify_memory_growth"
+    "env:napi_wasm_cancel"
+    "env:napi_wasm_schedule"
     "env:getaddrinfo"
     "env:getnameinfo"
     "env:pthread_setschedparam"
@@ -227,9 +240,11 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     "wasi_snapshot_preview1:environ_get"
     "wasi_snapshot_preview1:environ_sizes_get"
     "wasi_snapshot_preview1:fd_close"
+    "wasi_snapshot_preview1:fd_read"
     "wasi_snapshot_preview1:fd_seek"
     "wasi_snapshot_preview1:fd_write"
     "wasi_snapshot_preview1:proc_exit"
+    "wasi_snapshot_preview1:random_get"
   )
   set(ZMQ_WASM_IMPORT_ALLOWLIST
     "${CMAKE_CURRENT_BINARY_DIR}/zeromq-wasm-intentional-imports.txt")
