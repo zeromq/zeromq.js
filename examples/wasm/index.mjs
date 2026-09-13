@@ -1,4 +1,5 @@
 import {Environment, createNodeEnv, napi} from "napi-wasm"
+import {unsupportedNodeImports} from "./unsupported-imports.mjs"
 
 const ZMQ_PAIR = 0
 
@@ -23,7 +24,7 @@ export async function loadWasm() {
     args: processModule.argv,
     env: processModule.env,
   })
-  const nodeEnv = createNodeEnv()
+  const nodeEnv = createNodeEnv({unsupportedImports: unsupportedNodeImports})
 
   try {
     const {instance} = await WebAssembly.instantiate(wasm, {

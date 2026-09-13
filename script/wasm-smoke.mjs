@@ -3,6 +3,7 @@ import fs from "node:fs/promises"
 import path from "node:path"
 import {fileURLToPath} from "node:url"
 import {Environment, createNodeEnv, napi} from "napi-wasm"
+import {unsupportedNodeImports} from "../examples/wasm/unsupported-imports.mjs"
 
 const ZMQ_PAIR = 0
 const addonPath = path.resolve(
@@ -19,7 +20,7 @@ export async function loadWasm() {
     args: processModule.argv,
     env: processModule.env,
   })
-  const nodeEnv = createNodeEnv()
+  const nodeEnv = createNodeEnv({unsupportedImports: unsupportedNodeImports})
   try {
     const {instance} = await WebAssembly.instantiate(wasm, {
       ...wasi.getImportObject(),
