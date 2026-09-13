@@ -1,71 +1,121 @@
-import { Environment, napi } from "napi-wasm";
+import {Environment, createNodeEnv, napi} from "napi-wasm"
 
-async function main_node() {
-	if (typeof window !== "undefined") {
-		return;
-	}
+const ZMQ_PAIR = 0
 
-	// Nodejs
-	const fs = await import("fs/promises");
-	const path = await import("path");
-	const url = await import("url");
-	const { WASI } = await import("wasi");
-	const { argv, env } = import("process");
+export async function loadWasm() {
+  if (typeof window !== "undefined") {
+    throw new Error("loadWasm() is only available in Node.js")
+  }
 
-	const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+  const fs = await import("node:fs/promises")
+  const path = await import("node:path")
+  const processModule = await import("node:process")
+  const url = await import("node:url")
+  const {WASI} = await import("node:wasi")
 
-	const wasm = await fs.readFile(path.join(__dirname, "addon.wasm"));
+  const addonPath = path.resolve(
+    path.dirname(url.fileURLToPath(import.meta.url)),
+    "addon.wasm",
+  )
+  const wasm = await fs.readFile(addonPath)
+  const wasi = new WASI({
+    version: "preview1",
+    args: processModule.argv,
+    env: processModule.env,
+  })
+  const nodeEnv = createNodeEnv()
 
-	const wasi = new WASI({
-		version: "preview1",
-		args: argv,
-		env,
-		preopens: {
-			"/local": "/tmp",
-		},
-	});
-
-	const { instance } = await WebAssembly.instantiate(wasm, {
-		...wasi.getImportObject(),
-		napi: napi,
-		env: {}, // The env imports will be provided by napi-wasm
-	});
-
-	const exports = env.exports;
-
-	console.log(exports);
-
-	wasi.start(instance);
+  try {
+    const {instance} = await WebAssembly.instantiate(wasm, {
+      ...wasi.getImportObject(),
+      napi,
+      env: nodeEnv,
+    })
+    nodeEnv.bind(instance)
+    wasi.initialize(instance)
+    return {environment: new Environment(instance), nodeEnv}
+  } catch (error) {
+    nodeEnv.dispose()
+    throw error
+  }
 }
 
-main_node().catch((err) => {
-	throw err;
-});
+async function runNodeRoundTrip(exports) {
+  const {Context, Socket, version} = exports
+  if (
+    typeof version !== "string" ||
+    typeof Context !== "function" ||
+    typeof Socket !== "function"
+  ) {
+    throw new Error("WASM addon exports are incomplete")
+  }
 
-async function main_web() {
-	if (typeof window === "undefined") {
-		return;
-	}
+  const context = new Context()
+  const sockets = []
+  try {
+    const address = `inproc://wasm-example-${Date.now()}`
+    const sender = new Socket(ZMQ_PAIR, {context})
+    const receiver = new Socket(ZMQ_PAIR, {context})
+    sockets.push(sender, receiver)
 
-	// Browser
-	const response = await fetch("./addon.wasm");
-	if (!response.ok) {
-		throw new Error(`Failed to fetch wasm: ${response.statusText}`);
-	}
-	const wasm = await response.arrayBuffer();
+    await sender.bind(address)
+    receiver.connect(address)
 
-	const { instance } = await WebAssembly.instantiate(wasm, {
-		napi: napi,
-		env: {}, // The env imports will be provided by napi-wasm
-	});
+    const message = "zeromq wasm example"
+    await sender.send(new TextEncoder().encode(message))
+    const received = await receiver.receive()
+    if (new TextDecoder().decode(received) !== message) {
+      throw new Error("WASM addon round trip returned the wrong message")
+    }
 
-	// Create an environment.
-	const env = new Environment(instance);
-	const exports = env.exports;
-
-	console.log(exports);
+    console.log(`wasm example passed: ${version}`)
+  } finally {
+    for (const socket of sockets) {
+      socket.close()
+    }
+  }
 }
 
-main_web().catch((err) => {
-	throw err;
-});
+async function mainNode() {
+  if (typeof window !== "undefined") {
+    return
+  }
+
+  const {environment, nodeEnv} = await loadWasm()
+  try {
+    await runNodeRoundTrip(environment.exports)
+  } finally {
+    environment.destroy()
+    nodeEnv.dispose()
+  }
+}
+
+async function mainWeb() {
+  if (typeof window === "undefined") {
+    return
+  }
+
+  const response = await fetch("./addon.wasm")
+  if (!response.ok) {
+    throw new Error(`Failed to fetch wasm: ${response.statusText}`)
+  }
+  const wasm = await response.arrayBuffer()
+  const {instance} = await WebAssembly.instantiate(wasm, {
+    napi,
+    env: {},
+  })
+  const environment = new Environment(instance)
+  try {
+    console.log(environment.exports)
+  } finally {
+    environment.destroy()
+  }
+}
+
+mainNode().catch(error => {
+  throw error
+})
+
+mainWeb().catch(error => {
+  throw error
+})

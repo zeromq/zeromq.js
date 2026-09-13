@@ -21,7 +21,7 @@
   "dependencies": {
     "cmake-ts": "https://github.com/EmbeddedEnterprises/cmake-ts#1c92e5338d1a615e3a95c7fbaaddcd03acbcedf1",
     "node-addon-api": "^8.3.1",
-    "napi-wasm": "^1.1.3"
+    "napi-wasm": "https://github.com/aminya/napi-wasm#4dfd282a0cde0573943e9d05b111de95ac309259"
   },
   "devDependencies": {
     "@types/benchmark": "~2.1.5",
@@ -85,7 +85,8 @@
     "onlyBuiltDependencies": [
       "core-js",
       "electron",
-      "esbuild"
+      "esbuild",
+      "napi-wasm"
     ]
   },
   "files": [
