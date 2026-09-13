@@ -101,6 +101,17 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
       "Could not find the Emscripten CMake platform module at ${EMSCRIPTEN_PLATFORM_FILE}")
   endif()
 
+  # vcpkg's autotools ports honor CC/CXX from the environment before their
+  # generated target-triplet settings. Ensure target libraries, especially
+  # libsodium, are compiled by Emscripten rather than an inherited host clang.
+  set(ENV{CC} "${EMSCRIPTEN_ROOT}/emcc")
+  set(ENV{CXX} "${EMSCRIPTEN_ROOT}/em++")
+  set(ENV{AR} "${EMSCRIPTEN_ROOT}/emar")
+  set(ENV{RANLIB} "${EMSCRIPTEN_ROOT}/emranlib")
+  set(ENV{NM} "${EMSCRIPTEN_ROOT}/emnm")
+  set(ENV{STRIP} "${EMSCRIPTEN_ROOT}/emstrip")
+  set(ENV{VCPKG_BINARY_SOURCES} "clear")
+
   # vcpkg includes this chainload exactly once when its toolchain is loaded.
   set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${EMSCRIPTEN_PLATFORM_FILE}"
     CACHE FILEPATH "Emscripten toolchain chainloaded by vcpkg" FORCE)
@@ -115,9 +126,135 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   add_link_options("SHELL:-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
   add_link_options("SHELL:-s ALLOW_MEMORY_GROWTH=1")
   add_link_options("SHELL:-s ENVIRONMENT='node'")
-  add_link_options("SHELL:-s ERROR_ON_UNDEFINED_SYMBOLS=1")
+  # Emscripten's --allow-undefined-file does not allow Node-API imports in
+  # this em++ invocation. Permit unresolved symbols at link time, then expose
+  # the exact module:symbol contract for the post-link audit.
+  add_link_options("SHELL:-s ERROR_ON_UNDEFINED_SYMBOLS=0")
+  add_link_options("SHELL:-s WARN_ON_UNDEFINED_SYMBOLS=1")
+  set(ZMQ_WASM_IMPORT_CONTRACT
+    "napi:napi_add_finalizer"
+    "napi:napi_adjust_external_memory"
+    "napi:napi_async_destroy"
+    "napi:napi_async_init"
+    "napi:napi_call_function"
+    "napi:napi_close_callback_scope"
+    "napi:napi_close_escapable_handle_scope"
+    "napi:napi_close_handle_scope"
+    "napi:napi_coerce_to_object"
+    "napi:napi_coerce_to_string"
+    "napi:napi_create_array_with_length"
+    "napi:napi_create_async_work"
+    "napi:napi_create_buffer"
+    "napi:napi_create_buffer_copy"
+    "napi:napi_create_double"
+    "napi:napi_create_error"
+    "napi:napi_create_external_buffer"
+    "napi:napi_create_function"
+    "napi:napi_create_object"
+    "napi:napi_create_promise"
+    "napi:napi_create_reference"
+    "napi:napi_create_string_latin1"
+    "napi:napi_create_string_utf8"
+    "napi:napi_create_type_error"
+    "napi:napi_define_class"
+    "napi:napi_define_properties"
+    "napi:napi_delete_async_work"
+    "napi:napi_delete_property"
+    "napi:napi_delete_reference"
+    "napi:napi_escape_handle"
+    "napi:napi_fatal_error"
+    "napi:napi_get_and_clear_last_exception"
+    "napi:napi_get_array_length"
+    "napi:napi_get_arraybuffer_info"
+    "napi:napi_get_boolean"
+    "napi:napi_get_cb_info"
+    "napi:napi_get_element"
+    "napi:napi_get_global"
+    "napi:napi_get_last_error_info"
+    "napi:napi_get_named_property"
+    "napi:napi_get_new_target"
+    "napi:napi_get_null"
+    "napi:napi_get_property"
+    "napi:napi_get_reference_value"
+    "napi:napi_get_typedarray_info"
+    "napi:napi_get_undefined"
+    "napi:napi_get_value_bool"
+    "napi:napi_get_value_double"
+    "napi:napi_get_value_int32"
+    "napi:napi_get_value_int64"
+    "napi:napi_get_value_string_utf8"
+    "napi:napi_get_value_uint32"
+    "napi:napi_has_named_property"
+    "napi:napi_has_property"
+    "napi:napi_is_array"
+    "napi:napi_is_arraybuffer"
+    "napi:napi_is_buffer"
+    "napi:napi_is_exception_pending"
+    "napi:napi_new_instance"
+    "napi:napi_open_callback_scope"
+    "napi:napi_open_escapable_handle_scope"
+    "napi:napi_open_handle_scope"
+    "napi:napi_queue_async_work"
+    "napi:napi_reject_deferred"
+    "napi:napi_remove_wrap"
+    "napi:napi_resolve_deferred"
+    "napi:napi_set_element"
+    "napi:napi_set_instance_data"
+    "napi:napi_set_named_property"
+    "napi:napi_throw"
+    "napi:napi_typeof"
+    "napi:napi_unwrap"
+    "napi:napi_wrap"
+    "env:__syscall_accept4"
+    "env:__syscall_bind"
+    "env:__syscall_connect"
+    "env:__syscall_getpeername"
+    "env:__syscall_getsockname"
+    "env:__syscall_getsockopt"
+    "env:__syscall_listen"
+    "env:__syscall_recvfrom"
+    "env:__syscall_rmdir"
+    "env:__syscall_sendto"
+    "env:__syscall_setsockopt"
+    "env:__syscall_socket"
+    "env:__syscall_unlinkat"
+    "env:emscripten_asm_const_int"
+    "env:emscripten_notify_memory_growth"
+    "env:getaddrinfo"
+    "env:getnameinfo"
+    "env:pthread_setschedparam"
+    "wasi_snapshot_preview1:clock_time_get"
+    "wasi_snapshot_preview1:environ_get"
+    "wasi_snapshot_preview1:environ_sizes_get"
+    "wasi_snapshot_preview1:fd_close"
+    "wasi_snapshot_preview1:fd_seek"
+    "wasi_snapshot_preview1:fd_write"
+    "wasi_snapshot_preview1:proc_exit"
+  )
+  set(ZMQ_WASM_IMPORT_ALLOWLIST
+    "${CMAKE_CURRENT_BINARY_DIR}/zeromq-wasm-intentional-imports.txt")
+  set(ZMQ_WASM_IMPORT_CONTRACT_FILE
+    "${CMAKE_CURRENT_BINARY_DIR}/zeromq-wasm-import-contract.txt")
+  file(WRITE "${ZMQ_WASM_IMPORT_ALLOWLIST}" "")
+  file(WRITE "${ZMQ_WASM_IMPORT_CONTRACT_FILE}" "")
+  foreach(import_contract IN LISTS ZMQ_WASM_IMPORT_CONTRACT)
+    string(REPLACE ":" ";" import_parts "${import_contract}")
+    list(GET import_parts 1 import_name)
+    file(APPEND "${ZMQ_WASM_IMPORT_ALLOWLIST}" "${import_name}\n")
+    file(APPEND "${ZMQ_WASM_IMPORT_CONTRACT_FILE}" "${import_contract}\n")
+  endforeach()
+  add_link_options("SHELL:--allow-undefined-file=${ZMQ_WASM_IMPORT_ALLOWLIST}")
   add_link_options("SHELL:-s DISABLE_EXCEPTION_CATCHING=1")
   add_link_options("--no-entry")
+
+  # The build script stages one current addon, while previous failed builds
+  # can leave copies in versioned cmake-ts output directories. Remove only
+  # those generated addon artifacts so the wildcard copy is deterministic.
+  file(GLOB ZMQ_WASM_STALE_ARTIFACTS
+    "${CMAKE_SOURCE_DIR}/build/wasm32/unknown/node/*/addon.wasm")
+  if(ZMQ_WASM_STALE_ARTIFACTS)
+    file(REMOVE ${ZMQ_WASM_STALE_ARTIFACTS})
+  endif()
 endif()
 
 # Set MacOS deployment target
@@ -161,6 +298,12 @@ if(APPLE)
 endif()
 
 if(NOT ZMQ_SHARED)
+  if(ZMQ_WASM)
+    # Rebuild only the generated WASM target prefix after correcting its
+    # compiler environment; native host tools remain in the host prefix.
+    file(REMOVE_RECURSE
+      "${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/wasm32-emscripten")
+  endif()
   run_vcpkg(VCPKG_URL "https://github.com/microsoft/vcpkg.git" VCPKG_REV
     "7012bf7bc3dec4b9020a83b1a8a2d365be4bc214")
 endif()

@@ -19,12 +19,19 @@ struct Terminator {
         assert(context != nullptr);
 
 #ifdef ZMQ_BLOCKY
-        const bool blocky = zmq_ctx_get(context, ZMQ_BLOCKY) != 0;
+        [[maybe_unused]] const bool blocky = zmq_ctx_get(context, ZMQ_BLOCKY) != 0;
 #else
         /* If the option cannot be set, don't suggest to set it. */
-        const bool blocky = false;
+        [[maybe_unused]] const bool blocky = false;
 #endif
 
+        /* WebAssembly has no native thread-backed std::async implementation
+           in the Node adapter. Terminate directly on the host callback path. */
+#ifdef ZMQ_WASM
+        [[maybe_unused]] auto err = zmq_ctx_term(context);
+        assert(err == 0);
+        return;
+#else
         /* Start termination asynchronously so we can detect if it takes long
            and should warn the user about this default blocking behaviour. */
         auto terminate = std::async(std::launch::async, [&] {
@@ -45,6 +52,7 @@ struct Terminator {
         }
 
         terminate.wait();
+#endif
     }
 };
 
