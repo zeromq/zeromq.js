@@ -84,8 +84,8 @@ set_option_from_env(ZMQ_WASM)
 if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   set(ZMQ_WASM TRUE)
 
-  # Compile for WebAssembly
-  set(VCPKG_HOST_TRIPLET wasm32-emscripten)
+  # Compile for WebAssembly. Keep vcpkg's host triplet native so build tools
+  # run on the host while target libraries are built for Emscripten.
   set(VCPKG_TARGET_TRIPLET wasm32-emscripten)
 
   if ("$ENV{EMSCRIPTEN_ROOT}" STREQUAL "")
@@ -95,11 +95,15 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
     set(EMSCRIPTEN_ROOT "$ENV{EMSCRIPTEN_ROOT}")
   endif()
 
-  include(${EMSCRIPTEN_ROOT}/cmake/Modules/Platform/Emscripten.cmake)
+  set(EMSCRIPTEN_PLATFORM_FILE "${EMSCRIPTEN_ROOT}/cmake/Modules/Platform/Emscripten.cmake")
+  if(NOT EXISTS "${EMSCRIPTEN_PLATFORM_FILE}")
+    message(FATAL_ERROR
+      "Could not find the Emscripten CMake platform module at ${EMSCRIPTEN_PLATFORM_FILE}")
+  endif()
 
-  # add_compile_options("-fwasm-exceptions")
-
-  set(CMAKE_LINKER "${EMSCRIPTEN_ROOT}/bin/lld${CMAKE_EXECUTABLE_SUFFIX}" CACHE STRING "Linker" FORCE)
+  # vcpkg includes this chainload exactly once when its toolchain is loaded.
+  set(VCPKG_CHAINLOAD_TOOLCHAIN_FILE "${EMSCRIPTEN_PLATFORM_FILE}"
+    CACHE FILEPATH "Emscripten toolchain chainloaded by vcpkg" FORCE)
 
   add_compile_definitions("-D__wasm__" "-D__EMSCRIPTEN__")
 
@@ -107,11 +111,11 @@ if(ZMQ_WASM OR CMAKE_SYSTEM_NAME STREQUAL "Emscripten")
   add_link_options("--export-table")
 
   # Add WebAssembly-specific exports for napi-wasm
-  add_link_options("SHELL:-s EXPORTED_FUNCTIONS=['_malloc','_free','_napi_register_wasm_v1']")
+  add_link_options("SHELL:-s EXPORTED_FUNCTIONS=['_malloc','_free','_napi_wasm_malloc','_napi_register_wasm_v1']")
   add_link_options("SHELL:-s EXPORTED_RUNTIME_METHODS=['ccall','cwrap']")
   add_link_options("SHELL:-s ALLOW_MEMORY_GROWTH=1")
   add_link_options("SHELL:-s ENVIRONMENT='node'")
-  add_link_options("SHELL:-s ERROR_ON_UNDEFINED_SYMBOLS=0")
+  add_link_options("SHELL:-s ERROR_ON_UNDEFINED_SYMBOLS=1")
   add_link_options("SHELL:-s DISABLE_EXCEPTION_CATCHING=1")
   add_link_options("--no-entry")
 endif()
