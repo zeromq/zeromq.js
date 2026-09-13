@@ -55,8 +55,8 @@ try {
   receiver.connect(address)
 
   const message = "zeromq wasm smoke"
-  await sender.send(new TextEncoder().encode(message))
-  const received = await receiver.receive()
+  await sender.send(message)
+  const [received] = await receiver.receive()
   assert.equal(new TextDecoder().decode(received), message)
 
   console.log(`wasm smoke passed: ${version}`)

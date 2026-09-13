@@ -313,12 +313,6 @@ if(APPLE)
 endif()
 
 if(NOT ZMQ_SHARED)
-  if(ZMQ_WASM)
-    # Rebuild only the generated WASM target prefix after correcting its
-    # compiler environment; native host tools remain in the host prefix.
-    file(REMOVE_RECURSE
-      "${CMAKE_CURRENT_BINARY_DIR}/vcpkg_installed/wasm32-emscripten")
-  endif()
   run_vcpkg(VCPKG_URL "https://github.com/microsoft/vcpkg.git" VCPKG_REV
     "7012bf7bc3dec4b9020a83b1a8a2d365be4bc214")
 endif()
@@ -393,6 +387,16 @@ endif()
 # Use `.node` for the library without any "lib" prefix
 if(ZMQ_WASM)
   set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".wasm")
+
+  find_program(NODE_EXECUTABLE node REQUIRED)
+  add_custom_command(
+    TARGET addon
+    POST_BUILD
+    COMMAND "${NODE_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/script/audit-wasm-imports.mjs"
+      "$<TARGET_FILE:addon>" "${ZMQ_WASM_IMPORT_CONTRACT_FILE}"
+    COMMENT "Auditing WASM imports"
+    VERBATIM
+  )
 else()
   set_target_properties(addon PROPERTIES PREFIX "" SUFFIX ".node")
 endif()

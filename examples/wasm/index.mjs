@@ -62,8 +62,8 @@ async function runNodeRoundTrip(exports) {
     receiver.connect(address)
 
     const message = "zeromq wasm example"
-    await sender.send(new TextEncoder().encode(message))
-    const received = await receiver.receive()
+    await sender.send(message)
+    const [received] = await receiver.receive()
     if (new TextDecoder().decode(received) !== message) {
       throw new Error("WASM addon round trip returned the wrong message")
     }
