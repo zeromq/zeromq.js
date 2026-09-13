@@ -1,8 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
 /* Declare all native C++ classes and methods in this file. */
-import addon from "./load-addon"
-module.exports = addon
+const backend = (globalThis as Record<PropertyKey, unknown>)[
+  Symbol.for("zeromq.wasm.backend")
+]
+
+/* The WASM entry installs its backend before loading the shared JavaScript API.
+   Keep the native addon lazy so importing zeromq/wasm.mjs never loads it. */
+module.exports = backend ?? require("./load-addon").default
 
 /**
  * The version of the ØMQ library the bindings were built with. Formatted as

@@ -2,15 +2,15 @@
   "name": "zeromq-examples",
   "license": "MIT",
   "dependencies": {
-    "zeromq": "file:.."
+    "zeromq": "link:.."
   },
   "devDependencies": {
-    "cross-env": "^7.0.3",
-    "npm-run-all2": "^7.0.2",
+    "cross-env": "^10.1.0",
+    "npm-run-all2": "^9.0.3",
     "ts-node": "10.9.2"
   },
   "scripts": {
-    "build": "cd .. && pnpm build && cd ./examples && pnpm install",
+    "build": "cd .. && pnpm build && cd ./examples",
     "majordomo": "ts-node ./majordomo/index.ts",
     "queue": "ts-node ./queue/index.ts",
     "threaded-worker": "ts-node ./threaded-worker/index.ts",

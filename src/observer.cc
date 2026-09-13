@@ -160,7 +160,7 @@ Observer::Observer(const Napi::CallbackInfo& info)
         return;
     }
 
-    uv_os_sock_t file_descriptor = 0;
+    PollerFd file_descriptor = 0;
     size_t length = sizeof(file_descriptor);
 
     const auto error = [this]() {

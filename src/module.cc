@@ -1,6 +1,10 @@
 
 #include "./module.h"
 
+#ifdef ZMQ_WASM
+#include "./module-wasm.h"
+#endif
+
 #include <array>
 
 #include "./context.h"

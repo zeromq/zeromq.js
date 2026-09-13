@@ -1,0 +1,83 @@
+diff --git a/src/ip.cpp b/src/ip.cpp
+index 8dff5f4..4beec1a 100644
+--- a/src/ip.cpp
++++ b/src/ip.cpp
+@@ -544,6 +544,21 @@ int zmq::make_fdpair (fd_t *r_, fd_t *w_)
+     return 0;
+ 
+ 
++#elif defined __EMSCRIPTEN__
++    // Emscripten's normal socket backend intentionally does not implement
++    // socketpair(). A pipe is sufficient for the signaler's one-way wakeup.
++    int fd[2];
++    const int rc = pipe (fd);
++    if (rc == -1) {
++        errno_assert (errno == ENFILE || errno == EMFILE);
++        *w_ = *r_ = -1;
++        return -1;
++    }
++    // Pipe descriptors are private to the single Emscripten instance, and
++    // fcntl(FD_CLOEXEC) is not implemented by the standalone Node runtime.
++    *r_ = fd[0];
++    *w_ = fd[1];
++    return 0;
+ #elif defined ZMQ_HAVE_WINDOWS
+ #ifdef ZMQ_HAVE_IPC
+     ipc_address_t address;
+diff --git a/src/signaler.cpp b/src/signaler.cpp
+index 9d85068..0272e70 100644
+--- a/src/signaler.cpp
++++ b/src/signaler.cpp
+@@ -151,6 +151,21 @@ void zmq::signaler_t::send ()
+     const uint64_t inc = 1;
+     ssize_t sz = write (_w, &inc, sizeof (inc));
+     errno_assert (sz == sizeof (inc));
++#elif defined __EMSCRIPTEN__
++    unsigned char dummy = 0;
++    while (true) {
++        ssize_t nbytes = ::write (_w, &dummy, sizeof (dummy));
++        if (unlikely (nbytes == -1 && errno == EINTR))
++            continue;
++#if defined(HAVE_FORK)
++        if (unlikely (pid != getpid ())) {
++            errno = EINTR;
++            break;
++        }
++#endif
++        zmq_assert (nbytes == sizeof (dummy));
++        break;
++    }
+ #elif defined ZMQ_HAVE_WINDOWS
+     const char dummy = 0;
+     int nbytes;
+@@ -292,7 +292,12 @@ void zmq::signaler_t::recv ()
+     zmq_assert (dummy == 1);
+ #else
+     unsigned char dummy;
++#if defined __EMSCRIPTEN__
++    const ssize_t nbytes = ::read (_r, &dummy, sizeof (dummy));
++    errno_assert (nbytes >= 0);
++    zmq_assert (nbytes == sizeof (dummy));
++    zmq_assert (dummy == 0);
+-#if defined ZMQ_HAVE_WINDOWS
++#elif defined ZMQ_HAVE_WINDOWS
+     const int nbytes =
+       ::recv (_r, reinterpret_cast<char *> (&dummy), sizeof (dummy), 0);
+     wsa_assert (nbytes != SOCKET_ERROR);
+@@ -334,5 +334,15 @@ int zmq::signaler_t::recv_failable ()
+ #else
+     unsigned char dummy;
++#if defined __EMSCRIPTEN__
++    const ssize_t nbytes = ::read (_r, &dummy, sizeof (dummy));
++    if (nbytes == -1) {
++        if (errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR) {
++            errno = EAGAIN;
++            return -1;
++        }
++        errno_assert (errno == EAGAIN || errno == EWOULDBLOCK
++                      || errno == EINTR);
++    }
+-#if defined ZMQ_HAVE_WINDOWS
++#elif defined ZMQ_HAVE_WINDOWS
+     const int nbytes =
+       ::recv (_r, reinterpret_cast<char *> (&dummy), sizeof (dummy), 0);
